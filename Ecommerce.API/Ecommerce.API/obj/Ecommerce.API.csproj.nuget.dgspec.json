@@ -31,7 +31,11 @@
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+                "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -50,6 +54,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
@@ -70,6 +78,164 @@
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
             },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
+        "projectName": "Ecommerce.Core",
+        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
+        "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
+        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Mostafa Atwa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.10, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+        "projectName": "Ecommerce.Infrastructure",
+        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
+        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Mostafa Atwa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
+                "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "target": "Package",
+              "version": "[8.0.21, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
