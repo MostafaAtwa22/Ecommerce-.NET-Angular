@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {}
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {}
   },
   "projects": {
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+        "projectUniqueName": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
         "projectName": "Ecommerce.API",
-        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+        "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
         "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
-        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
+        "outputPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
-                "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
+              "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+                "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
               }
             }
           }
@@ -54,6 +54,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore.Design": {
               "target": "Package",
               "version": "[8.0.21, )"
@@ -86,14 +90,14 @@
         }
       }
     },
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
+        "projectUniqueName": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
         "projectName": "Ecommerce.Core",
-        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
+        "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj",
         "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
-        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\obj\\",
+        "outputPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -161,14 +165,14 @@
         }
       }
     },
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+        "projectUniqueName": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
         "projectName": "Ecommerce.Infrastructure",
-        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
+        "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
-        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\obj\\",
+        "outputPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -189,8 +193,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
-                "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj"
+              "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj": {
+                "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Core\\Ecommerce.Core.csproj"
               }
             }
           }
