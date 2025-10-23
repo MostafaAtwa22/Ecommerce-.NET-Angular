@@ -1,8 +1,11 @@
-using System.Threading.Tasks;
+using Ecommerce.API.Errors;
+using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers;
+using Ecommerce.API.Middlewares;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Data;
 using Ecommerce.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API
@@ -13,19 +16,11 @@ namespace Ecommerce.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("There is now Connection String");
+            builder.GetConnectionString();
 
-            builder.Services.AddDbContext<ApplicationDbContext>(opt =>
-            {
-                opt.UseSqlServer(connectionString);
-            });
-
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddControllers();
+            builder.Services.AddApplicationServices();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -33,21 +28,9 @@ namespace Ecommerce.API
 
             var app = builder.Build();
 
-            // auto DB update
-            using var scope = app.Services.CreateScope();
-            var services = scope.ServiceProvider;
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-            try
-            {
-                var context = services.GetRequiredService<ApplicationDbContext>();
-                await context.Database.MigrateAsync();
-                await ApplicationDbContextSeed.SeedAsync(context, loggerFactory);
-            }
-            catch (Exception ex)
-            {
-                var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError(ex, "An Error occured during migration");
-            }
+            await app.AutoUpdateDataBaseAsync();
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -55,6 +38,9 @@ namespace Ecommerce.API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Middleware to handle the excption of non-exists endpoint (404 Not found)
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
