@@ -13,6 +13,17 @@ namespace Ecommerce.Infrastructure.Spec
             if (specifications.Criteria is not null)
                 query = query.Where(specifications.Criteria);
 
+            if (specifications.OrderBy is not null)
+                query = query.OrderBy(specifications.OrderBy);
+
+            if (specifications.OrderByDesc is not null)
+                query = query.OrderByDescending(specifications.OrderByDesc);
+
+            if (specifications.IsPagingEnabled)
+                query = query
+                    .Skip(specifications.Skip)
+                    .Take(specifications.Take);
+
             query = specifications.Includes.Aggregate(query, (cur, include) => cur.Include(include));
 
             return query;

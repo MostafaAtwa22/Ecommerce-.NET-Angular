@@ -1,11 +1,6 @@
-using Ecommerce.API.Errors;
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers;
 using Ecommerce.API.Middlewares;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Data;
-using Ecommerce.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API
