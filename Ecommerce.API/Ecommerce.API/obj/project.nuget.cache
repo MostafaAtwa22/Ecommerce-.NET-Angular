@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "wwIkz152/lY=",
+  "dgSpecHash": "o41UPHep8VM=",
   "success": true,
-  "projectFilePath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+  "projectFilePath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
