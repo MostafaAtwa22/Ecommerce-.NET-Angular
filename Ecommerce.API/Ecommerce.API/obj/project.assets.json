@@ -4720,11 +4720,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+      "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
       "projectName": "Ecommerce.API",
-      "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+      "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
       "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
-      "outputPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
+      "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -4745,8 +4745,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
-              "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
+            "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj": {
+              "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.Infrastructure\\Ecommerce.Infrastructure.csproj"
             }
           }
         }
