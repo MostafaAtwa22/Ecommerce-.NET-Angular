@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {}
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {}
   },
   "projects": {
-    "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {
+    "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+        "projectUniqueName": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
         "projectName": "Ecommerce.API",
-        "projectPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
+        "projectPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\Ecommerce.API.csproj",
         "packagesPath": "C:\\Users\\Mostafa Atwa\\.nuget\\packages\\",
-        "outputPath": "D:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
+        "outputPath": "d:\\programming\\Full-stack projects\\Ecommerce\\Ecommerce.API\\Ecommerce.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
