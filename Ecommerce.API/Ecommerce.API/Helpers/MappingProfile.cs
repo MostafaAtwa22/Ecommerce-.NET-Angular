@@ -1,4 +1,5 @@
 using AutoMapper;
+using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Helpers.Resolver;
 using Ecommerce.Core.Entities;
@@ -13,6 +14,12 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.ProductBrandName, o => o.MapFrom(src => src.ProductBrand.Name))
                 .ForMember(dest => dest.ProductTypeName, o => o.MapFrom(src => src.ProductType.Name))
                 .ForMember(dest => dest.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
+
+            CreateMap<Product, ProductCreationDto>()
+                .ReverseMap();
+
+            CreateMap<Product, ProductUpdateDto>()
+                .ReverseMap();
         }
     }
 }
