@@ -15,11 +15,15 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.ProductTypeName, o => o.MapFrom(src => src.ProductType.Name))
                 .ForMember(dest => dest.PictureUrl, o => o.MapFrom<ProductUrlResolver>());
 
-            CreateMap<Product, ProductCreationDto>()
-                .ReverseMap();
+            CreateMap<ProductCreationDto, Product>();
+            CreateMap<ProductUpdateDto, Product>();
 
-            CreateMap<Product, ProductUpdateDto>()
-                .ReverseMap();
+            CreateMap<ProductBrand, ProductBrandAndTypeResponseDto>();
+            CreateMap<ProductType, ProductBrandAndTypeResponseDto>();
+            
+            CreateMap<ProductBrandAndTypeCreationDto, ProductBrand>();
+            CreateMap<ProductBrandAndTypeCreationDto, ProductType>();
+
         }
     }
 }
