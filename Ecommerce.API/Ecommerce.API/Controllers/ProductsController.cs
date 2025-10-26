@@ -52,11 +52,54 @@ namespace Ecommerce.API.Controllers
         public async Task<ActionResult<ProductResponseDto>> Create(ProductCreationDto creationDto)
         {
             var product = _mapper.Map<ProductCreationDto, Product>(creationDto);
+
             await _unitOfWork.Repository<Product>().Create(product);
 
             await _unitOfWork.Complete();
 
-            return Ok(_mapper.Map<Product, ProductResponseDto>(product));
+            var spec = new ProductWithTypeAndBrandSpec(product.Id);
+            var createdProduct = await _unitOfWork.Repository<Product>()
+                .GetWithSpecAsync(spec);
+
+            return Ok(_mapper.Map<Product, ProductResponseDto>(createdProduct!));
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<ProductResponseDto>> Update(ProductUpdateDto updateDto)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(updateDto.ProductId);
+
+            if (product is null)
+                return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
+
+            _mapper.Map(updateDto, product);
+            
+            _unitOfWork.Repository<Product>().Update(product);
+            await _unitOfWork.Complete();
+
+            var spec = new ProductWithTypeAndBrandSpec(product.Id);
+            var updatedProduct = await _unitOfWork.Repository<Product>()
+                .GetWithSpecAsync(spec);
+
+            return Ok(_mapper.Map<Product, ProductResponseDto>(updatedProduct!));
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ProductResponseDto>> Delete(int id)
+        {            
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+
+            if (product is null)
+                return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
+
+            _unitOfWork.Repository<Product>().Delete(product);
+            await _unitOfWork.Complete();
+
+            var spec = new ProductWithTypeAndBrandSpec(product.Id);
+            var deletedProduct = await _unitOfWork.Repository<Product>()
+                .GetWithSpecAsync(spec);
+
+            return Ok(_mapper.Map<Product, ProductResponseDto>(deletedProduct!));
         }
     }
 }

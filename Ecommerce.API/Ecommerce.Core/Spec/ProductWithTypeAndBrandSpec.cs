@@ -1,21 +1,27 @@
-using System.Linq.Expressions;
 using Ecommerce.Core.Entities;
+using Ecommerce.Core.Params;
 
 namespace Ecommerce.Core.Spec
 {
     public class ProductWithTypeAndBrandSpec : BaseSepcifications<Product>
     {
-        public ProductWithTypeAndBrandSpec(string? sort, int? brandId, int? typeId)
-            : base (p =>
-                (!brandId.HasValue || p.ProductBrandId == brandId) &&
-                (!typeId.HasValue || p.ProductTypeId == typeId))
+        public ProductWithTypeAndBrandSpec(ProductSpecParams specParams)
+            : base(p =>
+                (string.IsNullOrEmpty(specParams.Search) || p.Name.ToLower().Contains(specParams.Search)) &&
+                (!specParams.BrandId.HasValue || p.ProductBrandId == specParams.BrandId) &&
+                (!specParams.TypeId.HasValue || p.ProductTypeId == specParams.TypeId))
         {
             AddIncludes(p => p.ProductType);
             AddIncludes(p => p.ProductBrand);
             AddOrderBy(p => p.Name);
+
+            ApplyPaging(
+                (specParams.PageIndex - 1) * specParams.PageSize,
+                specParams.PageSize
+            );
         }
 
-        public ProductWithTypeAndBrandSpec(int id) 
+        public ProductWithTypeAndBrandSpec(int id)
             : base(x => x.Id == id)
         {
             AddIncludes(p => p.ProductType);
