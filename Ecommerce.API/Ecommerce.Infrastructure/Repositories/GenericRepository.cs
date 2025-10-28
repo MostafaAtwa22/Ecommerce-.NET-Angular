@@ -50,6 +50,9 @@ namespace Ecommerce.Infrastructure.Repositories
         public void DeleteRange(IEnumerable<T> entities)
             => _context.Set<T>().RemoveRange(entities);
 
+        public async Task<int> CountAsync()
+            => await _context.Set<T>().CountAsync();
+        
         private IQueryable<T> ApplySpecification(ISpecifications<T> specifications)
             => SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), specifications);
     }
