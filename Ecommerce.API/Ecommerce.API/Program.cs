@@ -17,7 +17,21 @@ namespace Ecommerce.API
             builder.Services.AddControllers();
             builder.Services.AddApplicationServices();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // ✅ Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200", "https://localhost:4200") 
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
+
+            // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -27,21 +41,22 @@ namespace Ecommerce.API
 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            // Configure the HTTP request pipeline.
+            // Swagger in development
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Middleware to handle the excption of non-exists endpoint (404 Not found)
+            // Handle 404s
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseStaticFiles();
+
+            app.UseCors("AllowAngularApp");
 
             app.UseAuthentication();
             app.UseAuthorization();
