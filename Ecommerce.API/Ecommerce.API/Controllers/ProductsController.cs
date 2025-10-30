@@ -27,14 +27,14 @@ namespace Ecommerce.API.Controllers
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductResponseDto>>> GetAll([FromQuery] ProductSpecParams specParams)
         {
-            var spec = new ProductWithTypeAndBrandSpec(specParams);
+            var spec = new ProductWithTypeAndBrandSpec(specParams, forCount: false);
+            var countSpec = new ProductWithTypeAndBrandSpec(specParams, forCount: true);
 
-            var totalItems = await _unitOfWork
-                .Repository<Product>()
-                .CountAsync();
-
+            var totalItems = await _unitOfWork.Repository<Product>()
+                .CountAsync(countSpec);
             var products = await _unitOfWork.Repository<Product>()
                 .GetAllWithSpecAsync(spec);
+
 
             var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponseDto>>(products);
 
