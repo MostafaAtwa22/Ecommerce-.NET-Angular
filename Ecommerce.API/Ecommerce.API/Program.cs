@@ -54,9 +54,9 @@ namespace Ecommerce.API
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseStaticFiles();
-
             app.UseCors("AllowAngularApp");
+
+            app.UseStaticFiles();
 
             app.UseAuthentication();
             app.UseAuthorization();
