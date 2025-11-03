@@ -11,6 +11,7 @@ namespace Ecommerce.API.Extensions
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
             
             // reconfigure the ApiController to handle validations
             services.Configure<ApiBehaviorOptions>(options =>
