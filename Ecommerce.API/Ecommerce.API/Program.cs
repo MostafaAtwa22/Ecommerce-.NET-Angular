@@ -16,24 +16,11 @@ namespace Ecommerce.API
             builder.Services.AddAutoMapper(typeof(MappingProfile));
             builder.Services.AddControllers();
             builder.Services.AddApplicationServices();
-
-            // ✅ Add CORS policy
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularApp", policy =>
-                {
-                    policy
-                        .WithOrigins("http://localhost:4200", "https://localhost:4200") 
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
-            });
-
-
+            builder.Services.AddIdentityServices(builder.Configuration);
             // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerervices();
 
             var app = builder.Build();
 
