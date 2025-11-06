@@ -11,6 +11,9 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.Property(p => p.Price)
                     .HasColumnType("decimal(18,2)");
 
+            builder.Property(p => p.AvrageRating)
+                    .HasColumnType("decimal(5,2)");
+
             builder.HasOne(p => p.ProductBrand)
                     .WithMany(b => b.Products)
                     .HasForeignKey(p => p.ProductBrandId);

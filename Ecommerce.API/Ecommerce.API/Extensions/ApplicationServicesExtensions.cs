@@ -1,6 +1,7 @@
 using Ecommerce.API.Errors;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Repositories;
+using Ecommerce.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Extensions
@@ -12,7 +13,21 @@ namespace Ecommerce.API.Extensions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IBasketRepository, BasketRepository>();
-            
+            services.AddScoped<ITokenService, TokenService>();
+
+            // ✅ Add CORS policy
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
+                {
+                    policy
+                        .WithOrigins("http://localhost:4200", "https://localhost:4200") 
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
+
             // reconfigure the ApiController to handle validations
             services.Configure<ApiBehaviorOptions>(options =>
             {

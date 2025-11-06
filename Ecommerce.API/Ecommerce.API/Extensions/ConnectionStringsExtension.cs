@@ -1,4 +1,6 @@
+using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 

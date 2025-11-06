@@ -16,6 +16,12 @@ namespace Ecommerce.Core.Entities
         [Required]
         public decimal Price { get; set; }
 
+        [Required]
+        public int Quantity { get; set; }
+
+        [Required]
+        public decimal AvrageRating { get; set; }
+
         public int ProductBrandId { get; set; }
         public ProductBrand ProductBrand { get; set; } = default!;
 
