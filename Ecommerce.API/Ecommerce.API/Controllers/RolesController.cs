@@ -33,7 +33,8 @@ namespace Ecommerce.API.Controllers
             var roleUserCounts = new Dictionary<string, int>();
 
             foreach (var role in roles)
-                roleUserCounts[role.Name!] = (await _userManager.GetUsersInRoleAsync(role.Name!)).Count;
+                roleUserCounts[role.Name!] =
+                    (await _userManager.GetUsersInRoleAsync(role.Name!)).Count;
 
             var roleDtos = _mapper.Map<ICollection<RoleDto>>(roles);
             foreach (var dto in roleDtos)
@@ -93,7 +94,8 @@ namespace Ecommerce.API.Controllers
 
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400, string.Join(", ", result.Errors.Select(e => e.Description))));
+                return BadRequest(new ApiResponse(400, 
+                    string.Join(", ", result.Errors.Select(e => e.Description))));
 
             return NoContent();
         }

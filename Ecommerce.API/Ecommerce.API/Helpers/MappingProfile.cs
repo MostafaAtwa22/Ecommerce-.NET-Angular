@@ -44,6 +44,11 @@ namespace Ecommerce.API.Helpers
                 .ReverseMap();
 
             CreateMap<IdentityRole, RoleDto>();
+
+            CreateMap<RoleToCreateDto, IdentityRole>();
+
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<BasketItemDto, BasketItem>();
         }
     }
 }
