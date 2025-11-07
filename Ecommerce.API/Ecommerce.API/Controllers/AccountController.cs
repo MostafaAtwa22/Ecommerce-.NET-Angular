@@ -59,6 +59,12 @@ namespace Ecommerce.API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
         {
+            if (CheckEmailExistsAsync(dto.Email).Result.Value)
+                return new BadRequestObjectResult(new ApiValidationErrorResponse
+                {
+                    Errors = new[] { "Email address is in use" }
+                });
+
             if (!Enum.TryParse(dto.RoleName, true, out Role parsedRole))
                 return BadRequest(new ApiResponse(400, "Invalid role specified."));
 
@@ -83,6 +89,10 @@ namespace Ecommerce.API.Controllers
 
             return Ok(response);
         }
+    
+        [HttpGet("{email}")]
+        public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromRoute] string email)
+            => await _userManager.FindByEmailAsync(email) is not null;
 
         private ActionResult<UserDto>? ValidateRoleAuthorization(Role targetRole)
         {
