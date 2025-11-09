@@ -92,10 +92,14 @@ namespace Ecommerce.API.Controllers
 
             return Ok(response);
         }
-    
-        [HttpGet("{email}")]
+
+        [HttpGet("emailexists/{email}")]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromRoute] string email)
             => await _userManager.FindByEmailAsync(email) is not null;
+
+        [HttpGet("usernameexists/{username}")]
+        public async Task<ActionResult<bool>> CheckUsernameExistsAsync([FromRoute] string username)
+            => await _userManager.FindByNameAsync(username) is not null;
 
         private ActionResult<UserDto>? ValidateRoleAuthorization(Role targetRole)
         {
