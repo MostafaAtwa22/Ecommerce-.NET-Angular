@@ -30,15 +30,15 @@ namespace Ecommerce.API.Helpers
             CreateMap<RegisterDto, ApplicationUser>();
 
             CreateMap<ApplicationUser, UserCommonDto>()
-                .ForMember(dest => dest.ProfilePicture, opt => opt.MapFrom<UserUrlResolver>());
+                .ForMember(dest => dest.ProfilePicture, opt => opt.MapFrom<UserUrlResolver>())                
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()));
             
             CreateMap<ApplicationUser, UserDto>()
                 .IncludeBase<ApplicationUser, UserCommonDto>()
                 .ForMember(dest => dest.Roles, o => o.MapFrom<UserRolesResolver>());
 
             CreateMap<ApplicationUser, ProfileResponseDto>()
-                .IncludeBase<ApplicationUser, UserCommonDto>()
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender.ToString()));
+                .IncludeBase<ApplicationUser, UserCommonDto>();
 
             CreateMap<Address, AddressDto>()
                 .ReverseMap();

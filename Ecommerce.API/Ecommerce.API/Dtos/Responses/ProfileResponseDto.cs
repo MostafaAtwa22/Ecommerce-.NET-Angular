@@ -4,6 +4,5 @@ namespace Ecommerce.API.Dtos.Responses
     {
         public string Id { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
-        public string? Gender { get; set; }
     }
 }

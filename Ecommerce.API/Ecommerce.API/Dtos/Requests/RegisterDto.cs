@@ -26,7 +26,7 @@ namespace Ecommerce.API.Dtos.Requests
         public string LastName { get; set; } = string.Empty;
 
         [Required]
-        public Gender Gender { get; set; } 
+        public Gender Gender { get; set; }
 
         [Phone]
         [Required(ErrorMessage = "Phone number is required.")]
