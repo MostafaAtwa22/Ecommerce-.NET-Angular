@@ -173,7 +173,37 @@
     "Name": "Angular Blue Boots",
     "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
     "Price": 180,
-    "Quantity": 30,
+    "Quantity": 0,
+    "AvrageRating": 4.7,
+    "PictureUrl": "images/products/boot-ang1.png",
+    "ProductTypeId": 3,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Angular Purple Boots",
+    "Description": "Suspendisse dui purus, scelerisque at, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
+    "Price": 180,
+    "Quantity": 0,
+    "AvrageRating": 4.7,
+    "PictureUrl": "images/products/boot-ang2.png",
+    "ProductTypeId": 3,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Angular Purple Boots",
+    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.",
+    "Price": 180,
+    "Quantity": 0,
+    "AvrageRating": 4.7,
+    "PictureUrl": "images/products/boot-ang2.png",
+    "ProductTypeId": 3,
+    "ProductBrandId": 1
+  },
+  {
+    "Name": "Angular Blue Boots",
+    "Description": "Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunct sem venenatis eleifend. Ut nonummy.",
+    "Price": 180,
+    "Quantity": 0,
     "AvrageRating": 4.7,
     "PictureUrl": "images/products/boot-ang1.png",
     "ProductTypeId": 3,
