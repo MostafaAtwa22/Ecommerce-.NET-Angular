@@ -2,7 +2,6 @@ using System.Collections.Concurrent;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ecommerce.Infrastructure.Repositories
@@ -20,11 +19,11 @@ namespace Ecommerce.Infrastructure.Repositories
             var key = typeof(T).Name;
             return (IGenericRepository<T>) _repositories.GetOrAdd(key, _ => new GenericRepository<T>(_context));
         }
-
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
-            => await _context.Database.BeginTransactionAsync();
-
+        
         public async Task<int> Complete()
             => await _context.SaveChangesAsync();
+
+        public void Dispose()   
+            => _context.Dispose();
     }
 }

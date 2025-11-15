@@ -13,7 +13,7 @@ namespace Ecommerce.API
 
             builder.GetConnectionString();
 
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllers();
             builder.Services.AddApplicationServices();
             builder.Services.AddIdentityServices(builder.Configuration);

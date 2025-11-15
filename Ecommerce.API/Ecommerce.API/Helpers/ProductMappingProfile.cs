@@ -1,0 +1,29 @@
+using AutoMapper;
+using Ecommerce.API.Dtos.Requests;
+using Ecommerce.API.Dtos.Responses;
+using Ecommerce.API.Helpers.Resolver;
+using Ecommerce.Core.Entities;
+
+namespace Ecommerce.API.Helpers
+{
+    public class ProductMappingProfile : Profile
+    {
+        public ProductMappingProfile()
+        {
+            CreateMap<Product, ProductResponseDto>()
+                .ForMember(dest => dest.ProductBrandName, o => o.MapFrom(src => src.ProductBrand.Name))
+                .ForMember(dest => dest.ProductTypeName, o => o.MapFrom(src => src.ProductType.Name))
+                .ForMember(dest => dest.PictureUrl,
+                    o => o.MapFrom<ImageUrlResolver<Product, ProductResponseDto>>());
+
+            CreateMap<ProductCreationDto, Product>();
+            CreateMap<ProductUpdateDto, Product>();
+
+            CreateMap<ProductBrand, ProductBrandAndTypeResponseDto>();
+            CreateMap<ProductType, ProductBrandAndTypeResponseDto>();
+
+            CreateMap<ProductBrandAndTypeCreationDto, ProductBrand>();
+            CreateMap<ProductBrandAndTypeCreationDto, ProductType>();
+        }
+    }
+}

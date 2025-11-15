@@ -5,7 +5,7 @@ namespace Ecommerce.API.Dtos.Requests
     public class BasketItemDto
     {
         [Required]
-        public string Id { get; set; } = string.Empty;
+        public int Id { get; set; } 
 
         [Required, MinLength(3), MaxLength(50)]
         [RegularExpression(@"^[a-zA-Z0-9\s\-_]+$",

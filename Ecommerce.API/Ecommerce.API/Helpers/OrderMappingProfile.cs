@@ -1,0 +1,25 @@
+using AutoMapper;
+using Ecommerce.API.Dtos.Responses;
+using Ecommerce.API.Helpers.Resolver;
+using Ecommerce.Core.Entities.orderAggregate;
+
+namespace Ecommerce.API.Helpers
+{
+    public class OrderMappingProfile : Profile
+    {
+        public OrderMappingProfile()
+        {
+            CreateMap<OrderItem, OrderItemResponseDto>()
+                .ForMember(dest => dest.ProductItemId, o => o.MapFrom(src => src.ProductItemOrdered.ProductItemId))
+                .ForMember(dest => dest.ProductName, o => o.MapFrom(src => src.ProductItemOrdered.ProductName))
+                .ForMember(dest => dest.PictureUrl,
+                    o => o.MapFrom<ImageUrlResolver<OrderItem, OrderItemResponseDto>>());
+
+            CreateMap<Order, OrderResponseDto>()
+                .ForMember(dest => dest.DeliveryMethod, o => o.MapFrom(src => src.DeliveryMethod.ShortName))
+                .ForMember(dest => dest.ShippingPrice, o => o.MapFrom(src => src.DeliveryMethod.Price))
+                .ForMember(dest => dest.Total, o => o.MapFrom(src => src.GetTotal()))
+                .ForMember(dest => dest.Status, o => o.MapFrom(src => src.Status.ToString()));
+        }
+    }
+}
