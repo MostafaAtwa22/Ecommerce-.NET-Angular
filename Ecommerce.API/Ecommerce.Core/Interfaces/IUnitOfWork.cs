@@ -3,11 +3,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ecommerce.Core.Interfaces
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<T> Repository<T>() where T : BaseEntity;
-
         Task<int> Complete();
-        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

@@ -83,7 +83,7 @@ namespace Ecommerce.API.Controllers
                 return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
 
             _mapper.Map(updateDto, product);
-            
+
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.Complete();
 
@@ -96,7 +96,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<ProductResponseDto>> Delete(int id)
-        {            
+        {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product is null)

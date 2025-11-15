@@ -6,7 +6,7 @@ namespace Ecommerce.Core.Entities.orderAggregate
         {
         }
 
-        public Order(IReadOnlyList<OrderItem> orderItems,
+        public Order(ICollection<OrderItem> orderItems,
             string buyerEmail,
             decimal subTotal,
             OrderAddress addressToShip,
@@ -23,7 +23,7 @@ namespace Ecommerce.Core.Entities.orderAggregate
         public DateTimeOffset OrderDate { get; set; } = DateTimeOffset.UtcNow;
         public decimal SubTotal { get; set; }
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
-        public IReadOnlyList<OrderItem> OrderItems { get; set; } = [];
+        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public OrderAddress AddressToShip { get; set; } = new();
         public DeliveryMethod DeliveryMethod { get; set; } = new();
         public string PaymentIntenId { get; set; } = string.Empty;

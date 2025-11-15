@@ -1,4 +1,9 @@
+using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
+using Ecommerce.API.Helpers.Resolver;
+using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.Identity;
+using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Repositories;
 using Ecommerce.Infrastructure.Services;
@@ -15,6 +20,19 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<Product, ProductResponseDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "PictureUrl"));
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<ApplicationUser, UserCommonDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "ProfilePictureUrl"));
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "PictureUrl"));
+
 
             // ✅ Add CORS policy
             services.AddCors(options =>
