@@ -31,7 +31,7 @@ namespace Ecommerce.API.Extensions
             services.AddSingleton(provider =>
                 new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
-                    "PictureUrl"));
+                    "ProductItemOrdered.PictureUrl"));
 
 
             // ✅ Add CORS policy

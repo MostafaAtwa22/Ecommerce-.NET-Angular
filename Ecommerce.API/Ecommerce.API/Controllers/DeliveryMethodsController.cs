@@ -22,7 +22,9 @@ namespace Ecommerce.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethodResponseDto>>> GetDeliveryMethods()
         {
-            var deliveryMethods = await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
+            var deliveryMethods = (await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync())
+                .OrderByDescending(x => x.Price)
+                .ToList();
 
             return Ok(_mapper.Map<IReadOnlyList<DeliveryMethodResponseDto>>(deliveryMethods));
         }
@@ -33,7 +35,7 @@ namespace Ecommerce.API.Controllers
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(id);
 
             if (deliveryMethod == null)
-                return NotFound(new { message = "Delivery method not found" });
+                return NotFound(new ApiResponse(404, "Delivery Method not found"));
 
             return Ok(_mapper.Map<DeliveryMethodResponseDto>(deliveryMethod));
         }
@@ -48,7 +50,9 @@ namespace Ecommerce.API.Controllers
 
             var returnDto = _mapper.Map<DeliveryMethodResponseDto>(deliveryMethod);
 
-            return Ok(returnDto);
+            return CreatedAtAction(nameof(GetDeliveryMethod),
+                new { id = deliveryMethod.Id },
+                returnDto);
         }
 
         [HttpPut("{id}")]

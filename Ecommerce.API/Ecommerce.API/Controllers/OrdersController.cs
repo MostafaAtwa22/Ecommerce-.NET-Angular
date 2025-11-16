@@ -39,10 +39,6 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<Order, OrderResponseDto>(order));
         }
 
-        [HttpGet("deliveryMethods")]
-        public async Task<ActionResult<IReadOnlyList<DeliveryMethod>>> GetAllDeliveryMethods()
-            => Ok(await _orderService.GetDeliveryMethodsAsync());
-
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderResponseDto>> GetOrderById([FromRoute] int id)
         {
