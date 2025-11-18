@@ -35,7 +35,7 @@ namespace Ecommerce.API.Controllers
 
             if (order is null)
                 return BadRequest(new ApiResponse(400, "Problem creating order"));
-            
+
             return Ok(_mapper.Map<Order, OrderResponseDto>(order));
         }
 
