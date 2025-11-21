@@ -20,6 +20,7 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
