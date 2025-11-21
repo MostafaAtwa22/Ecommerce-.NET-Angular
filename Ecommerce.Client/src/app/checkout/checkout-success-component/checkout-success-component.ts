@@ -11,6 +11,7 @@ import { IOrder } from '../../shared/modules/order';
 export class CheckoutSuccessComponent {
   order!: IOrder;
   orderId!: string;
+  deliveryMethod!: string;
 
   constructor(private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -22,9 +23,11 @@ export class CheckoutSuccessComponent {
   }
 
   ngOnInit(): void {
+    console.log(this.order);
     if (!this.orderId || this.orderId === '') {
       this.orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     }
+    this.deliveryMethod = this.order.deliveryMethod;
   }
 
   viewOrder(): void {

@@ -190,6 +190,7 @@ export class StepperComponent extends CdkStepper implements OnInit {
         next: (order) => {
           this.toastr.success('Order created successfully!');
           this.basketService.clearBasket();
+          this.basketService.deleteBasket(basket);
 
           const navExtra: NavigationExtras = { state: order };
           this.router.navigate(['success'], navExtra).catch(err => {

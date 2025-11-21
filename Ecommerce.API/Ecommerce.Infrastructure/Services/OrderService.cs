@@ -9,12 +9,15 @@ namespace Ecommerce.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IBasketRepository _basketRepository;
+        private readonly IPaymentService _paymentService;
 
         public OrderService(IUnitOfWork unitOfWork,
-            IBasketRepository basketRepository)
+            IBasketRepository basketRepository,
+            IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _basketRepository = basketRepository;
+            _paymentService = paymentService;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, int deliverMethodId,
@@ -51,7 +54,16 @@ namespace Ecommerce.Infrastructure.Services
 
             // calc subtotal
             decimal subTotal = items.Sum(item => item.Price * item.Quantity);
+            
+            // check to see if order exists
+            var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
+            var existsOrder = await _unitOfWork.Repository<Order>().GetWithSpecAsync(spec);
 
+            if (existsOrder is not null)
+            {
+                _unitOfWork.Repository<Order>().Delete(existsOrder!);
+                await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+            }
             // create order
             var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!);
 
@@ -67,9 +79,6 @@ namespace Ecommerce.Infrastructure.Services
             // return order
             return order;
         }
-
-        public async Task<IReadOnlyList<DeliveryMethod>> GetDeliveryMethodsAsync()
-            => await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
 
         public async Task<Order?> GetOrderByIdAsync(int id, string buyerEmail)
         {

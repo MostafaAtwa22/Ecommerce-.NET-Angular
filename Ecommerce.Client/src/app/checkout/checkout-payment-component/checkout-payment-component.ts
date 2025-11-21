@@ -119,6 +119,17 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
         this.paymentForm?.setErrors(null);
       }
     }
+    switch (event.elementType) {
+      case 'cardNumber':
+        this.cardNumberComplete = event.complete;
+      break;
+      case 'cardExpiry':
+        this.cardExpiryComplete = event.complete;
+      break;
+      case 'cardCvc':
+        this.cardCvcComplete = event.complete;
+      break;
+    }
   }
 
   isPaymentFormValid(): boolean {
