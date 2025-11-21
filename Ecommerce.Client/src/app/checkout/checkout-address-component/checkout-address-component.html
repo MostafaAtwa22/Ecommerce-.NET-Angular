@@ -1,0 +1,176 @@
+<form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="checkout-form">
+  <!-- Personal Information Section -->
+  <div class="form-section">
+    <div class="row g-4 mb-4">
+      <!-- First Name -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="firstName"
+            placeholder="Enter your first name"
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('firstName')?.touched && addressForm.get('firstName')?.invalid"
+          >
+            First name is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Last Name -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="lastName"
+            placeholder="Enter your last name"
+          />
+
+          <!-- Validation -->
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('lastName')?.touched && addressForm.get('lastName')?.invalid"
+          >
+            Last name is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Country -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Country *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="country"
+            placeholder="Enter your country"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('country')?.touched && addressForm.get('country')?.invalid"
+          >
+            Country is required
+          </div>
+        </div>
+      </div>
+
+      <!-- State / Province -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">State/Province *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="government"
+            placeholder="Enter your state or province"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('government')?.touched && addressForm.get('government')?.invalid"
+          >
+            State / Province is required
+          </div>
+        </div>
+      </div>
+
+      <!-- City -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">City *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="city"
+            placeholder="Enter your city"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('city')?.touched && addressForm.get('city')?.invalid"
+          >
+            City is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Street -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Street Address *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="street"
+            placeholder="Enter your street address"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('street')?.touched && addressForm.get('street')?.invalid"
+          >
+            Street address is required
+          </div>
+        </div>
+      </div>
+
+      <!-- Zip Code -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="form-label">Zip/Postal Code *</label>
+          <input
+            type="text"
+            class="form-control modern-input"
+            formControlName="zipcode"
+            placeholder="Enter your zip code"
+          />
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="addressForm.get('zipcode')?.touched && addressForm.get('zipcode')?.invalid"
+          >
+            Zip code is required and must be numbers
+          </div>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="col-md-6" style="margin-top: 30px">
+        <div class="form-group">
+          <button type="submit" class="btn-save-address" [disabled]="addressForm.invalid">
+            <span class="btn-text">Save as default address</span>
+            <span class="btn-icon">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 6L9 17L4 12"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

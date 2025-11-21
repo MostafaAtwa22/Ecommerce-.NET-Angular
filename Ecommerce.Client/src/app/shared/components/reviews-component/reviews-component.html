@@ -1,0 +1,57 @@
+<section class="reviews-section py-5 pb-5 d-flex justify-content-center align-items-center" id="reviews" data-bs-interval="3000" style="height: 80vh;">
+  <div class="container-fluid text-center px-0">
+    <h2 class="fw-bold mb-5 title text-uppercase">What Our Clients Say</h2>
+
+    <div class="carousel-container">
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button
+          *ngFor="let review of reviews; let i = index"
+          type="button"
+          [class.active]="i === currentSlide"
+          (click)="goToSlide(i)"
+          [attr.aria-label]="'Slide ' + (i + 1)"
+        ></button>
+      </div>
+
+      <!-- Slides -->
+      <div class="carousel-inner">
+        <div
+          class="carousel-item"
+          *ngFor="let review of reviews; let i = index"
+          [class.active]="i === currentSlide"
+        >
+          <div class="review-card">
+            <p class="message">"{{ review.message }}"</p>
+
+            <div class="stars mb-3">
+              <ng-container *ngFor="let star of [1,2,3,4,5]; let idx = index">
+                <i
+                  class="fa"
+                  [ngClass]="{
+                    'fa-star fas tex-dark': idx > review.rating,
+                    'fa-star far text-warning': idx <= review.rating
+                  }"
+                ></i>
+              </ng-container>
+            </div>
+
+            <h5 class="fw-bold mb-0">{{ review.name }}</h5>
+            <small class="text-muted">{{ review.role }}</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" (click)="prevSlide()">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+
+      <button class="carousel-control-next" type="button" (click)="nextSlide()">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>

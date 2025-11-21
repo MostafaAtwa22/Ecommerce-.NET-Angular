@@ -1,0 +1,68 @@
+<div class="card product-card h-100">
+  <div class="card-inner">
+    <!-- Image Container -->
+    <div class="image-container">
+      <img
+        [src]="product.pictureUrl"
+        class="product-image"
+        alt="{{ product.name }}"
+      />
+
+      <!-- Stock Status Badge -->
+      <div class="product-badges">
+        <div class="badge stock-badge" [ngClass]="{'in-stock': isInStock(), 'out-of-stock': !isInStock()}">
+          {{ isInStock() ? 'In Stock' : 'Out of Stock' }}
+        </div>
+      </div>
+
+      <div class="image-overlay">
+        <div class="quick-actions">
+          <button class="btn-action wishlist-btn" title="Add to Wishlist">
+            <i class="fas fa-heart"></i>
+          </button>
+          <button class="btn-action quick-view-btn" [routerLink]="[`/shop/${product.id}`]" title="Quick View">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Content -->
+    <div class="card-content">
+      <!-- Category -->
+      <div class="product-category">
+        <span class="category-badge">{{ product.productBrandName }}</span>
+        <span class="category-divider">•</span>
+        <span class="category-text">{{ product.productTypeName }}</span>
+      </div>
+
+      <!-- Product Name -->
+      <h5 class="product-title">{{ product.name }}</h5>
+
+      <!-- Rating -->
+      <div class="product-rating">
+        <div class="stars">
+          <i *ngFor="let star of getStarsArray()"
+            [class]="star"></i>
+        </div>
+        <span class="rating-text">({{ product.avrageRating }})</span>
+      </div>
+
+      <!-- Price -->
+      <div class="product-price">
+        <span class="current-price">{{ product.price | currency:'USD' }}</span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-add-cart" (click)="addItemToBasket()" [disabled]="!isInStock()">
+          <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
+        </button>
+        <button class="btn-view-details text-dark" [routerLink]="[`/shop/${product.id}`]">
+          <i class="fas fa-external-link-alt"></i>
+          Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

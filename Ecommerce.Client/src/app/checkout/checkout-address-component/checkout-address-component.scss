@@ -1,0 +1,328 @@
+.checkout-form {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  .form-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.08),
+      0 6px 20px rgba(0, 0, 0, 0.04),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.03) 0%, rgba(118, 75, 162, 0.03) 100%);
+      border-radius: 24px;
+      z-index: -1;
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 10px 30px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .section-header {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1a202c;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+  }
+
+  .section-divider {
+    height: 1.5px;
+    background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(226, 232, 240, 0.8) 20%,
+                rgba(226, 232, 240, 0.8) 80%,
+                transparent 100%);
+    margin-top: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+    position: relative;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: inline-block;
+    }
+  }
+
+  .modern-input {
+    border: 2px solid rgba(226, 232, 240, 0.8);
+    border-radius: 16px;
+    padding: 1.125rem 1.5rem;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    background: rgba(255, 255, 255, 0.8);
+    height: 60px;
+    backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 1;
+
+    &::placeholder {
+      color: #a0aec0;
+      font-weight: 400;
+      transition: all 0.3s ease;
+    }
+
+    &:focus {
+      border-color: #667eea;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 0 0 4px rgba(102, 126, 234, 0.15),
+        0 8px 25px rgba(102, 126, 234, 0.1);
+      transform: translateY(-3px);
+      outline: none;
+
+      &::placeholder {
+        transform: translateX(5px);
+        opacity: 0.7;
+      }
+    }
+
+    &:hover {
+      border-color: rgba(102, 126, 234, 0.4);
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  /* Updated Save Button Styles */
+  .btn-save-address {
+    width: 100%;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 16px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+    box-shadow:
+      0 8px 25px rgba(102, 126, 234, 0.3),
+      0 4px 10px rgba(102, 126, 234, 0.2);
+    position: relative;
+    overflow: hidden;
+    margin-top: 1.75rem;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.7s ease;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 12px 35px rgba(102, 126, 234, 0.4),
+        0 6px 15px rgba(102, 126, 234, 0.3);
+
+      &::before {
+        left: 100%;
+      }
+
+      .btn-icon {
+        transform: translateX(3px);
+      }
+    }
+
+    &:active {
+      transform: translateY(-1px);
+      box-shadow:
+        0 4px 15px rgba(102, 126, 234, 0.4),
+        0 2px 5px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-text {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // Enhanced form group hover effect
+  .form-group:hover {
+    .form-label {
+      color: #667eea;
+      transform: translateX(5px);
+    }
+  }
+
+  // Row spacing
+  .row.g-4 {
+    --bs-gutter-x: 2rem;
+    --bs-gutter-y: 1.5rem;
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 0 0.5rem;
+
+    .form-section {
+      padding: 2rem 1.5rem;
+      border-radius: 20px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .modern-input {
+      padding: 1rem 1.25rem;
+      height: 56px;
+      border-radius: 14px;
+    }
+
+    .btn-save-address {
+      height: 56px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+    }
+
+    .row.g-4 {
+      --bs-gutter-x: 1.5rem;
+      --bs-gutter-y: 1rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .form-section {
+      padding: 1.5rem 1rem;
+      border-radius: 16px;
+    }
+
+    .section-title {
+      font-size: 1.375rem;
+    }
+
+    .modern-input {
+      padding: 0.875rem 1rem;
+      height: 52px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+    }
+
+    .btn-save-address {
+      height: 52px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      gap: 0.5rem;
+    }
+
+    .row.g-4 {
+      --bs-gutter-x: 1rem;
+      --bs-gutter-y: 0.75rem;
+    }
+  }
+}
+
+// Optional: Add floating label animation
+.form-group {
+  position: relative;
+
+  &.focused {
+    .form-label {
+      color: #667eea;
+      transform: translateY(-5px) scale(0.9);
+      transform-origin: left center;
+    }
+  }
+}
+
+// Add shimmer effect on focus (matching your progress bar)
+.modern-input:focus {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shimmer 2s infinite;
+    z-index: -1;
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

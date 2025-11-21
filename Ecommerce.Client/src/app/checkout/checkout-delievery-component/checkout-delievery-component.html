@@ -1,0 +1,33 @@
+<form [formGroup]="checkoutForm">
+  <div class="delivery-option" *ngFor="let method of deliveryMethods; trackBy: trackById">
+    <input
+      type="radio"
+      [id]="'delivery-' + method.id"
+      [value]="method.id"
+      name="deliveryMethod"
+      formControlName="deliveryMethod"
+      class="delivery-radio"
+      (click)="selectDelivery(method)"
+    />
+    <label [for]="'delivery-' + method.id" class="delivery-label">
+      <div class="delivery-info">
+        <div class="delivery-main">
+          <span class="delivery-name">{{ method.shortName }}</span>
+          <span class="delivery-price">{{ method.price | currency:'USD' }}</span>
+        </div>
+        <div class="delivery-details">
+          <span class="delivery-description">{{ method.description }}</span>
+          <span class="delivery-time">Delivery in {{ method.deliveryTime }} days</span>
+        </div>
+      </div>
+      <div class="delivery-checkmark">
+        <div class="checkmark-icon"></div>
+      </div>
+    </label>
+  </div>
+
+  <div *ngIf="deliveryMethods.length === 0" class="no-delivery-methods">
+    <i class="fas fa-shipping-fast"></i>
+    <p>No delivery methods available at the moment</p>
+  </div>
+</form>

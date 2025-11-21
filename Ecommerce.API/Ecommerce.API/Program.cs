@@ -16,8 +16,8 @@ namespace Ecommerce.API
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllers();
             builder.Services.AddApplicationServices();
+
             builder.Services.AddIdentityServices(builder.Configuration);
-            // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerervices();

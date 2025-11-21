@@ -1,0 +1,30 @@
+<div *ngIf="totalPages > 1" class="pagination-container text-center mt-4">
+  <ul class="pagination justify-content-center">
+    <!-- Previous Button -->
+    <li class="page-item" [class.disabled]="pageIndex === 1">
+      <button class="page-link" (click)="onPageChange(pageIndex - 1)" [attr.aria-label]="'Previous page'">
+        <span class="d-none d-sm-inline"><i class="fa fa-arrow-left"></i> Previous</span>
+        <span class="d-inline d-sm-none"><i class="fa fa-arrow-left"></i></span>
+      </button>
+    </li>
+
+    <!-- Page Numbers -->
+    <li
+      class="page-item"
+      *ngFor="let p of pages"
+      [class.active]="p === pageIndex"
+    >
+      <button class="page-link" (click)="onPageChange(p)" [attr.aria-label]="'Go to page ' + p">
+        {{ p }}
+      </button>
+    </li>
+
+    <!-- Next Button -->
+    <li class="page-item" [class.disabled]="pageIndex === totalPages">
+      <button class="page-link" (click)="onPageChange(pageIndex + 1)" [attr.aria-label]="'Next page'">
+        <span class="d-none d-sm-inline">Next <i class="fa fa-arrow-right"></i></span>
+        <span class="d-inline d-sm-none"><i class="fa fa-arrow-right"></i></span>
+      </button>
+    </li>
+  </ul>
+</div>

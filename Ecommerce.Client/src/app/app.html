@@ -1,0 +1,9 @@
+<app-nav-bar></app-nav-bar>
+
+<!-- ✅ Spinner shows automatically when loading$ is true -->
+@if (loading()) {
+  <app-spinner-component></app-spinner-component>
+}
+<div style="margin-top: 80px;">
+  <router-outlet></router-outlet>
+</div>

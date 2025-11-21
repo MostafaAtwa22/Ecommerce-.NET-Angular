@@ -1,0 +1,147 @@
+<section class="contact-section py-5" id="contact">
+
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <!-- Header -->
+      <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-gradient mb-3 text-uppercase">Get In Touch</h1>
+        <p class="lead text-muted">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+      </div>
+
+      <div class="row g-5">
+        <!-- Contact Information -->
+        <div class="col-lg-4">
+          <div class="contact-info-card">
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div class="info-content">
+                <h5>Our Location</h5>
+                <p class="text-muted mb-0">123 Fashion Street<br>Style City, SC 12345</p>
+              </div>
+            </div>
+
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fa-solid fa-phone"></i>
+              </div>
+              <div class="info-content">
+                <h5>Phone Number</h5>
+                <p class="text-muted mb-0">+1 (555) 123-4567</p>
+              </div>
+            </div>
+
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fa-solid fa-envelope"></i>
+              </div>
+              <div class="info-content">
+                <h5>Email Address</h5>
+                <p class="text-muted mb-0">hello@tasaqilli.com</p>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <div class="info-icon">
+                <i class="fa-regular fa-clock"></i>
+              </div>
+              <div class="info-content">
+                <h5>Working Hours</h5>
+                <p class="text-muted mb-0">Mon - Fri: 9:00 - 18:00<br>Sat: 10:00 - 16:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="col-lg-8">
+          <div class="contact-form-card">
+            <!-- Changed template reference variable name from contactForm to contactFormRef -->
+            <form (ngSubmit)="onSubmit()" #contactFormRef="ngForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="name" class="form-label">Full Name *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      [(ngModel)]="contactForm.name"
+                      required
+                      placeholder="Enter your full name">
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      [(ngModel)]="contactForm.email"
+                      required
+                      placeholder="Enter your email">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="subject" class="form-label">Subject *</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="subject"
+                      name="subject"
+                      [(ngModel)]="contactForm.subject"
+                      required
+                      placeholder="What's this about?">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="message" class="form-label">Message *</label>
+                    <textarea
+                      class="form-control"
+                      id="message"
+                      name="message"
+                      [(ngModel)]="contactForm.message"
+                      required
+                      rows="6"
+                      placeholder="Tell us more about your inquiry..."></textarea>
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100"
+                    [disabled]="isSubmitting || !contactFormRef.form.valid">
+                    <span *ngIf="!isSubmitting">Send Message</span>
+                    <span *ngIf="isSubmitting">
+                      <i class="fas fa-spinner fa-spin me-2"></i>
+                      Sending...
+                    </span>
+                  </button>
+                </div>
+
+                <!-- Success Message -->
+                <div class="col-12" *ngIf="isSubmitted">
+                  <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    <strong>Thank you!</strong> Your message has been sent successfully. We'll get back to you soon.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
