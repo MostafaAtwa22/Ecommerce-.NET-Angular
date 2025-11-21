@@ -1,32 +1,52 @@
+using Ecommerce.API.Extensions;
+using Ecommerce.API.Helpers;
+using Ecommerce.API.Middlewares;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.GetConnectionString();
 
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddApplicationServices();
+            builder.Services.AddIdentityServices(builder.Configuration);
+            // Swagger
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerervices();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            await app.AutoUpdateDataBaseAsync();
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
+            // Swagger in development
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // Handle 404s
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
             app.UseHttpsRedirection();
+            app.UseRouting();
 
+            app.UseCors("AllowAngularApp");
+
+            app.UseStaticFiles();
+
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

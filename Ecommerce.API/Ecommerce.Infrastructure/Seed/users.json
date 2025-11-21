@@ -1,0 +1,200 @@
+[
+    {
+        "Id": "9C7BB53E-9642-4F52-B021-D19F72CBD43C",
+        "FirstName": "Alex",
+        "LastName": "Johnson",
+        "UserName": "alexj",
+        "Email": "alex.johnson@example.com",
+        "ProfilePictureUrl": "images/users/male1.png",
+        "Role": "SuperAdmin",
+        "PhoneNumber": "+201234567890",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Cairo",
+            "Street": "Downtown",
+            "Zipcode": "12345"
+        }
+    },
+    {
+        "Id": "8D6A7B8C-1234-5678-90AB-CDEF12345678",
+        "FirstName": "Sarah",
+        "LastName": "Chen",
+        "UserName": "sarahc",
+        "Email": "sarah.chen@example.com",
+        "ProfilePictureUrl": "images/users/female1.png",
+        "Role": "Admin",
+        "PhoneNumber": "+201234567891",
+        "Gender": "Female",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Cairo",
+            "Street": "Garden City",
+            "Zipcode": "12345"
+        }
+    },
+    {
+        "Id": "7E5B4C3D-2345-6789-01BC-DEF234567890",
+        "FirstName": "Mike",
+        "LastName": "Rodriguez",
+        "UserName": "miker",
+        "Email": "mike.rodriguez@example.com",
+        "ProfilePictureUrl": "images/users/male2.png",
+        "Role": "Admin",
+        "PhoneNumber": "+201234567892",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Dakahlia",
+            "City": "Mansora",
+            "Street": "Nile Street",
+            "Zipcode": "35511"
+        }
+    },
+    {
+        "Id": "6F4D3E2F-3456-7890-12CD-EF3456789012",
+        "FirstName": "Lisa",
+        "LastName": "Thompson",
+        "UserName": "lisat",
+        "Email": "lisa.thompson@example.com",
+        "ProfilePictureUrl": "images/users/female1.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567893",
+        "Gender": "Female",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Sharqia",
+            "City": "Zagazig",
+            "Street": "Al-Horreya St",
+            "Zipcode": "44519"
+        }
+    },
+    {
+        "Id": "5E3C2D1B-4567-8901-23DE-F45678901234",
+        "FirstName": "David",
+        "LastName": "Wilson",
+        "UserName": "davidw",
+        "Email": "david.wilson@example.com",
+        "ProfilePictureUrl": "images/users/male3.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567894",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Cairo",
+            "Street": "Heliopolis",
+            "Zipcode": "11341"
+        }
+    },
+    {
+        "Id": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+        "FirstName": "Maria",
+        "LastName": "Garcia",
+        "UserName": "mariag",
+        "Email": "maria.garcia@example.com",
+        "ProfilePictureUrl": "images/users/female2.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567895",
+        "Gender": "Female",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Giza",
+            "City": "Giza",
+            "Street": "Al Haram St",
+            "Zipcode": "12511"
+        }
+    },
+    {
+        "Id": "B2C3D4E5-F6A7-8901-BCDE-F23456789012",
+        "FirstName": "Robert",
+        "LastName": "Kim",
+        "UserName": "robertk",
+        "Email": "robert.kim@example.com",
+        "ProfilePictureUrl": "images/users/male4.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567896",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Helwan",
+            "City": "Helwan",
+            "Street": "15th of May City",
+            "Zipcode": "11724"
+        }
+    },
+    {
+        "Id": "C3D4E5F6-A7B8-9012-CDEF-345678901234",
+        "FirstName": "Jennifer",
+        "LastName": "Smith",
+        "UserName": "jennifers",
+        "Email": "jennifer.smith@example.com",
+        "ProfilePictureUrl": "images/users/female3.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567897",
+        "Gender": "Female",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Ain Shams",
+            "Street": "Omar Ibn El-Khattab St",
+            "Zipcode": "11672"
+        }
+    },
+    {
+        "Id": "D4E5F6A7-B8C9-0123-DEF4-567890123456",
+        "FirstName": "Kevin",
+        "LastName": "Patel",
+        "UserName": "kevinp",
+        "Email": "kevin.patel@example.com",
+        "ProfilePictureUrl": "images/users/male5.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567898",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Cairo",
+            "Street": "Nasr City",
+            "Zipcode": "11765"
+        }
+    },
+    {
+        "Id": "E5F6A7B8-C9D0-1234-EFG5-678901234567",
+        "FirstName": "Lisa",
+        "LastName": "Wong",
+        "UserName": "lisaw",
+        "Email": "lisa.wong@example.com",
+        "ProfilePictureUrl": "images/users/female4.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567899",
+        "Gender": "Female",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Cairo",
+            "City": "Cairo",
+            "Street": "Rehab City",
+            "Zipcode": "11841"
+        }
+    },
+    {
+        "Id": "F6A7B8C9-D0E1-2345-FGH6-789012345678",
+        "FirstName": "Mark",
+        "LastName": "Johnson",
+        "UserName": "markj",
+        "Email": "mark.johnson@example.com",
+        "ProfilePictureUrl": "images/users/male6.png",
+        "Role": "Customer",
+        "PhoneNumber": "+201234567800",
+        "Gender": "Male",
+        "Address": {
+            "Country": "Egypt",
+            "Government": "Sharqia",
+            "City": "Zagazig",
+            "Street": "El Galaa St",
+            "Zipcode": "44519"
+        }
+    }
+]
