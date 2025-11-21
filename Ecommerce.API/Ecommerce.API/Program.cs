@@ -13,12 +13,14 @@ namespace Ecommerce.API
 
             builder.GetConnectionString();
 
-            builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllers();
             builder.Services.AddApplicationServices();
 
+            builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerervices();
 
             var app = builder.Build();
 
@@ -26,19 +28,20 @@ namespace Ecommerce.API
 
             app.UseMiddleware<ExceptionMiddleware>();
 
-            // Configure the HTTP request pipeline.
+            // Swagger in development
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            // Middleware to handle the excption of non-exists endpoint (404 Not found)
+            // Handle 404s
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
+
+            app.UseCors("AllowAngularApp");
 
             app.UseStaticFiles();
 

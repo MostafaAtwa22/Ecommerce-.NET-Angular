@@ -1,0 +1,13 @@
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\bin\Debug\net8.0\Ecommerce.Core.deps.json
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\bin\Debug\net8.0\Ecommerce.Core.dll
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\bin\Debug\net8.0\Ecommerce.Core.pdb
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.csproj.AssemblyReference.cache
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.AssemblyInfoInputs.cache
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.AssemblyInfo.cs
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.csproj.CoreCompileInputs.cache
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.sourcelink.json
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.dll
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\refint\Ecommerce.Core.dll
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\Ecommerce.Core.pdb
+D:\programming\Full-stack projects\Ecommerce\Ecommerce.API\Ecommerce.Core\obj\Debug\net8.0\ref\Ecommerce.Core.dll

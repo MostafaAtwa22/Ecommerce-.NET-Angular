@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.orderAggregate;
 using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Infrastructure.Data
@@ -38,6 +39,16 @@ namespace Ecommerce.Infrastructure.Data
 
                     foreach (var product in products!)
                         await context.Products.AddAsync(product);
+                    await context.SaveChangesAsync();
+                }
+                if (!context.DeliveryMethods.Any())
+                {
+                    var DeliveryMethodsData =
+                        await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/delivery.json");
+                    var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodsData);
+
+                    foreach (var DeliveryMethod in DeliveryMethods!)
+                        await context.DeliveryMethods.AddAsync(DeliveryMethod);
                     await context.SaveChangesAsync();
                 }
             }

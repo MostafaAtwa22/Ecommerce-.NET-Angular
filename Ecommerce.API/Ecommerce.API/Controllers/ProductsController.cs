@@ -1,5 +1,6 @@
 using System.Net;
 using AutoMapper;
+using Ecommerce.API.Dtos;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
@@ -24,14 +25,23 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductResponseDto>>> GetAll([FromQuery] ProductSpecParams specParams)
+        public async Task<ActionResult<Pagination<ProductResponseDto>>> GetAll([FromQuery] ProductSpecParams specParams)
         {
-            var spec = new ProductWithTypeAndBrandSpec(specParams);
+            var spec = new ProductWithTypeAndBrandSpec(specParams, forCount: false);
+            var countSpec = new ProductWithTypeAndBrandSpec(specParams, forCount: true);
+
+            var totalItems = await _unitOfWork.Repository<Product>()
+                .CountAsync(countSpec);
             var products = await _unitOfWork.Repository<Product>()
                 .GetAllWithSpecAsync(spec);
 
+
             var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponseDto>>(products);
-            return Ok(data);
+
+            return Ok(new Pagination<ProductResponseDto>(specParams.PageIndex,
+                specParams.PageSize,
+                totalItems,
+                data));
         }
 
         [HttpGet("{id}")]
@@ -73,7 +83,7 @@ namespace Ecommerce.API.Controllers
                 return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
 
             _mapper.Map(updateDto, product);
-            
+
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.Complete();
 
@@ -86,7 +96,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult<ProductResponseDto>> Delete(int id)
-        {            
+        {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product is null)

@@ -18,5 +18,7 @@ namespace Ecommerce.Core.Interfaces
         void UpdateRanage(IEnumerable<T> entities);
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
+        Task<int> CountAsync();
+        Task<int> CountAsync(ISpecifications<T> specifications);
     }
 }

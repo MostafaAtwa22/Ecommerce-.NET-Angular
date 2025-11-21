@@ -15,6 +15,10 @@ namespace Ecommerce.API.Dtos.Requests
         public decimal Price { get; set; }
 
         [Required]
+        [Range(minimum: 5, maximum: 10_000)]
+        public int Quantity { get; set; }
+
+        [Required]
         public int ProductTypeId { get; set; }
 
         [Required]
