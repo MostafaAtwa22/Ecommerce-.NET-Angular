@@ -1,0 +1,81 @@
+<div class="orders-container">
+  @if (orders && orders.length > 0) {
+    <div class="orders-list">
+      <div class="orders-table">
+        <!-- Table Header -->
+        <div class="table-header">
+          <div class="header-cell">Order ID</div>
+          <div class="header-cell">Date</div>
+          <div class="header-cell">Status</div>
+          <div class="header-cell">Items</div>
+          <div class="header-cell">Total</div>
+          <div class="header-cell">Actions</div>
+        </div>
+
+        <!-- Table Body -->
+        <div class="table-body">
+          @for (order of orders; track order.id) {
+            <div class="table-row">
+              <div class="cell cell-order-id">
+                <span class="label-mobile">Order ID:</span>
+                <span class="order-id">ORD-{{ order.id }}</span>
+              </div>
+
+              <div class="cell cell-date">
+                <span class="label-mobile">Date:</span>
+                <span class="date">{{ order.orderDate | date:'MMM dd, yyyy' }}</span>
+                <span class="time">{{ order.orderDate | date:'hh:mm a' }}</span>
+              </div>
+
+              <div class="cell cell-status">
+                <span class="label-mobile">Status:</span>
+                <span class="status-badge" [class]="getStatusClass(order.status)">
+                  {{ order.status }}
+                </span>
+              </div>
+
+              <div class="cell cell-items">
+                <span class="label-mobile">Items:</span>
+                <span class="items-count">{{ order.orderItems.length }} items</span>
+              </div>
+
+              <div class="cell cell-total">
+                <span class="label-mobile">Total:</span>
+                <span class="total-amount">{{ order.total | currency:'USD' }}</span>
+              </div>
+
+              <div class="cell cell-actions">
+                <span class="label-mobile">Actions:</span>
+                <button class="btn-view" (click)="viewOrderDetails(order.id)">
+                  <i class="fas fa-eye"></i>
+                  <span>View</span>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else if (orders && orders.length === 0) {
+    <!-- Empty State -->
+    <div class="empty-orders">
+      <div class="empty-content">
+        <div class="empty-icon">
+          <img src="empty-order.png" alt="No orders yet" class="img-fluid">
+        </div>
+        <h3 class="empty-title">No Orders Yet :(</h3>
+        <p class="empty-text">You haven't placed any orders yet. Start shopping to see your orders here!</p>
+        <a class="btn-shop-now" routerLink="/">
+          <i class="fas fa-shopping-cart"></i>
+          Start Shopping
+        </a>
+      </div>
+    </div>
+  } @else {
+    <!-- Loading State -->
+    <div class="loading-orders">
+      <div class="loading-spinner"></div>
+      <p>Loading your orders...</p>
+    </div>
+  }
+</div>

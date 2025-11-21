@@ -1,0 +1,69 @@
+<div class="review-container overflow-x-auto">
+  @if (basket$ | async; as basket) {
+    @if (basket?.items && basket.items.length > 0) {
+      <div class="review-content">
+        <!-- Order Items Table -->
+        <div class="items-table">
+          <div class="table-header text-center">
+            <div class="header-product">Product</div>
+            <div class="header-price">Price</div>
+            <div class="header-quantity">Quantity</div>
+            <div class="header-total">Total</div>
+          </div>
+
+          <div class="table-body">
+            @for (item of basket.items; track item.id) {
+              <div class="table-row">
+                <!-- Product Info -->
+                <div class="cell-product">
+                  <div class="product-image">
+                    <img [src]="item.pictureUrl" [alt]="item.productName" class="product-img" />
+                  </div>
+                  <div class="product-details">
+                    <h4 class="product-name">{{ item.productName }}</h4>
+                    <div class="product-meta">
+                      <span class="product-brand">{{ item.brand }}</span>
+                      <span class="product-type">{{ item.type }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Price -->
+                <div class="cell-price">
+                  <span class="price-amount">{{ item.price | currency:'USD' }}</span>
+                </div>
+
+                <!-- Quantity -->
+                <div class="cell-quantity">
+                  <div class="quantity-display">
+                    <span class="quantity-number">{{ item.quantity }}</span>
+                  </div>
+                </div>
+
+                <!-- Total -->
+                <div class="cell-total">
+                  <span class="total-amount">{{ (item.price * item.quantity) | currency:'USD' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    } @else {
+      <!-- Empty Basket State -->
+      <div class="empty-review">
+        <div class="empty-icon">
+          <i class="fas fa-shopping-basket"></i>
+        </div>
+        <h4 class="empty-title">No Items to Review</h4>
+        <p class="empty-text">Your basket is empty. Add some items to proceed with your order.</p>
+      </div>
+    }
+  } @else {
+    <!-- Loading State -->
+    <div class="loading-review">
+      <div class="loading-spinner"></div>
+      <p>Loading your order...</p>
+    </div>
+  }
+</div>

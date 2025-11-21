@@ -1,0 +1,7 @@
+<!-- app.html -->
+<div class="loading-overlay" *ngIf="busyService.loading$ | async">
+  <div class="modern-spinner">
+    <div class="spinner-ring"></div>
+    <p class="loading-text">Loading your experience...</p>
+  </div>
+</div>

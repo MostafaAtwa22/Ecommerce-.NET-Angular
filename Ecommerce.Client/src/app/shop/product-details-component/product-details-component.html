@@ -1,0 +1,198 @@
+<div class="product-details container py-5 mt-5">
+  @if (!loading && product) {
+    <div class="row align-items-start gy-5">
+      <!-- 🖼️ Product Image & Rating Section -->
+      <div class="col-lg-6">
+        <div class="product-image-container">
+          <img
+            [src]="product.pictureUrl"
+            [alt]="product.name"
+            class="product-image img-fluid"
+          />
+
+          <!-- Stock Status Badge -->
+          <div class="stock-badge-container">
+            <div class="badge stock-badge" [ngClass]="{'in-stock': isInStock(), 'out-of-stock': !isInStock()}">
+              <i class="fas" [class]="isInStock() ? 'fa-check-circle' : 'fa-times-circle'"></i>
+              {{ isInStock() ? 'In Stock' : 'Out of Stock' }}
+              @if (isInStock()) {
+                <span class="stock-quantity">({{ product.quantity }} available)</span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Rating Breakdown Section -->
+        <div class="rating-breakdown-card mt-4">
+          <h5 class="section-title mb-4">
+            <i class="fas fa-chart-bar me-2"></i>
+            Rating Breakdown
+          </h5>
+
+          <div class="overall-rating mb-4">
+            <div class="rating-score">
+              <span class="score">{{ getAverageRating() }}</span>
+              <span class="out-of">/ 5</span>
+            </div>
+            <div class="rating-stars">
+              <div class="stars">
+                <i *ngFor="let star of getStarsArray()" [class]="star"></i>
+              </div>
+              <div class="rating-count">Based on {{ getTotalRatings() }} reviews</div>
+            </div>
+          </div>
+
+          <div class="rating-bars">
+            <div class="rating-bar-item" *ngFor="let rating of getRatingDistribution()">
+              <div class="rating-label">
+                <span class="stars">
+                  <i class="fas fa-star"></i> {{ rating.stars }}
+                </span>
+              </div>
+              <div class="progress-container">
+                <div class="progress">
+                  <div
+                    class="progress-bar"
+                    [style.width.%]="rating.percentage"
+                    [ngClass]="getProgressBarClass(rating.stars)">
+                  </div>
+                </div>
+              </div>
+              <div class="rating-count">
+                {{ rating.count }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🧾 Product Info -->
+      <div class="col-lg-6">
+        <div class="product-info-card">
+          <!-- Category Badges -->
+          <div class="category-badges mb-3">
+            <span class="badge brand-badge me-2">{{ product.productBrandName }}</span>
+            <span class="badge type-badge">{{ product.productTypeName }}</span>
+          </div>
+
+          <!-- Product Title -->
+          <h1 class="product-title fw-bold mb-3">{{ product.name }}</h1>
+
+          <!-- Product Rating Summary -->
+          <div class="rating-summary mb-3">
+            <div class="stars">
+              <i *ngFor="let star of getStarsArray()" [class]="star"></i>
+            </div>
+            <span class="rating-value">{{ getAverageRating() }}</span>
+            <span class="rating-count">({{ getTotalRatings() }} reviews)</span>
+          </div>
+
+          <!-- Price -->
+          <div class="price-section mb-4">
+            <h2 class="price-text">${{ product.price | number:'1.2-2' }}</h2>
+            <div class="price-subtext">Inclusive of all taxes</div>
+          </div>
+
+          <!-- 🔢 Quantity Selector -->
+          <div class="quantity-section mb-4">
+            <label class="quantity-label mb-2 me-3">Quantity</label>
+            <div class="quantity-selector">
+              <button class="btn-quantity" (click)="decreaseQuantity()" [disabled]="quantity <= 1">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                [(ngModel)]="quantity"
+                [min]="1"
+                [max]="getMaxQuantity()"
+                class="quantity-input"
+                [disabled]="!isInStock()"
+              />
+              <button class="btn-quantity" (click)="increaseQuantity()" [disabled]="quantity >= getMaxQuantity()">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+            @if (!isInStock()) {
+              <div class="out-of-stock-message text-danger mt-2">
+                <i class="fas fa-exclamation-triangle me-1"></i>
+                This product is currently out of stock
+              </div>
+            }
+          </div>
+
+          <!-- 🛒 Action Buttons -->
+          <div class="action-buttons mb-4">
+            <button class="btn-add-cart" (click)="addToBasket()" [disabled]="!isInStock()">
+              <i class="fas fa-shopping-cart me-2"></i>
+              {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
+            </button>
+            <button class="btn-back-shop" routerLink="/">
+              <i class="fas fa-arrow-left me-2"></i>
+              Continue Shopping
+            </button>
+          </div>
+
+          <!-- 📝 Description -->
+          <div class="description-section">
+            <h5 class="section-title">
+              <i class="fas fa-align-left me-2"></i>
+              Product Description
+            </h5>
+            <p class="description-text">{{ product.description }}</p>
+          </div>
+
+          <!-- 🚚 Features & Shipping -->
+          <div class="features-section">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-truck"></i>
+              </div>
+              <div class="feature-content">
+                <h6>Free Shipping</h6>
+                <p class="text-muted mb-0">3-4 working days delivery</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <div class="feature-content">
+                <h6>2-Year Warranty</h6>
+                <p class="text-muted mb-0">Hassle-free returns</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="feature-content">
+                <h6>Secure Payment</h6>
+                <p class="text-muted mb-0">100% secure transaction</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="loading-container text-center py-5">
+      @if (loading) {
+        <div class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <p class="loading-text mt-3">Loading product details...</p>
+        </div>
+      } @else if (errorMessage) {
+        <div class="error-state">
+          <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+          <h5 class="text-danger">{{ errorMessage }}</h5>
+          <button class="btn-back-shop mt-3" routerLink="/shop">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Shop
+          </button>
+        </div>
+      }
+    </div>
+  }
+</div>

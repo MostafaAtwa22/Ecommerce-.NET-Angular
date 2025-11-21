@@ -1,0 +1,120 @@
+<app-animated-overlay-component></app-animated-overlay-component>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form mt-5">
+  <div class="form-header">
+    <img src="logo.png" alt="App Logo" class="form-logo">
+    <h2 class="form-title">Welcome Back</h2>
+    <p class="form-subtitle">Sign in to your account to continue</p>
+  </div>
+
+  <!-- Email Field -->
+  <div class="form-group">
+    <label for="email" class="form-label">
+      <i class="fas fa-envelope"></i>
+      Email Address
+    </label>
+    <div class="input-container">
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        placeholder="Enter your email address"
+        class="form-control"
+        [class.valid]="email?.valid && email?.touched"
+        [class.invalid]="email?.invalid && email?.touched"
+      />
+      <div class="input-icons">
+        <i class="fas fa-check-circle valid-icon" *ngIf="email?.valid && email?.touched"></i>
+        <i class="fas fa-exclamation-circle invalid-icon" *ngIf="email?.invalid && email?.touched"></i>
+      </div>
+    </div>
+    <div class="error-messages" *ngIf="email?.touched && email?.invalid">
+      <small class="error-message" *ngIf="email?.errors?.['required']">
+        <i class="fas fa-exclamation-triangle"></i>
+        Email is required
+      </small>
+      <small class="error-message" *ngIf="email?.errors?.['email']">
+        <i class="fas fa-exclamation-triangle"></i>
+        Please enter a valid email address
+      </small>
+    </div>
+  </div>
+
+  <!-- Password Field -->
+  <div class="form-group">
+    <label for="password" class="form-label">
+      <i class="fas fa-lock"></i>
+      Password
+    </label>
+    <div class="input-container">
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        id="password"
+        formControlName="password"
+        placeholder="Enter your password"
+        class="form-control"
+        [class.valid]="password?.valid && password?.touched"
+        [class.invalid]="password?.invalid && password?.touched"
+      />
+      <div class="input-icons">
+        <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+          <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+        </button>
+        <i class="fas fa-check-circle valid-icon" *ngIf="password?.valid && password?.touched"></i>
+        <i class="fas fa-exclamation-circle invalid-icon" *ngIf="password?.invalid && password?.touched"></i>
+      </div>
+    </div>
+    <div class="error-messages" *ngIf="password?.touched && password?.invalid">
+      <small class="error-message" *ngIf="password?.errors?.['required']">
+        <i class="fas fa-exclamation-triangle"></i>
+        Password is required
+      </small>
+    </div>
+  </div>
+
+  <!-- Remember Me & Forgot Password -->
+  <div class="form-options">
+    <label class="checkbox-container">
+      <input type="checkbox" formControlName="rememberMe">
+      <span class="checkmark"></span>
+      Remember me
+    </label>
+    <a href="#" class="forgot-password">Forgot password?</a>
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="btn-login"
+    [disabled]="loginForm.invalid || isLoading"
+    [class.loading]="isLoading"
+  >
+    <span class="btn-content">
+      <i class="fas fa-sign-in-alt" *ngIf="!isLoading"></i>
+      <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+      {{ isLoading ? 'Signing In...' : 'Sign In' }}
+    </span>
+  </button>
+
+  <!-- Divider -->
+  <div class="divider">
+    <span>or continue with</span>
+  </div>
+
+  <!-- Social Login -->
+  <div class="social-login">
+    <button type="button" class="btn-social btn-google">
+      <i class="fab fa-google"></i>
+      Google
+    </button>
+    <button type="button" class="btn-social btn-facebook">
+      <i class="fab fa-facebook-f"></i>
+      Facebook
+    </button>
+  </div>
+
+  <!-- Sign Up Link -->
+  <div class="signup-link">
+    Don't have an account?
+    <a routerLink="/register" class="signup-text">Sign up now</a>
+  </div>
+</form>

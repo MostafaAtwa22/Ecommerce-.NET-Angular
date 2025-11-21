@@ -1,0 +1,179 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, map } from 'rxjs';
+import { Environment } from '../../environment';
+import { Basket, IBasket, IBasketItem, IBasketTotals } from '../modules/basket';
+import { IProduct } from '../modules/product';
+import { IDeliveryMethod } from '../modules/deliveryMethod';
+
+@Injectable({ providedIn: 'root' })
+export class BasketService {
+  private baseUrl = `${Environment.baseUrl}/api/baskets`;
+
+  private basketSource = new BehaviorSubject<IBasket | null>(null);
+  private basketTotalSource = new BehaviorSubject<IBasketTotals | null>(null);
+
+  basket$ = this.basketSource.asObservable();
+  basketTotal$ = this.basketTotalSource.asObservable();
+  shipping = 0;
+
+  constructor(private http: HttpClient) {}
+
+  createPaymentIntent() {
+    return this.http.post<IBasket>(`${Environment.baseUrl}/api/payment/${this.getCurrentBasketValue()?.id}`, {})
+      .pipe(
+        map((basket: IBasket) => {
+          this.basketSource.next(basket);
+          console.log(this.getCurrentBasketValue());
+          return basket;
+        })
+      );
+  }
+
+  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+      this.shipping = deliveryMethod.price;
+      var basket = this.getCurrentBasketValue();
+      if (!basket) return;
+      basket.deliveryMethodId = deliveryMethod.id;
+      basket.shippingPrice = deliveryMethod.price;
+      this.calculateTotals();
+      this.setBasket(basket).subscribe();
+  }
+
+  // 🔹 Load Basket
+  getBasket(id: string) {
+    return this.http.get<IBasket>(`${this.baseUrl}/${id}`).pipe(
+      map(basket => {
+        this.basketSource.next(basket);
+        this.shipping = basket.shippingPrice ?? 0;
+        this.calculateTotals();
+        return basket;
+      })
+    );
+  }
+
+  // 🔹 Save Basket
+  setBasket(basket: IBasket) {
+    return this.http.post<IBasket>(this.baseUrl, basket).pipe(
+      map(res => {
+        this.basketSource.next(res);
+        this.calculateTotals();
+        return res;
+      })
+    );
+  }
+
+  // 🔹 Delete Basket
+  deleteBasket(basket: IBasket) {
+    return this.http.delete(`${this.baseUrl}/${basket.id}`).pipe(
+      map(() => this.clearBasket())
+    );
+  }
+
+  // 🔹 Add Product
+  addItemToBasket(product: IProduct, quantity = 1) {
+    const itemToAdd = this.mapProductItemToBasketItem(product, quantity);
+    const basket = this.getCurrentBasketValue() ?? this.createBasket();
+    basket.items = this.addOrUpdateItem(basket.items, itemToAdd, quantity);
+    return this.setBasket(basket);
+  }
+
+  // 🔹 Increase Quantity
+  incrementItemQuantity(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    if (!basket) return;
+
+    const foundItem = basket.items.find(x => x.id === item.id);
+    if (foundItem) {
+      foundItem.quantity++;
+      this.setBasket(basket).subscribe();
+    }
+  }
+
+  // 🔹 Decrease Quantity
+  decrementItemQuantity(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    if (!basket) return;
+
+    const foundItem = basket.items.find(x => x.id === item.id);
+    if (foundItem) {
+      if (foundItem.quantity > 1) {
+        foundItem.quantity--;
+        this.setBasket(basket).subscribe();
+      } else {
+        this.removeItemFromBasket(item);
+      }
+    }
+  }
+
+  // 🔹 Remove Item
+  removeItemFromBasket(item: IBasketItem) {
+    const basket = this.getCurrentBasketValue();
+    if (!basket) return;
+
+    basket.items = basket.items.filter(i => i.id !== item.id);
+
+    if (basket.items.length > 0) {
+      this.setBasket(basket).subscribe();
+    } else {
+      this.deleteBasket(basket).subscribe(); // ✅ fixed
+    }
+  }
+
+  // 🔹 Get Current Basket
+  getCurrentBasketValue() {
+    return this.basketSource.value;
+  }
+
+  // 🔹 Calculate Totals
+  private calculateTotals() {
+    const basket = this.getCurrentBasketValue();
+    if (!basket || !basket.items.length) {
+      this.basketTotalSource.next({ shipping: 0, subTotal: 0, total: 0 });
+      return;
+    }
+    const shipping = this.shipping;
+    const subTotal = basket.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const total = subTotal + this.shipping;
+
+    this.basketTotalSource.next({ shipping: this.shipping, subTotal, total });
+  }
+
+  // 🔹 Helpers
+  private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {
+    const index = items.findIndex(i => i.id == itemToAdd.id);
+    if (index === -1) {
+      itemToAdd.quantity = quantity;
+      items.push(itemToAdd);
+    } else {
+      items[index].quantity += quantity;
+    }
+    return items;
+  }
+
+  private createBasket(): IBasket {
+    const basket = new Basket();
+    localStorage.setItem('basket_id', basket.id);
+    this.basketSource.next(basket);
+    return basket;
+  }
+
+  clearBasket() {
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    this.shipping = 0;
+    localStorage.removeItem('basket_id');
+  }
+
+  private mapProductItemToBasketItem(product: IProduct, quantity: number): IBasketItem {
+    return {
+      id: product.id,
+      productName: product.name,
+      price: product.price,
+      quantity,
+      pictureUrl: product.pictureUrl,
+      brand: product.productBrandName,
+      type: product.productTypeName,
+    };
+  }
+}

@@ -1,0 +1,191 @@
+.payment-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-header {
+  margin-bottom: 2rem;
+  text-align: center;
+
+  .payment-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.5rem;
+  }
+
+  .payment-subtitle {
+    font-size: 0.95rem;
+    color: #718096;
+    margin: 0;
+  }
+}
+
+.payment-form {
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    &.has-error {
+      label {
+        color: #e53e3e;
+      }
+
+      .stripe-input-container {
+        border-color: #e53e3e;
+      }
+
+      input {
+        border-color: #e53e3e;
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: #4299e1;
+        box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+      }
+
+      &::placeholder {
+        color: #a0aec0;
+      }
+    }
+  }
+
+  .stripe-input-container {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: all 0.2s;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+
+    &:focus-within {
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    }
+
+    &.StripeElement--invalid {
+      border-color: #e53e3e;
+    }
+  }
+
+  .card-fields-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .error-message {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e53e3e;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.payment-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+  margin-top: 2rem;
+
+  .security-icon {
+    color: #48bb78;
+    font-size: 1.25rem;
+  }
+
+  .security-text {
+    font-size: 0.875rem;
+    color: #4a5568;
+    font-weight: 500;
+  }
+}
+
+// CRITICAL: This is what makes Stripe elements work properly
+:host ::ng-deep {
+  // Ensure Stripe element wrapper has proper sizing
+  .stripe-input-container {
+    .StripeElement {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Style the Stripe iframe itself
+  .StripeElement {
+    box-sizing: border-box;
+    height: 20px;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+  }
+
+  // When Stripe element is focused
+  .StripeElement--focus {
+    // Parent container handles the focus styling
+  }
+
+  // When Stripe element is invalid
+  .StripeElement--invalid {
+    // Parent container handles the error styling
+  }
+
+  // Ensure iframe is properly sized and visible
+  .StripeElement iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block !important;
+  }
+
+  // Remove any default webkit autofill styling
+  .StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+  }
+
+  // Ensure the Stripe Element container fills its parent
+  .__PrivateStripeElement {
+    width: 100%;
+    height: 100%;
+  }
+}

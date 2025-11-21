@@ -1,0 +1,212 @@
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0.8rem 1.2rem;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 50px;
+    box-shadow:
+      0 10px 30px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      0 1px 3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(25, 135, 84, 0.02) 0%, rgba(20, 108, 67, 0.02) 100%);
+      border-radius: 50px;
+      z-index: 0;
+    }
+  }
+
+  .page-item {
+    margin: 0 3px;
+    position: relative;
+    z-index: 1;
+
+    .page-link {
+      border: none;
+      background: transparent;
+      padding: 0.7rem 1.1rem;
+      font-weight: 600;
+      color: #3c4c67;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 44px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(25, 135, 84, 0.1), transparent);
+        transition: left 0.6s ease;
+      }
+
+      &:hover::before {
+        left: 100%;
+      }
+    }
+
+    &:not(.disabled):hover .page-link {
+      background: linear-gradient(135deg, #19875415, #15734715);
+      color: #198754;
+      transform: translateY(-2px);
+      box-shadow:
+        0 6px 16px rgba(25, 135, 84, 0.2),
+        0 2px 6px rgba(25, 135, 84, 0.1);
+    }
+
+    &.active .page-link {
+      background: linear-gradient(135deg, #198754, #16a34a);
+      color: #fff;
+      box-shadow:
+        0 8px 20px rgba(25, 135, 84, 0.4),
+        0 4px 8px rgba(25, 135, 84, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: scale(1.08);
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        right: 1px;
+        bottom: 1px;
+        border-radius: 40px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent);
+        pointer-events: none;
+      }
+    }
+
+    &.disabled .page-link {
+      opacity: 0.4;
+      cursor: not-allowed;
+      color: #a0aec0;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    // First and last items styling
+    &:first-child,
+    &:last-child {
+      .page-link {
+        font-weight: 700;
+        padding: 0.7rem 1.3rem;
+        background: linear-gradient(135deg, #f8fafc, #edf2f7);
+
+        &:hover:not(.disabled) {
+          background: linear-gradient(135deg, #198754, #16a34a);
+          color: white;
+          box-shadow: 0 6px 16px rgba(25, 135, 84, 0.3);
+        }
+      }
+    }
+  }
+
+  // Hover effect for the entire container
+  &:hover {
+    transform: translateY(-3px);
+    transition: transform 0.3s ease;
+
+    .pagination {
+      box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  // Animation for page changes
+  .page-item {
+    animation: fadeInUp 0.4s ease-out;
+
+    @for $i from 1 through 10 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.05}s;
+      }
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // Responsive design
+  @media (max-width: 768px) {
+    margin-top: 2rem;
+
+    .pagination {
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+    }
+
+    .page-item .page-link {
+      padding: 0.6rem 0.9rem;
+      font-size: 0.9rem;
+      min-width: 40px;
+    }
+
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+      padding: 0.6rem 1rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .pagination {
+      padding: 0.5rem 0.8rem;
+      border-radius: 35px;
+    }
+
+    .page-item .page-link {
+      padding: 0.5rem 0.8rem;
+      font-size: 0.85rem;
+      min-width: 36px;
+    }
+
+    .page-item:first-child .page-link,
+    .page-item:last-child .page-link {
+      padding: 0.5rem 0.9rem;
+      font-size: 0.8rem;
+    }
+
+    // Hide some page numbers on very small screens
+    .page-item:not(:first-child):not(:last-child):not(.active) {
+      &:nth-child(n+4):nth-last-child(n+4) {
+        display: none;
+      }
+    }
+  }
+}

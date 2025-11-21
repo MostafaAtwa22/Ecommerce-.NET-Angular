@@ -1,0 +1,142 @@
+<div class="my-5 position-relative container" id="shop">
+  <div class="row">
+    <div class="col-12">
+
+      <!-- 🔍 Search + Filter + Sort Toolbar -->
+      <div class="d-flex flex-wrap align-items-center justify-content-between mb-4 gap-2 toolbar">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <!-- 🎛️ Filter Toggle -->
+          <button class="btn btn-outline-success d-flex align-items-center" (click)="toggleFilters()">
+            <i class="fa fa-filter me-2"></i>
+            {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+          </button>
+
+          <!-- 🧭 Sort Dropdown -->
+          <div class="sort-dropdown">
+            <select
+              class="form-select modern-select shadow-sm"
+              [(ngModel)]="shopParams.sort"
+              (change)="onSortSelected(shopParams.sort)"
+            >
+              @for (option of sortOptions; track option.value) {
+                <option [value]="option.value">{{ option.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- 🔍 Search Bar -->
+        <div class="search-bar shadow-sm d-flex flex-grow-1">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for products..."
+            [(ngModel)]="shopParams.search"
+            (keyup.enter)="onSearch()"
+          />
+          <button class="btn btn-dark ms-2" (click)="onSearch()">
+            <i class="fa fa-search"></i>
+          </button>
+          @if (shopParams.search) {
+            <button class="btn btn-outline-secondary ms-2" (click)="resetSearch()">
+              <i class="fa fa-times"></i>
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- 🧭 Hidden/Toggle Filter Panel -->
+      @if (showFilters) {
+        <div class="filter-panel shadow-sm mb-4 fade-container position-absolute">
+          <h5 class="fw-bold text-center border-bottom pb-2 mb-3">
+            Filter Products
+          </h5>
+
+          <!-- 🏷️ Brand Filter -->
+          <div class="mb-4">
+            <h6 class="fw-semibold mb-3 text-success">Brands</h6>
+            @for (brand of brands; track brand.id) {
+              <div
+                class="form-check mb-2 fade-in"
+                [class.active]="shopParams.brandId === brand.id"
+              >
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="shopParams.brandId === brand.id"
+                  (change)="onBrandSelected(brand.id)"
+                  id="brand{{ brand.id }}"
+                />
+                <label class="form-check-label" for="brand{{ brand.id }}">
+                  {{ brand.name }}
+                </label>
+              </div>
+            }
+          </div>
+
+          <!-- 🧩 Type Filter -->
+          <div>
+            <h6 class="fw-semibold mb-3 text-success">Types</h6>
+            @for (type of types; track type.id) {
+              <div
+                class="form-check mb-2 fade-in"
+                [class.active]="shopParams.typeId === type.id"
+              >
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  [checked]="shopParams.typeId === type.id"
+                  (change)="onTypeSelected(type.id)"
+                  id="type{{ type.id }}"
+                />
+                <label class="form-check-label" for="type{{ type.id }}">
+                  {{ type.name }}
+                </label>
+              </div>
+            }
+          </div>
+
+          <div class="text-center mt-3">
+            <button class="btn btn-outline-dark px-4 w-100" (click)="resetFilters()">
+              <i class="fa fa-refresh me-2"></i> Reset Filters
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- 🌀 Loading Spinner -->
+      @if (isLoading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading awesome products...</p>
+        </div>
+      }
+
+      <!-- 🧱 Product Cards -->
+      @if (!isLoading) {
+        <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4 fade-container">
+          @for (product of products; track product.id) {
+            <div class="col fade-item">
+              <app-product-item [product]="product"></app-product-item>
+            </div>
+          } @empty {
+            <div class="w-100 text-center py-5 empty-state">
+              <h5>No Products Found</h5>
+              <button class="btn btn-outline-dark px-4" (click)="resetFilters()">
+                Reset Filters
+              </button>
+            </div>
+          }
+        </div>
+
+        <!-- ✅ Pagination -->
+        <app-pagination-component
+          [totalCount]="totalCount"
+          [pageSize]="shopParams.pageSize"
+          [pageIndex]="shopParams.pageIndex"
+          (pageChange)="onPageChanged($event)"
+        ></app-pagination-component>
+      }
+    </div>
+  </div>
+</div>

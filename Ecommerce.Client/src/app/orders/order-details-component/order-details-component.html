@@ -1,0 +1,125 @@
+<div class="order-details-container">
+
+  <div class="order-content">
+
+    <div class="row g-4">
+
+      <!-- Left Column - Order Progress & Items -->
+      <div class="col-lg-8">
+
+        <!-- Order Progress Stepper -->
+        <div class="order-progress-section">
+          <div class="stepper-container">
+            <div class="stepper-header">
+              <div class="stepper-steps">
+                <div
+                  *ngFor="let step of orderSteps; let i = index"
+                  class="step"
+                  [class.active]="currentStepIndex === i"
+                  [class.completed]="getStepState(i) === 'completed'"
+                  [class.pending]="getStepState(i) === 'pending'"
+                >
+                  <div class="step-circle">
+                    <span class="step-content">{{ getStepDisplay(i) }}</span>
+                  </div>
+                  <div class="step-label">{{ step.label }}</div>
+                  <div
+                    class="step-connector"
+                    *ngIf="i !== orderSteps.length - 1"
+                    [class.completed]="getStepState(i) === 'completed' && getStepState(i + 1) === 'completed'"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="stepper-content">
+              <div class="step-description-content">
+                <h4>{{ getCurrentStep().title }}</h4>
+                <p>{{ getCurrentStep().description }}</p>
+                <div class="step-date" *ngIf="getCurrentStep().date">
+                  <i class="fas fa-calendar me-2"></i>
+                  {{ getCurrentStep().date }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="order-items-section">
+          <div class="section-header">
+            <h3 class="section-title">Order Items</h3>
+          </div>
+          <div class="items-list">
+            <div *ngFor="let item of order?.orderItems; trackBy: trackByItemId" class="order-item">
+              <div class="item-image">
+                <img [src]="item.pictureUrl" [alt]="item.productName" class="product-img">
+              </div>
+              <div class="item-details">
+                <h4 class="product-name">{{ item.productName }}</h4>
+                <div class="item-meta">
+                  <span class="item-price">{{ item.price | currency:'USD' }}</span>
+                  <span class="item-quantity">Qty: {{ item.quantity }}</span>
+                </div>
+              </div>
+              <div class="item-total">
+                {{ (item.price * item.quantity) | currency:'USD' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Order Summary & Shipping -->
+      <div class="col-lg-4">
+        <!-- Return Button -->
+        <div class="return-button-section w-100">
+          <a class="btn-ret" routerLink="/orders"><i class="fa fa-cart-arrow-down me-2" aria-hidden="true"></i>All Orders</a>
+        </div>
+        <!-- Order Totals -->
+        <div class="order-summary-section">
+          <div class="section-header">
+            <h3 class="section-title">Order Summary</h3>
+          </div>
+          <div class="totals-list">
+            <div class="total-item">
+              <span class="total-label">Subtotal</span>
+              <span class="total-value">{{ order?.subTotal | currency:'USD' }}</span>
+            </div>
+            <div class="total-item">
+              <span class="total-label">Shipping</span>
+              <span class="total-value">{{ order?.shippingPrice | currency:'USD' }}</span>
+            </div>
+            <div class="total-divider"></div>
+            <div class="total-item grand-total">
+              <span class="total-label">Total</span>
+              <span class="total-value">{{ order?.total | currency:'USD' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Information -->
+        <div class="shipping-section">
+          <div class="section-header">
+            <h3 class="section-title">Shipping Information</h3>
+          </div>
+          <div class="shipping-info">
+            <div class="info-group">
+              <h5 class="info-label">Delivery Method</h5>
+              <p class="info-value">{{ order?.deliveryMethod || 'Standard Shipping' }}</p>
+            </div>
+            <div class="info-group">
+              <h5 class="info-label">Estimated Delivery</h5>
+              <p class="info-value">{{ estimatedDeliveryDate }}</p>
+            </div>
+            <div class="info-group">
+              <h5 class="info-label">Contact Email</h5>
+              <p class="info-value">{{ order?.buyerEmail }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

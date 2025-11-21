@@ -1,0 +1,107 @@
+<footer class="footer-section">
+  <div class="container">
+    <!-- Main Footer Content -->
+    <div class="footer-main py-5">
+      <div class="row g-5">
+        <!-- Brand Column -->
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-brand">
+            <div class="brand-logo mb-3">
+              <img src="logo.png" alt="Tasaqilli" class="logo-img">
+              <span class="brand-name">Tasaqilli</span>
+            </div>
+            <p class="footer-description">
+              Discover the latest trends in fashion with Tasaqilli. We bring you premium quality clothing
+              and accessories that combine style, comfort, and affordability.
+            </p>
+            <div class="social-links">
+              @for (social of socialLinks; track social.name) {
+                <a [href]="social.url" class="social-link" [title]="social.name">
+                  <i [class]="social.icon"></i>
+                </a>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="col-lg-2 col-md-6">
+          <div class="footer-links">
+            <h5 class="footer-title">Quick Links</h5>
+            <ul class="footer-list">
+              @for (link of quickLinks; track link.name) {
+                <li>
+                  <a [routerLink]="link.path" class="footer-link">{{ link.name }}</a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="col-lg-2 col-md-6">
+          <div class="footer-links">
+            <h5 class="footer-title">Categories</h5>
+            <ul class="footer-list">
+              @for (category of categories; track category.name) {
+                <li>
+                  <a [routerLink]="category.path" class="footer-link">{{ category.name }}</a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+
+        <!-- Contact & Newsletter -->
+        <div class="col-lg-4 col-md-6">
+          <div class="footer-newsletter">
+            <h5 class="footer-title">Stay Updated</h5>
+            <p class="newsletter-text">Subscribe to get special offers, free giveaways, and exclusive deals.</p>
+
+            <form class="newsletter-form">
+              <div class="input-group">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  aria-label="Email address">
+                <button class="btn btn-primary" type="submit">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </form>
+
+            <div class="contact-info mt-4">
+              <div class="contact-item d-flex align-items-center mb-2">
+                <i class="fas fa-envelope me-2"></i>
+                <span>support@tasaqilli.com</span>
+              </div>
+              <div class="contact-item d-flex align-items-center">
+                <i class="fas fa-phone me-2"></i>
+                <span>+1 (555) 123-4567</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom py-4">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <p class="copyright mb-0">
+            &copy; {{ currentYear }} Tasaqilli. All rights reserved.
+          </p>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <div class="footer-bottom-links">
+            <a href="#" class="footer-bottom-link">Privacy Policy</a>
+            <a href="#" class="footer-bottom-link">Terms of Service</a>
+            <a href="#" class="footer-bottom-link">Shipping Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
