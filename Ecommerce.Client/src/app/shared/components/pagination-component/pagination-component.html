@@ -1,10 +1,10 @@
-<div *ngIf="totalPages > 1" class="pagination-container text-center mt-4">
-  <ul class="pagination justify-content-center">
+<nav *ngIf="totalPages > 1" class="pagination-nav" aria-label="Page navigation">
+  <ul class="pagination">
     <!-- Previous Button -->
     <li class="page-item" [class.disabled]="pageIndex === 1">
-      <button class="page-link" (click)="onPageChange(pageIndex - 1)" [attr.aria-label]="'Previous page'">
-        <span class="d-none d-sm-inline"><i class="fa fa-arrow-left"></i> Previous</span>
-        <span class="d-inline d-sm-none"><i class="fa fa-arrow-left"></i></span>
+      <button class="page-link" (click)="onPageChange(pageIndex - 1)" aria-label="Previous page">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
       </button>
     </li>
 
@@ -21,10 +21,10 @@
 
     <!-- Next Button -->
     <li class="page-item" [class.disabled]="pageIndex === totalPages">
-      <button class="page-link" (click)="onPageChange(pageIndex + 1)" [attr.aria-label]="'Next page'">
-        <span class="d-none d-sm-inline">Next <i class="fa fa-arrow-right"></i></span>
-        <span class="d-inline d-sm-none"><i class="fa fa-arrow-right"></i></span>
+      <button class="page-link" (click)="onPageChange(pageIndex + 1)" aria-label="Next page">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
       </button>
     </li>
   </ul>
-</div>
+</nav>

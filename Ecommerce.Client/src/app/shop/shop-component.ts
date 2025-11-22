@@ -27,29 +27,32 @@ export class ShopComponent implements OnInit, AfterViewInit {
   totalCount = 0;
   showFilters = false;
   isLoading = true;
-  shopParams = new ShopParams();
+  shopParams!: ShopParams;
 
   sortOptions = [
     { name: 'Alphabetical', value: 'name' },
     { name: 'Price: Low to High', value: 'PriceAsc' },
-    { name: 'Price: High to Low', value: 'PriceDesc' },
+    { name: 'Price: High to Low', value: 'PriceDesc' }
   ];
 
   constructor(
     private _shopService: ShopService,
     private _brandService: BrandService,
     private _typeService: TypeService
-  ) {}
+  ) {
+    this.shopParams = this._shopService.getShopParams();
+  }
 
   ngOnInit(): void {
     this.getAllBrands();
     this.getAllTypes();
-    this.getAllProducts();
+    this.getAllProducts(true);
   }
 
   ngAfterViewInit(): void {
     const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
     dropdownElementList.map((el) => new bootstrap.Dropdown(el));
+
     this.observeProductItems();
   }
 
@@ -57,76 +60,95 @@ export class ShopComponent implements OnInit, AfterViewInit {
     this.showFilters = !this.showFilters;
   }
 
-  getAllProducts() {
+  getAllProducts(useCache = false) {
     this.isLoading = true;
 
-    this._shopService.getAllProducts(this.shopParams).subscribe({
+    this._shopService.getAllProducts(useCache).subscribe({
       next: (res: IPagination<IProduct>) => {
         this.products = res.data;
         this.totalCount = res.totalData;
         this.isLoading = false;
 
-        // Re-observe product items after products load
-        setTimeout(() => {
-          this.observeProductItems();
-        }, 100);
+        setTimeout(() => this.observeProductItems(), 100);
       },
       error: (err) => {
         console.error('Error loading products:', err);
         this.isLoading = false;
-      },
+      }
     });
   }
 
   getAllBrands() {
     this._brandService.getAllBrands().subscribe({
-      next: (res: IBrand[]) => (this.brands = res),
+      next: res => this.brands = res
     });
   }
 
   getAllTypes() {
     this._typeService.getAllTypes().subscribe({
-      next: (res: IType[]) => (this.types = res),
+      next: res => this.types = res
     });
   }
 
   onBrandSelected(brandId: number) {
-    this.shopParams.brandId = this.shopParams.brandId === brandId ? undefined : brandId;
-    this.shopParams.pageIndex = 1;
+    const params = this._shopService.getShopParams();
+
+    params.brandId = (params.brandId === brandId) ? undefined : brandId;
+    params.pageIndex = 1;
+
+    this._shopService.setShopParams(params);
     this.getAllProducts();
   }
 
   onTypeSelected(typeId: number) {
-    this.shopParams.typeId = this.shopParams.typeId === typeId ? undefined : typeId;
-    this.shopParams.pageIndex = 1;
+    const params = this._shopService.getShopParams();
+
+    params.typeId = (params.typeId === typeId) ? undefined : typeId;
+    params.pageIndex = 1;
+
+    this._shopService.setShopParams(params);
     this.getAllProducts();
   }
 
   onSortSelected(sort: string) {
-    this.shopParams.sort = sort;
-    this.shopParams.pageIndex = 1;
+    const params = this._shopService.getShopParams();
+
+    params.sort = sort;
+    params.pageIndex = 1;
+
+    this._shopService.setShopParams(params);
     this.getAllProducts();
   }
 
   onSearch() {
-    this.shopParams.pageIndex = 1;
+    const params = this._shopService.getShopParams();
+    params.pageIndex = 1;
+
+    this._shopService.setShopParams(params);
     this.getAllProducts();
   }
 
   resetSearch() {
-    this.shopParams.search = '';
-    this.shopParams.pageIndex = 1;
+    const params = this._shopService.getShopParams();
+    params.search = '';
+    params.pageIndex = 1;
+
+    this._shopService.setShopParams(params);
     this.getAllProducts();
   }
 
   resetFilters() {
     this.shopParams = new ShopParams();
+    this._shopService.setShopParams(this.shopParams);
     this.getAllProducts();
   }
 
   onPageChanged(page: number) {
-    this.shopParams.pageIndex = page;
-    this.getAllProducts();
+    const params = this._shopService.getShopParams();
+    params.pageIndex = page;
+
+    this._shopService.setShopParams(params);
+    this.getAllProducts(true);
   }
 
   private observeProductItems() {
@@ -135,24 +157,18 @@ export class ShopComponent implements OnInit, AfterViewInit {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('fade-in');
-            // Optional: Unobserve after animation to improve performance
-            // observer.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.1, // Trigger when 10% of the element is visible
-        rootMargin: '0px 0px -50px 0px' // Adjust trigger point (negative bottom margin)
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
       }
     );
 
-    // Clear previous observations
     const existingItems = document.querySelectorAll('.fade-item');
-    existingItems.forEach(item => {
-      item.classList.remove('fade-in'); // Reset animation state
-    });
+    existingItems.forEach(item => item.classList.remove('fade-in'));
 
-    // Observe all product items after a short delay
     setTimeout(() => {
       const productItems = document.querySelectorAll('.fade-item');
       productItems.forEach(item => observer.observe(item));

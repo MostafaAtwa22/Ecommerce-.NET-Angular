@@ -33,7 +33,7 @@ namespace Ecommerce.API.Extensions
                 new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
                     "ProductItemOrdered.PictureUrl"));
-
+            services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
             // ✅ Add CORS policy
             services.AddCors(options =>

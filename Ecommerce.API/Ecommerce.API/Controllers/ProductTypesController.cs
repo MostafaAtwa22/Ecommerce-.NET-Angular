@@ -3,6 +3,7 @@ using AutoMapper;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
+using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,7 @@ namespace Ecommerce.API.Controllers
             _mapper = mapper;
         }
 
+        [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductBrandAndTypeResponseDto>>> GetAll()
         {
@@ -27,6 +29,7 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<IReadOnlyList<ProductBrandAndTypeResponseDto>>(types));
         }
 
+        [Cached(600)]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProductBrandAndTypeResponseDto>> GetById(int id)
         {

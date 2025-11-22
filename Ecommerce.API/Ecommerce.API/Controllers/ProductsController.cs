@@ -4,6 +4,7 @@ using Ecommerce.API.Dtos;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
+using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
@@ -24,6 +25,7 @@ namespace Ecommerce.API.Controllers
             _mapper = mapper;
         }
 
+        [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductResponseDto>>> GetAll([FromQuery] ProductSpecParams specParams)
         {
@@ -44,6 +46,7 @@ namespace Ecommerce.API.Controllers
                 data));
         }
 
+        [Cached(600)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetById(int id)
         {
