@@ -8,11 +8,11 @@ namespace Ecommerce.Infrastructure.Services
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IBasketRepository _basketRepository;
+        private readonly IRedisRepository<CustomerBasket> _basketRepository;
         private readonly IPaymentService _paymentService;
 
         public OrderService(IUnitOfWork unitOfWork,
-            IBasketRepository basketRepository,
+            IRedisRepository<CustomerBasket> basketRepository,
             IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
@@ -24,7 +24,7 @@ namespace Ecommerce.Infrastructure.Services
             string basketId, OrderAddress shippingAddress)
         {
             // get basket from the repo
-            var basket = await _basketRepository.GetBasketAsync(basketId);
+            var basket = await _basketRepository.GetAsync(basketId);
 
             if (basket == null || !basket.Items.Any())
                     throw new Exception("Basket is empty");
@@ -74,7 +74,7 @@ namespace Ecommerce.Infrastructure.Services
             if (result <= 0) return null!;
 
             // delete the basket from cache
-            await _basketRepository.DeleteBasketAsync(basketId);
+            await _basketRepository.DeleteAsync(basketId);
 
             // return order
             return order;

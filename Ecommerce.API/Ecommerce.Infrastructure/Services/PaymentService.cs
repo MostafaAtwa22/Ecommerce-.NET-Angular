@@ -13,12 +13,12 @@ namespace Ecommerce.Infrastructure.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
-        private readonly IBasketRepository _basketRepository;
+        private readonly IRedisRepository<CustomerBasket> _basketRepository;
 
         public PaymentService(
             IUnitOfWork unitOfWork,
             IConfiguration config,
-            IBasketRepository basketRepository)
+            IRedisRepository<CustomerBasket> basketRepository)
         {
             _unitOfWork = unitOfWork;
             _config = config;
@@ -29,7 +29,7 @@ namespace Ecommerce.Infrastructure.Services
         {
             StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
 
-            var basket = await _basketRepository.GetBasketAsync(basketId);
+            var basket = await _basketRepository.GetAsync(basketId);
 
             if (basket is null)
                 return null!;
@@ -84,7 +84,7 @@ namespace Ecommerce.Infrastructure.Services
                 intent = await service.UpdateAsync(basket.PaymentIntentId, options);
             }
 
-            await _basketRepository.UpdateOrCreateBasketAsync(basket);
+            await _basketRepository.UpdateOrCreateAsync(basket.Id, basket);
 
             return basket;
         }

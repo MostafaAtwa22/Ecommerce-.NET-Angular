@@ -1,6 +1,6 @@
 namespace Ecommerce.API.Dtos.Requests
 {
-    public class CustomerBasketDto
+    public class CustomerBasketDto : IRedisDto
     {
         public string Id { get; set; } = string.Empty;
 

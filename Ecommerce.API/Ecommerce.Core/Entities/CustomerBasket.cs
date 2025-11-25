@@ -1,9 +1,10 @@
 namespace Ecommerce.Core.Entities
 {
-    public class CustomerBasket
+    public class CustomerBasket : IRedisEntity
     {
         public CustomerBasket()
         {
+            Id = string.Empty;
         }
 
         public CustomerBasket(string id)
@@ -11,8 +12,7 @@ namespace Ecommerce.Core.Entities
             this.Id = id;
         }
 
-        public string Id { get; set; } = string.Empty;
-
+        public string Id { get; set; }
         public ICollection<BasketItem> Items { get; set; } = [];
         public int? DeliveryMethodId { get; set; }
         public string ClientSecret { get; set; } = string.Empty;

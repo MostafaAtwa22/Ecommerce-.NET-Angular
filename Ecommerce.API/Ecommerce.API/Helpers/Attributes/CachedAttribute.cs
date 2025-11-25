@@ -33,7 +33,7 @@ namespace Ecommerce.API.Helpers.Attributes
                 return;
             }
 
-            var executedContext = await next();
+            var executedContext = await next(); // move to the controller
 
             if (executedContext.Result is OkObjectResult okResult)
             {

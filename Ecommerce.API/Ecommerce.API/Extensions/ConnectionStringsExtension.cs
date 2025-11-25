@@ -23,8 +23,8 @@ namespace Ecommerce.API.Extensions
             {
                 var redis = builder.Configuration.GetConnectionString("Redis")
                     ?? throw new InvalidOperationException("There is no Connection String");
-                var configuration = ConfigurationOptions
-                .Parse(redis, true);
+                var configuration = ConfigurationOptions.Parse(redis, true);
+                
                 return ConnectionMultiplexer.Connect(configuration);
             });
             return builder;

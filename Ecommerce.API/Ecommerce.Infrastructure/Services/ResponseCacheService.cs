@@ -12,6 +12,7 @@ namespace Ecommerce.Infrastructure.Services
         {
             _database = redis.GetDatabase();
         }
+
         public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)
         {
             if (response is null)

@@ -65,9 +65,8 @@ export class BasketService {
 
   // 🔹 Delete Basket
   deleteBasket(basket: IBasket) {
-    return this.http.delete(`${this.baseUrl}/${basket.id}`).pipe(
-      map(() => this.clearBasket())
-    );
+    return this.http.delete(`${this.baseUrl}/${basket.id}`, { responseType: 'text' })
+      .pipe(map(() => this.clearBasket()));
   }
 
   // 🔹 Add Product
@@ -83,7 +82,7 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     if (!basket) return;
 
-    const foundItem = basket.items.find(x => x.id === item.id);
+    const foundItem = this.findMatchingItem(basket.items, item);
     if (foundItem) {
       foundItem.quantity++;
       this.setBasket(basket).subscribe();
@@ -95,7 +94,7 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     if (!basket) return;
 
-    const foundItem = basket.items.find(x => x.id === item.id);
+    const foundItem = this.findMatchingItem(basket.items, item);
     if (foundItem) {
       if (foundItem.quantity > 1) {
         foundItem.quantity--;
@@ -111,12 +110,15 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     if (!basket) return;
 
-    basket.items = basket.items.filter(i => i.id !== item.id);
+    // Remove the item
+    basket.items = basket.items.filter(i => !this.itemsMatch(i, item));
 
     if (basket.items.length > 0) {
+      // Only update the basket if items remain
       this.setBasket(basket).subscribe();
     } else {
-      this.deleteBasket(basket).subscribe(); // ✅ fixed
+      // Clear the basket if no items remain
+      this.deleteBasket(basket).subscribe();
     }
   }
 
@@ -141,7 +143,7 @@ export class BasketService {
 
   // 🔹 Helpers
   private addOrUpdateItem(items: IBasketItem[], itemToAdd: IBasketItem, quantity: number): IBasketItem[] {
-    const index = items.findIndex(i => i.id == itemToAdd.id);
+    const index = this.findMatchingItemIndex(items, itemToAdd);
     if (index === -1) {
       itemToAdd.quantity = quantity;
       items.push(itemToAdd);
@@ -149,6 +151,31 @@ export class BasketService {
       items[index].quantity += quantity;
     }
     return items;
+  }
+
+  private findMatchingItem(items: IBasketItem[], target: IBasketItem) {
+    const index = this.findMatchingItemIndex(items, target);
+    return index === -1 ? undefined : items[index];
+  }
+
+  private findMatchingItemIndex(items: IBasketItem[], target: IBasketItem): number {
+    return items.findIndex(item => this.itemsMatch(item, target));
+  }
+
+  private itemsMatch(item: IBasketItem, target: IBasketItem): boolean {
+    const itemIdValid = item.id !== null && item.id !== undefined && item.id > 0;
+    const targetIdValid = target.id !== null && target.id !== undefined && target.id > 0;
+
+    if (itemIdValid && targetIdValid) {
+      return item.id === target.id;
+    }
+
+    return (
+      item.productName === target.productName &&
+      item.brand === target.brand &&
+      item.type === target.type &&
+      item.price === target.price
+    );
   }
 
   private createBasket(): IBasket {

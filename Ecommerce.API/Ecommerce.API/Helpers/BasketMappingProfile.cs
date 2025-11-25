@@ -8,8 +8,15 @@ namespace Ecommerce.API.Helpers
     {
         public BasketMappingProfile()
         {
+            CreateMap<CommonItemDto, CommonItem>();
+
             CreateMap<CustomerBasketDto, CustomerBasket>();
-            CreateMap<BasketItemDto, BasketItem>();
+            CreateMap<BasketItemDto, BasketItem>()
+                .IncludeBase<CommonItemDto, CommonItem>();
+
+            CreateMap<CustomerWishListDto, CustomerWishList>();
+            CreateMap<WishListItemDto, WishListItem>()
+                .IncludeBase<CommonItemDto, CommonItem>();
         }
     }
 }
