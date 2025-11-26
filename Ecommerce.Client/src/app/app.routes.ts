@@ -7,6 +7,7 @@ import { loginGuard } from './core/guards/login-guard';
 import { registerGuard } from './core/guards/register-guard';
 import { OrderDetailsComponent } from './orders/order-details-component/order-details-component';
 import { OrdersComponent } from './orders/orders-component';
+import { WishlistComponent } from './wishlist/wishlist.component';
 export const routes: Routes = [
   {path: '', redirectTo:'home', pathMatch:'full'},
   {path: 'home', component: HomeComponent},
@@ -39,6 +40,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./basket/basket-component')
       .then(s => BasketComponent)
+  },
+  {
+    path: 'wishlist',
+    loadComponent: () =>
+      import('./wishlist/wishlist.component')
+      .then(s => WishlistComponent)
   },
   {
     path: 'orders',

@@ -8,6 +8,8 @@ import { IBasket } from '../../shared/modules/basket';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { AccountService } from '../../account/account-service';
 import { IAccountUser } from '../../shared/modules/accountUser';
+import { WishlistService } from '../../wishlist/wishlist-service';
+import { IWishList } from '../../shared/modules/wishlist';
 
 @Component({
   selector: 'app-nav-bar',
@@ -19,8 +21,11 @@ import { IAccountUser } from '../../shared/modules/accountUser';
 export class NavBar implements OnInit {
   private basketService = inject(BasketService);
   private accountService = inject(AccountService);
+  private wishListService = inject(WishlistService);
 
+  wishList$!: Observable<IWishList | null>;
   basket$!: Observable<IBasket | null>;
+
   isLoggedIn = computed(() => this.accountService.isLoggedIn());
   currentUser = computed(() => this.accountService.user());
   sections = ['home', 'shop', 'reviews', 'contact'];
@@ -39,7 +44,7 @@ export class NavBar implements OnInit {
 
   ngOnInit(): void {
     this.basket$ = this.basketService.basket$;
-
+    this.wishList$ = this.wishListService.wishList$;
     // Check initial state
     console.log('NavBar initialized');
     console.log('User on init:', this.currentUser());

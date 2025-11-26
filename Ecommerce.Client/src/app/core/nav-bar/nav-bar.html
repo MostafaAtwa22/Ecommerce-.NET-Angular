@@ -44,7 +44,7 @@
         <li class="nav-item position-relative me-3">
           <a class="nav-link wishlist-icon" routerLink="/wishlist">
             <i class="fas fa-heart"></i>
-            <span class="wishlist-badge">5</span>
+            <span class="wishlist-badge" *ngIf="wishList$ | async as wishList">{{ wishList.items.length }}</span>
           </a>
         </li>
 

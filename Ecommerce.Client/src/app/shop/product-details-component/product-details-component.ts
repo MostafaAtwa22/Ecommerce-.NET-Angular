@@ -1,11 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { IProduct } from '../../shared/modules/product';
 import { ShopService } from '../shop-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BasketService } from '../../shared/services/basket-service';
+import { WishlistService } from '../../wishlist/wishlist-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-details',
@@ -14,11 +17,12 @@ import { BasketService } from '../../shared/services/basket-service';
   templateUrl: './product-details-component.html',
   styleUrls: ['./product-details-component.scss']
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, OnDestroy {
   product!: IProduct;
   loading = true;
   errorMessage: string | null = null;
   quantity: number = 1;
+  private basketSubscription?: Subscription;
 
   // Mock rating distribution data (in real app, this would come from API)
   private ratingDistribution = {
@@ -32,10 +36,16 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private _shopService: ShopService,
     private _activatedRoute: ActivatedRoute,
-    private _basketService: BasketService
+    private _basketService: BasketService,
+    private _wishlistService: WishlistService,
+    private _toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
+    this.basketSubscription = this._basketService.basket$.subscribe(() => {
+      this.alignQuantityWithStock();
+    });
+
     this._activatedRoute.paramMap
       .pipe(
         switchMap(params => {
@@ -49,6 +59,7 @@ export class ProductDetailsComponent implements OnInit {
         next: (product) => {
           this.product = product;
           this.loading = false;
+          this.alignQuantityWithStock();
         },
         error: (err) => {
           console.error('Error loading product details:', err);
@@ -58,16 +69,28 @@ export class ProductDetailsComponent implements OnInit {
       });
   }
 
+  ngOnDestroy(): void {
+    this.basketSubscription?.unsubscribe();
+  }
+
   isInStock(): boolean {
     return this.product.quantity > 0;
   }
 
   getMaxQuantity(): number {
-    return this.product.quantity;
+    if (!this.product) return 0;
+    return this._basketService.getRemainingStockForProduct(this.product);
+  }
+
+  canAddToBasket(): boolean {
+    return this.isInStock() && this.getMaxQuantity() > 0;
   }
 
   increaseQuantity(): void {
     const maxQuantity = this.getMaxQuantity();
+    if (!this.canAddToBasket()) return;
+    if (maxQuantity === 0) return;
+
     if (this.quantity < maxQuantity) this.quantity++;
   }
 
@@ -117,8 +140,53 @@ export class ProductDetailsComponent implements OnInit {
   }
 
   addToBasket(): void {
-    if (this.isInStock()) {
-      this._basketService.addItemToBasket(this.product, this.quantity);
+    if (!this.canAddToBasket()) {
+      this._toastr.info('Maximum quantity already in basket');
+      return;
+    }
+
+    const maxQuantity = this.getMaxQuantity();
+    const quantityToAdd = Math.min(Math.max(this.quantity, 1), maxQuantity);
+
+    this._basketService.addItemToBasket(this.product, quantityToAdd).subscribe({
+      next: () => {
+        this._toastr.success('Added to basket');
+        this.alignQuantityWithStock();
+      },
+      error: (err) => this._toastr.error(err?.message ?? 'Unable to add to basket'),
+    });
+  }
+
+  addToWishlist(): void {
+    this._wishlistService.addItemToWishList(this.product).subscribe({
+      next: () => this._toastr.success('Added to wishlist'),
+      error: (err) => this._toastr.error(err?.message ?? 'Unable to add to wishlist'),
+    });
+  }
+
+  isInWishlist(productId: number): boolean {
+    const wishlist = this._wishlistService.getCurrentWishListValue();
+    if (!wishlist) return false;
+
+    return wishlist.items.some((item) => item.id === productId);
+  }
+
+  private alignQuantityWithStock(): void {
+    if (!this.product) return;
+
+    const maxQuantity = this.getMaxQuantity();
+
+    if (maxQuantity <= 0) {
+      this.quantity = 0;
+      return;
+    }
+
+    if (this.quantity <= 0) {
+      this.quantity = 1;
+    }
+
+    if (this.quantity > maxQuantity) {
+      this.quantity = maxQuantity;
     }
   }
 }

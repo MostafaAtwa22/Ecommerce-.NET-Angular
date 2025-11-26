@@ -360,3 +360,12 @@
     transform: translateY(0);
   }
 }
+
+.wishlist-btn i {
+  color: #ccc; /* default gray */
+  transition: color 0.3s ease;
+}
+
+.wishlist-btn i.active-heart {
+  color: red;
+}

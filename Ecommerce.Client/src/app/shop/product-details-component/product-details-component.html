@@ -36,32 +36,36 @@
             </div>
             <div class="rating-stars">
               <div class="stars">
-                <i *ngFor="let star of getStarsArray()" [class]="star"></i>
+                @for (star of getStarsArray(); track $index) {
+                  <i [class]="star"></i>
+                }
               </div>
               <div class="rating-count">Based on {{ getTotalRatings() }} reviews</div>
             </div>
           </div>
 
           <div class="rating-bars">
-            <div class="rating-bar-item" *ngFor="let rating of getRatingDistribution()">
-              <div class="rating-label">
-                <span class="stars">
-                  <i class="fas fa-star"></i> {{ rating.stars }}
-                </span>
-              </div>
-              <div class="progress-container">
-                <div class="progress">
-                  <div
-                    class="progress-bar"
-                    [style.width.%]="rating.percentage"
-                    [ngClass]="getProgressBarClass(rating.stars)">
+            @for (rating of getRatingDistribution(); track $index) {
+              <div class="rating-bar-item">
+                <div class="rating-label">
+                  <span class="stars">
+                    <i class="fas fa-star"></i> {{ rating.stars }}
+                  </span>
+                </div>
+                <div class="progress-container">
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      [style.width.%]="rating.percentage"
+                      [ngClass]="getProgressBarClass(rating.stars)">
+                    </div>
                   </div>
                 </div>
+                <div class="rating-count">
+                  {{ rating.count }}
+                </div>
               </div>
-              <div class="rating-count">
-                {{ rating.count }}
-              </div>
-            </div>
+            }
           </div>
         </div>
       </div>
@@ -80,9 +84,11 @@
 
           <!-- Product Rating Summary -->
           <div class="rating-summary mb-3">
-            <div class="stars">
-              <i *ngFor="let star of getStarsArray()" [class]="star"></i>
-            </div>
+          <div class="stars">
+            @for (star of getStarsArray(); track $index) {
+              <i [class]="star"></i>
+            }
+          </div>
             <span class="rating-value">{{ getAverageRating() }}</span>
             <span class="rating-count">({{ getTotalRatings() }} reviews)</span>
           </div>
@@ -97,18 +103,18 @@
           <div class="quantity-section mb-4">
             <label class="quantity-label mb-2 me-3">Quantity</label>
             <div class="quantity-selector">
-              <button class="btn-quantity" (click)="decreaseQuantity()" [disabled]="quantity <= 1">
+              <button class="btn-quantity" (click)="decreaseQuantity()" [disabled]="quantity <= 1 || !canAddToBasket()">
                 <i class="fas fa-minus"></i>
               </button>
               <input
                 type="number"
                 [(ngModel)]="quantity"
-                [min]="1"
+                [min]="canAddToBasket() ? 1 : 0"
                 [max]="getMaxQuantity()"
                 class="quantity-input"
-                [disabled]="!isInStock()"
+                [disabled]="!canAddToBasket()"
               />
-              <button class="btn-quantity" (click)="increaseQuantity()" [disabled]="quantity >= getMaxQuantity()">
+              <button class="btn-quantity" (click)="increaseQuantity()" [disabled]="quantity >= getMaxQuantity() || !canAddToBasket()">
                 <i class="fas fa-plus"></i>
               </button>
             </div>
@@ -117,19 +123,30 @@
                 <i class="fas fa-exclamation-triangle me-1"></i>
                 This product is currently out of stock
               </div>
+            } @else if (!canAddToBasket()) {
+              <div class="out-of-stock-message text-warning mt-2">
+                <i class="fas fa-info-circle me-1"></i>
+                You already added the maximum available quantity
+              </div>
             }
           </div>
 
           <!-- 🛒 Action Buttons -->
           <div class="action-buttons mb-4">
-            <button class="btn-add-cart" (click)="addToBasket()" [disabled]="!isInStock()">
-              <i class="fas fa-shopping-cart me-2"></i>
-              {{ isInStock() ? 'Add to Cart' : 'Out of Stock' }}
-            </button>
-            <button class="btn-back-shop" routerLink="/">
-              <i class="fas fa-arrow-left me-2"></i>
-              Continue Shopping
-            </button>
+            <div class="primary-actions">
+              <button class="btn-add-cart" (click)="addToBasket()" [disabled]="!canAddToBasket()">
+                <i class="fas fa-shopping-cart me-2"></i>
+                {{ !isInStock() ? 'Out of Stock' : canAddToBasket() ? 'Cart' : 'Max Added' }}
+              </button>
+              <button class="btn-add-wishlist" (click)="addToWishlist()" [ngClass]="{'active-heart': isInWishlist(product.id)}">
+                <i class="fas fa-heart me-2"></i>
+                Wishlist
+              </button>
+              <button class="btn-continue" routerLink="/">
+                <i class="fas fa-arrow-left me-2"></i>
+                Shopping
+              </button>
+            </div>
           </div>
 
           <!-- 📝 Description -->

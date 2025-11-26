@@ -1,0 +1,125 @@
+@let wishList = (wishList$ | async);
+<div class="wishlist-container">
+  <div class="wishlist-content">
+    <!-- 🎯 Empty State -->
+    @if (!wishList?.items?.length) {
+    <div class="empty-wishlist">
+      <img src="empty-wishlist.png" alt="Empty Wishlist" class="empty-img" />
+      <div class="empty-content">
+        <h3>Your wishlist is empty :(</h3>
+        <p>Start adding products you love to see them here</p>
+        <a routerLink="/shop" class="btn-shop-now">
+          <i class="fa fa-shopping-bag me-2"></i> Start Shopping
+        </a>
+      </div>
+    </div>
+    } @else {
+
+    <!-- 🛍️ Wishlist Items Table -->
+    <div class="wishlist-table-container">
+      <!-- 🧹 Header -->
+      <div class="wishlist-header">
+        <h2 class="wishlist-title">
+          <i class="fa fa-heart me-3"></i>
+          My Wishlist
+        </h2>
+        <div class="wishlist-actions">
+          <div class="wishlist-summary">
+            <span class="item-count">{{ wishList?.items?.length }} items</span>
+          </div>
+          <button class="btn-clear-wishlist" (click)="clearWishList()">
+            <i class="fa fa-trash me-2"></i> Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- 📋 Table -->
+      <div class="wishlist-table">
+        <!-- Table Header -->
+        <div class="table-header">
+          <div class="table-row">
+            <div class="table-cell product-cell">Product</div>
+            <div class="table-cell price-cell">Price</div>
+            <div class="table-cell stock-cell">Stock Status</div>
+            <div class="table-cell actions-cell">Actions</div>
+          </div>
+        </div>
+
+        <!-- Table Body -->
+        <div class="table-body">
+          <div
+            *ngFor="let item of wishList?.items; trackBy: trackById"
+            class="table-row"
+          >
+            <!-- Product Info -->
+            <div class="table-cell product-cell">
+              <div class="product-info">
+                <div class="product-image">
+                  <img [src]="item.pictureUrl" [alt]="item.productName" class="product-img" />
+                </div>
+                <div class="product-details">
+                  <div class="product-brand">{{ item.brand }}</div>
+                  <h3 class="product-title">{{ item.productName }}</h3>
+                  <div class="product-type">{{ item.type }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price -->
+            <div class="table-cell price-cell">
+              <div class="product-price">{{ item.price | currency : 'USD' }}</div>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="table-cell stock-cell">
+              <div
+                class="stock-status"
+                [class.in-stock]="productInstock(item)"
+                [class.out-of-stock]="!productInstock(item)"
+              >
+                <i class="fa fa-circle me-2"></i>
+                {{ productInstock(item) ? 'In Stock' : 'Out of Stock' }}
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="table-cell actions-cell">
+              <div class="action-buttons">
+                <button
+                  class="btn-add-to-cart"
+                  (click)="addItemToBasket(item)"
+                  [disabled]="!productInstock(item)"
+                >
+                  <i class="fa fa-shopping-cart me-2"></i>
+                  Add to Cart
+                </button>
+                <button
+                  class="btn-remove"
+                  (click)="removeItem(item)"
+                  title="Remove from wishlist"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- 💡 Quick Actions -->
+  @if (wishList?.items?.length) {
+  <div class="quick-actions">
+    <div class="actions-container">
+      <button class="btn-continue-shopping" routerLink="/shop">
+        <i class="fa fa-arrow-left me-2"></i> Continue Shopping
+      </button>
+      <button class="btn-view-cart" routerLink="/basket">
+        <i class="fa fa-shopping-cart me-2"></i> View Cart
+      </button>
+    </div>
+  </div>
+  }
+</div>

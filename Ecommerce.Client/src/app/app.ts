@@ -10,6 +10,7 @@ import { SpinnerComponent } from './shared/components/spinner-component/spinner-
 import { BasketService } from './shared/services/basket-service';
 import { AccountService } from './account/account-service';
 import { isTokenExpired } from './shared/utils/token-utils';
+import { WishlistService } from './wishlist/wishlist-service';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,7 @@ export class App implements OnInit{
   constructor(private busyService: BusyService,
     private appRef: ApplicationRef,
     private basketService: BasketService,
+    private wishlistService: WishlistService,
     private accountService: AccountService) {
     this.loading = toSignal(this.busyService.loading$, { initialValue: true });
 
@@ -52,6 +54,14 @@ export class App implements OnInit{
       this.basketService.getBasket(basketId).subscribe(() => {
         console.log("Bakset Init");
       }, err => console.log(err));
+    }
+
+    const wishListId = localStorage.getItem('wishlist_id');
+    if(wishListId) {
+      this.wishlistService.getWishList(wishListId)
+        .subscribe(() => {
+          console.log('wish list init');
+        }, err => console.error(err));
     }
   }
 }

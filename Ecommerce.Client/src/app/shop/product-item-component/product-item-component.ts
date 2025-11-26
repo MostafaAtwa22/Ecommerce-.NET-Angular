@@ -1,22 +1,27 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { IProduct } from '../../shared/modules/product';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 import { BasketService } from '../../shared/services/basket-service';
+import { WishlistService } from '../../wishlist/wishlist-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-product-item',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './product-item-component.html',
-  styleUrls: ['./product-item-component.scss']
+  styleUrls: ['./product-item-component.scss'],
 })
 export class ProductItemComponent implements OnInit {
   @Input() product!: IProduct;
 
-  constructor(private _basketService: BasketService) {}
-  ngOnInit(): void {
-  }
+  constructor(
+    private _basketService: BasketService,
+    private _wishListService: WishlistService,
+    private _toastr: ToastrService
+  ) {}
+  ngOnInit(): void {}
 
   getStarsArray(): string[] {
     const rating = parseFloat(this.product.avrageRating) || 0;
@@ -40,10 +45,32 @@ export class ProductItemComponent implements OnInit {
     return quantity > 0;
   }
 
+  canAddToBasket(): boolean {
+    return this.isInStock() && !this._basketService.hasReachedMaxQuantity(this.product);
+  }
+
   addItemToBasket() {
+    if (!this.canAddToBasket()) {
+      this._toastr.info('Maximum quantity already in basket');
+      return;
+    }
+
     this._basketService.addItemToBasket(this.product).subscribe({
-      next: () => console.log('Added to basket'),
-      error: err => console.error(err)
+      next: () => this._toastr.success('Added to basket'),
+      error: (err) => this._toastr.error(err?.message ?? 'Unable to add to basket'),
     });
+  }
+  addItemToWishList() {
+    this._wishListService.addItemToWishList(this.product).subscribe({
+      next: () => this._toastr.success('Updated wishlist'),
+      error: (err) => this._toastr.error(err?.message ?? 'Unable to update wishlist'),
+    });
+  }
+
+  isInWishlist(productId: number): boolean {
+    const wishlist = this._wishListService.getCurrentWishListValue();
+    if (!wishlist) return false;
+
+    return wishlist.items.some((item) => item.id === productId);
   }
 }

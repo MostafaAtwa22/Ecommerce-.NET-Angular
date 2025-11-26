@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, throwError } from 'rxjs';
 import { Environment } from '../../environment';
 import { Basket, IBasket, IBasketItem, IBasketTotals } from '../modules/basket';
 import { IProduct } from '../modules/product';
 import { IDeliveryMethod } from '../modules/deliveryMethod';
+import { ShopService } from '../../shop/shop-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({ providedIn: 'root' })
 export class BasketService {
@@ -17,7 +19,11 @@ export class BasketService {
   basketTotal$ = this.basketTotalSource.asObservable();
   shipping = 0;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private shopService: ShopService,
+    private toastr: ToastrService
+  ) {}
 
   createPaymentIntent() {
     return this.http.post<IBasket>(`${Environment.baseUrl}/api/payment/${this.getCurrentBasketValue()?.id}`, {})
@@ -71,10 +77,48 @@ export class BasketService {
 
   // 🔹 Add Product
   addItemToBasket(product: IProduct, quantity = 1) {
-    const itemToAdd = this.mapProductItemToBasketItem(product, quantity);
+    if (!product.quantity || product.quantity <= 0) {
+      return throwError(() => new Error('This product is currently out of stock.'));
+    }
+
     const basket = this.getCurrentBasketValue() ?? this.createBasket();
-    basket.items = this.addOrUpdateItem(basket.items, itemToAdd, quantity);
+    const tentativeItem = this.mapProductItemToBasketItem(product, quantity);
+    const existingItem = this.findMatchingItem(basket.items, tentativeItem);
+    const currentQuantity = existingItem?.quantity ?? 0;
+    const remainingStock = product.quantity - currentQuantity;
+
+    if (remainingStock <= 0) {
+      return throwError(() => new Error('You already added the maximum available quantity.'));
+    }
+
+    const quantityToAdd = Math.min(quantity, remainingStock);
+
+    if (quantityToAdd < quantity) {
+      this.toastr.info('Only limited stock available. Added remaining quantity.');
+    }
+
+    basket.items = this.addOrUpdateItem(basket.items, tentativeItem, quantityToAdd);
     return this.setBasket(basket);
+  }
+
+  getProductQuantityInBasket(productId: number): number {
+    const basket = this.getCurrentBasketValue();
+    if (!basket) return 0;
+
+    const item = basket.items.find((basketItem) => basketItem.id === productId);
+    return item?.quantity ?? 0;
+  }
+
+  getRemainingStockForProduct(product: IProduct): number {
+    if (!product?.quantity) return 0;
+
+    const remaining = product.quantity - this.getProductQuantityInBasket(product.id);
+    return remaining > 0 ? remaining : 0;
+  }
+
+  hasReachedMaxQuantity(product: IProduct): boolean {
+    if (!product?.quantity) return true;
+    return this.getProductQuantityInBasket(product.id) >= product.quantity;
   }
 
   // 🔹 Increase Quantity
@@ -83,10 +127,20 @@ export class BasketService {
     if (!basket) return;
 
     const foundItem = this.findMatchingItem(basket.items, item);
-    if (foundItem) {
-      foundItem.quantity++;
-      this.setBasket(basket).subscribe();
-    }
+    if (!foundItem) return;
+
+    this.shopService.getProduct(item.id).subscribe({
+      next: (product) => {
+        if (foundItem.quantity >= product.quantity) {
+          this.toastr.warning('No more stock available for this product.');
+          return;
+        }
+
+        foundItem.quantity++;
+        this.setBasket(basket).subscribe();
+      },
+      error: (err) => console.error(err)
+    });
   }
 
   // 🔹 Decrease Quantity
