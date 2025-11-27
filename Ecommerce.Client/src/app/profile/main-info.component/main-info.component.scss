@@ -1,0 +1,330 @@
+:host {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  color: #0f172a;
+}
+
+.section-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 20px 50px rgba(15, 23, 42, 0.08),
+    0 8px 25px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    box-shadow:
+      0 25px 60px rgba(15, 23, 42, 0.12),
+      0 12px 30px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+  }
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+
+  .header-content {
+    flex: 1;
+
+    h3 {
+      margin: 0.5rem 0 0.25rem 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .eyebrow {
+      margin: 0;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+  }
+
+  .save-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 50px;
+    padding: 0.875rem 1.75rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow:
+      0 4px 15px rgba(102, 126, 234, 0.3),
+      0 2px 8px rgba(102, 126, 234, 0.2);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow:
+        0 8px 25px rgba(102, 126, 234, 0.4),
+        0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    &:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      opacity: 0.7;
+    }
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-section {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(102, 126, 234, 0.3);
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+
+    i {
+      color: #667eea;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+
+  .input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      color: #94a3b8;
+      font-size: 0.9rem;
+      z-index: 2;
+      transition: color 0.3s ease;
+    }
+
+    input, select {
+      width: 100%;
+      font-size: 0.95rem;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      background: #ffffff;
+      outline: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+      &:focus {
+        border-color: #667eea;
+        box-shadow:
+          0 0 0 4px rgba(102, 126, 234, 0.15),
+          0 4px 12px rgba(102, 126, 234, 0.1);
+        transform: translateY(-1px);
+
+        ~ .input-icon {
+          color: #667eea;
+        }
+      }
+
+      &:hover:not(:focus) {
+        border-color: #cbd5e1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+    }
+  }
+
+  .input-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+    margin-top: 0.25rem;
+  }
+}
+
+// Validation States
+.input-group {
+  &.ng-invalid.ng-touched {
+    .input-wrapper {
+      input, select {
+        border-color: #ef4444;
+
+        &:focus {
+          box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+        }
+
+        ~ .input-icon {
+          color: #ef4444;
+        }
+      }
+    }
+
+    .input-hint {
+      color: #ef4444;
+    }
+  }
+
+  &.ng-valid.ng-touched {
+    .input-wrapper {
+      input, select {
+        border-color: #10b981;
+
+        ~ .input-icon {
+          color: #10b981;
+        }
+      }
+    }
+  }
+}
+
+// Loading Animation
+.placeholder {
+  display: grid;
+  gap: 1rem;
+
+  .shimmer {
+    height: 1.125rem;
+    border-radius: 999px;
+    background: linear-gradient(
+      120deg,
+      rgba(148, 163, 184, 0.1),
+      rgba(148, 163, 184, 0.3),
+      rgba(148, 163, 184, 0.1)
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .section-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .save-btn {
+      align-self: stretch;
+      justify-content: center;
+    }
+  }
+
+  .form-section {
+    padding: 1.25rem;
+  }
+
+  .name-row {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-card {
+    padding: 1.25rem;
+    border-radius: 16px;
+  }
+
+  .input-group .input-wrapper {
+    input, select {
+      padding: 0.75rem 0.875rem 0.75rem 2.5rem;
+      font-size: 0.9rem;
+    }
+
+    .input-icon {
+      left: 0.875rem;
+      font-size: 0.8rem;
+    }
+  }
+}

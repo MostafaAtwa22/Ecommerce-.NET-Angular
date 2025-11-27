@@ -79,5 +79,11 @@ export const routes: Routes = [
       import('./account/login-component/login-component')
       .then(s => s.LoginComponent)
   },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./profile/profile.component')
+      .then(p => p.ProfileComponent)
+  },
   {path: '**', component: NotFoundComponent}
 ];

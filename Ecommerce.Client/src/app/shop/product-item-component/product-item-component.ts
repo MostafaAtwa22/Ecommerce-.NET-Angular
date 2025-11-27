@@ -56,13 +56,27 @@ export class ProductItemComponent implements OnInit {
     }
 
     this._basketService.addItemToBasket(this.product).subscribe({
-      next: () => this._toastr.success('Added to basket'),
+      next: () => {
+        this._toastr.success('Added to basket');
+
+        // ✅ Remove from wishlist if present
+        const wishlist = this._wishListService.getCurrentWishListValue();
+        if (wishlist && wishlist.items.some((item) => item.id === this.product.id)) {
+          this._wishListService.removeItemFromWishList({ id: this.product.id } as any);
+        }
+      },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to add to basket'),
     });
   }
+
   addItemToWishList() {
     this._wishListService.addItemToWishList(this.product).subscribe({
-      next: () => this._toastr.success('Updated wishlist'),
+      next: () => {
+        this._toastr.success('Updated wishlist');
+
+        // ✅ Remove from basket if present
+        this._basketService.removeItemFromBasket({ id: this.product.id } as any);
+      },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to update wishlist'),
     });
   }

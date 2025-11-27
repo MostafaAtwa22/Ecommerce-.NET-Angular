@@ -1,0 +1,25 @@
+export interface IProfile {
+  firstName: string;
+  lastName: string;
+  userName: string;
+  email: string;
+  gender: string;
+  profilePicture: string;
+  id: string;
+  phoneNumber: string;
+}
+
+export interface IChangePassword {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ISetPassword {
+  password: string;
+  confirmPassword: string;
+}
+
+export interface IDeleteAccount {
+  password: string;
+}

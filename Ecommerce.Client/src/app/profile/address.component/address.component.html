@@ -1,0 +1,175 @@
+<section class="section-card">
+  <div class="section-header">
+    <div class="header-content">
+      <p class="eyebrow">Shipping Details</p>
+      <h3>Default Address</h3>
+      <p class="subtitle">Manage your primary shipping address for orders</p>
+    </div>
+    <button class="refresh-btn" type="button" (click)="refresh()" [disabled]="loading">
+      <i class="fa fa-refresh me-2" [class.fa-spin]="loading"></i>
+      {{ loading ? 'Refreshing...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <ng-container *ngIf="!loading && !loadError; else fallback">
+    <form [formGroup]="addressForm" (ngSubmit)="submit()" class="address-form">
+      <div class="form-grid">
+        <!-- Country & Government Row -->
+        <div class="form-row">
+          <label class="form-field">
+            <span class="field-label">
+              <i class="fa fa-globe-americas"></i>
+              Country
+            </span>
+            <div class="input-container">
+              <input
+                formControlName="country"
+                placeholder="Enter your country"
+                type="text"
+              />
+              <i class="fa fa-flag input-icon"></i>
+            </div>
+            <small *ngIf="controls.country.touched && controls.country.invalid" class="error-text">
+              <i class="fa fa-exclamation-circle"></i>
+              Country is required
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span class="field-label">
+              <i class="fa fa-landmark"></i>
+              State / Province
+            </span>
+            <div class="input-container">
+              <input
+                formControlName="government"
+                placeholder="Enter state or province"
+                type="text"
+              />
+              <i class="fa fa-map input-icon"></i>
+            </div>
+            <small *ngIf="controls.government.touched && controls.government.invalid" class="error-text">
+              <i class="fa fa-exclamation-circle"></i>
+              State/Province is required
+            </small>
+          </label>
+        </div>
+
+        <!-- City & Zip Code Row -->
+        <div class="form-row">
+          <label class="form-field">
+            <span class="field-label">
+              <i class="fa fa-city"></i>
+              City
+            </span>
+            <div class="input-container">
+              <input
+                formControlName="city"
+                placeholder="Enter your city"
+                type="text"
+              />
+              <i class="fa fa-building input-icon"></i>
+            </div>
+            <small *ngIf="controls.city.touched && controls.city.invalid" class="error-text">
+              <i class="fa fa-exclamation-circle"></i>
+              City is required
+            </small>
+          </label>
+
+          <label class="form-field">
+            <span class="field-label">
+              <i class="fa fa-mail-bulk"></i>
+              Postal Code
+            </span>
+            <div class="input-container">
+              <input
+                formControlName="zipcode"
+                placeholder="Enter postal code"
+                type="text"
+              />
+              <i class="fa fa-envelope input-icon"></i>
+            </div>
+            <small *ngIf="controls.zipcode.touched && controls.zipcode.invalid" class="error-text">
+              <i class="fa fa-exclamation-circle"></i>
+              Postal code must be at least 3 characters
+            </small>
+          </label>
+        </div>
+
+        <!-- Full Width Street Row -->
+        <div class="form-row full-width">
+          <label class="form-field">
+            <span class="field-label">
+              <i class="fa fa-road"></i>
+              Street Address
+            </span>
+            <div class="input-container">
+              <input
+                formControlName="street"
+                placeholder="Enter street, building number, and apartment"
+                type="text"
+              />
+              <i class="fa fa-home input-icon"></i>
+            </div>
+            <small *ngIf="controls.street.touched && controls.street.invalid" class="error-text">
+              <i class="fa fa-exclamation-circle"></i>
+              Street address is required
+            </small>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <div class="messages">
+          <div *ngIf="successMessage" class="success-message">
+            <i class="fa fa-check-circle"></i>
+            {{ successMessage }}
+          </div>
+          <div *ngIf="errorMessage" class="error-message">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ errorMessage }}
+          </div>
+        </div>
+
+        <button
+          class="primary-btn"
+          type="submit"
+          [disabled]="saving || addressForm.invalid"
+          [class.loading]="saving"
+        >
+          <span class="btn-content">
+            <i class="fa fa-save" *ngIf="!saving"></i>
+            {{ saving ? 'Saving Address...' : 'Save Address' }}
+          </span>
+          <span class="btn-loader" *ngIf="saving">
+            <i class="fa fa-spinner fa-spin"></i>
+          </span>
+        </button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-template #fallback>
+    <div class="fallback" *ngIf="loadError">
+      <div class="error-icon">
+        <i class="fa fa-exclamation-triangle"></i>
+      </div>
+      <h4>Unable to Load Address</h4>
+      <p>{{ loadError }}</p>
+      <button class="retry-btn" type="button" (click)="refresh()">
+        <i class="fa fa-refresh me-2"></i>
+        Try Again
+      </button>
+    </div>
+
+    <div class="placeholder" *ngIf="loading && !loadError">
+      <div class="shimmer-row" *ngFor="let _ of [1,2,3]">
+        <div class="shimmer" style="width: 45%;"></div>
+        <div class="shimmer" style="width: 45%;"></div>
+      </div>
+      <div class="shimmer-row full-width">
+        <div class="shimmer" style="width: 100%;"></div>
+      </div>
+    </div>
+  </ng-template>
+</section>

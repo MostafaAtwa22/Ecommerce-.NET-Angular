@@ -1,0 +1,125 @@
+<section class="section-card">
+  <div class="section-header">
+    <div class="header-content">
+      <p class="eyebrow">Profile Overview</p>
+      <h3>Account Essentials</h3>
+      <p class="subtitle">Manage your personal information and account settings</p>
+    </div>
+    <button class="save-btn" type="button" (click)="submit()" [disabled]="!profileForm.valid">
+      <i class="fa fa-save me-2"></i>
+      Save Changes
+    </button>
+  </div>
+
+  <form [formGroup]="profileForm" class="profile-form">
+    <!-- Name Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-user me-2"></i>
+        Personal Information
+      </div>
+
+      <div class="name-row">
+        <div class="input-group">
+          <label for="firstName">First Name</label>
+          <div class="input-wrapper">
+            <i class="fa fa-user input-icon"></i>
+            <input
+              id="firstName"
+              formControlName="firstName"
+              placeholder="Enter your first name"
+              type="text"
+            />
+          </div>
+          <div class="input-hint">Your legal first name</div>
+        </div>
+
+        <div class="input-group">
+          <label for="lastName">Last Name</label>
+          <div class="input-wrapper">
+            <i class="fa fa-user input-icon"></i>
+            <input
+              id="lastName"
+              formControlName="lastName"
+              placeholder="Enter your last name"
+              type="text"
+            />
+          </div>
+          <div class="input-hint">Your legal last name</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-id-card me-2"></i>
+        Account Details
+      </div>
+
+      <div class="input-group full-width">
+        <label for="userName">Username</label>
+        <div class="input-wrapper">
+          <i class="fa fa-at input-icon"></i>
+          <input
+            id="userName"
+            formControlName="userName"
+            placeholder="Choose a username"
+            type="text"
+          />
+        </div>
+        <div class="input-hint">This will be your public display name</div>
+      </div>
+
+      <div class="input-group full-width">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <i class="fa fa-envelope input-icon"></i>
+          <input
+            id="email"
+            formControlName="email"
+            placeholder="your.email@example.com"
+            type="email"
+          />
+        </div>
+        <div class="input-hint">We'll never share your email with anyone else</div>
+      </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-phone me-2"></i>
+        Contact Information
+      </div>
+
+      <div class="input-group full-width">
+        <label for="phoneNumber">Phone Number</label>
+        <div class="input-wrapper">
+          <i class="fa fa-phone input-icon"></i>
+          <input
+            id="phoneNumber"
+            formControlName="phoneNumber"
+            placeholder="+0201234567890"
+            type="tel"
+          />
+        </div>
+        <div class="input-hint">Include country code for international numbers</div>
+      </div>
+
+      <div class="input-group full-width">
+        <label for="gender">Gender</label>
+        <div class="input-wrapper">
+          <i class="fa fa-venus-mars input-icon"></i>
+          <select id="gender" formControlName="gender">
+            <option value="">Select your gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Prefer not to say</option>
+          </select>
+        </div>
+        <div class="input-hint">For personalization purposes only</div>
+      </div>
+    </div>
+  </form>
+</section>

@@ -15,7 +15,7 @@ import { ToastrService } from 'ngx-toastr';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './product-details-component.html',
-  styleUrls: ['./product-details-component.scss']
+  styleUrls: ['./product-details-component.scss'],
 })
 export class ProductDetailsComponent implements OnInit, OnDestroy {
   product!: IProduct;
@@ -30,7 +30,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     4: 34,
     3: 8,
     2: 0,
-    1: 0
+    1: 0,
   };
 
   constructor(
@@ -48,7 +48,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
     this._activatedRoute.paramMap
       .pipe(
-        switchMap(params => {
+        switchMap((params) => {
           const id = +params.get('id')!;
           this.loading = true;
           this.errorMessage = null;
@@ -65,7 +65,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
           console.error('Error loading product details:', err);
           this.errorMessage = 'Failed to load product details. Please try again later.';
           this.loading = false;
-        }
+        },
       });
   }
 
@@ -127,11 +127,31 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   getRatingDistribution(): any[] {
     const total = this.getTotalRatings();
     return [
-      { stars: 5, count: this.ratingDistribution[5], percentage: (this.ratingDistribution[5] / total) * 100 },
-      { stars: 4, count: this.ratingDistribution[4], percentage: (this.ratingDistribution[4] / total) * 100 },
-      { stars: 3, count: this.ratingDistribution[3], percentage: (this.ratingDistribution[3] / total) * 100 },
-      { stars: 2, count: this.ratingDistribution[2], percentage: (this.ratingDistribution[2] / total) * 100 },
-      { stars: 1, count: this.ratingDistribution[1], percentage: (this.ratingDistribution[1] / total) * 100 }
+      {
+        stars: 5,
+        count: this.ratingDistribution[5],
+        percentage: (this.ratingDistribution[5] / total) * 100,
+      },
+      {
+        stars: 4,
+        count: this.ratingDistribution[4],
+        percentage: (this.ratingDistribution[4] / total) * 100,
+      },
+      {
+        stars: 3,
+        count: this.ratingDistribution[3],
+        percentage: (this.ratingDistribution[3] / total) * 100,
+      },
+      {
+        stars: 2,
+        count: this.ratingDistribution[2],
+        percentage: (this.ratingDistribution[2] / total) * 100,
+      },
+      {
+        stars: 1,
+        count: this.ratingDistribution[1],
+        percentage: (this.ratingDistribution[1] / total) * 100,
+      },
     ];
   }
 
@@ -151,6 +171,13 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     this._basketService.addItemToBasket(this.product, quantityToAdd).subscribe({
       next: () => {
         this._toastr.success('Added to basket');
+
+        // ✅ Remove from wishlist if present
+        const wishlist = this._wishlistService.getCurrentWishListValue();
+        if (wishlist && wishlist.items.some((item) => item.id === this.product.id)) {
+          this._wishlistService.removeItemFromWishList({ id: this.product.id } as any);
+        }
+
         this.alignQuantityWithStock();
       },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to add to basket'),
@@ -159,7 +186,12 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   addToWishlist(): void {
     this._wishlistService.addItemToWishList(this.product).subscribe({
-      next: () => this._toastr.success('Added to wishlist'),
+      next: () => {
+        this._toastr.success('Added to wishlist');
+
+        // ✅ Remove from basket if present
+        this._basketService.removeItemFromBasket({ id: this.product.id } as any);
+      },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to add to wishlist'),
     });
   }
