@@ -16,12 +16,15 @@ namespace Ecommerce.API.Controllers
     public class ProductsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFileService _fileService;
         private readonly IMapper _mapper;
 
         public ProductsController(IUnitOfWork unitOfWork,
-        IMapper mapper)
+            IFileService fileService,
+            IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _fileService = fileService;
             _mapper = mapper;
         }
 
@@ -48,7 +51,7 @@ namespace Ecommerce.API.Controllers
 
         [Cached(600)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> GetById(int id)
+        public async Task<ActionResult<ProductResponseDto>> GetById([FromQuery] int id)
         {
             var spec = new ProductWithTypeAndBrandSpec(id);
             var product = await _unitOfWork.Repository<Product>()
@@ -62,9 +65,11 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductResponseDto>> Create(ProductCreationDto creationDto)
+        public async Task<ActionResult<ProductResponseDto>> Create([FromForm] ProductCreationDto creationDto)
         {
             var product = _mapper.Map<ProductCreationDto, Product>(creationDto);
+
+            product.PictureUrl = await _fileService.SaveFileAsync(creationDto.ImageFile, "products");
 
             await _unitOfWork.Repository<Product>().Create(product);
 
@@ -78,14 +83,20 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProductResponseDto>> Update(ProductUpdateDto updateDto)
+        public async Task<ActionResult<ProductResponseDto>> Update([FromForm] ProductUpdateDto updateDto)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(updateDto.ProductId);
 
             if (product is null)
                 return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
 
+            var hasNewImage = updateDto.ImageFile is not null;
+            var oldImage = product.PictureUrl;
+
             _mapper.Map(updateDto, product);
+
+            if (hasNewImage)
+                product.PictureUrl = await _fileService.SaveFileAsync(updateDto.ImageFile!, "products");
 
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.Complete();
@@ -94,11 +105,22 @@ namespace Ecommerce.API.Controllers
             var updatedProduct = await _unitOfWork.Repository<Product>()
                 .GetWithSpecAsync(spec);
 
+            if (updatedProduct is not null)
+            {
+                if (hasNewImage && !string.IsNullOrEmpty(oldImage))
+                    _fileService.DeleteFile(oldImage);
+            }
+            else
+            {
+                if (hasNewImage && !string.IsNullOrEmpty(product.PictureUrl))
+                    _fileService.DeleteFile(product.PictureUrl);
+            }
+
             return Ok(_mapper.Map<Product, ProductResponseDto>(updatedProduct!));
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<ProductResponseDto>> Delete(int id)
+        public async Task<ActionResult<ProductResponseDto>> Delete([FromRoute] int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
@@ -106,13 +128,12 @@ namespace Ecommerce.API.Controllers
                 return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
 
             _unitOfWork.Repository<Product>().Delete(product);
-            await _unitOfWork.Complete();
+            var effectedRows = await _unitOfWork.Complete();
 
-            var spec = new ProductWithTypeAndBrandSpec(product.Id);
-            var deletedProduct = await _unitOfWork.Repository<Product>()
-                .GetWithSpecAsync(spec);
+            if (effectedRows > 0 && !string.IsNullOrEmpty(product.PictureUrl))
+                _fileService.DeleteFile(product.PictureUrl);
 
-            return Ok(_mapper.Map<Product, ProductResponseDto>(deletedProduct!));
+            return NoContent();
         }
     }
 }
