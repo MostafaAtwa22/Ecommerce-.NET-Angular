@@ -2,6 +2,7 @@ using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers;
 using Ecommerce.API.Middlewares;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 
 namespace Ecommerce.API
 {
@@ -14,7 +15,11 @@ namespace Ecommerce.API
             builder.GetConnectionString();
 
             builder.Services.AddAutoMapper(typeof(Program));
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                });            
             builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentityServices(builder.Configuration);

@@ -1,7 +1,5 @@
 :host {
   display: block;
-  font-family: 'Inter', sans-serif;
-  color: #0f172a;
 }
 
 .section-card {
@@ -26,17 +24,11 @@
 }
 
 .section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid rgba(226, 232, 240, 0.8);
 
   .header-content {
-    flex: 1;
-
     h3 {
       margin: 0.5rem 0 0.25rem 0;
       font-size: 1.75rem;
@@ -61,39 +53,6 @@
       font-size: 0.95rem;
       color: #64748b;
       line-height: 1.5;
-    }
-  }
-
-  .save-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    border: none;
-    border-radius: 50px;
-    padding: 0.875rem 1.75rem;
-    color: white;
-    font-weight: 600;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-      0 4px 15px rgba(102, 126, 234, 0.3),
-      0 2px 8px rgba(102, 126, 234, 0.2);
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow:
-        0 8px 25px rgba(102, 126, 234, 0.4),
-        0 4px 12px rgba(102, 126, 234, 0.3);
-    }
-
-    &:disabled {
-      background: #cbd5e1;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-      opacity: 0.7;
     }
   }
 }
@@ -129,157 +88,186 @@
     i {
       color: #667eea;
       font-size: 0.9rem;
+      margin-right: 0.5rem;
     }
   }
 }
 
-.name-row {
+.fields-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 }
 
-.input-group {
+.field-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 
   &.full-width {
     grid-column: 1 / -1;
   }
 
-  label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.25rem;
-  }
-
-  .input-wrapper {
-    position: relative;
+  .field-label {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
 
-    .input-icon {
-      position: absolute;
-      left: 1rem;
-      color: #94a3b8;
-      font-size: 0.9rem;
-      z-index: 2;
-      transition: color 0.3s ease;
+    i {
+      color: #667eea;
+      font-size: 0.8rem;
+      width: 16px;
+    }
+  }
+
+  .field-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+
+    &.editing {
+      .input-wrapper {
+        input, select {
+          border-color: #667eea;
+          background: rgba(255, 255, 255, 0.95);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+      }
     }
 
-    input, select {
-      width: 100%;
-      font-size: 0.95rem;
-      padding: 0.875rem 1rem 0.875rem 2.75rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 12px;
-      background: #ffffff;
-      outline: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    .input-wrapper {
+      flex: 1;
 
-      &:focus {
-        border-color: #667eea;
-        box-shadow:
-          0 0 0 4px rgba(102, 126, 234, 0.15),
-          0 4px 12px rgba(102, 126, 234, 0.1);
-        transform: translateY(-1px);
+      input, select {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.8);
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
 
-        ~ .input-icon {
-          color: #667eea;
+        &:focus {
+          outline: none;
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        &:disabled {
+          background: #f8fafc;
+          color: #64748b;
+          cursor: not-allowed;
+        }
+
+        &.error {
+          border-color: #ef4444;
+
+          &:focus {
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+          }
         }
       }
 
-      &:hover:not(:focus) {
-        border-color: #cbd5e1;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+        padding-right: 2.5rem;
       }
     }
 
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 0.75rem center;
-      background-repeat: no-repeat;
-      background-size: 1rem;
-      padding-right: 2.5rem;
+    .field-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      button {
+        border: none;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.8rem;
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        &.btn-edit {
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+
+          &:hover:not(:disabled) {
+            background: rgba(102, 126, 234, 0.2);
+            transform: scale(1.05);
+          }
+        }
+
+        &.btn-save {
+          background: #10b981;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: #059669;
+            transform: scale(1.05);
+          }
+        }
+
+        &.btn-cancel {
+          background: #ef4444;
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: #dc2626;
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      .loading-state {
+        color: #667eea;
+        font-size: 0.8rem;
+
+        i {
+          font-size: 0.9rem;
+        }
+      }
     }
   }
 
-  .input-hint {
+  .field-hint {
     font-size: 0.75rem;
     color: #64748b;
     line-height: 1.4;
-    margin-top: 0.25rem;
   }
-}
 
-// Validation States
-.input-group {
-  &.ng-invalid.ng-touched {
-    .input-wrapper {
-      input, select {
-        border-color: #ef4444;
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 500;
 
-        &:focus {
-          box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
-        }
-
-        ~ .input-icon {
-          color: #ef4444;
-        }
-      }
+    i {
+      font-size: 0.7rem;
     }
-
-    .input-hint {
-      color: #ef4444;
-    }
-  }
-
-  &.ng-valid.ng-touched {
-    .input-wrapper {
-      input, select {
-        border-color: #10b981;
-
-        ~ .input-icon {
-          color: #10b981;
-        }
-      }
-    }
-  }
-}
-
-// Loading Animation
-.placeholder {
-  display: grid;
-  gap: 1rem;
-
-  .shimmer {
-    height: 1.125rem;
-    border-radius: 999px;
-    background: linear-gradient(
-      120deg,
-      rgba(148, 163, 184, 0.1),
-      rgba(148, 163, 184, 0.3),
-      rgba(148, 163, 184, 0.1)
-    );
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
   }
 }
 
@@ -287,44 +275,25 @@
 @media (max-width: 768px) {
   .section-card {
     padding: 1.5rem;
-    border-radius: 20px;
-  }
-
-  .section-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-
-    .save-btn {
-      align-self: stretch;
-      justify-content: center;
-    }
   }
 
   .form-section {
     padding: 1.25rem;
   }
 
-  .name-row {
-    gap: 1rem;
+  .field-container {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+
+    .field-actions {
+      justify-content: flex-end;
+    }
   }
 }
 
 @media (max-width: 480px) {
   .section-card {
     padding: 1.25rem;
-    border-radius: 16px;
-  }
-
-  .input-group .input-wrapper {
-    input, select {
-      padding: 0.75rem 0.875rem 0.75rem 2.5rem;
-      font-size: 0.9rem;
-    }
-
-    .input-icon {
-      left: 0.875rem;
-      font-size: 0.8rem;
-    }
   }
 }

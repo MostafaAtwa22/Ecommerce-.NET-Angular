@@ -24,6 +24,15 @@ namespace Ecommerce.API.Helpers
 
             CreateMap<ApplicationUser, ProfileResponseDto>()
                 .IncludeBase<ApplicationUser, UserCommonDto>();
+                
+            CreateMap<ApplicationUser, ProfileUpdateDto>()
+                .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.ProfileImage, o => o.MapFrom(src => src.ProfilePictureUrl))
+                .ForMember(dest => dest.ProfileImageFile, o => o.Ignore());
+            CreateMap<ProfileUpdateDto, ApplicationUser>()
+                .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender))
+                .ForMember(dest => dest.ProfilePictureUrl, o => o.MapFrom(src => src.ProfileImage))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
 
             CreateMap<IdentityRole, RoleDto>();
             CreateMap<RoleToCreateDto, IdentityRole>();

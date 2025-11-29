@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Environment } from '../../environment';
 import { IAddress } from '../modules/address';
-import { catchError, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IChangePassword, IDeleteAccount, IProfile, ISetPassword } from '../modules/profile';
+import {
+  IChangePassword,
+  IDeleteAccount,
+  IProfile,
+  IProfileUpdate,
+  ISetPassword,
+} from '../modules/profile';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
   private baseUrl = `${Environment.baseUrl}/api/profiles`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getProfile(): Observable<IProfile> {
     return this.http.get<IProfile>(`${this.baseUrl}/profile`);
@@ -35,24 +41,67 @@ export class ProfileService {
 
   deleteProfile(password: IDeleteAccount): Observable<boolean> {
     return this.http.delete<boolean>(`${this.baseUrl}/deleteProfile`, {
-      body: password
+      body: password,
     });
   }
 
-  // In your profile-service.ts
-  uploadProfilePicture(file: File): Observable<any> {
-    const formData = new FormData();
-    formData.append('profilePicture', file);
+  updateProfile(profile: IProfileUpdate): Observable<IProfile> {
+    const patchDocument = this.createJsonPatchDocument(profile);
+    return this.http.patch<IProfile>(`${this.baseUrl}/profile/json`, patchDocument);
+  }
 
-    return this.http.post('/api/profile/picture', formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(
-      // Handle upload progress if needed
-      catchError((error: any) => {
-        console.error('Upload error:', error);
-        throw error;
-      })
-    );
+  updateProfileImage(file: File): Observable<IProfile> {
+    const formData = new FormData();
+    formData.append('profileImageFile', file);
+
+    return this.http.patch<IProfile>(`${this.baseUrl}/profile/image`, formData);
+  }
+
+  private createJsonPatchDocument(profile: IProfileUpdate): any[] {
+    const patchOps: any[] = [];
+
+    // Add operations for each defined property
+    if (profile.firstName !== undefined) {
+      patchOps.push({
+        op: 'replace',
+        path: '/firstName',
+        value: profile.firstName
+      });
+    }
+
+    if (profile.lastName !== undefined) {
+      patchOps.push({
+        op: 'replace',
+        path: '/lastName',
+        value: profile.lastName
+      });
+    }
+
+    if (profile.userName !== undefined) {
+      patchOps.push({
+        op: 'replace',
+        path: '/userName',
+        value: profile.userName
+      });
+    }
+
+    if (profile.gender !== undefined) {
+      patchOps.push({
+        op: 'replace',
+        path: '/gender',
+        value: profile.gender
+      });
+    }
+
+    if (profile.phoneNumber !== undefined) {
+      patchOps.push({
+        op: 'replace',
+        path: '/phoneNumber',
+        value: profile.phoneNumber
+      });
+    }
+
+    return patchOps;
   }
 }
+

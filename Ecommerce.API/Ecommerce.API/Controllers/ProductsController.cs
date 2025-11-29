@@ -98,23 +98,29 @@ namespace Ecommerce.API.Controllers
             if (hasNewImage)
                 product.PictureUrl = await _fileService.SaveFileAsync(updateDto.ImageFile!, "products");
 
-            _unitOfWork.Repository<Product>().Update(product);
-            await _unitOfWork.Complete();
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                _unitOfWork.Repository<Product>().Update(product);
+                await _unitOfWork.Complete();
+
+                await transaction.CommitAsync();
+
+                if (hasNewImage && !string.IsNullOrEmpty(oldImage))
+                    _fileService.DeleteFile(oldImage);
+            }
+            catch
+            {
+                if (hasNewImage && !string.IsNullOrEmpty(product.PictureUrl))
+                    _fileService.DeleteFile(product.PictureUrl);
+
+                await transaction.RollbackAsync();
+                throw;
+            }
 
             var spec = new ProductWithTypeAndBrandSpec(product.Id);
             var updatedProduct = await _unitOfWork.Repository<Product>()
                 .GetWithSpecAsync(spec);
-
-            if (updatedProduct is not null)
-            {
-                if (hasNewImage && !string.IsNullOrEmpty(oldImage))
-                    _fileService.DeleteFile(oldImage);
-            }
-            else
-            {
-                if (hasNewImage && !string.IsNullOrEmpty(product.PictureUrl))
-                    _fileService.DeleteFile(product.PictureUrl);
-            }
 
             return Ok(_mapper.Map<Product, ProductResponseDto>(updatedProduct!));
         }

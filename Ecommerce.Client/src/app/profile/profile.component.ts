@@ -1,6 +1,13 @@
 import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { EMPTY, Observable, catchError, shareReplay, tap } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { BehaviorSubject, EMPTY, Observable, catchError, finalize, shareReplay, tap } from 'rxjs';
 import { ProfileService } from '../shared/services/profile-service';
 import { IProfile } from '../shared/modules/profile';
 // Child components
@@ -39,7 +46,9 @@ type ProfileSection =
 export class ProfileComponent implements OnInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  profile$!: Observable<IProfile>;
+  private profileSubject = new BehaviorSubject<IProfile | null>(null);
+  profile$ = this.profileSubject.asObservable();
+
   selected: ProfileSection = 'main-info';
   isProfileLoading = true;
   profileError = '';
@@ -59,7 +68,8 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private profileService: ProfileService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -111,64 +121,69 @@ export class ProfileComponent implements OnInit {
     return true;
   }
 
+  // In ProfileComponent, update the uploadProfilePicture method:
   uploadProfilePicture(file: File): void {
     this.isUploading = true;
     this.uploadProgress = 0;
+    this.cdr.markForCheck();
 
-    // Create a preview while uploading (optional)
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      // You can update the avatar preview immediately here if desired
-      // This would require changing the observable pattern or using a different approach
-    };
-    reader.readAsDataURL(file);
-
-    // Simulate upload progress (replace with actual API call)
-    const interval = setInterval(() => {
-      this.uploadProgress += 10;
-      if (this.uploadProgress >= 100) {
-        clearInterval(interval);
-        this.completeUpload(file);
+    // Simulate progress (you can remove this if your API supports upload progress)
+    const progressInterval = setInterval(() => {
+      if (this.uploadProgress < 90) {
+        this.uploadProgress += 10;
+        this.cdr.markForCheck();
       }
-    }, 200);
+    }, 150);
+
+    // Use updateProfile instead of uploadProfilePicture
+    this.profileService
+      .updateProfile({ profileImageFile: file })
+      .pipe(
+        finalize(() => {
+          clearInterval(progressInterval);
+          this.isUploading = false;
+          this.uploadProgress = 0;
+          this.cdr.markForCheck();
+        })
+      )
+      .subscribe({
+        next: (updatedProfile) => {
+          this.uploadProgress = 100;
+          this.cdr.markForCheck();
+
+          // Update the profile subject with new data
+          this.profileSubject.next(updatedProfile);
+
+          // Show success message
+          this.toastr.success('Profile picture updated successfully!');
+        },
+        error: (error) => {
+          console.error('Upload failed:', error);
+          this.toastr.error(error.message || 'Failed to upload profile picture. Please try again.');
+        },
+      });
   }
-
-  completeUpload(file: File): void {
-    // Replace this with your actual API call
-    this.profileService.uploadProfilePicture(file).subscribe({
-      next: (response) => {
-        this.isUploading = false;
-        this.uploadProgress = 0;
-
-        // Reload the profile to get the updated picture
-        this.loadProfile();
-
-        // Show success message
-        this.toastr.success('Profile picture updated successfully!');
-      },
-      error: (error) => {
-        this.isUploading = false;
-        this.uploadProgress = 0;
-        console.error('Upload failed:', error);
-        this.toastr.error('Failed to upload profile picture. Please try again.');
-      }
-    });
-  }
-
   private loadProfile(): void {
     this.isProfileLoading = true;
     this.profileError = '';
-    this.profile$ = this.profileService.getProfile().pipe(
-      tap(() => {
-        this.isProfileLoading = false;
-      }),
-      shareReplay({ bufferSize: 1, refCount: true }),
-      catchError((error) => {
-        this.isProfileLoading = false;
-        this.profileError = 'Unable to load your profile data right now.';
-        console.error('Profile load error:', error);
-        return EMPTY;
-      })
-    );
+    this.cdr.markForCheck();
+
+    this.profileService
+      .getProfile()
+      .pipe(
+        tap((profile) => {
+          this.isProfileLoading = false;
+          this.profileSubject.next(profile);
+          this.cdr.markForCheck();
+        }),
+        catchError((error) => {
+          this.isProfileLoading = false;
+          this.profileError = 'Unable to load your profile data right now.';
+          console.error('Profile load error:', error);
+          this.cdr.markForCheck();
+          return EMPTY;
+        })
+      )
+      .subscribe();
   }
 }

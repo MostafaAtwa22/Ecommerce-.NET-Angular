@@ -9,6 +9,16 @@ export interface IProfile {
   phoneNumber: string;
 }
 
+export interface IProfileUpdate {
+  firstName?: string;
+  lastName?: string;
+  userName?: string;
+  gender?: string;
+  profileImage?: string;
+  profileImageFile?: File;
+  phoneNumber?: string;
+}
+
 export interface IChangePassword {
   oldPassword: string;
   newPassword: string;
