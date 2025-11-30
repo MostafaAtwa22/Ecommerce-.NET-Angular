@@ -21,9 +21,9 @@ export class AccountService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(loginData: ILogin) {
-    return this.http.post<IAccountUser>(`${this.baseUrl}/login`, loginData).pipe(
-      tap(user => this.setUser(user))
-    );
+    return this.http
+      .post<IAccountUser>(`${this.baseUrl}/login`, loginData)
+      .pipe(tap((user) => this.setUser(user)));
   }
 
   register(registerData: IRegister) {
@@ -31,7 +31,7 @@ export class AccountService {
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
     return this.http.post<IAccountUser>(`${this.baseUrl}/register`, registerData, { headers }).pipe(
-      tap(user => {
+      tap((user) => {
         const existingToken = localStorage.getItem('token');
         if (!existingToken) {
           this.setUser(user);
@@ -39,7 +39,6 @@ export class AccountService {
       })
     );
   }
-
 
   emailExists(email: string) {
     return this.http.get<boolean>(`${this.baseUrl}/emailexists/${email}`);
@@ -86,15 +85,18 @@ export class AccountService {
   private setUser(user: IAccountUser) {
     this.userSignal.set(user);
     localStorage.setItem('token', user.token);
-    localStorage.setItem('user', JSON.stringify({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      userName: user.userName,
-      gender: user.gender,
-      email: user.email,
-      profilePicture: user.profilePicture,
-      roles: user.roles
-    }));
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        gender: user.gender,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        roles: user.roles,
+      })
+    );
   }
 
   private getUserFromLocalStorage(): IAccountUser | null {
@@ -128,7 +130,7 @@ export class AccountService {
 
       return {
         ...userData,
-        token
+        token,
       } as IAccountUser;
     } catch (error) {
       console.error('Failed to parse user data from localStorage:', error);
@@ -136,5 +138,31 @@ export class AccountService {
       localStorage.removeItem('token');
       return null;
     }
+  }
+  // ✔ Update only the profile picture in localStorage
+  updateLocalUserProfilePicture(newUrl: string | null): void {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
+
+    try {
+      const userData = JSON.parse(userStr);
+      userData.profilePicture = newUrl; // update picture
+      localStorage.setItem('user', JSON.stringify(userData));
+
+      // Update the signal
+      const current = this.userSignal();
+      if (current) {
+        this.userSignal.set({
+          ...current,
+          profilePicture: newUrl,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update local user profile picture', error);
+    }
+  }
+
+  clearLocalUserProfilePicture(): void {
+    this.updateLocalUserProfilePicture(null);
   }
 }

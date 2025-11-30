@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, inject, OnChanges, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { IProfile, IProfileUpdate } from '../../shared/modules/profile';
 import { ProfileService } from '../../shared/services/profile-service';
 import { AccountService } from '../../account/account-service';
 import { ToastrService } from 'ngx-toastr';
-import { finalize } from 'rxjs';
+import { finalize, timer, map, switchMap, catchError, of } from 'rxjs';
 
 type EditableField = 'firstName' | 'lastName' | 'userName' | 'email' | 'phoneNumber' | 'gender';
 
@@ -16,6 +16,7 @@ interface FieldConfig {
   hint: string;
   type: 'text' | 'email' | 'tel' | 'select';
   validators?: any[];
+  asyncValidators?: AsyncValidatorFn[];
   options?: { value: string; label: string }[];
 }
 
@@ -36,13 +37,9 @@ export class MainInfoComponent implements OnChanges {
 
   @Input() profile: IProfile | null = null;
 
-  // Track which field is currently being edited
   editingField: EditableField | null = null;
-
-  // Track loading state for each field
   loadingFields = new Set<EditableField>();
 
-  // Field configurations
   readonly fieldConfigs: FieldConfig[] = [
     {
       key: 'firstName',
@@ -50,7 +47,7 @@ export class MainInfoComponent implements OnChanges {
       icon: 'fa-user',
       hint: 'Your legal first name',
       type: 'text',
-      validators: [Validators.required, Validators.minLength(2)]
+      validators: [Validators.required, Validators.pattern(/^[A-Za-z]+$/), Validators.minLength(2)]
     },
     {
       key: 'lastName',
@@ -58,7 +55,7 @@ export class MainInfoComponent implements OnChanges {
       icon: 'fa-user',
       hint: 'Your legal last name',
       type: 'text',
-      validators: [Validators.required, Validators.minLength(2)]
+      validators: [Validators.required, Validators.pattern(/^[A-Za-z]+$/), Validators.minLength(2)]
     },
     {
       key: 'userName',
@@ -66,7 +63,8 @@ export class MainInfoComponent implements OnChanges {
       icon: 'fa-at',
       hint: 'This will be your public display name',
       type: 'text',
-      validators: [Validators.required, Validators.minLength(3)]
+      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/), Validators.minLength(3)],
+      asyncValidators: [this.validateUsernameNotTaken()]
     },
     {
       key: 'email',
@@ -74,7 +72,8 @@ export class MainInfoComponent implements OnChanges {
       icon: 'fa-envelope',
       hint: "We'll never share your email with anyone else",
       type: 'email',
-      validators: [Validators.required, Validators.email]
+      validators: [Validators.required, Validators.email],
+      asyncValidators: [this.validateEmailNotTaken()]
     },
     {
       key: 'phoneNumber',
@@ -82,7 +81,7 @@ export class MainInfoComponent implements OnChanges {
       icon: 'fa-phone',
       hint: 'Include country code for international numbers',
       type: 'tel',
-      validators: []
+      validators: [Validators.pattern(/^[0-9+\-() ]+$/)]
     },
     {
       key: 'gender',
@@ -100,47 +99,99 @@ export class MainInfoComponent implements OnChanges {
   ];
 
   profileForm = this.fb.nonNullable.group({
-    firstName: ['', [Validators.required, Validators.minLength(2)]],
-    lastName: ['', [Validators.required, Validators.minLength(2)]],
-    userName: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
-    phoneNumber: [''],
+    firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/), Validators.minLength(2)]],
+    lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/), Validators.minLength(2)]],
+    userName: ['',
+      [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/), Validators.minLength(3)],
+      [this.validateUsernameNotTaken()]
+    ],
+    email: ['',
+      [Validators.required, Validators.email],
+      [this.validateEmailNotTaken()]
+    ],
+    phoneNumber: ['', [Validators.pattern(/^[0-9+\-() ]+$/)]],
     gender: [''],
   });
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['profile'] && this.profile) {
       this.updateFormWithProfileData();
-      this.profileForm.get('email')?.disable(); 
     }
   }
 
-  /**
-   * Check if a field is currently being edited
-   */
+  private updateFormWithProfileData(): void {
+    if (!this.profile) return;
+
+    this.profileForm.patchValue({
+      firstName: this.profile.firstName || '',
+      lastName: this.profile.lastName || '',
+      userName: this.profile.userName || '',
+      email: this.profile.email || '',
+      phoneNumber: this.profile.phoneNumber || '',
+      gender: this.profile.gender || '',
+    });
+
+    this.disableAllFields();
+    this.cdr.markForCheck();
+  }
+
+  // Username validation (exclude current user's username)
+  private validateUsernameNotTaken(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.value || control.value === this.profile?.userName) {
+        return of(null);
+      }
+
+      return timer(800).pipe( // Increased delay for better UX
+        switchMap(() =>
+          this.accountService.usernameExists(control.value).pipe(
+            map((res: boolean): ValidationErrors | null =>
+              res ? { usernameExists: true } : null
+            ),
+            catchError(() => of(null))
+          )
+        )
+      );
+    };
+  }
+
+  // Email validation (exclude current user's email)
+  private validateEmailNotTaken(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      if (!control.value || control.value === this.profile?.email) {
+        return of(null);
+      }
+
+      return timer(800).pipe( // Increased delay for better UX
+        switchMap(() =>
+          this.accountService.emailExists(control.value).pipe(
+            map((res: boolean): ValidationErrors | null =>
+              res ? { emailExists: true } : null
+            ),
+            catchError(() => of(null))
+          )
+        )
+      );
+    };
+  }
+
   isEditing(field: EditableField): boolean {
     return this.editingField === field;
   }
 
-  /**
-   * Check if a field is currently loading
-   */
   isLoading(field: EditableField): boolean {
     return this.loadingFields.has(field);
   }
 
-  /**
-   * Check if a field control is disabled
-   */
   isDisabled(field: EditableField): boolean {
     return this.profileForm.get(field)?.disabled ?? false;
   }
 
-  /**
-   * Start editing a field
-   */
+  isFieldPending(field: EditableField): boolean {
+    return this.profileForm.get(field)?.pending ?? false;
+  }
+
   startEdit(field: EditableField): void {
-    // Cancel any other editing field first
     if (this.editingField && this.editingField !== field) {
       this.cancelEdit(this.editingField);
     }
@@ -150,15 +201,10 @@ export class MainInfoComponent implements OnChanges {
     this.cdr.markForCheck();
   }
 
-  /**
-   * Cancel editing and revert to original value
-   */
   cancelEdit(field: EditableField): void {
     if (this.profile) {
-      // Revert to original value
-      this.profileForm.patchValue({
-        [field]: this.profile[field] || ''
-      });
+      const originalValue = this.profile[field] || '';
+      this.profileForm.get(field)?.setValue(originalValue as any);
     }
 
     this.profileForm.get(field)?.disable();
@@ -166,15 +212,21 @@ export class MainInfoComponent implements OnChanges {
     this.cdr.markForCheck();
   }
 
-  /**
-   * Save a single field
-   */
   saveField(field: EditableField): void {
     const control = this.profileForm.get(field);
 
-    if (!control || control.invalid) {
+    if (!control || control.invalid || control.pending) {
       control?.markAsTouched();
-      this.toastr.error('Please enter a valid value');
+
+      if (control?.pending) {
+        this.toastr.warning('Please wait while we validate your input');
+        return;
+      }
+
+      if (control?.errors) {
+        const errorMessage = this.getErrorMessage(field);
+        this.toastr.error(errorMessage || 'Please enter a valid value');
+      }
       return;
     }
 
@@ -208,15 +260,10 @@ export class MainInfoComponent implements OnChanges {
       )
       .subscribe({
         next: (updatedProfile) => {
-          // Update local profile data with the response from server
+          // Update local profile data
           if (this.profile) {
-            // Update the entire profile object with server response
             Object.assign(this.profile, updatedProfile);
-
-            // Update the form with the new profile data
             this.updateFormWithProfileData();
-
-            // Update localStorage to persist the changes
             this.updateLocalStorageUser(updatedProfile);
           }
 
@@ -244,26 +291,6 @@ export class MainInfoComponent implements OnChanges {
       });
   }
 
-  private updateFormWithProfileData(): void {
-    if (!this.profile) return;
-
-    this.profileForm.patchValue({
-      firstName: this.profile.firstName || '',
-      lastName: this.profile.lastName || '',
-      userName: this.profile.userName || '',
-      email: this.profile.email || '',
-      phoneNumber: this.profile.phoneNumber || '',
-      gender: this.profile.gender || '',
-    });
-
-    // Disable all fields initially
-    this.disableAllFields();
-    this.cdr.markForCheck();
-  }
-
-  /**
-   * Get field configuration
-   */
   getFieldConfig(field: EditableField): FieldConfig | undefined {
     return this.fieldConfigs.find(f => f.key === field);
   }
@@ -272,17 +299,11 @@ export class MainInfoComponent implements OnChanges {
     return this.profileForm.get(field) as FormControl;
   }
 
-  /**
-   * Check if a field has errors
-   */
   hasError(field: EditableField): boolean {
     const control = this.profileForm.get(field);
     return !!(control?.invalid && control?.touched);
   }
 
-  /**
-   * Get error message for a field
-   */
   getErrorMessage(field: EditableField): string {
     const control = this.profileForm.get(field);
 
@@ -296,27 +317,40 @@ export class MainInfoComponent implements OnChanges {
       return 'Please enter a valid email address';
     }
 
+    if (control.errors['pattern']) {
+      if (field === 'userName') {
+        return 'Only letters, numbers, and underscores allowed';
+      }
+      if (field === 'firstName' || field === 'lastName') {
+        return 'Only letters allowed';
+      }
+      if (field === 'phoneNumber') {
+        return 'Please enter a valid phone number';
+      }
+    }
+
     if (control.errors['minlength']) {
       const minLength = control.errors['minlength'].requiredLength;
       return `Must be at least ${minLength} characters`;
     }
 
+    if (control.errors['emailExists']) {
+      return 'This email is already taken';
+    }
+
+    if (control.errors['usernameExists']) {
+      return 'This username is already taken';
+    }
+
     return 'Invalid value';
   }
 
-  /**
-   * Disable all form fields
-   */
   private disableAllFields(): void {
     Object.keys(this.profileForm.controls).forEach(key => {
       this.profileForm.get(key)?.disable();
     });
   }
 
-  /**
-   * Update localStorage user data to persist profile changes
-   * This ensures changes persist after page refresh
-   */
   private updateLocalStorageUser(updatedProfile: IProfile): void {
     try {
       const userStr = localStorage.getItem('user');
@@ -327,7 +361,6 @@ export class MainInfoComponent implements OnChanges {
 
       const userData = JSON.parse(userStr);
 
-      // Update the user object with the new profile data
       const updatedUserData = {
         ...userData,
         firstName: updatedProfile.firstName,
@@ -338,10 +371,7 @@ export class MainInfoComponent implements OnChanges {
         profilePicture: updatedProfile.profilePicture
       };
 
-      // Save back to localStorage
       localStorage.setItem('user', JSON.stringify(updatedUserData));
-
-      // Update the AccountService signal to reflect the changes immediately
       this.accountService.loadCurrentUser();
 
       console.log('LocalStorage user data updated successfully');

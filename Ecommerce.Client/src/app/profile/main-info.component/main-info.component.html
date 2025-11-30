@@ -51,7 +51,7 @@
                   type="button"
                   class="btn-save"
                   (click)="saveField(config.key)"
-                  [disabled]="hasError(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
                   title="Save changes"
                 >
                   <i class="fa fa-check"></i>
@@ -73,7 +73,13 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">
@@ -115,7 +121,7 @@
                   type="button"
                   class="btn-save"
                   (click)="saveField(config.key)"
-                  [disabled]="hasError(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
                   title="Save changes"
                 >
                   <i class="fa fa-check"></i>
@@ -136,7 +142,7 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">
@@ -168,6 +174,7 @@
                 [placeholder]="'Choose a username'"
                 [type]="config.type"
                 [class.error]="hasError(config.key)"
+                [class.pending]="isFieldPending(config.key)"
                 [attr.disabled]="!isEditing(config.key) ? '' : null"
               />
             </div>
@@ -188,7 +195,7 @@
                   type="button"
                   class="btn-save"
                   (click)="saveField(config.key)"
-                  [disabled]="hasError(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
                   title="Save changes"
                 >
                   <i class="fa fa-check"></i>
@@ -209,7 +216,13 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking username availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">
@@ -231,6 +244,7 @@
                 [placeholder]="'your.email@example.com'"
                 [type]="config.type"
                 [class.error]="hasError(config.key)"
+                [class.pending]="isFieldPending(config.key)"
                 [attr.disabled]="!isEditing(config.key) ? '' : null"
               />
             </div>
@@ -246,7 +260,13 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking email availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">
@@ -298,7 +318,7 @@
                   type="button"
                   class="btn-save"
                   (click)="saveField(config.key)"
-                  [disabled]="hasError(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
                   title="Save changes"
                 >
                   <i class="fa fa-check"></i>
@@ -319,7 +339,7 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">
@@ -363,7 +383,7 @@
                   type="button"
                   class="btn-save"
                   (click)="saveField(config.key)"
-                  [disabled]="hasError(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
                   title="Save changes"
                 >
                   <i class="fa fa-check"></i>
@@ -384,7 +404,7 @@
             </div>
           </div>
 
-          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key)">
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
             {{ config.hint }}
           </div>
           <div class="field-error" *ngIf="hasError(config.key)">

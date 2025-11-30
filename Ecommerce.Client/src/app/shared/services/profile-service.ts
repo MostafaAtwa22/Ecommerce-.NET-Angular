@@ -52,9 +52,14 @@ export class ProfileService {
 
   updateProfileImage(file: File): Observable<IProfile> {
     const formData = new FormData();
-    formData.append('profileImageFile', file);
+    formData.append('ProfileImageFile', file, file.name);
 
     return this.http.patch<IProfile>(`${this.baseUrl}/profile/image`, formData);
+  }
+
+
+  deleteProfileImage(): Observable<IProfile> {
+    return this.http.delete<IProfile>(`${this.baseUrl}/profile/image`);
   }
 
   private createJsonPatchDocument(profile: IProfileUpdate): any[] {

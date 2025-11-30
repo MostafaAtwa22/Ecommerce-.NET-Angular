@@ -9,25 +9,28 @@
       <div class="avatar-wrapper">
         <div
           class="avatar-container"
-          (mouseenter)="showEditIcon = true"
-          (mouseleave)="showEditIcon = false"
+          (mouseenter)="showEditOptions = true"
+          (mouseleave)="showEditOptions = false"
         >
           <img
             class="avatar"
-            [src]="profile.profilePicture || './assets/images/default-avatar.jpg'"
-            [alt]="profile.firstName + ' ' + profile.lastName"
             [class.is-uploading]="isUploading"
+            [class.upload-success]="uploadProgress === 100"
+            [src]="profile?.profilePicture ?? (profile.gender === 'Male' ? 'default-male.png' : 'default-female.png')"
+
+            [alt]="profile.firstName + ' ' + profile.lastName"
           />
-          <!-- Add a loading indicator for the avatar -->
+
+          <!-- Loading overlay -->
           <div *ngIf="isUploading" class="avatar-loading-overlay">
             <div class="spinner small"></div>
           </div>
 
-          <!-- Edit Overlay -->
-          <div class="avatar-overlay" [class.active]="showEditIcon">
+          <!-- Edit Button Overlay (Only shows on hover) -->
+          <div class="avatar-overlay" [class.active]="showEditOptions && !isUploading">
             <button
-              class="edit-icon-btn"
-              (click)="triggerFileInput()"
+              class="edit-button"
+              (click)="triggerFileInput(); $event.stopPropagation()"
               title="Change profile picture"
             >
               <i class="fa fa-camera"></i>
@@ -44,15 +47,25 @@
           />
         </div>
 
-        <!-- Upload Progress -->
+        <!-- Delete Button (Always visible below image if profile has picture) -->
+        <div class="avatar-actions" *ngIf="profile.profilePicture && !isUploading">
+          <button
+            class="delete-button"
+            (click)="removeProfileImage()"
+            title="Remove profile picture"
+          >
+            <i class="fa fa-trash"></i>
+            Remove Photo
+          </button>
+        </div>
+
+        <!-- Modern Upload Progress -->
         <div *ngIf="isUploading" class="upload-progress">
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="uploadProgress"></div>
           </div>
-          <span>{{ uploadProgress }}%</span>
+          <span class="progress-text">Uploading{{ uploadProgress === 100 ? ' Complete!' : '' }}</span>
         </div>
-
-        <span class="status-chip">Active</span>
       </div>
 
       <div class="user-info">

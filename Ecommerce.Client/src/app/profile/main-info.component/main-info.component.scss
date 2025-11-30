@@ -297,3 +297,48 @@
     padding: 1.25rem;
   }
 }
+
+
+.field-group {
+  .field-container {
+    .input-wrapper {
+      input.pending, select.pending {
+        border-color: #f59e0b;
+        background: rgba(245, 158, 11, 0.02);
+
+        &:focus {
+          box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+      }
+    }
+  }
+
+  .validation-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #f59e0b;
+    margin-top: 0.5rem;
+    animation: fadeIn 0.3s ease;
+
+    i {
+      font-size: 0.7rem;
+    }
+
+    span {
+      font-weight: 500;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

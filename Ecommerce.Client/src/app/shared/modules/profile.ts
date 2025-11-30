@@ -14,9 +14,11 @@ export interface IProfileUpdate {
   lastName?: string;
   userName?: string;
   gender?: string;
-  profileImage?: string;
-  profileImageFile?: File;
   phoneNumber?: string;
+}
+
+export interface IProfileImageUpdate {
+  ProfileImageFile: File;
 }
 
 export interface IChangePassword {

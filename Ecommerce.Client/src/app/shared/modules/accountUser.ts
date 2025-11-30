@@ -4,7 +4,7 @@ export interface IAccountUser {
   userName: string
   email: string
   gender: 'Male' | 'Female'
-  profilePicture: string
+  profilePicture: string | null
   roles: string[]
   token: string
 }

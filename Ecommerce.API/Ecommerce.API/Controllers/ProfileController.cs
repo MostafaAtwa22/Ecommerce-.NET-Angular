@@ -68,35 +68,59 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<ProfileResponseDto>(user));
         }
 
-        // [HttpPatch("profile/image")]
-        // [Consumes("multipart/form-data")]
-        // public async Task<ActionResult<ProfileResponseDto>> UpdateProfileImage([FromForm] IFormFile profileImageFile)
-        // {
-        //     if (profileImageFile == null)
-        //         return BadRequest(new ApiResponse(400, "No file provided"));
+        [HttpPatch("profile/image")]
+        public async Task<ActionResult<ProfileResponseDto>> UpdateProfileImage([FromForm] ProfileImageUpdateDto dto)
+        {
+            if (dto.ProfileImageFile is null)
+                return BadRequest(new ApiResponse(400, "No file provided"));
 
-        //     var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
-        //     if (user == null)
-        //         return NotFound(new ApiResponse(404));
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
+            if (user == null)
+                return NotFound(new ApiResponse(404));
 
-        //     var oldImage = user.ProfilePictureUrl;
-        //     user.ProfilePictureUrl = await _fileService.SaveFileAsync(profileImageFile, "users");
+            var oldImage = user.ProfilePictureUrl;
+            user.ProfilePictureUrl = await _fileService.SaveFileAsync(dto.ProfileImageFile, "users");
 
-        //     var result = await _userManager.UpdateAsync(user);
-        //     if (!result.Succeeded)
-        //     {
-        //         if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
-        //             _fileService.DeleteFile(user.ProfilePictureUrl);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                    _fileService.DeleteFile(user.ProfilePictureUrl);
 
-        //         return BadRequest(new ApiResponse(400,
-        //             string.Join(", ", result.Errors.Select(e => e.Description))));
-        //     }
+                return BadRequest(new ApiResponse(400,
+                    string.Join(", ", result.Errors.Select(e => e.Description))));
+            }
 
-        //     if (!string.IsNullOrEmpty(oldImage))
-        //         _fileService.DeleteFile(oldImage);
+            if (!string.IsNullOrEmpty(oldImage))
+                _fileService.DeleteFile(oldImage);
 
-        //     return Ok(_mapper.Map<ProfileResponseDto>(user));
-        // }
+            return Ok(_mapper.Map<ProfileResponseDto>(user));
+        }
+
+        [HttpDelete("profile/image")]
+        public async Task<ActionResult<ProfileResponseDto>> DeleteProfileImage()
+        {
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
+            if (user is null)
+                return NotFound(new ApiResponse(404));
+
+            if (string.IsNullOrEmpty(user.ProfilePictureUrl))
+                return BadRequest(new ApiResponse(400, "User has no profile image."));
+
+            var oldImage = user.ProfilePictureUrl;
+
+            user.ProfilePictureUrl = null!;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(400,
+                    string.Join(", ", result.Errors.Select(e => e.Description))));
+
+            if (!string.IsNullOrEmpty(oldImage))
+                _fileService.DeleteFile(oldImage);
+
+            return Ok(_mapper.Map<ProfileResponseDto>(user));
+        }
 
         [HttpGet("address")]
         public async Task<ActionResult<AddressDto>> GetAddress()

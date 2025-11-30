@@ -7,16 +7,16 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { BehaviorSubject, EMPTY, Observable, catchError, finalize, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject, EMPTY, catchError, finalize, tap } from 'rxjs';
 import { ProfileService } from '../shared/services/profile-service';
 import { IProfile } from '../shared/modules/profile';
-// Child components
 import { AddressComponent } from './address.component/address.component';
 import { ChangePasswordComponent } from './change-password.component/change-password.component';
 import { DeleteProfileComponent } from './delete-profile.component/delete-profile.component';
 import { MainInfoComponent } from './main-info.component/main-info.component';
 import { SetPasswordComponent } from './set-password.component/set-password.component';
 import { ToastrService } from 'ngx-toastr';
+import { AccountService } from '../account/account-service';
 
 type ProfileSection =
   | 'main-info'
@@ -53,8 +53,7 @@ export class ProfileComponent implements OnInit {
   isProfileLoading = true;
   profileError = '';
 
-  // Profile picture upload states
-  showEditIcon = false;
+  showEditOptions = false;
   isUploading = false;
   uploadProgress = 0;
 
@@ -68,6 +67,7 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private profileService: ProfileService,
+    private accountService: AccountService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
   ) {}
@@ -84,29 +84,24 @@ export class ProfileComponent implements OnInit {
     this.selected = section;
   }
 
-  // Profile picture upload methods
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      // Validate file type and size
-      if (!this.validateFile(file)) {
-        return;
-      }
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
 
+    if (file && this.validateFile(file)) {
       this.uploadProfilePicture(file);
     }
 
-    // Reset the file input
-    event.target.value = '';
+    input.value = '';
   }
 
   validateFile(file: File): boolean {
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
 
     if (!validTypes.includes(file.type)) {
       this.toastr.error('Please select a valid image file (JPEG, PNG, GIF, or WebP)');
@@ -121,23 +116,22 @@ export class ProfileComponent implements OnInit {
     return true;
   }
 
-  // In ProfileComponent, update the uploadProfilePicture method:
   uploadProfilePicture(file: File): void {
     this.isUploading = true;
     this.uploadProgress = 0;
+    this.showEditOptions = false;
     this.cdr.markForCheck();
 
-    // Simulate progress (you can remove this if your API supports upload progress)
+    // Slower, more realistic progress simulation
     const progressInterval = setInterval(() => {
-      if (this.uploadProgress < 90) {
-        this.uploadProgress += 10;
+      if (this.uploadProgress < 80) { // Stop at 80% and let the actual upload complete
+        this.uploadProgress += 5; // Slower increment
         this.cdr.markForCheck();
       }
-    }, 150);
+    }, 200); // Slower interval
 
-    // Use updateProfile instead of uploadProfilePicture
     this.profileService
-      .updateProfile({ profileImageFile: file })
+      .updateProfileImage(file)
       .pipe(
         finalize(() => {
           clearInterval(progressInterval);
@@ -148,21 +142,61 @@ export class ProfileComponent implements OnInit {
       )
       .subscribe({
         next: (updatedProfile) => {
+          // Show 100% when complete
           this.uploadProgress = 100;
-          this.cdr.markForCheck();
-
-          // Update the profile subject with new data
           this.profileSubject.next(updatedProfile);
 
-          // Show success message
+          // Update local storage user
+          this.accountService.updateLocalUserProfilePicture(updatedProfile.profilePicture);
+
           this.toastr.success('Profile picture updated successfully!');
+          this.cdr.markForCheck();
+
+          // Keep progress at 100% for a moment before hiding
+          setTimeout(() => {
+            this.uploadProgress = 0;
+            this.cdr.markForCheck();
+          }, 1000);
         },
         error: (error) => {
           console.error('Upload failed:', error);
-          this.toastr.error(error.message || 'Failed to upload profile picture. Please try again.');
+          this.toastr.error(error.message || 'Failed to upload profile picture');
         },
       });
   }
+
+  removeProfileImage(): void {
+    const currentProfile = this.profileSubject.value;
+
+    if (!currentProfile?.profilePicture) {
+      this.toastr.info('No profile picture to remove');
+      return;
+    }
+
+    this.showEditOptions = false;
+    this.cdr.markForCheck();
+
+    this.profileService
+      .deleteProfileImage()
+      .pipe(
+        tap((updatedProfile) => {
+          this.profileSubject.next(updatedProfile);
+
+          // Update local storage user - remove image
+          this.accountService.clearLocalUserProfilePicture();
+
+          this.toastr.success('Profile picture removed successfully');
+          this.cdr.markForCheck();
+        }),
+        catchError((error) => {
+          console.error('Remove failed:', error);
+          this.toastr.error(error.message || 'Failed to remove profile picture');
+          return EMPTY;
+        })
+      )
+      .subscribe();
+  }
+
   private loadProfile(): void {
     this.isProfileLoading = true;
     this.profileError = '';
