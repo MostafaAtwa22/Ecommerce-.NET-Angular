@@ -10,9 +10,11 @@ using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
 using Ecommerce.Core.Spec;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
+    [EnableRateLimiting("customer-browsing")]
     public class ProductsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -65,6 +67,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Create([FromForm] ProductCreationDto creationDto)
         {
             var product = _mapper.Map<ProductCreationDto, Product>(creationDto);
@@ -83,6 +86,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut]
+        [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Update([FromForm] ProductUpdateDto updateDto)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(updateDto.ProductId);
@@ -126,6 +130,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Delete([FromRoute] int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);

@@ -5,9 +5,11 @@ using Ecommerce.API.Errors;
 using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
+    [EnableRateLimiting("customer-browsing")]
     public class DeliveryMethodsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -41,6 +43,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [DisableRateLimiting]
         public async Task<ActionResult<DeliveryMethodResponseDto>> CreateDeliveryMethod(DeliveryMethodDto createDto)
         {
             var deliveryMethod = _mapper.Map<DeliveryMethod>(createDto);
@@ -56,6 +59,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [DisableRateLimiting]
         public async Task<IActionResult> UpdateDeliveryMethod(int id, DeliveryMethodDto updateDto)
         {
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(id);
@@ -72,6 +76,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [DisableRateLimiting]
         public async Task<IActionResult> DeleteDeliveryMethod(int id)
         {
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(id);

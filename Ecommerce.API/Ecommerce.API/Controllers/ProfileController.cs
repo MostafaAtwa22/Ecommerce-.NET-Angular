@@ -11,10 +11,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
     [Authorize]
+    [EnableRateLimiting("customer-profile")]
     public class ProfilesController : BaseApiController
     {
         private readonly UserManager<ApplicationUser> _userManager;

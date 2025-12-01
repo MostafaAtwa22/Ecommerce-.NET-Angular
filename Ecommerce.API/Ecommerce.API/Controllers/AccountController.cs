@@ -7,6 +7,7 @@ using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
@@ -29,6 +30,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("customer-login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
@@ -57,6 +59,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("customer-register")] 
         public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
         {
             var emailExists = await CheckEmailExistsAsync(dto.Email);
@@ -94,10 +97,12 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("emailexists/{email}")]
+        [EnableRateLimiting("customer-browsing")]
         public async Task<ActionResult<bool>> CheckEmailExistsAsync([FromRoute] string email)
             => await _userManager.FindByEmailAsync(email) is not null;
 
         [HttpGet("usernameexists/{username}")]
+        [EnableRateLimiting("customer-browsing")]
         public async Task<ActionResult<bool>> CheckUsernameExistsAsync([FromRoute] string username)
             => await _userManager.FindByNameAsync(username) is not null;
 

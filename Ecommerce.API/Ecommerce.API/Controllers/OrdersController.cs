@@ -8,10 +8,12 @@ using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
     [Authorize]
+    [EnableRateLimiting("customer-orders")] 
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;

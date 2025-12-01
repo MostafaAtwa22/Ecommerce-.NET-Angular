@@ -3,6 +3,7 @@ using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Stripe;
 
 namespace Ecommerce.API.Controllers
@@ -24,6 +25,7 @@ namespace Ecommerce.API.Controllers
 
         [Authorize]
         [HttpPost("{basketId}")]
+        [EnableRateLimiting("customer-payment")]
         public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
         {
             var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
@@ -35,6 +37,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost("webhook")]
+        [DisableRateLimiting]
         public async Task<ActionResult> StripeWebhook()
         {
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
@@ -57,7 +60,7 @@ namespace Ecommerce.API.Controllers
             }
 
             PaymentIntent intent;
-            Ecommerce.Core.Entities.orderAggregate.Order order;
+            Core.Entities.orderAggregate.Order order;
 
             switch (stripeEvent.Type)
             {

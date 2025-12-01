@@ -26,6 +26,7 @@ namespace Ecommerce.API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerervices();
+            builder.Services.AddCustomRateLimiting(builder.Configuration);
 
             var app = builder.Build();
 
@@ -58,6 +59,7 @@ namespace Ecommerce.API
             });
 
             app.UseAuthentication();
+            app.UseRateLimiter();
             app.UseAuthorization();
 
             app.MapControllers();

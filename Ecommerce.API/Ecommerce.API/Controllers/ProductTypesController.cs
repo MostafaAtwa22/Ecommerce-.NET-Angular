@@ -7,9 +7,11 @@ using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {
+    [EnableRateLimiting("customer-browsing")]
     public class ProductTypesController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -41,6 +43,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [DisableRateLimiting]
         public async Task<ActionResult<ProductBrandAndTypeResponseDto>> Create(ProductBrandAndTypeCreationDto creationDto)
         {
             var type = _mapper.Map<ProductBrandAndTypeCreationDto, ProductType>(creationDto);
@@ -52,6 +55,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [DisableRateLimiting]
         public async Task<IActionResult> Delete(int id)
         {
             var type = await _unitOfWork.Repository<ProductType>().GetByIdAsync(id);
