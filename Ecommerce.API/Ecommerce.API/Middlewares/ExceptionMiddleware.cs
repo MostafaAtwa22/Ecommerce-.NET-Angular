@@ -11,8 +11,8 @@ namespace Ecommerce.API.Middlewares
         private readonly IHostEnvironment _env;
 
         public ExceptionMiddleware(RequestDelegate next,
-        ILogger<ExceptionMiddleware> logger,
-        IHostEnvironment env)
+            ILogger<ExceptionMiddleware> logger,
+            IHostEnvironment env)
         {
             _next = next;
             _logger = logger;
@@ -33,7 +33,7 @@ namespace Ecommerce.API.Middlewares
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
                 var response = _env.IsDevelopment()
-                    ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message)
+                    ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace!.ToString())
                     : new ApiException((int)HttpStatusCode.InternalServerError);
 
                 var options = new JsonSerializerOptions

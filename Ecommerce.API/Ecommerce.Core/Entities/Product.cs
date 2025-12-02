@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Ecommerce.Core.Entities.Identity;
 
 namespace Ecommerce.Core.Entities
 {
@@ -19,13 +20,16 @@ namespace Ecommerce.Core.Entities
         [Required]
         public int Quantity { get; set; }
 
-        [Required]
-        public decimal AvrageRating { get; set; }
+        public decimal AverageRating { get; set; } = 0m;
 
+        public int NumberOfReviews { get; set; } = 0;
+        
         public int ProductBrandId { get; set; }
         public ProductBrand ProductBrand { get; set; } = default!;
 
         public int ProductTypeId { get; set; }
         public ProductType ProductType { get; set; } = default!;
+
+        public ICollection<ProductReview> ProductReviews { get; set; } = [];
     }
 }

@@ -53,7 +53,7 @@ namespace Ecommerce.API.Controllers
 
         [Cached(600)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductResponseDto>> GetById([FromQuery] int id)
+        public async Task<ActionResult<ProductResponseDto>> GetById([FromRoute] int id)
         {
             var spec = new ProductWithTypeAndBrandSpec(id);
             var product = await _unitOfWork.Repository<Product>()

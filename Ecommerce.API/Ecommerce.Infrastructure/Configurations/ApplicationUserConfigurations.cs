@@ -33,6 +33,12 @@ namespace Ecommerce.Infrastructure.Configurations
                     x => x.ToString(),
                     x => (Gender)Enum.Parse(typeof(Gender), x)
                 );
+
+            builder.HasMany(u => u.ProductReviews)
+                .WithOne(r => r.ApplicationUser)
+                .HasForeignKey(r => r.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

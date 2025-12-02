@@ -1,13 +1,20 @@
 using System.Text.Json;
+using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Entities.orderAggregate;
+using Ecommerce.Infrastructure.Repositories;
+using Ecommerce.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Infrastructure.Data
 {
     public static class ApplicationDbContextSeed
     {
-        public static async Task SeedAsync (ApplicationDbContext context, ILoggerFactory loggerFactory) 
+        public static async Task SeedAsync(ApplicationDbContext context,
+            ILoggerFactory loggerFactory)
         {
             try
             {
