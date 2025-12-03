@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Environment } from '../environment';
 import { Observable, of, tap } from 'rxjs';
+import { Environment } from '../environment';
 import { IPagination, Pagination } from '../shared/modules/pagination';
 import { IProduct } from '../shared/modules/product';
 import { ShopParams } from '../shared/modules/ShopParams';
@@ -11,49 +11,48 @@ import { ShopParams } from '../shared/modules/ShopParams';
 })
 export class ShopService {
   private baseUrl = `${Environment.baseUrl}/api`;
-  private products: IProduct[] = [];   // Local cache
-  pagination = new Pagination();
+
+  private cache = new Map<number, IProduct[]>();
+  pagination = new Pagination<IProduct>();
   shopParams = new ShopParams();
 
   constructor(private http: HttpClient) { }
 
-  getAllProducts(useCache: boolean): Observable<IPagination<IProduct>> {
-    if (useCache === false)
-      this.products = [];
+  getAllProducts(useCache: boolean = true): Observable<IPagination<IProduct>> {
+    const cachedProducts = this.cache.get(1) || [];
 
-    if (this.products.length > 0 && useCache === true) {
-      const pagesReceived = Math.ceil(this.products.length / this.shopParams.pageSize);
+    if (!useCache) this.cache.set(1, []);
 
-      if (this.shopParams.pageIndex <= pagesReceived) {
-        this.pagination.data =
-          this.products.slice((this.shopParams.pageIndex - 1) * this.shopParams.pageSize,
-            this.shopParams.pageIndex * this.shopParams.pageSize);
+    const pagesReceived = Math.ceil(cachedProducts.length / this.shopParams.pageSize);
 
-        return of(this.pagination);
-      }
-    }
-    let params = new HttpParams();
-
-    if (this.shopParams.brandId != null)
-      params = params.append('brandId', this.shopParams.brandId);
-
-    if (this.shopParams.typeId != null)
-      params = params.append('typeId', this.shopParams.typeId);
-
-    if (this.shopParams.search)
-      params = params.append('search', this.shopParams.search);
-
-    params = params.append('sort', this.shopParams.sort);
-    params = params.append('pageIndex', this.shopParams.pageIndex);
-    params = params.append('pageSize', this.shopParams.pageSize);
-
-    return this.http.get<IPagination<IProduct>>(`${this.baseUrl}/products`, { params })
-      .pipe(
-        tap(response => {
-          this.products = [...this.products, ...response.data];  // Cache current page only
-          this.pagination = response;      // Store pagination object
-        })
+    if (useCache && cachedProducts.length > 0 && this.shopParams.pageIndex <= pagesReceived) {
+      this.pagination.data = cachedProducts.slice(
+        (this.shopParams.pageIndex - 1) * this.shopParams.pageSize,
+        this.shopParams.pageIndex * this.shopParams.pageSize
       );
+      this.pagination.pageIndex = this.shopParams.pageIndex;
+      this.pagination.pageSize = this.shopParams.pageSize;
+      this.pagination.totalData = cachedProducts.length;
+
+      return of(this.pagination);
+    }
+
+    let params = new HttpParams()
+      .set('pageIndex', this.shopParams.pageIndex)
+      .set('pageSize', this.shopParams.pageSize)
+      .set('sort', this.shopParams.sort);
+
+    if (this.shopParams.brandId != null) params = params.set('brandId', this.shopParams.brandId);
+    if (this.shopParams.typeId != null) params = params.set('typeId', this.shopParams.typeId);
+    if (this.shopParams.search) params = params.set('search', this.shopParams.search);
+
+    return this.http.get<IPagination<IProduct>>(`${this.baseUrl}/products`, { params }).pipe(
+      tap(response => {
+        const currentCache = this.cache.get(1) || [];
+        this.cache.set(1, [...currentCache, ...response.data]);
+        this.pagination = response;
+      })
+    );
   }
 
   setShopParams(params: ShopParams) {
@@ -64,42 +63,45 @@ export class ShopService {
     return this.shopParams;
   }
 
+  resetShopParams() {
+    this.shopParams = new ShopParams();
+    return this.shopParams;
+  }
+
   getProduct(id: number): Observable<IProduct> {
-    const product = this.products.find(p => p.id === id);
+    const cachedProducts = this.cache.get(1) || [];
+    const product = cachedProducts.find(p => p.id === id);
 
-    if (product)
-      return of(product); // return cached product
-
-    return this.http.get<IProduct>(`${this.baseUrl}/products/${id}`);
+    return product ? of(product) : this.http.get<IProduct>(`${this.baseUrl}/products/${id}`);
   }
 
   createProduct(product: IProduct): Observable<IProduct> {
-    return this.http.post<IProduct>(`${this.baseUrl}/products`, product)
-      .pipe(
-        tap(createdProduct => {
-          this.products.push(createdProduct); // add to cache
-        })
-      );
+    return this.http.post<IProduct>(`${this.baseUrl}/products`, product).pipe(
+      tap(created => {
+        const cached = this.cache.get(1) || [];
+        cached.push(created);
+        this.cache.set(1, cached);
+      })
+    );
   }
 
   updateProduct(product: IProduct): Observable<IProduct> {
-    return this.http.put<IProduct>(`${this.baseUrl}/products`, product)
-      .pipe(
-        tap(updatedProduct => {
-          const index = this.products.findIndex(p => p.id === updatedProduct.id);
-          if (index !== -1) {
-            this.products[index] = updatedProduct; // update existing in cache
-          }
-        })
-      );
+    return this.http.put<IProduct>(`${this.baseUrl}/products`, product).pipe(
+      tap(updated => {
+        const cached = this.cache.get(1) || [];
+        const index = cached.findIndex(p => p.id === updated.id);
+        if (index !== -1) cached[index] = updated;
+        this.cache.set(1, cached);
+      })
+    );
   }
 
   deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/products/${id}`)
-      .pipe(
-        tap(() => {
-          this.products = this.products.filter(p => p.id !== id); // remove from cache
-        })
-      );
+    return this.http.delete<void>(`${this.baseUrl}/products/${id}`).pipe(
+      tap(() => {
+        const cached = this.cache.get(1) || [];
+        this.cache.set(1, cached.filter(p => p.id !== id));
+      })
+    );
   }
 }

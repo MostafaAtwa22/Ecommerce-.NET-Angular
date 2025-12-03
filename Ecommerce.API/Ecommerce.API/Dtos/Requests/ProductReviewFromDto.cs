@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.API.Dtos.Requests
 {
-    public class ProductReviewCreationDto
+    public class ProductReviewFromDto
     {
         [Required]
         public int ProductId { get; set; }

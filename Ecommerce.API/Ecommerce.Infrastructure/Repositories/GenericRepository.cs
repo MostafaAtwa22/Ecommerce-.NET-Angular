@@ -37,7 +37,7 @@ namespace Ecommerce.Infrastructure.Repositories
             => await _context.Set<T>().AddAsync(entity);
 
         public async Task AddRange(IEnumerable<T> entities)
-            => await _context.AddAsync(entities);
+            => await _context.Set<T>().AddRangeAsync(entities);
         public void Update(T entity)
             => _context.Set<T>().Update(entity);
 

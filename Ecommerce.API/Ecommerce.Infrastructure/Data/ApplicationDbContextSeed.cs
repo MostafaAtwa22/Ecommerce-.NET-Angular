@@ -3,8 +3,7 @@ using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Infrastructure.Repositories;
-using Ecommerce.Infrastructure.Services;
+using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,6 +13,8 @@ namespace Ecommerce.Infrastructure.Data
     public static class ApplicationDbContextSeed
     {
         public static async Task SeedAsync(ApplicationDbContext context,
+            UserManager<ApplicationUser> userManager,
+            IProductService productService,
             ILoggerFactory loggerFactory)
         {
             try
@@ -57,6 +58,49 @@ namespace Ecommerce.Infrastructure.Data
                     foreach (var DeliveryMethod in DeliveryMethods!)
                         await context.DeliveryMethods.AddAsync(DeliveryMethod);
                     await context.SaveChangesAsync();
+                }
+                if (!context.ProductReviews.Any())
+                {
+                    // Get all customers
+                    var customers = await userManager.GetUsersInRoleAsync(Role.Customer.ToString());
+                    if (!customers.Any())
+                    {
+                        return;
+                    }
+
+                    var products = await context.Products.ToListAsync();
+                    if (!products.Any())
+                    {
+                        return;
+                    }
+
+                    var random = new Random();
+
+                    var reviews = new List<ProductReview>();
+
+                    foreach (var customer in customers)
+                    {
+                        foreach (var product in products)
+                        {
+                            reviews.Add(new ProductReview
+                            {
+                                ProductId = product.Id,
+                                ApplicationUserId = customer.Id,
+                                Rating = random.Next(1, 6),
+                                Comment = $"Review for {product.Name} by {customer.UserName}",
+                                CreatedAt = DateTime.UtcNow
+                            });
+                        }
+                    }
+
+                    await context.ProductReviews.AddRangeAsync(reviews);
+                    await context.SaveChangesAsync();
+
+                    foreach (var product in products)
+                    {
+                        await productService.UpdateProductRatingAsync(product.Id);
+                    }
+
                 }
             }
             catch (Exception ex)

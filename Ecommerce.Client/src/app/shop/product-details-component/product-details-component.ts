@@ -100,7 +100,7 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
   // Rating Methods
   getAverageRating(): number {
-    return parseFloat(this.product.avrageRating) || 0;
+    return parseFloat(this.product.averageRating) || 0;
   }
 
   getStarsArray(): string[] {
