@@ -19,7 +19,7 @@ namespace Ecommerce.API
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                });            
+                });
             builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentityServices(builder.Configuration);
@@ -33,6 +33,8 @@ namespace Ecommerce.API
             await app.AutoUpdateDataBaseAsync();
 
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseRequestTimingMiddleware();
 
             // Swagger in development
             if (app.Environment.IsDevelopment())
