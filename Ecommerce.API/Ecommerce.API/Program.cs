@@ -1,6 +1,7 @@
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers;
 using Ecommerce.API.Middlewares;
+using Ecommerce.API.Options;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -21,6 +22,8 @@ namespace Ecommerce.API
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
             builder.Services.AddApplicationServices();
+            builder.Services.Configure<RequestTimingOptions>(
+                builder.Configuration.GetSection("RequestTiming"));
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();

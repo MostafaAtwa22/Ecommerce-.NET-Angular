@@ -12,7 +12,7 @@ import { ReviewParams } from '../shared/modules/ReviewParams';
 export class ProductReviewService {
   private baseUrl = `${Environment.baseUrl}/api/ProductReviews`;
 
-  private reviewsCache = new Map<number, IProductReview[]>(); 
+  private reviewsCache = new Map<number, IProductReview[]>();
   reviewParams = new ReviewParams();
   pagination = new Pagination<IProductReview>();
 
@@ -53,9 +53,8 @@ export class ProductReviewService {
     return this.http.get<Pagination<IProductReview>>(`${this.baseUrl}/${productId}`, { params })
       .pipe(
         tap(response => {
-          // Cache all reviews (you can optimize caching by pages if needed)
           this.reviewsCache.set(productId, [...cachedReviews, ...response.data]);
-          this.pagination = response; // store pagination object
+          this.pagination = response;
         })
       );
   }
@@ -65,7 +64,7 @@ export class ProductReviewService {
       .pipe(
         tap(created => {
           const cached = this.reviewsCache.get(review.productId) || [];
-          cached.push(created);
+          cached.unshift(created); // Add at beginning for newest first
           this.reviewsCache.set(review.productId, cached);
         })
       );
@@ -107,5 +106,17 @@ export class ProductReviewService {
   resetReviewParams() {
     this.reviewParams = new ReviewParams();
     return this.reviewParams;
+  }
+
+  clearProductCache(productId: number) {
+    this.reviewsCache.delete(productId);
+  }
+
+  getAverageRating(productId: number): number {
+    const cached = this.reviewsCache.get(productId);
+    if (!cached || cached.length === 0) return 0;
+
+    const sum = cached.reduce((acc, review) => acc + review.rating, 0);
+    return Math.round((sum / cached.length) * 10) / 10;
   }
 }

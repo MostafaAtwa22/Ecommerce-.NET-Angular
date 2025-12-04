@@ -8,7 +8,7 @@ namespace Ecommerce.Core.Entities
         [Required, MinLength(3), MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
-        [Required, MinLength(10), MaxLength(500)]
+        [Required, MinLength(10), MaxLength(1500)]
         public string Description { get; set; } = string.Empty;
 
         [Required]

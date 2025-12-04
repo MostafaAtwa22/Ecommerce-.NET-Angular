@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using Microsoft.Extensions.Options;
+using Ecommerce.API.Options;
 
 namespace Ecommerce.API.Middlewares
 {
@@ -6,16 +8,16 @@ namespace Ecommerce.API.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestTimingMiddleware> _logger;
-
-        private const int FastThreshold = 300;    
-        private const int SlowThreshold = 1000;  
+        private readonly RequestTimingOptions _options;
 
         public RequestTimingMiddleware(
             RequestDelegate next,
-            ILogger<RequestTimingMiddleware> logger)
+            ILogger<RequestTimingMiddleware> logger,
+            IOptions<RequestTimingOptions> options)
         {
             _next = next;
             _logger = logger;
+            _options = options.Value;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -29,21 +31,24 @@ namespace Ecommerce.API.Middlewares
 
             string category = elapsedMs switch
             {
-                < FastThreshold => "Fast",
-                < SlowThreshold => "Moderate",
+                var ms when ms < _options.FastThreshold => "Fast",
+                var ms when ms < _options.SlowThreshold => "Moderate",
                 _ => "Slow"
             };
 
             _ = category switch
             {
-                "Fast" => Log("FAST", context, elapsedMs),
+                "Fast"     => Log("FAST", context, elapsedMs),
                 "Moderate" => Log("MODERATE", context, elapsedMs),
-                "Slow" => LogWarning("SLOW", context, elapsedMs),
-                _ => Log("UNKNOWN", context, elapsedMs)
+                "Slow"     => LogWarning("SLOW", context, elapsedMs),
+                _          => Log("UNKNOWN", context, elapsedMs)
             };
 
-            context.Response.Headers["X-Request-Duration-ms"] = elapsedMs.ToString();
-            context.Response.Headers["X-Request-Speed"] = category;
+            if (!context.Response.HasStarted)
+            {
+                context.Response.Headers["X-Request-Duration-ms"] = elapsedMs.ToString();
+                context.Response.Headers["X-Request-Speed"] = category;
+            }
         }
 
         private bool Log(string prefix, HttpContext context, long ms)

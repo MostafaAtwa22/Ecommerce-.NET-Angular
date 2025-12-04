@@ -16,16 +16,22 @@ namespace Ecommerce.API.Extensions
 
             try
             {
-                // Seed Identity database (users & roles)
+                // 1. Migrate the database first
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                await context.Database.MigrateAsync();
+
+                // 2. Seed Identity (users & roles) - needs to happen before product reviews
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 await ApplicationIdentityDbContextSeed.SeedAsync(userManager, roleManager, loggerFactory);
 
-                // Seed the main app database
-                var context = services.GetRequiredService<ApplicationDbContext>();
+                // 3. Seed main product data
+                await ApplicationDbContextSeed.SeedAsync(context, loggerFactory);
+
+                // 4. Seed product reviews (requires users and products to exist)
                 var productService = services.GetRequiredService<IProductService>();
-                await context.Database.MigrateAsync();
-                await ApplicationDbContextSeed.SeedAsync(context, userManager, productService, loggerFactory);
+                await ApplicationDbContextSeed.SeedProductReviewsAsync(context, userManager, productService, loggerFactory);
+
             }
             catch (Exception ex)
             {

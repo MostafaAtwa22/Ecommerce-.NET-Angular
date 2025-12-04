@@ -1,7 +1,7 @@
 [
   {
-    "Name": "Element Section Skateboard",
-    "Description": "Professional 8.25-inch skateboard deck crafted from 7-ply Canadian maple with medium concave. Features precision aluminum trucks, 99A urethane wheels, and high-speed bearings. Perfect for street and park skating with reliable performance.",
+    "Name": "Element Section Skateboard Complete",
+    "Description": "Professional 8.25-inch skateboard deck crafted from 7-ply Canadian maple with medium concave for optimal control. Features precision-grade aluminum trucks, 99A urethane wheels perfect for street and park skating, and high-speed bearings for smooth rolls. The water-resistant graphic is protected by premium grip tape. Ideal for intermediate to advanced riders seeking reliable performance for technical tricks and urban commuting. Board includes reinforced mounting holes and comes fully assembled with professional hardware.",
     "Price": 89.99,
     "Quantity": 50,
     "PictureUrl": "images/products/sb-ang1.png",
@@ -9,8 +9,8 @@
     "ProductBrandId": 1
   },
   {
-    "Name": "Santa Cruz Classic Cruiser",
-    "Description": "Vintage-style 10-inch cruiser board with classic dot graphic. Made from 9-ply maple with old-school shape and kicktail. Equipped with 60mm 78A soft wheels for smooth rides on rough pavement. Great for commuting.",
+    "Name": "Santa Cruz Classic Dot Reissue",
+    "Description": "Vintage-style 10-inch cruiser board with classic dot graphic reproduction. Made from 9-ply maple for extra durability, featuring old-school shape with kicktail. Equipped with 60mm 78A soft wheels perfect for rough pavement and long-distance pushing. Reverse kingpin trucks provide stable, carvy turns. Premium ABEC-5 bearings ensure smooth rolling. This reissue honors the 1970s skateboarding heritage while incorporating modern construction techniques. Great for commuters, beginners, and collectors seeking nostalgic ride experience with contemporary reliability.",
     "Price": 129.99,
     "Quantity": 40,
     "PictureUrl": "images/products/sb-ang2.png",
@@ -19,7 +19,7 @@
   },
   {
     "Name": "Plan B Team Deck 8.0",
-    "Description": "Professional 8.0-inch deck designed for technical street skating. Features steep concave for maximum control and lightweight construction with 7-ply maple. Ideal for flip tricks and advanced maneuvers.",
+    "Description": "Professional skate deck designed in collaboration with Plan B team riders. Technical 8.0-inch width perfect for flip tricks and technical street skating. Features steep concave for maximum control and lightweight construction with 7-ply maple and carbon fiber reinforcement in stress points. Heat-transferred graphic sealed with epoxy coating. Includes molded wheel wells to prevent bite. Designed for serious skaters who demand responsive performance and durability. The balanced pop and crisp snapping point make it ideal for advanced trick execution.",
     "Price": 74.99,
     "Quantity": 60,
     "PictureUrl": "images/products/sb-core1.png",
@@ -28,7 +28,7 @@
   },
   {
     "Name": "Almost Impact Plus Deck",
-    "Description": "Innovative 8.125-inch deck with carbon fiber reinforcement technology. 50% stronger construction prevents breakage while maintaining traditional flex. Medium concave with radial bend for comfortable control.",
+    "Description": "Innovative 8.125-inch deck featuring Almost's Impact Plus technology with carbon fiber ribs for 50% stronger construction while maintaining traditional flex. Revolutionary design prevents breakage and extends deck life significantly. Medium concave with slight radial bend for comfortable control. Features glow-in-the-dark graphic layer beneath clear grip tape. Perfect for skaters who frequently break decks or ride aggressively at skateparks. Combines cutting-edge materials with traditional skateboard feel. Backed by 6-month strength warranty against breakage under normal use.",
     "Price": 94.99,
     "Quantity": 35,
     "PictureUrl": "images/products/sb-core2.png",
@@ -37,7 +37,7 @@
   },
   {
     "Name": "Baker 8.5 Pro Model",
-    "Description": "Wide 8.5-inch deck designed for transition skating and big gaps. Extra width provides stability at high speeds. Mellow concave comfortable for long sessions. Perfect for park and vert skating.",
+    "Description": "Wide 8.5-inch deck designed for transition skating and big gaps. Extra width provides stability at high speeds and better landing surface. Features mellow concave that's comfortable for long sessions. Made from 7-ply maple with resin epoxy bonding. Heat-treated for moisture resistance and consistent pop. Designed by professional Baker team riders for park and vert skating. The extended wheelbase offers superior stability, while the full shape provides ample foot platform. Perfect for skaters who prioritize control and power over technical flip tricks.",
     "Price": 79.99,
     "Quantity": 45,
     "PictureUrl": "images/products/sb-react1.png",
@@ -45,8 +45,8 @@
     "ProductBrandId": 4
   },
   {
-    "Name": "Mini Logo Beginner Deck",
-    "Description": "Affordable 7.75-inch deck perfect for beginners and younger riders. Made from 7-ply maple with medium concave. Simple design with quality construction at accessible price point.",
+    "Name": "Mini Logo 7.75 Beginner Deck",
+    "Description": "Affordable 7.75-inch deck perfect for beginners and younger riders. Simple, clean aesthetic with durable construction at accessible price point. Made from 7-ply maple with quality control matching premium brands. Medium concave provides balance between control and comfort. Unfinished tail and nose for grip tape customization. Designed as entry-level deck that doesn't compromise on essential quality. Great for first-time buyers, rental fleets, or backup boards. The consistent shape and reliable pop help beginners develop fundamental skills without equipment limitations.",
     "Price": 44.99,
     "Quantity": 55,
     "PictureUrl": "images/products/sb-ts1.png",
@@ -55,7 +55,7 @@
   },
   {
     "Name": "Thrasher Flame Beanie",
-    "Description": "Classic skate beanie with Thrasher Magazine flame logo. Premium acrylic blend provides warmth without itchiness. One-size-fits-most with stretch construction. Essential skate accessory.",
+    "Description": "Classic skate beanie featuring iconic Thrasher Magazine flame logo. Made from premium acrylic blend providing warmth without itchiness. One-size-fits-most stretch construction with folded cuff for adjustable fit. Breathable knit pattern prevents overheating during activity. Reinforced stitching at stress points ensures durability. The low-profile design fits comfortably under helmets. Machine washable with color-fast dye that won't bleed. Essential skate accessory providing both style and function during cooler months. Officially licensed Thrasher product.",
     "Price": 24.99,
     "Quantity": 100,
     "PictureUrl": "images/products/hat-core1.png",
@@ -64,7 +64,7 @@
   },
   {
     "Name": "Carhartt Watch Beanie",
-    "Description": "Durable workwear beanie made from 100% acrylic. Rib-knit design provides stretch and warmth. Reinforced edge binding won't unravel. Perfect for fall and winter sessions.",
+    "Description": "Durable workwear-inspired beanie constructed from 100% acrylic with Carhartt's signature rugged quality. Rib-knit design provides excellent stretch and recovery. Features reinforced edge binding that won't unravel. The thick knit offers substantial warmth in cold conditions while remaining breathable. Classic cuffed design with subtle Carhartt logo patch. Perfect for skate sessions in fall and winter, job sites, or everyday casual wear. Designed for all-day comfort with no-seam construction that eliminates pressure points.",
     "Price": 19.99,
     "Quantity": 90,
     "PictureUrl": "images/products/hat-react1.png",
@@ -73,7 +73,7 @@
   },
   {
     "Name": "Supreme Box Logo Beanie",
-    "Description": "Premium wool blend beanie with Supreme's iconic box logo. 80% wool and 20% acrylic for optimal warmth. Dense knit construction with wind resistance. Limited edition.",
+    "Description": "Premium wool blend beanie featuring Supreme's iconic box logo. Made from 80% wool and 20% acrylic for optimal warmth and comfort. The dense knit construction provides wind resistance while maintaining breathability. Features a subtle fit with flat top design. The embroidered logo uses high-thread count stitching for durability. This limited-edition accessory combines streetwear fashion with functional winter wear. The medium weight makes it suitable for various temperatures. A collector's item that also serves as practical headwear for cold-weather skating.",
     "Price": 64.99,
     "Quantity": 70,
     "PictureUrl": "images/products/hat-react2.png",
@@ -81,8 +81,8 @@
     "ProductBrandId": 4
   },
   {
-    "Name": "Mechanix Work Gloves",
-    "Description": "Professional-grade gloves for skateboard maintenance. Synthetic leather with breathable spandex back. Padded palms for impact protection. Touchscreen-compatible index finger.",
+    "Name": "Mechanix Original Gloves",
+    "Description": "Professional-grade work gloves adapted for skateboard grip tape maintenance and hardware work. Made from synthetic leather with breathable spandex back. Features padded palms for impact protection and reinforced fingertips for durability. The form-fitting design maintains dexterity for precise tasks. Perfect for adjusting trucks, changing wheels, or doing board repairs. The touchscreen-compatible index finger allows phone use without removal. Originally designed for mechanics, these gloves protect hands during skateboard maintenance while providing excellent grip.",
     "Price": 29.99,
     "Quantity": 80,
     "PictureUrl": "images/products/glove-code1.png",
@@ -90,8 +90,8 @@
     "ProductBrandId": 3
   },
   {
-    "Name": "Hestra Ski Gloves",
-    "Description": "Waterproof Gore-Tex gloves for winter skateboarding. 40g insulation provides warmth in freezing conditions. Pre-curved fingers reduce fatigue. Adjustable wrist strap.",
+    "Name": "Hestra Heli Ski Gloves",
+    "Description": "High-performance ski gloves repurposed for winter skateboarding. Waterproof Gore-Tex insert with 40g insulation provides warmth in sub-freezing conditions. Pre-curved fingers reduce fatigue during long sessions. Reinforced palm with grip-enhancing silicone pattern. Features adjustable wrist strap and gauntlet to keep out snow and moisture. The removable liner allows for drying and customization. Though designed for skiing, these gloves offer perfect protection for cold-weather skating with exceptional dexterity and grip retention.",
     "Price": 129.99,
     "Quantity": 85,
     "PictureUrl": "images/products/glove-code2.png",
@@ -100,7 +100,7 @@
   },
   {
     "Name": "Burton Gore-Tex Mittens",
-    "Description": "Snowboard mittens with Gore-Tex waterproof technology. Mitt design keeps fingers together for maximum warmth. Articulated thumb for natural grip. Durable palm material.",
+    "Description": "Snowboard mittens with Gore-Tex waterproof technology, ideal for wet winter conditions. Mitt design keeps fingers together for maximum warmth. Features articulated thumb and pre-shaped palm for natural grip position. Includes adjustable wrist leashes to prevent loss. The durable palm material withstands abrasion from grip tape. 150g insulation provides warmth without bulk. Interior pocket for hand warmers. Though designed for snowboarding, these mittens offer superior protection for dedicated winter skaters facing rain, snow, and freezing temperatures.",
     "Price": 89.99,
     "Quantity": 75,
     "PictureUrl": "images/products/glove-react1.png",
@@ -108,8 +108,8 @@
     "ProductBrandId": 4
   },
   {
-    "Name": "Arc'teryx Windproof Gloves",
-    "Description": "Technical windproof gloves made from Windstopper fabric. Minimal insulation maintains dexterity. Silicone grip pattern on palm enhances control. Perfect for chilly weather.",
+    "Name": "Arc'teryx Venta Gloves",
+    "Description": "Technical windproof gloves made from Windstopper fabric, perfect for chilly fall and spring skating. Minimal insulation maintains dexterity while blocking wind chill. Form-fitting design with articulated fingers allows natural board feel. Silicone grip pattern on palm enhances control. The stretch construction provides snug fit without restriction. Water-resistant treatment sheds light precipitation. Ideal for transitional seasons when full insulation isn't needed but wind protection is essential. Lightweight enough to carry in pocket when not in use.",
     "Price": 79.99,
     "Quantity": 95,
     "PictureUrl": "images/products/glove-react2.png",
@@ -117,8 +117,8 @@
     "ProductBrandId": 4
   },
   {
-    "Name": "Vans SK8-Hi Pro Shoes",
-    "Description": "Iconic high-top skate shoes with Pro construction. Suede and canvas upper with reinforced toe caps. UltraCush HD insoles for impact protection. Waffle outsole for superior grip.",
+    "Name": "Vans SK8-Hi Pro",
+    "Description": "Iconic high-top skate shoes with Pro construction for enhanced durability. Features suede and canvas upper with reinforced toe caps and side panels. The UltraCush HD insoles provide impact protection for jumps and gaps. Duracap rubber underlays in high-wear areas. Waffle outsole offers superior board feel and grip. The high-top design provides ankle support without restricting movement. Designed in collaboration with professional skate team for optimal performance. Available in multiple colorways to match personal style.",
     "Price": 89.99,
     "Quantity": 25,
     "PictureUrl": "images/products/boot-redis1.png",
@@ -127,7 +127,7 @@
   },
   {
     "Name": "Nike SB Dunk Low",
-    "Description": "Legendary skateboarding sneaker combining basketball heritage with skate performance. Premium leather and suede construction. Zoom Air unit for responsive cushioning. Classic silhouette.",
+    "Description": "Legendary skateboarding sneaker combining basketball heritage with skate performance. Features premium leather and suede construction with padded tongue and collar. Zoom Air unit in heel provides responsive cushioning. The herringbone outsole pattern offers multi-directional grip. Reinforced stitching in ollie areas increases durability. The classic silhouette works both on and off the board. Originally a basketball shoe, the Dunk was adopted by skateboarders for its supportive fit and board feel. Now purpose-built for skating with SB modifications.",
     "Price": 99.99,
     "Quantity": 40,
     "PictureUrl": "images/products/boot-core2.png",
@@ -136,7 +136,7 @@
   },
   {
     "Name": "Adidas Busenitz Pro",
-    "Description": "Professional model designed with Dennis Busenitz. Full-grain leather upper with reinforced toe and heel. Cupsole construction for impact protection. Classic three-stripe design.",
+    "Description": "Professional model designed with Dennis Busenitz featuring cupsole construction for impact protection. Full-grain leather upper with reinforced toe and heel. The adiPRENE+ insert provides cushioning for landings. Geofit tongue and collar offer adaptive comfort. The vulcanized-style outsole maintains board feel while cupsole adds durability. Torsion system provides midfoot stability. Designed for technical street skating with emphasis on flick control and durability. The classic three-stripe design offers timeless aesthetic.",
     "Price": 94.99,
     "Quantity": 30,
     "PictureUrl": "images/products/boot-core1.png",
@@ -145,7 +145,7 @@
   },
   {
     "Name": "Converse CONS CTS",
-    "Description": "Vulcanized skate shoe with Nike Zoom Air cushioning. Canvas and suede upper with reinforced toe cap. CONS rubber outsole offers grip and flexibility. Mid-top design.",
+    "Description": "Vulcanized skate shoe featuring Nike Zoom Air cushioning in a classic Chuck Taylor silhouette. Canvas and suede upper with reinforced toe cap. The Zoom Air unit provides responsive cushioning uncommon in vulcanized shoes. CONS rubber outsole offers superior grip and flexibility. The mid-top design provides ankle coverage while maintaining freedom of movement. Designed for skaters who prefer vulcanized board feel but want additional impact protection. Combines classic style with modern skate technology.",
     "Price": 84.99,
     "Quantity": 35,
     "PictureUrl": "images/products/boot-ang2.png",
@@ -154,7 +154,7 @@
   },
   {
     "Name": "Etnies Marana Michelin",
-    "Description": "Ultra-durable skate shoe with Michelin rubber outsole technology. Exceptional rubber compound for extended wear. STI Evolution foam for impact protection. Water-resistant treatment.",
+    "Description": "Ultra-durable skate shoe featuring Michelin rubber outsole technology. The partnership with tire manufacturer Michelin creates exceptionally durable rubber compound. STI Evolution foam provides impact protection. Toe cap and heel reinforcements extend shoe life. The cupsole construction offers support for heavy impact. Designed for skaters who wear through shoes quickly or skate rough surfaces. The advanced rubber compound maintains grip as it wears. Water-resistant treatment protects against moisture.",
     "Price": 109.99,
     "Quantity": 0,
     "PictureUrl": "images/products/boot-ang1.png",
@@ -163,7 +163,7 @@
   },
   {
     "Name": "New Balance Numeric 440",
-    "Description": "Technical skate shoe designed for precision and control. Pig suede and ripstop upper for durability. Cush+ insole for comfort. Ndurance rubber outsole for wear resistance.",
+    "Description": "Technical skate shoe designed for precision and control. Features pig suede and ripstop upper for durability. Cush+ insole provides comfort and impact absorption. The Ndurance rubber outsole offers exceptional wear resistance. Toe-perception design enhances board feel for flip tricks. The mid-foot shank adds stability during landings. Designed with professional skate team input for optimal performance balance. Suitable for both street and park skating with emphasis on technical control.",
     "Price": 89.99,
     "Quantity": 0,
     "PictureUrl": "images/products/boot-ang2.png",
@@ -171,8 +171,17 @@
     "ProductBrandId": 1
   },
   {
+    "Name": "Lakai Griffin Select",
+    "Description": "Signature model for professional skater Griffin Gass. Features suede and canvas upper with innovative lacing system. Dual-density insole provides cushioning and support. The vulcanized construction offers superior board feel. Reinforced ollie area with double stitching. The asymmetrical collar design provides ankle comfort. Designed for technical street skating with emphasis on flick control and durability. The clean aesthetic works for both skating and casual wear.",
+    "Price": 79.99,
+    "Quantity": 0,
+    "PictureUrl": "images/products/boot-ang2.png",
+    "ProductTypeId": 3,
+    "ProductBrandId": 1
+  },
+  {
     "Name": "Emerica Romero Laced",
-    "Description": "Classic cupsole skate shoe with vulcanized-style board feel. Premium suede upper with reinforced stitching. STI foam system for impact protection. Gum rubber outsole for grip.",
+    "Description": "Classic cupsole skate shoe with vulcanized-style board feel. Features premium suede upper with reinforced stitching patterns. The STI foam system provides impact protection. Gum rubber outsole offers excellent grip in various conditions. The padded tongue and collar enhance comfort. Designed for durability without sacrificing performance. The traditional lace-to-toe design provides adjustable fit. Suitable for all styles of skateboarding with balanced cushioning and responsiveness.",
     "Price": 74.99,
     "Quantity": 0,
     "PictureUrl": "images/products/boot-ang1.png",
