@@ -1,6 +1,7 @@
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers;
 using Ecommerce.API.Middlewares;
+using Ecommerce.API.Options;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -19,8 +20,10 @@ namespace Ecommerce.API
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                });            
+                });
             builder.Services.AddApplicationServices();
+            builder.Services.Configure<RequestTimingOptions>(
+                builder.Configuration.GetSection("RequestTiming"));
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
@@ -33,6 +36,8 @@ namespace Ecommerce.API
             await app.AutoUpdateDataBaseAsync();
 
             app.UseMiddleware<ExceptionMiddleware>();
+
+            app.UseRequestTimingMiddleware();
 
             // Swagger in development
             if (app.Environment.IsDevelopment())

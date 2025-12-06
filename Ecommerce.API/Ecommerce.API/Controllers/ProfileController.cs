@@ -5,6 +5,7 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Extensions;
+using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("profile")]
+        [Cached(500)]
         public async Task<ActionResult<ProfileResponseDto>> GetProfile()
         {
             var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
@@ -125,6 +127,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("address")]
+        [Cached(500)]
         public async Task<ActionResult<AddressDto>> GetAddress()
         {
             var user = await _userManager.FindUserByClaimsPrinciplesWithAddressAsync(HttpContext.User);

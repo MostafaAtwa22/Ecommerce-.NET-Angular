@@ -29,6 +29,7 @@ namespace Ecommerce.Infrastructure.Services
                 ? 0
                 : Math.Round(reviews.Average(r => r.Rating), 1);
 
+            _unitOfWork.Repository<Product>().Update(product);
             var affected = await _unitOfWork.Complete();
             if (affected > 0) return true;
 

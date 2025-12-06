@@ -16,7 +16,10 @@ namespace Ecommerce.API.Extensions
 
             builder.Services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseSqlServer(connectionString);
+                opt.UseSqlServer(connectionString, sql =>
+                {
+                    sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+                });
             });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(c =>

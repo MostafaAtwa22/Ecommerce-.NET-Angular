@@ -16,5 +16,6 @@ namespace Ecommerce.Core.Params
         public int? TypeId { get; set; }
         public string? Sort { get; set; }
         public string? Search { get; set; }
+        public decimal? MinAverageRating { get; set; }
     }
 }

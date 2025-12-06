@@ -29,7 +29,7 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.UserName,
                     o => o.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : null))
                 .ForMember(dest => dest.ProfilePictureUrl,
-                    o => o.MapFrom<ImageUrlResolver<ProductReview, ProductReviewDto>>()) // <-- correct resolver
+                    o => o.MapFrom<ImageUrlResolver<ProductReview, ProductReviewDto>>())
                 .ForMember(dest => dest.FirstName,
                     o => o.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName : null))
                 .ForMember(dest => dest.LastName,
