@@ -40,7 +40,7 @@ namespace Ecommerce.API.Controllers
             _mapper = mapper;
         }
 
-        [Cached(600)]
+        // [Cached(600)]
         [HttpGet("{productId}")]
         public async Task<ActionResult<Pagination<ProductReviewDto>>> Get(int productId, [FromQuery] ProductReviewsSpecParams specParams)
         {
@@ -49,7 +49,7 @@ namespace Ecommerce.API.Controllers
 
             var totalItems = await _unitOfWork.Repository<ProductReview>()
                 .CountAsync(countSpec);
-    
+
             var reviews = await _unitOfWork.Repository<ProductReview>()
                 .GetAllWithSpecAsync(spec);
 
@@ -101,7 +101,7 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(400, "Failed to add review."));
             }
 
-            return await ReturnSingleReviewAsync(dto.ProductId);
+            return Ok(_mapper.Map<ProductReviewDto>(review));
         }
 
         [Authorize(Roles = "Customer")]
@@ -136,7 +136,7 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(400, "Failed to update review."));
             }
 
-            return await ReturnSingleReviewAsync(dto.ProductId);
+            return Ok(_mapper.Map<ProductReviewDto>(review));
         }
 
         [Authorize(Roles = "Customer")]
@@ -173,17 +173,53 @@ namespace Ecommerce.API.Controllers
             return NoContent();
         }
 
+        [HttpPost("{id}/helpful")]
+        [Authorize]
+        public async Task<ActionResult> MarkHelpful(int id)
+        {
+            var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
+            if (review is null)
+                return NotFound(new ApiResponse(404, "Review not found."));
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
+
+            if (review.ApplicationUserId == user!.Id)
+                return BadRequest(new ApiResponse(400, "You can't make feedback to your self"));
+
+            review.HelpfulCount++;
+            await _unitOfWork.Complete();
+
+            var spec = new ProductReviewsWithApplicationUser(review.Id);
+            var reviewWithSpec = await _unitOfWork.Repository<ProductReview>()
+                .GetWithSpecAsync(spec);
+            return Ok(_mapper.Map<ProductReviewDto>(reviewWithSpec));
+        }
+
+        [HttpPost("{id}/not-helpful")]
+        [Authorize] 
+        public async Task<ActionResult> MarkNotHelpful(int id) 
+        { 
+            var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id); 
+            if (review is null) 
+                return NotFound(new ApiResponse(404, "Review not found.")); 
+            
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User); 
+            if (review.ApplicationUserId == user!.Id) 
+                return BadRequest(new ApiResponse(400, "You can't make feedback to your self")); 
+            
+            review.NotHelpfulCount++; 
+            await _unitOfWork.Complete(); 
+
+            var spec = new ProductReviewsWithApplicationUser(review.Id); 
+            var reviewWithSpec = await _unitOfWork.Repository<ProductReview>()
+                .GetWithSpecAsync(spec); 
+        
+            return Ok(_mapper.Map<ProductReviewDto>(reviewWithSpec)); 
+        }
+
         private async Task<ApplicationUser> GetCurrentUserAsync()
         {
             return await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User)
                     ?? throw new Exception("User not found");
-        }
-
-        private async Task<ActionResult<ProductReviewDto>> ReturnSingleReviewAsync(int productId)
-        {
-            var spec = new ProductReviewsWithApplicationUser(productId);
-            var review = await _unitOfWork.Repository<ProductReview>().GetWithSpecAsync(spec);
-            return Ok(_mapper.Map<ProductReviewDto>(review));
         }
     }
 }

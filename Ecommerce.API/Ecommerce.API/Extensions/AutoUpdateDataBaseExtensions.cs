@@ -16,27 +16,33 @@ namespace Ecommerce.API.Extensions
 
             try
             {
-                // 1. Migrate the database first
+                // 1. Apply database migrations 
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 await context.Database.MigrateAsync();
 
-                // 2. Seed Identity (users & roles) - needs to happen before product reviews
+                // 2. Seed Identity (Roles + Users)
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 await ApplicationIdentityDbContextSeed.SeedAsync(userManager, roleManager, loggerFactory);
 
-                // 3. Seed main product data
+                // 3. Seed main entities (Products, Categories, etc.)
                 await ApplicationDbContextSeed.SeedAsync(context, loggerFactory);
 
-                // 4. Seed product reviews (requires users and products to exist)
+                // 4. Resolve ProductService — REQUIRED for review seeding
                 var productService = services.GetRequiredService<IProductService>();
-                await ApplicationDbContextSeed.SeedProductReviewsAsync(context, userManager, productService, loggerFactory);
 
+                // 5. Seed product reviews (requires users + products + productService)
+                await ApplicationDbContextSeed.SeedProductReviewsAsync(
+                    context,
+                    userManager,
+                    productService,
+                    loggerFactory
+                );
             }
             catch (Exception ex)
             {
                 var logger = loggerFactory.CreateLogger(typeof(AutoUpdateDataBaseExtensions));
-                logger.LogError(ex, "❌ An error occurred during database migration or seeding.");
+                logger.LogError(ex, "❌ An error occurred during database update or seeding.");
             }
 
             return app;

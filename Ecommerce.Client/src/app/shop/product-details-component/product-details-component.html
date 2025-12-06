@@ -175,22 +175,42 @@
 
       <!-- Customer Reviews -->
       <div class="reviews-section mt-4">
-        <app-reviews [productId]="product.id" [productName]="product.name"></app-reviews>
+        <app-product-review [productId]="product.id" [productName]="product.name"></app-product-review>
       </div>
     </ng-container>
 
-    <!-- Loading / Error -->
+    <!-- Loading/Error Template -->
     <ng-template #loadingOrError>
-      <div class="loading-container text-center py-5">
-        <div *ngIf="loading" class="loading-spinner">
-          <div class="spinner-ring"></div>
-          <p class="loading-text mt-3">Loading product details...</p>
+      <div class="loading-error-container">
+        <!-- Loading State -->
+        <div *ngIf="loading" class="loading-state text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-3">Loading product details...</p>
         </div>
-        <div *ngIf="!loading && errorMessage" class="error-state">
-          <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-          <h5 class="text-danger">{{ errorMessage }}</h5>
-          <button class="btn-back-shop mt-3" routerLink="/shop">
-            <i class="fas fa-arrow-left me-2"></i> Back to Shop
+
+        <!-- Error State -->
+        <div *ngIf="!loading && errorMessage" class="error-state text-center">
+          <div class="error-icon mb-3">
+            <i class="fas fa-exclamation-triangle fa-3x text-danger"></i>
+          </div>
+          <h4>Oops! Something went wrong</h4>
+          <p class="text-muted">{{ errorMessage }}</p>
+          <button class="btn btn-primary mt-3" routerLink="/">
+            <i class="fas fa-home me-2"></i>Back to Home
+          </button>
+        </div>
+
+        <!-- Product Not Found State -->
+        <div *ngIf="!loading && !errorMessage && !product" class="not-found-state text-center">
+          <div class="not-found-icon mb-3">
+            <i class="fas fa-search fa-3x text-warning"></i>
+          </div>
+          <h4>Product Not Found</h4>
+          <p class="text-muted">The product you're looking for doesn't exist or has been removed.</p>
+          <button class="btn btn-primary mt-3" routerLink="/">
+            <i class="fas fa-home me-2"></i>Back to Home
           </button>
         </div>
       </div>

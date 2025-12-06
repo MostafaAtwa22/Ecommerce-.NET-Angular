@@ -2,20 +2,17 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  font-family: inherit;
 }
 
 .stepper-header {
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
 
 .stepper-steps {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
   position: relative;
 }
 
@@ -30,188 +27,163 @@
 }
 
 .step-circle {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background-color: #2d3748;
-  color: #a0aec0;
+  background: white;
+  border: 1px solid #d1d7dc;
+  color: #6a6f73;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  margin-bottom: 8px;
-  border: 2px solid #4a5568;
-  transition: all 0.3s ease;
-  position: relative;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
 }
 
 .step-content {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .step-label {
-  font-size: 12px;
-  color: #a0aec0;
+  font-size: 0.75rem;
+  color: #6a6f73;
   font-weight: 500;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
   text-align: center;
+  transition: all 0.2s ease;
 }
 
 .step-connector {
   position: absolute;
-  top: 18px;
-  left: calc(50% + 18px);
+  top: 16px;
+  left: calc(50% + 16px);
   right: -50%;
-  height: 2px;
-  background-color: #4a5568;
+  height: 1px;
+  background: #d1d7dc;
   z-index: 0;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
 /* Active step styling */
 .step.active .step-circle {
-  background-color: #667eea;
-  border-color: #667eea;
+  background: #5624d0;
+  border-color: #5624d0;
   color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .step.active .step-label {
-  color: #667eea;
+  color: #0c111d;
   font-weight: 600;
 }
 
 /* Completed step styling */
 .step.completed .step-circle {
-  background-color: #48bb78;
-  border-color: #48bb78;
+  background: #1e6055;
+  border-color: #1e6055;
   color: white;
 }
 
 .step.completed .step-label {
-  color: #48bb78;
+  color: #1e6055;
+  font-weight: 500;
 }
 
 .step.completed .step-connector {
-  background-color: #48bb78;
+  background: #1e6055;
 }
 
 /* Error step styling */
 .step.error .step-circle {
-  background-color: #e53e3e;
-  border-color: #e53e3e;
+  background: #c91a1a;
+  border-color: #c91a1a;
   color: white;
-  box-shadow: 0 4px 12px rgba(229, 62, 62, 0.4);
 }
 
 .step.error .step-label {
-  color: #e53e3e;
+  color: #c91a1a;
   font-weight: 600;
 }
 
 .step.error .step-connector {
-  background-color: #e53e3e;
+  background: #c91a1a;
 }
 
 /* Pending step styling */
 .step.pending .step-circle {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-  color: #fff;
+  background: white;
+  border-color: #d1d7dc;
+  color: #6a6f73;
 }
 
 .step.pending .step-label {
-  color: #a0aec0;
+  color: #6a6f73;
 }
 
 /* Stepper Content */
 .stepper-content {
   width: 100%;
-  margin: 30px 0;
-  min-height: 300px;
+  margin: 1.5rem 0;
+  min-height: 200px;
 }
 
 /* Stepper Actions */
 .stepper-actions {
   display: flex;
-  gap: 20px; /* Increased gap for better spacing */
-  margin-top: 30px;
-  justify-content: center;
-  padding: 0 20px;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
 }
 
 .btn {
-  padding: 14px 20px; /* Adjusted padding for icons */
-  border: none;
-  border-radius: 12px; /* Slightly more rounded */
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  font-size: 16px;
-  text-decoration: none;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  min-width: 60px; /* Ensure consistent button size */
-  height: 50px; /* Consistent height */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 0.5rem;
 
   i {
-    font-size: 18px;
-    transition: transform 0.2s ease;
-  }
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-
-  &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-
-    i {
-      transform: translateX(2px);
-    }
+    font-size: 0.875rem;
   }
 
-  &:active:not(:disabled) {
-    transform: translateY(0);
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-  color: white;
+  background: white;
+  color: #6a6f73;
 
   &:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3);
-
-    i {
-      transform: translateX(-2px);
-    }
-  }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
+    background: #f7f9fa;
+    color: #0c111d;
   }
 }
 
-.btn:disabled {
-  background: #cbd5e0;
-  color: #a0aec0;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.btn-primary {
+  background: #5624d0;
+  color: white;
+  border-color: #5624d0;
 
-  i {
-    opacity: 0.5;
+  &:hover:not(:disabled) {
+    background: #401b9c;
+  }
+}
+
+.btn-success {
+  background: #1e6055;
+  color: white;
+  border-color: #1e6055;
+
+  &:hover:not(:disabled) {
+    background: #164c44;
   }
 }
 
@@ -220,59 +192,67 @@
   .stepper-steps {
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
+    gap: 1.5rem;
   }
 
   .step {
     flex-direction: row;
     width: 100%;
     align-items: center;
+    gap: 1rem;
   }
 
   .step-connector {
     position: absolute;
-    top: calc(100% + 8px);
-    left: 18px;
+    top: 100%;
+    left: 16px;
     right: auto;
-    width: 2px;
-    height: 40px;
+    width: 1px;
+    height: 1.5rem;
     transform: translateX(-50%);
   }
 
+  .step-circle {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
   .step-label {
-    margin-left: 15px;
     text-align: left;
+    margin: 0;
   }
 
   .stepper-actions {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0 10px;
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .btn {
-    padding: 12px 18px;
-    min-width: 55px;
-    height: 48px;
-
-    i {
-      font-size: 16px;
-    }
+    width: 100%;
+    justify-content: center;
   }
 }
 
-@media (max-width: 480px) {
-  .stepper-actions {
-    gap: 12px;
+@media (max-width: 576px) {
+  .stepper-header {
+    margin-bottom: 1.5rem;
   }
 
-  .btn {
-    padding: 10px 16px;
-    min-width: 50px;
-    height: 46px;
+  .stepper-content {
+    margin: 1rem 0;
+    min-height: 150px;
+  }
 
-    i {
-      font-size: 15px;
+  .step-label {
+    font-size: 0.6875rem;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+
+    .step-content {
+      font-size: 0.6875rem;
     }
   }
 }

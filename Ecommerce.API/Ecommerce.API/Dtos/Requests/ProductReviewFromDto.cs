@@ -10,7 +10,10 @@ namespace Ecommerce.API.Dtos.Requests
         [Range(1, 5)]
         public decimal Rating { get; set; }
 
-        [MaxLength(3000)]
-        public string? Comment { get; set; }
+        [Required, MaxLength(100)]
+        public string Headline { get; set; } = string.Empty;
+
+        [Required, MaxLength(3000)]
+        public string Comment { get; set; } = string.Empty;
     }
 }

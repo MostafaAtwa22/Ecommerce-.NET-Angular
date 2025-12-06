@@ -9,12 +9,17 @@ import { FormsModule } from '@angular/forms';
 import { BasketService } from '../../shared/services/basket-service';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
-import { ReviewsComponent } from "../../product-reviews/reviews.component";
+import { ProductReviewComponent } from "../../product-reviews/product-review.component";
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, ReviewsComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    ProductReviewComponent  // Make sure this import is correct
+  ],
   templateUrl: './product-details-component.html',
   styleUrls: ['./product-details-component.scss'],
 })
@@ -101,7 +106,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
     this._basketService.addItemToBasket(this.product, quantityToAdd).subscribe({
       next: () => {
-
         const wishlist = this._wishlistService.getCurrentWishListValue();
         if (wishlist && wishlist.items.some((item) => item.id === this.product.id)) {
           this._wishlistService.removeItemFromWishList({ id: this.product.id } as any);
@@ -116,7 +120,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   addToWishlist(): void {
     this._wishlistService.addItemToWishList(this.product).subscribe({
       next: () => {
-
         this._basketService.removeItemFromBasket({ id: this.product.id } as any);
       },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to add to wishlist'),

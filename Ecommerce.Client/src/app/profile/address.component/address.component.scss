@@ -3,23 +3,15 @@
 }
 
 .section-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border-radius: 24px;
-  padding: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow:
-    0 20px 50px rgba(15, 23, 42, 0.08),
-    0 8px 25px rgba(15, 23, 42, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
 
   &:hover {
-    box-shadow:
-      0 25px 60px rgba(15, 23, 42, 0.12),
-      0 12px 30px rgba(15, 23, 42, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 }
 
@@ -27,65 +19,68 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid #d1d7dc;
 
   .header-content {
     flex: 1;
 
     h3 {
-      margin: 0.5rem 0 0.25rem 0;
+      margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-weight: 600;
+      color: #0c111d;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      i {
+        color: #5624d0;
+      }
     }
 
     .eyebrow {
-      margin: 0;
+      margin: 0 0 0.25rem 0;
       text-transform: uppercase;
       font-size: 0.75rem;
       letter-spacing: 0.1em;
-      color: #667eea;
+      color: #5624d0;
       font-weight: 600;
     }
 
     .subtitle {
       margin: 0;
-      font-size: 0.95rem;
-      color: #64748b;
+      font-size: 0.875rem;
+      color: #6a6f73;
       line-height: 1.5;
     }
   }
 
   .refresh-btn {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1.5px solid rgba(102, 126, 234, 0.3);
-    border-radius: 50px;
+    background: white;
+    border: 1px solid #d1d7dc;
+    border-radius: 4px;
     padding: 0.75rem 1.5rem;
-    color: #667eea;
+    color: #0c111d;
     font-weight: 600;
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
     white-space: nowrap;
 
     &:hover:not(:disabled) {
-      background: rgba(102, 126, 234, 0.1);
-      border-color: rgba(102, 126, 234, 0.5);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+      border-color: #5624d0;
+      color: #5624d0;
     }
 
     &:disabled {
-      opacity: 0.5;
+      opacity: 0.6;
       cursor: not-allowed;
-      transform: none;
     }
   }
 }
@@ -93,19 +88,19 @@
 .address-form {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .form-grid {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 1rem;
 
   &.full-width {
     grid-template-columns: 1fr;
@@ -113,26 +108,26 @@
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 }
 
 .form-field {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 
   .field-label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: #374151;
+    color: #0c111d;
 
     i {
-      color: #667eea;
-      font-size: 0.8rem;
+      color: #5624d0;
+      font-size: 0.875rem;
     }
   }
 
@@ -141,46 +136,41 @@
 
     input {
       width: 100%;
-      padding: 1rem 1rem 1rem 3rem;
-      border: 1.5px solid #e2e8f0;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.8);
-      font-size: 0.95rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
+      padding: 0.75rem 0.75rem 0.75rem 2.75rem;
+      border: 1px solid #d1d7dc;
+      border-radius: 4px;
+      background: white;
+      font-size: 0.875rem;
+      color: #0c111d;
+      transition: all 0.2s ease;
 
       &:focus {
         outline: none;
-        border-color: #667eea;
-        box-shadow:
-          0 0 0 4px rgba(102, 126, 234, 0.15),
-          0 8px 20px rgba(102, 126, 234, 0.1);
-        transform: translateY(-1px);
+        border-color: #5624d0;
+        box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
 
         ~ .input-icon {
-          color: #667eea;
+          color: #5624d0;
         }
       }
 
       &:hover:not(:focus) {
-        border-color: #cbd5e1;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        border-color: #b1b7c1;
       }
 
       &::placeholder {
         color: #9ca3af;
-        font-weight: 400;
       }
     }
 
     .input-icon {
       position: absolute;
-      left: 1rem;
+      left: 0.75rem;
       top: 50%;
       transform: translateY(-50%);
-      color: #94a3b8;
-      font-size: 1rem;
-      transition: color 0.3s ease;
+      color: #6a6f73;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
     }
   }
 
@@ -189,11 +179,11 @@
     align-items: center;
     gap: 0.5rem;
     color: #dc2626;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
 
     i {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
     }
   }
 }
@@ -205,7 +195,7 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  border-top: 1px solid #d1d7dc;
 
   .messages {
     flex: 1;
@@ -216,8 +206,8 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
       font-weight: 500;
     }
 
@@ -235,40 +225,28 @@
   }
 
   .primary-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: #5624d0;
     border: none;
-    border-radius: 50px;
-    padding: 1rem 2rem;
+    border-radius: 4px;
+    padding: 0.75rem 1.5rem;
     color: white;
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-weight: 600;
+    font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-      0 8px 25px rgba(102, 126, 234, 0.3),
-      0 4px 12px rgba(102, 126, 234, 0.2);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     position: relative;
     overflow: hidden;
 
     &:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow:
-        0 12px 30px rgba(102, 126, 234, 0.4),
-        0 6px 18px rgba(102, 126, 234, 0.3);
-    }
-
-    &:active:not(:disabled) {
-      transform: translateY(0);
+      background: #401b9c;
     }
 
     &:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
     }
 
     &.loading {
@@ -281,7 +259,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.2s ease;
     }
 
     .btn-loader {
@@ -299,50 +277,51 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 3rem 2rem;
-  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+  gap: 1rem;
 
   .error-icon {
-    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    background: #fee;
     border-radius: 50%;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #dc2626;
-    font-size: 2rem;
-    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.15);
+    font-size: 1.5rem;
+    border: 1px solid rgba(220, 38, 38, 0.2);
   }
 
   h4 {
     margin: 0;
-    color: #374151;
-    font-size: 1.25rem;
-    font-weight: 700;
+    color: #0c111d;
+    font-size: 1rem;
+    font-weight: 600;
   }
 
   p {
     margin: 0;
-    color: #6b7280;
+    color: #6a6f73;
     line-height: 1.5;
+    font-size: 0.875rem;
   }
 
   .retry-btn {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: #5624d0;
     border: none;
-    border-radius: 50px;
+    border-radius: 4px;
     padding: 0.75rem 1.5rem;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
+    gap: 0.5rem;
 
     &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      background: #401b9c;
     }
   }
 }
@@ -350,12 +329,12 @@
 .placeholder {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0;
+  gap: 1rem;
+  padding: 0.5rem 0;
 
   .shimmer-row {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
 
     &.full-width {
       .shimmer {
@@ -365,18 +344,18 @@
 
     @media (max-width: 768px) {
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
   }
 
   .shimmer {
-    height: 3.5rem;
-    border-radius: 16px;
+    height: 3rem;
+    border-radius: 4px;
     background: linear-gradient(
-      120deg,
-      rgba(148, 163, 184, 0.1),
-      rgba(148, 163, 184, 0.3),
-      rgba(148, 163, 184, 0.1)
+      90deg,
+      rgba(209, 215, 220, 0.2),
+      rgba(209, 215, 220, 0.4),
+      rgba(209, 215, 220, 0.2)
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
@@ -386,10 +365,10 @@
 // Animations
 @keyframes shimmer {
   0% {
-    background-position: 200% 0;
+    background-position: -200% 0;
   }
   100% {
-    background-position: -200% 0;
+    background-position: 200% 0;
   }
 }
 
@@ -427,13 +406,11 @@
 
   .form-field .input-container {
     input {
-      padding: 0.875rem 0.875rem 0.875rem 2.75rem;
-      font-size: 0.9rem;
+      padding: 0.75rem 0.75rem 0.75rem 2.5rem;
     }
 
     .input-icon {
-      left: 0.875rem;
-      font-size: 0.9rem;
+      left: 0.75rem;
     }
   }
 }
