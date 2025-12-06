@@ -1,11 +1,9 @@
 <div class="auth-container">
   <app-animated-overlay-component></app-animated-overlay-component>
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" style="margin-top: 150px">
     <!-- Form Header -->
     <div class="form-header">
-      <div class="form-logo" style="background: linear-gradient(135deg, #667eea, #764ba2);">
-        <i class="fas fa-user-plus"></i>
-      </div>
+      <img src="logo.png" alt="App Logo" class="form-logo">
       <h2 class="form-title">Create Account</h2>
       <p class="form-subtitle">Join us today and get started</p>
     </div>

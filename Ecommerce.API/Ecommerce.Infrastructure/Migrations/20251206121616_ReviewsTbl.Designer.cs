@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251201153831_ReviewTbl")]
-    partial class ReviewTbl
+    [Migration("20251206121616_ReviewsTbl")]
+    partial class ReviewsTbl
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,51 @@ namespace Ecommerce.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Ecommerce.Core.Entities.Identity.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Government")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Zipcode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("Address");
+                });
 
             modelBuilder.Entity("Ecommerce.Core.Entities.Identity.ApplicationUser", b =>
                 {
@@ -118,8 +163,8 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -185,10 +230,23 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Comment")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Headline")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("HelpfulCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotHelpfulCount")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
@@ -445,47 +503,15 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Core.Entities.Identity.ApplicationUser", b =>
+            modelBuilder.Entity("Ecommerce.Core.Entities.Identity.Address", b =>
                 {
-                    b.OwnsOne("Ecommerce.Core.Entities.Identity.Address", "Address", b1 =>
-                        {
-                            b1.Property<string>("UserId")
-                                .HasColumnType("nvarchar(450)");
+                    b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "ApplicationUser")
+                        .WithOne("Address")
+                        .HasForeignKey("Ecommerce.Core.Entities.Identity.Address", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("Country")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("Government")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("nvarchar(100)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasMaxLength(150)
-                                .HasColumnType("nvarchar(150)");
-
-                            b1.Property<string>("Zipcode")
-                                .IsRequired()
-                                .HasMaxLength(20)
-                                .HasColumnType("nvarchar(20)");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Addresses", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.Navigation("Address");
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Ecommerce.Core.Entities.Product", b =>
@@ -676,6 +702,8 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Core.Entities.Identity.ApplicationUser", b =>
                 {
+                    b.Navigation("Address");
+
                     b.Navigation("ProductReviews");
                 });
 

@@ -1,14 +1,27 @@
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ecommerce.Core.Entities.Identity
 {
-    [Owned]
-    public class Address
+    public class Address 
     {
+        public int Id { get; set; }
+
+        [Required, MinLength(3), MaxLength(50)]
         public string Country { get; set; } = string.Empty;
+
+        [Required, MinLength(3), MaxLength(60)]
         public string Government { get; set; } = string.Empty;
+
+        [Required, MinLength(3), MaxLength(20)]
         public string City { get; set; } = string.Empty;
+
+        [Required, MinLength(3), MaxLength(100)]
         public string Street { get; set; } = string.Empty;
+
+        [Required, MinLength(3), MaxLength(20)]
         public string Zipcode { get; set; } = string.Empty;
+
+        public string ApplicationUserId { get; set; } = string.Empty;
+        public ApplicationUser ApplicationUser { get; set; } = default!;
     }
 }

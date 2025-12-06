@@ -26,11 +26,16 @@ namespace Ecommerce.API.Helpers
             CreateMap<ProductBrandAndTypeCreationDto, ProductType>();
 
             CreateMap<ProductReview, ProductReviewDto>()
-                .ForMember(dest => dest.UserName, o => o.MapFrom(src => src.ApplicationUser.UserName))
-                .ForMember(dest => dest.FirstName, o => o.MapFrom(src => src.ApplicationUser.FirstName))
-                .ForMember(dest => dest.LastName, o => o.MapFrom(src => src.ApplicationUser.LastName));
+                .ForMember(dest => dest.UserName,
+                    o => o.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.UserName : null))
+                .ForMember(dest => dest.ProfilePictureUrl,
+                    o => o.MapFrom<ImageUrlResolver<ProductReview, ProductReviewDto>>()) // <-- correct resolver
+                .ForMember(dest => dest.FirstName,
+                    o => o.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.FirstName : null))
+                .ForMember(dest => dest.LastName,
+                    o => o.MapFrom(src => src.ApplicationUser != null ? src.ApplicationUser.LastName : null));
 
-            CreateMap<ProductReviewCreationDto, ProductReview>();
+            CreateMap<ProductReviewFromDto, ProductReview>();
         }
     }
 }

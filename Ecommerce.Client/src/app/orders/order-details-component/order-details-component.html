@@ -51,7 +51,7 @@
             <h3 class="section-title">Order Items</h3>
           </div>
           <div class="items-list">
-            <div *ngFor="let item of order?.orderItems; trackBy: trackByItemId" class="order-item">
+            <div *ngFor="let item of order.orderItems; trackBy: trackByItemId" class="order-item">
               <div class="item-image">
                 <img [src]="item.pictureUrl" [alt]="item.productName" class="product-img">
               </div>
@@ -84,16 +84,16 @@
           <div class="totals-list">
             <div class="total-item">
               <span class="total-label">Subtotal</span>
-              <span class="total-value">{{ order?.subTotal | currency:'USD' }}</span>
+              <span class="total-value">{{ order.subTotal | currency:'USD' }}</span>
             </div>
             <div class="total-item">
               <span class="total-label">Shipping</span>
-              <span class="total-value">{{ order?.shippingPrice | currency:'USD' }}</span>
+              <span class="total-value">{{ order.shippingPrice | currency:'USD' }}</span>
             </div>
             <div class="total-divider"></div>
             <div class="total-item grand-total">
               <span class="total-label">Total</span>
-              <span class="total-value">{{ order?.total | currency:'USD' }}</span>
+              <span class="total-value">{{ order.total | currency:'USD' }}</span>
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@
           <div class="shipping-info">
             <div class="info-group">
               <h5 class="info-label">Delivery Method</h5>
-              <p class="info-value">{{ order?.deliveryMethod || 'Standard Shipping' }}</p>
+              <p class="info-value">{{ order.deliveryMethod || 'Standard Shipping' }}</p>
             </div>
             <div class="info-group">
               <h5 class="info-label">Estimated Delivery</h5>
@@ -114,7 +114,7 @@
             </div>
             <div class="info-group">
               <h5 class="info-label">Contact Email</h5>
-              <p class="info-value">{{ order?.buyerEmail }}</p>
+              <p class="info-value">{{ order.buyerEmail }}</p>
             </div>
           </div>
         </div>

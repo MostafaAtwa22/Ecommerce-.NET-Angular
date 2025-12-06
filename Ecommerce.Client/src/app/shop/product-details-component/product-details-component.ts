@@ -9,11 +9,17 @@ import { FormsModule } from '@angular/forms';
 import { BasketService } from '../../shared/services/basket-service';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
+import { ProductReviewComponent } from "../../product-reviews/product-review.component";
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    ProductReviewComponent  // Make sure this import is correct
+  ],
   templateUrl: './product-details-component.html',
   styleUrls: ['./product-details-component.scss'],
 })
@@ -23,15 +29,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   quantity: number = 1;
   private basketSubscription?: Subscription;
-
-  // Mock rating distribution data (in real app, this would come from API)
-  private ratingDistribution = {
-    5: 182,
-    4: 34,
-    3: 8,
-    2: 0,
-    1: 0,
-  };
 
   constructor(
     private _shopService: ShopService,
@@ -98,67 +95,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     if (this.quantity > 1) this.quantity--;
   }
 
-  // Rating Methods
-  getAverageRating(): number {
-    return parseFloat(this.product.avrageRating) || 0;
-  }
-
-  getStarsArray(): string[] {
-    const rating = this.getAverageRating();
-    const stars = [];
-
-    for (let i = 1; i <= 5; i++) {
-      if (rating >= i) {
-        stars.push('fas fa-star');
-      } else if (rating >= i - 0.5) {
-        stars.push('fas fa-star-half-alt');
-      } else {
-        stars.push('far fa-star');
-      }
-    }
-
-    return stars;
-  }
-
-  getTotalRatings(): number {
-    return Object.values(this.ratingDistribution).reduce((sum, count) => sum + count, 0);
-  }
-
-  getRatingDistribution(): any[] {
-    const total = this.getTotalRatings();
-    return [
-      {
-        stars: 5,
-        count: this.ratingDistribution[5],
-        percentage: (this.ratingDistribution[5] / total) * 100,
-      },
-      {
-        stars: 4,
-        count: this.ratingDistribution[4],
-        percentage: (this.ratingDistribution[4] / total) * 100,
-      },
-      {
-        stars: 3,
-        count: this.ratingDistribution[3],
-        percentage: (this.ratingDistribution[3] / total) * 100,
-      },
-      {
-        stars: 2,
-        count: this.ratingDistribution[2],
-        percentage: (this.ratingDistribution[2] / total) * 100,
-      },
-      {
-        stars: 1,
-        count: this.ratingDistribution[1],
-        percentage: (this.ratingDistribution[1] / total) * 100,
-      },
-    ];
-  }
-
-  getProgressBarClass(stars: number): string {
-    return `rating-${stars}`;
-  }
-
   addToBasket(): void {
     if (!this.canAddToBasket()) {
       this._toastr.info('Maximum quantity already in basket');
@@ -170,9 +106,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
 
     this._basketService.addItemToBasket(this.product, quantityToAdd).subscribe({
       next: () => {
-        this._toastr.success('Added to basket');
-
-        // ✅ Remove from wishlist if present
         const wishlist = this._wishlistService.getCurrentWishListValue();
         if (wishlist && wishlist.items.some((item) => item.id === this.product.id)) {
           this._wishlistService.removeItemFromWishList({ id: this.product.id } as any);
@@ -187,9 +120,6 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   addToWishlist(): void {
     this._wishlistService.addItemToWishList(this.product).subscribe({
       next: () => {
-        this._toastr.success('Added to wishlist');
-
-        // ✅ Remove from basket if present
         this._basketService.removeItemFromBasket({ id: this.product.id } as any);
       },
       error: (err) => this._toastr.error(err?.message ?? 'Unable to add to wishlist'),

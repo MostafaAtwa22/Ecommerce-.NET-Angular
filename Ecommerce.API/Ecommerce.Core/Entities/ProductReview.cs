@@ -9,9 +9,18 @@ namespace Ecommerce.Core.Entities
         public string ApplicationUserId { get; set; } = string.Empty;
         public int ProductId { get; set; } 
 
+        public int HelpfulCount { get; set; } = 0;
+        public int NotHelpfulCount { get; set; } = 0;
+
         [Range(1, 5)]
         public decimal Rating { get; set; }
-        public string? Comment { get; set; }
+
+        [Required, MaxLength(100)]
+        public string Headline { get; set; } = string.Empty;
+
+        [Required, MaxLength(3000)]
+        public string Comment { get; set; } = string.Empty;
+        
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public Product Product { get; set; } = default!;

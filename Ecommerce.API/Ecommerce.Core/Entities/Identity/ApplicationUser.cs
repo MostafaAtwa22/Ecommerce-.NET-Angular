@@ -8,8 +8,7 @@ namespace Ecommerce.Core.Entities.Identity
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public Gender Gender { get; set; }
-        public string? ProfilePictureUrl { get; set; }
-    
+        public string? ProfilePictureUrl { get; set; } 
         public Address? Address { get; set; } = new();
         public ICollection<ProductReview> ProductReviews { get; set; } = [];
     }

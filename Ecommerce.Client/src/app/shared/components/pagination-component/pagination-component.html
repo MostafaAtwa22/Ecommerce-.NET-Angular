@@ -2,9 +2,14 @@
   <ul class="pagination">
     <!-- Previous Button -->
     <li class="page-item" [class.disabled]="pageIndex === 1">
-      <button class="page-link" (click)="onPageChange(pageIndex - 1)" aria-label="Previous page">
+      <button
+        class="page-link"
+        (click)="onPageChange(pageIndex - 1)"
+        [disabled]="pageIndex === 1"
+        aria-label="Previous page"
+      >
         <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only">Previous</span>
+        <span class="visually-hidden">Previous</span>
       </button>
     </li>
 
@@ -14,16 +19,26 @@
       *ngFor="let p of pages"
       [class.active]="p === pageIndex"
     >
-      <button class="page-link" (click)="onPageChange(p)" [attr.aria-label]="'Go to page ' + p">
+      <button
+        class="page-link"
+        (click)="onPageChange(p)"
+        [attr.aria-current]="p === pageIndex ? 'page' : null"
+        [attr.aria-label]="'Go to page ' + p"
+      >
         {{ p }}
       </button>
     </li>
 
     <!-- Next Button -->
     <li class="page-item" [class.disabled]="pageIndex === totalPages">
-      <button class="page-link" (click)="onPageChange(pageIndex + 1)" aria-label="Next page">
+      <button
+        class="page-link"
+        (click)="onPageChange(pageIndex + 1)"
+        [disabled]="pageIndex === totalPages"
+        aria-label="Next page"
+      >
         <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">Next</span>
+        <span class="visually-hidden">Next</span>
       </button>
     </li>
   </ul>

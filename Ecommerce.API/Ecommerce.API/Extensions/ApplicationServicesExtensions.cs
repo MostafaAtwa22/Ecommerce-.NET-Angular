@@ -35,6 +35,11 @@ namespace Ecommerce.API.Extensions
                 new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
                     "ProductItemOrdered.PictureUrl"));
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<ProductReview, ProductReviewDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "ApplicationUser.ProfilePictureUrl"));
+
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
             // ✅ Add CORS policy
@@ -43,7 +48,7 @@ namespace Ecommerce.API.Extensions
                 options.AddPolicy("AllowAngularApp", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:4200", "https://localhost:4200") 
+                        .WithOrigins("http://localhost:4200", "https://localhost:4200")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
