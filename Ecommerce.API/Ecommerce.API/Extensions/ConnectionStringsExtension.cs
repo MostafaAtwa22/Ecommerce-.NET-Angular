@@ -1,6 +1,4 @@
-using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -16,10 +14,7 @@ namespace Ecommerce.API.Extensions
 
             builder.Services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseSqlServer(connectionString, sql =>
-                {
-                    sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
-                });
+                opt.UseSqlServer(connectionString);
             });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(c =>

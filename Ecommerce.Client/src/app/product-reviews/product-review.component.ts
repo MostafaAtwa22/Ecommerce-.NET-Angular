@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { AccountService } from '../account/account-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SweetAlertService } from '../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-product-review',
@@ -37,7 +38,7 @@ export class ProductReviewComponent {
   // Form validation errors
   formErrors = {
     headline: '',
-    comment: ''
+    comment: '',
   };
 
   // Filters and sort
@@ -53,7 +54,11 @@ export class ProductReviewComponent {
   private subscriptions = new Subscription();
   public accountService = inject(AccountService);
 
-  constructor(private reviewService: ProductReviewService, private toastr: ToastrService) {}
+  constructor(
+    private reviewService: ProductReviewService,
+    private toastr: ToastrService,
+    private sweetAlert: SweetAlertService
+  ) {}
 
   ngOnInit(): void {
     this.loadReviews();
@@ -336,21 +341,29 @@ export class ProductReviewComponent {
   }
 
   deleteReview(review: IProductReview): void {
-    if (!confirm('Are you sure you want to delete your review?')) return;
+    this.sweetAlert
+      .confirm({
+        title: 'Delete Review',
+        text: 'Are you sure you want to delete your review? This action cannot be undone.',
+        confirmButtonText: 'Yes, delete it!',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          const sub = this.reviewService.deleteReview(review.id, this.productId).subscribe({
+            next: () => {
+              this.sweetAlert.success('Your review has been deleted successfully.');
+              this.resetForm();
+              this.loadReviews();
+            },
+            error: (error) => {
+              console.error('Error deleting review:', error);
+              this.sweetAlert.error('Failed to delete review. Please try again.');
+            },
+          });
 
-    const sub = this.reviewService.deleteReview(review.id, this.productId).subscribe({
-      next: () => {
-        this.toastr.success('Review deleted successfully');
-        this.resetForm();
-        this.loadReviews();
-      },
-      error: (error) => {
-        console.error('Error deleting review:', error);
-        this.toastr.error('Failed to delete review');
-      },
-    });
-
-    this.subscriptions.add(sub);
+          this.subscriptions.add(sub);
+        }
+      });
   }
 
   resetForm(): void {
@@ -362,7 +375,7 @@ export class ProductReviewComponent {
     };
     this.formErrors = {
       headline: '',
-      comment: ''
+      comment: '',
     };
     this.showReviewForm = false;
   }
