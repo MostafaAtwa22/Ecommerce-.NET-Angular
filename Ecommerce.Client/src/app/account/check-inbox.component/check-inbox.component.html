@@ -1,0 +1,111 @@
+<div class="auth-container">
+  <app-animated-overlay-component></app-animated-overlay-component>
+  <div class="check-inbox-container" style="margin-top: 150px">
+
+    <!-- Success Header -->
+    <div class="success-header">
+      <div class="success-icon">
+        <i class="fas fa-envelope-open-text"></i>
+      </div>
+      <h2 class="success-title">Check Your Inbox!</h2>
+      <p class="success-subtitle">We've sent you a password reset link</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-card">
+      <div class="email-icon">
+        <i class="fas fa-paper-plane"></i>
+      </div>
+
+      <p class="instruction-text">
+        We've sent a password reset link to:
+        <strong class="user-email">{{ email || 'your email address' }}</strong>
+      </p>
+
+      <p class="hint-text">
+        Click the link in the email to reset your password. The link will expire in 1 hour.
+      </p>
+
+      <!-- Email Provider Buttons -->
+      <div class="email-providers">
+        <h3 class="providers-title">
+          <i class="fas fa-external-link-alt"></i>
+          Open Your Email Provider
+        </h3>
+
+        <!-- Gmail -->
+        <a
+          href="https://mail.google.com"
+          target="_blank"
+          class="provider-btn gmail-btn"
+        >
+          <div class="provider-icon">
+            <i class="fab fa-google"></i>
+          </div>
+          <div class="provider-info">
+            <div class="provider-name">Gmail</div>
+            <div class="provider-action">Open Gmail</div>
+          </div>
+          <i class="fas fa-external-link-alt provider-arrow"></i>
+        </a>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="tips-section">
+        <h3 class="tips-title">
+          <i class="fas fa-lightbulb"></i>
+          Didn't receive the email?
+        </h3>
+        <ul class="tips-list">
+          <li class="tip-item">
+            <i class="fas fa-search"></i>
+            Check your <strong>spam</strong> or <strong>junk</strong> folder
+          </li>
+          <li class="tip-item">
+            <i class="fas fa-user-check"></i>
+            Make sure you entered the correct email address
+          </li>
+          <li class="tip-item">
+            <i class="fas fa-sync-alt"></i>
+            Wait a few minutes and refresh your inbox
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          class="btn-resend"
+          (click)="resendEmail()"
+          [disabled]="isResending || resendCooldown > 0"
+        >
+          <span class="btn-content">
+            <i class="fas fa-redo-alt" *ngIf="!isResending && resendCooldown === 0"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isResending"></i>
+            {{
+              isResending ? 'Sending...' :
+              resendCooldown > 0 ? `Resend in ${resendCooldown}s` :
+              'Resend Email'
+            }}
+          </span>
+        </button>
+
+        <button
+          class="btn-change-email"
+          (click)="changeEmail()"
+        >
+          <i class="fas fa-edit"></i>
+          Use Different Email
+        </button>
+      </div>
+
+      <!-- Back to Login -->
+      <div class="back-to-login">
+        <i class="fas fa-arrow-left"></i>
+        <a routerLink="/login" class="login-link">
+          Back to Sign In
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

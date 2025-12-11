@@ -23,6 +23,8 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IEmailService, EmailService>();
+
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),

@@ -8,3 +8,14 @@ export interface IAccountUser {
   roles: string[]
   token: string
 }
+
+export interface IForgetPassword {
+  email: string;
+}
+
+export interface IResetPassword {
+  email: string;
+  token: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}

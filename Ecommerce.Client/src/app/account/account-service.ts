@@ -1,8 +1,8 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Environment } from '../environment';
-import { IAccountUser } from '../shared/modules/accountUser';
+import { IAccountUser, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
 import { tap } from 'rxjs';
@@ -38,6 +38,23 @@ export class AccountService {
         }
       })
     );
+  }
+
+  forgetPassword(dto: IForgetPassword) {
+    return this.http.post<IAccountUser>(`${this.baseUrl}/forgetpassword`, dto);
+  }
+  resendResetEmail(email: string) {
+    const formData = new FormData();
+    formData.append('email', email);
+
+    return this.http.post<IAccountUser>(`${this.baseUrl}/resend-resetpassword`, formData);
+  }
+
+  resetPassword(dto: IResetPassword) {
+    return this.http.post(`${this.baseUrl}/resetpassword`, dto, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      responseType: 'text', // Tell Angular to expect text, not JSON
+    });
   }
 
   emailExists(email: string) {

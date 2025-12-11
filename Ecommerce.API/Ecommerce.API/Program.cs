@@ -1,7 +1,7 @@
 using Ecommerce.API.Extensions;
-using Ecommerce.API.Helpers;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
+using Ecommerce.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -24,7 +24,9 @@ namespace Ecommerce.API
             builder.Services.AddApplicationServices();
             builder.Services.Configure<RequestTimingOptions>(
                 builder.Configuration.GetSection("RequestTiming"));
-
+            builder.Services.Configure<MailSettings>(
+                builder.Configuration.GetSection("MailSettings"));
+            builder.Services.AddHttpClient();
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

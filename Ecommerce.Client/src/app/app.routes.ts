@@ -73,6 +73,24 @@ export const routes: Routes = [
       .then(s => s.RegisterComponent)
   },
   {
+    path: 'forgetpassword',
+    loadComponent: () =>
+      import('./account/forget-password.component/forget-password.component')
+      .then(s => s.ForgetPasswordComponent)
+  },
+  {
+    path: 'resetpassword',
+    loadComponent: () =>
+      import('./account/reset-password.component/reset-password.component')
+      .then(s => s.ResetPasswordComponent)
+  },
+  {
+    path: 'checkinbox',
+    loadComponent: () =>
+      import('./account/check-inbox.component/check-inbox.component')
+      .then(s => s.CheckInboxComponent)
+  },
+  {
     path: 'login',
     canActivate: [loginGuard],
     loadComponent: () =>

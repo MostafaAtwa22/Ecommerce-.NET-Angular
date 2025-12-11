@@ -239,26 +239,14 @@ export class ProductReviewComponent {
       return;
     }
 
-    // Prevent double-click spam
-    if (this.votingStates.get(review.id)) return;
-    this.votingStates.set(review.id, true);
-
     const sub = this.reviewService.markHelpful(review.id, this.productId).subscribe({
-      next: (updated) => {
-        // Update local UI lists
-        const index = this.reviews.findIndex((r) => r.id === updated.id);
-        if (index !== -1) {
-          this.reviews[index] = updated;
-        }
-
+      next: () => {
         this.toastr.success('Marked as helpful');
-        this.votingStates.set(review.id, false);
         this.loadReviews();
       },
       error: (err) => {
         console.error(err);
-        this.toastr.error('Failed to submit feedback');
-        this.votingStates.set(review.id, false);
+        this.toastr.error(err.error?.message || 'Failed to submit feedback');
       },
     });
 
@@ -271,26 +259,14 @@ export class ProductReviewComponent {
       return;
     }
 
-    // Prevent double-click spam
-    if (this.votingStates.get(review.id)) return;
-    this.votingStates.set(review.id, true);
-
     const sub = this.reviewService.markNotHelpful(review.id, this.productId).subscribe({
-      next: (updated) => {
-        // Update local UI lists
-        const index = this.reviews.findIndex((r) => r.id === updated.id);
-        if (index !== -1) {
-          this.reviews[index] = updated;
-        }
-
+      next: () => {
         this.toastr.success('Marked as not helpful');
-        this.votingStates.set(review.id, false);
         this.loadReviews();
       },
       error: (err) => {
         console.error(err);
-        this.toastr.error('Failed to submit feedback');
-        this.votingStates.set(review.id, false);
+        this.toastr.error(err.error?.message || 'Failed to submit feedback');
       },
     });
 
