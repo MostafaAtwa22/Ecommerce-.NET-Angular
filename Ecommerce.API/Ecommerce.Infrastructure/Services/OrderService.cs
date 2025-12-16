@@ -20,7 +20,7 @@ namespace Ecommerce.Infrastructure.Services
             _paymentService = paymentService;
         }
 
-        public async Task<Order> CreateOrderAsync(string buyerEmail, int deliverMethodId,
+        public async Task<Order> CreateOrderAsync(string buyerEmail, string userId, int deliverMethodId,
             string basketId, OrderAddress shippingAddress)
         {
             // get basket from the repo
@@ -65,7 +65,10 @@ namespace Ecommerce.Infrastructure.Services
                 await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
             }
             // create order
-            var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!);
+            var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!)
+            {
+                ApplicationUserId = userId
+            };
 
             // save db
             await _unitOfWork.Repository<Order>().Create(order);

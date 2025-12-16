@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities.orderAggregate;
-
 namespace Ecommerce.API.Dtos.Responses
 {
     public class OrderResponseDto

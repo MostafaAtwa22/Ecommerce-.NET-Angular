@@ -26,6 +26,13 @@ export class AccountService {
       .pipe(tap((user) => this.setUser(user)));
   }
 
+  // Add Google login method
+  googleLogin(idToken: string) {
+    return this.http
+      .post<IAccountUser>(`${this.baseUrl}/googlelogin`, { idToken })
+      .pipe(tap((user) => this.setUser(user)));
+  }
+
   register(registerData: IRegister) {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
@@ -43,6 +50,7 @@ export class AccountService {
   forgetPassword(dto: IForgetPassword) {
     return this.http.post<IAccountUser>(`${this.baseUrl}/forgetpassword`, dto);
   }
+
   resendResetEmail(email: string) {
     const formData = new FormData();
     formData.append('email', email);
@@ -53,7 +61,7 @@ export class AccountService {
   resetPassword(dto: IResetPassword) {
     return this.http.post(`${this.baseUrl}/resetpassword`, dto, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      responseType: 'text', // Tell Angular to expect text, not JSON
+      responseType: 'text',
     });
   }
 
@@ -83,7 +91,6 @@ export class AccountService {
       return;
     }
 
-    // Check if token is expired before loading user
     if (isTokenExpired(token)) {
       console.warn('Token has expired, logging out...');
       this.logout();
@@ -94,7 +101,6 @@ export class AccountService {
     if (storedUser) {
       this.userSignal.set(storedUser);
     } else {
-      // If getUserFromLocalStorage returns null, ensure user signal is cleared
       this.userSignal.set(null);
     }
   }
@@ -124,7 +130,6 @@ export class AccountService {
       return null;
     }
 
-    // Check if token is expired
     if (isTokenExpired(token)) {
       console.warn('Token has expired, clearing user data...');
       localStorage.removeItem('user');
@@ -156,17 +161,16 @@ export class AccountService {
       return null;
     }
   }
-  // ✔ Update only the profile picture in localStorage
+
   updateLocalUserProfilePicture(newUrl: string | null): void {
     const userStr = localStorage.getItem('user');
     if (!userStr) return;
 
     try {
       const userData = JSON.parse(userStr);
-      userData.profilePicture = newUrl; // update picture
+      userData.profilePicture = newUrl;
       localStorage.setItem('user', JSON.stringify(userData));
 
-      // Update the signal
       const current = this.userSignal();
       if (current) {
         this.userSignal.set({

@@ -6,6 +6,16 @@ export interface IOrderToCreate {
   shipToAddress: IAddress
 }
 
+export interface IAllOrders {
+  id: number;
+  orderDate: string;
+  status: string;
+  subTotal: number;
+  firstName: string;
+  lastName: string;
+  profilePictureUrl?: string | null;
+}
+
 export interface IOrder {
   id: number
   buyerEmail: string

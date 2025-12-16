@@ -7,6 +7,7 @@ export interface IProfile {
   profilePicture: string;
   id: string;
   phoneNumber: string;
+  roles: string[];
 }
 
 export interface IProfileUpdate {

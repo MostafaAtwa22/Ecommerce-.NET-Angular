@@ -6,6 +6,7 @@ using Ecommerce.API.Errors;
 using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -61,6 +62,85 @@ namespace Ecommerce.API.Controllers
 
             var response = await CreateUserResponseAsync(user);
             return Ok(response);
+        }
+
+        [HttpPost("googlelogin")]
+        [EnableRateLimiting("customer-login")]
+        public async Task<ActionResult<UserDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
+        {
+            try
+            {
+                // Validate the Google ID token
+                var settings = new GoogleJsonWebSignature.ValidationSettings
+                {
+                    Audience = new string[]
+                    {
+                        _config["Authentication:Google:ClientId"]!
+                    }
+                };
+
+                var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken, settings);
+
+                if (payload is null)
+                    return BadRequest(new ApiResponse(400, "Invalid Google token"));
+
+                // Check if user exists
+                var user = await _userManager.FindByEmailAsync(payload.Email);
+
+                if (user is null)
+                {
+                    // Create new user if they don't exist
+                    user = new ApplicationUser
+                    {
+                        Email = payload.Email,
+                        UserName = payload.Email,
+                        FirstName = payload.GivenName ?? "",
+                        LastName = payload.FamilyName ?? "",
+                        EmailConfirmed = payload.EmailVerified,
+                        ProfilePictureUrl = payload.Picture
+                    };
+
+                    var createResult = await _userManager.CreateAsync(user);
+                    
+                    if (!createResult.Succeeded)
+                        return BadRequest(new ApiResponse(400, 
+                            BuildErrors(createResult.Errors)));
+
+                    // Add to Customer role by default
+                    var roleResult = await _userManager.AddToRoleAsync(user, Role.Customer.ToString());
+                    
+                    if (!roleResult.Succeeded)
+                        return BadRequest(new ApiResponse(400, 
+                            BuildErrors(roleResult.Errors)));
+                }
+                else
+                {
+                    // Optionally update user profile picture if it changed
+                    if (!string.IsNullOrEmpty(payload.Picture) && 
+                        user.ProfilePictureUrl != payload.Picture)
+                    {
+                        user.ProfilePictureUrl = payload.Picture;
+                        await _userManager.UpdateAsync(user);
+                    }
+                }
+
+                // Check if account is locked
+                if (await _userManager.IsLockedOutAsync(user))
+                    return BadRequest(new ApiResponse(400,
+                        "Your account is locked. Please try again later."));
+
+                var response = await CreateUserResponseAsync(user);
+                return Ok(response);
+            }
+            catch (InvalidJwtException)
+            {
+                return BadRequest(new ApiResponse(400, "Invalid Google token"));
+            }
+            catch
+            {
+                return BadRequest(new ApiResponse(400, 
+                    "Something went wrong during Google authentication. Please try again."));
+            }
         }
 
         [HttpPost("register")]

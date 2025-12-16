@@ -8,11 +8,14 @@ using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
+using Ecommerce.Core.Params;
+using Ecommerce.Core.Spec;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Controllers
 {
@@ -32,6 +35,35 @@ namespace Ecommerce.API.Controllers
             _fileService = fileService;
             _mapper = mapper;
         }
+
+        [Cached(600)]
+        [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<Pagination<ProfileResponseDto>>> GetAllUsers(
+            [FromQuery] UserSpecParams specParams)
+        {
+            var baseQuery = _userManager.Users.AsQueryable();
+
+            var countQuery = await IdentityUserSpecification
+                .ApplyAsync(baseQuery, specParams, _userManager, forCount: true);
+
+            var totalItems = await countQuery.CountAsync();
+
+            var usersQuery = await IdentityUserSpecification
+                .ApplyAsync(baseQuery, specParams, _userManager);
+
+            var users = await usersQuery.ToListAsync();
+
+            var data = _mapper.Map<IReadOnlyList<ProfileResponseDto>>(users);
+
+            return Ok(new Pagination<ProfileResponseDto>(
+                specParams.PageIndex,
+                specParams.PageSize,
+                totalItems,
+                data
+            ));
+        }
+
 
         [HttpGet("profile")]
         [Cached(500)]

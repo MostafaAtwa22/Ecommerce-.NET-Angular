@@ -16,11 +16,11 @@ namespace Ecommerce.API.Helpers
             CreateMap<ApplicationUser, UserCommonDto>()
                 .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender.ToString()))
                 .ForMember(dest => dest.ProfilePicture,
-                    o => o.MapFrom<ImageUrlResolver<ApplicationUser, UserCommonDto>>());
+                    o => o.MapFrom<ImageUrlResolver<ApplicationUser, UserCommonDto>>())
+                    .ForMember(dest => dest.Roles, o => o.MapFrom<UserRolesResolver>());
 
             CreateMap<ApplicationUser, UserDto>()
-                .IncludeBase<ApplicationUser, UserCommonDto>()
-                .ForMember(dest => dest.Roles, o => o.MapFrom<UserRolesResolver>());
+                .IncludeBase<ApplicationUser, UserCommonDto>();
 
             CreateMap<ApplicationUser, ProfileResponseDto>()
                 .IncludeBase<ApplicationUser, UserCommonDto>();

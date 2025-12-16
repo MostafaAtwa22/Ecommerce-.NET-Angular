@@ -1,3 +1,4 @@
+using System.Configuration;
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
@@ -26,6 +27,16 @@ namespace Ecommerce.API
                 builder.Configuration.GetSection("RequestTiming"));
             builder.Services.Configure<MailSettings>(
                 builder.Configuration.GetSection("MailSettings"));
+
+            builder.Services.AddAuthentication()
+                .AddGoogle(opt =>
+                {
+                    IConfigurationSection googleAuthSection = 
+                        builder.Configuration.GetSection("Authentication:Google");
+                    
+                    opt.ClientId = googleAuthSection["ClientId"]!;
+                    opt.ClientSecret = googleAuthSection["ClientSecret"]!;
+                });
             builder.Services.AddHttpClient();
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();

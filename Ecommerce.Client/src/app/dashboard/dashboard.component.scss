@@ -1,0 +1,507 @@
+/* ===============================
+   Variables (Purple Theme)
+   =============================== */
+$primary: #5624d0;           /* Primary purple */
+$primary-dark: #401b9c;      /* Dark purple for hover */
+$success: #48bb78;           /* Success green */
+$success-light: rgba(72, 187, 120, 0.1);  /* Success bg */
+$warning: #ed8936;           /* Warning orange (pending) */
+$warning-light: rgba(237, 137, 54, 0.1);  /* Warning bg */
+$danger: #c91a1a;            /* Danger red */
+$danger-light: rgba(201, 26, 26, 0.1);    /* Danger bg */
+$info: #9f7aea;              /* Processing purple */
+$info-light: rgba(159, 122, 234, 0.1);    /* Info bg */
+$text-dark: #0c111d;         /* Dark text */
+$text-light: #6a6f73;        /* Light text/gray */
+$bg-light: #f7f9fa;          /* Page background */
+$white: #ffffff;             /* White */
+$border-color: #d1d7dc;      /* Border color */
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+
+/* ===============================
+   Global Reset & Layout
+   =============================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: $bg-light;
+  color: $text-dark;
+  line-height: 1.6;
+}
+
+/* ===============================
+   Sidebar (Redesigned)
+   =============================== */
+.sidebar {
+  width: 260px;
+  background: $white;
+  height: 100vh;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid $border-color;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 3rem;
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: $text-dark;
+    text-decoration: none;
+
+    i {
+      font-size: 1.5rem;
+      color: $primary;
+    }
+
+    span span {
+      color: $primary;
+      font-weight: 400;
+    }
+  }
+
+  .side-menu {
+    list-style: none;
+
+    li {
+      margin-bottom: 0.5rem;
+
+      a {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0.875rem 1rem;
+        font-size: 0.9375rem;
+        color: $text-dark;
+        border-radius: $radius-sm;
+        transition: all 0.2s ease;
+        text-decoration: none;
+
+        i {
+          font-size: 1rem;
+          width: 20px;
+          text-align: center;
+        }
+
+        &:hover {
+          background: rgba($primary, 0.05);
+          color: $primary;
+        }
+      }
+
+      &.active a {
+        background: $primary;
+        color: $white;
+        font-weight: 500;
+
+        &:hover {
+          background: $primary-dark;
+        }
+      }
+
+      &.logout {
+        margin-top: 2rem;
+
+        a {
+          color: $danger;
+
+          &:hover {
+            background: rgba($danger, 0.1);
+            color: $danger;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ===============================
+   Main Content Area
+   =============================== */
+.content {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* ===============================
+   Insights Cards (Redesigned)
+   =============================== */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  .insight-card {
+    background: $white;
+    padding: 1.5rem;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    border: 1px solid $border-color;
+    transition: all 0.2s ease;
+    box-shadow: $shadow-sm;
+
+    &:hover {
+      border-color: $primary;
+      box-shadow: 0 2px 12px rgba($primary, 0.1);
+    }
+
+    .insight-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: $radius-sm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: $white;
+
+      &.primary {
+        background: $primary;
+        &:hover {
+          background: $primary-dark;
+        }
+      }
+      &.success {
+        background: $success;
+        &:hover {
+          background: darken($success, 10%);
+        }
+      }
+      &.warning {
+        background: $warning;
+        &:hover {
+          background: darken($warning, 10%);
+        }
+      }
+      &.danger {
+        background: $danger;
+        &:hover {
+          background: darken($danger, 10%);
+        }
+      }
+    }
+
+    .insight-info {
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: $text-dark;
+      }
+
+      p {
+        font-size: 0.875rem;
+        color: $text-light;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+/* ===============================
+   Recent Orders Table (Redesigned to match orders page)
+   =============================== */
+.full-width-card {
+  background: $white;
+  border: 1px solid $border-color;
+  border-radius: $radius-md;
+  padding: 1.5rem;
+  box-shadow: $shadow-sm;
+
+  .card {
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid $border-color;
+
+      .card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        i {
+          font-size: 1.25rem;
+          color: $primary;
+        }
+
+        h3 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: $text-dark;
+        }
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+
+        .btn-icon {
+          width: 36px;
+          height: 36px;
+          border: 1px solid $border-color;
+          background: $white;
+          border-radius: $radius-sm;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          color: $text-light;
+
+          i {
+            font-size: 1rem;
+          }
+
+          &:hover {
+            border-color: $primary;
+            color: $primary;
+            background: rgba($primary, 0.05);
+          }
+        }
+      }
+    }
+
+    .card-body {
+      .table-responsive {
+        overflow-x: auto;
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+
+          thead {
+            background: $bg-light;
+
+            tr {
+              th {
+                text-align: left;
+                padding: 1rem;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: $text-light;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border-bottom: 1px solid $border-color;
+              }
+            }
+          }
+
+          tbody {
+            tr {
+              border-bottom: 1px solid $border-color;
+              transition: all 0.2s ease;
+
+              &:hover {
+                background: rgba($primary, 0.02);
+              }
+
+              td {
+                padding: 1rem;
+                font-size: 0.875rem;
+                color: $text-dark;
+
+                .customer-cell {
+                  display: flex;
+                  align-items: center;
+                  gap: 0.75rem;
+
+                  img {
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                  }
+
+                  .customer-name {
+                    font-weight: 600;
+                    color: $text-dark;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ===============================
+   Status Badges (Matching orders page)
+   =============================== */
+.status-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: $radius-sm;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+  border: 1px solid;
+  display: inline-block;
+  transition: all 0.2s ease;
+
+  &.completed {
+    background: $success-light;
+    color: $success;
+    border-color: rgba($success, 0.3);
+  }
+
+  &.pending {
+    background: $warning-light;
+    color: $warning;
+    border-color: rgba($warning, 0.3);
+  }
+
+  &.processing {
+    background: $info-light;
+    color: $info;
+    border-color: rgba($info, 0.3);
+  }
+
+  &.shipped {
+    background: rgba($primary, 0.1);
+    color: $primary;
+    border-color: rgba($primary, 0.3);
+  }
+
+  &.cancelled {
+    background: $danger-light;
+    color: $danger;
+    border-color: rgba($danger, 0.3);
+  }
+}
+
+/* ===============================
+   Loading State (If needed)
+   =============================== */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba($primary, 0.1);
+  border-top: 3px solid $primary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===============================
+Responsive Design
+=============================== */
+@media (max-width: 1200px) {
+  .insights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .content {
+    padding: 1.5rem;
+  }
+
+  .insights {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
+  .content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+
+    .breadcrumb {
+      order: 2;
+    }
+
+    .report {
+      order: 3;
+      align-self: flex-start;
+    }
+  }
+
+  .insights {
+    grid-template-columns: 1fr !important;
+  }
+
+  .full-width-card {
+    padding: 1rem;
+  }
+
+  .table-responsive {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+
+    table {
+      min-width: 600px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 0.75rem;
+  }
+
+  .insight-card {
+    padding: 1.25rem;
+
+    .insight-icon {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+    }
+
+    .insight-info h3 {
+      font-size: 1.25rem;
+    }
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+
+    .card-actions {
+      align-self: flex-end;
+    }
+  }
+}

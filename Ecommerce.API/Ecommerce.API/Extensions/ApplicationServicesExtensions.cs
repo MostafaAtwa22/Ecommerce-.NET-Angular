@@ -41,6 +41,10 @@ namespace Ecommerce.API.Extensions
                 new ImageUrlResolver<ProductReview, ProductReviewDto>(
                     provider.GetRequiredService<IConfiguration>(),
                     "ApplicationUser.ProfilePictureUrl"));
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<Order, AllOrdersDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "ApplicationUser.ProfilePictureUrl"));
 
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 

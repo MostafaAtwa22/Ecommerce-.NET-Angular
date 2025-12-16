@@ -36,6 +36,33 @@ export const routes: Routes = [
       .then(s => s.ProductDetailsComponent)
   },
   {
+    path: 'dashboard',
+      loadComponent: () =>
+      import('./dashboard/dashboard.component').then(m => m.DashboardComponent),
+    children: [
+      {
+        path: '', loadComponent: () =>
+        import('./dashboard/dashboard-main.component/dashboard-main.component').then(m =>m.DashboardMainComponent ),
+      },
+      {
+        path: 'products', loadComponent: () =>
+        import('./dashboard/dashboard-products.component/dashboard-products.component').then(m =>m.DashboardProductsComponent ),
+      },
+      {
+        path: 'orders', loadComponent: () =>
+        import('./dashboard/dashboard-orders.component/dashboard-orders.component').then(m =>m.DashboardOrdersComponent ),
+      },
+      {
+        path: 'users', loadComponent: () =>
+        import('./dashboard/dashboard-users.component/dashboard-users.component').then(m =>m.DashboardUsersComponent ),
+      },
+      {
+        path: 'roles', loadComponent: () =>
+        import('./dashboard/dashboard-roles.component/dashboard-roles.component').then(m =>m.DashboardRolesComponent ),
+      },
+    ]
+  },
+  {
     path: 'basket',
     loadComponent: () =>
       import('./basket/basket-component')

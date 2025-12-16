@@ -1,0 +1,51 @@
+<!-- Sidebar -->
+<div class="sidebar" [class.active]="isSidebarActive" style="margin-top: 80px !important;">
+  <a class="logo" style="cursor: pointer" (click)="toggleSidebar()">
+    <i class="fa-solid fa-chart-simple"></i>
+    <span>Admin<span>Panel</span></span>
+  </a>
+
+  <ul class="side-menu">
+    <li>
+      <a routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" style="cursor: pointer">
+        <i class="fa-solid fa-gauge"></i>
+        Dashboard
+      </a>
+    </li>
+    <li>
+      <a routerLink="/dashboard/products" routerLinkActive="active" style="cursor: pointer">
+        <i class="fa-solid fa-box"></i>
+        Products
+      </a>
+    </li>
+    <li>
+      <a routerLink="/dashboard/orders" routerLinkActive="active" style="cursor: pointer">
+        <i class="fa-solid fa-shopping-cart"></i>
+        Orders
+      </a>
+    </li>
+    <li>
+      <a routerLink="/dashboard/users" routerLinkActive="active" style="cursor: pointer">
+        <i class="fa-solid fa-users"></i>
+        Users
+      </a>
+    </li>
+    <li>
+      <a routerLink="/dashboard/roles" routerLinkActive="active" style="cursor: pointer">
+        <i class="fa-solid fa-user-shield"></i>
+        Roles
+      </a>
+    </li>
+
+    <li class="logout">
+      <a href="#">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="content">
+  <router-outlet></router-outlet>
+</div>

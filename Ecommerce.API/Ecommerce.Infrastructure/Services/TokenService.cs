@@ -27,6 +27,7 @@ namespace Ecommerce.Infrastructure.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id!),
                 new Claim(JwtRegisteredClaimNames.GivenName, user.FirstName!),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.LastName!),
                 new Claim(JwtRegisteredClaimNames.Name, user.UserName!),

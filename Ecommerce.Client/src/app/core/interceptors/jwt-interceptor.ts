@@ -7,9 +7,9 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
 
   if (
-    req.url.includes('/api/auth/login') ||
-    req.url.includes('/api/auth/register') ||
-    req.url.includes('/api/home')
+    req.url.includes('/login') ||
+    req.url.includes('/register') ||
+    req.url.includes('/home')
   ) {
     return next(req);
   }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.API.Helpers.Resolver
 {
-    public class UserRolesResolver : IValueResolver<ApplicationUser, UserDto, ICollection<string>>
+    public class UserRolesResolver : IValueResolver<ApplicationUser, UserCommonDto, ICollection<string>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -14,7 +14,7 @@ namespace Ecommerce.API.Helpers.Resolver
             _userManager = userManager;
         }
 
-        public ICollection<string> Resolve(ApplicationUser source, UserDto destination, ICollection<string> destMember, ResolutionContext context)
+        public ICollection<string> Resolve(ApplicationUser source, UserCommonDto destination, ICollection<string> destMember, ResolutionContext context)
         {
             return _userManager.GetRolesAsync(source).Result;
         }

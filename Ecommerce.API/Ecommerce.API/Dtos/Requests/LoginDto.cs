@@ -12,4 +12,9 @@ namespace Ecommerce.API.Dtos.Requests
         [Required]
         public string Password { get; set; } = string.Empty;
     }
+
+    public class GoogleLoginDto 
+    {
+        public string IdToken { get; set; } = string.Empty;
+    }
 }

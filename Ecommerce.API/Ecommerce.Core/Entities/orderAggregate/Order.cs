@@ -1,3 +1,5 @@
+using Ecommerce.Core.Entities.Identity;
+
 namespace Ecommerce.Core.Entities.orderAggregate
 {
     public class Order : BaseEntity
@@ -27,7 +29,9 @@ namespace Ecommerce.Core.Entities.orderAggregate
         public OrderAddress AddressToShip { get; set; } = new();
         public DeliveryMethod DeliveryMethod { get; set; } = new();
         public string PaymentIntenId { get; set; } = string.Empty;
-
+        public string ApplicationUserId { get; set; } = string.Empty;
+        public ApplicationUser ApplicationUser { get; set; } = default!;
+        
         public decimal GetTotal()
             => SubTotal + DeliveryMethod.Price;
     }

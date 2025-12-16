@@ -1,0 +1,164 @@
+<div class="dashboard-content">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="header-left">
+      <h1>E-Commerce Dashboard</h1>
+      <ul class="breadcrumb">
+        <li><a href="#">Analytics</a></li>
+        <li>/</li>
+        <li><a href="#" class="active">Dashboard</a></li>
+      </ul>
+    </div>
+    <a href="#" class="export-btn">
+      <i class="fa-solid fa-file-export"></i>
+      <span>Export Report</span>
+    </a>
+  </div>
+
+  <!-- Insights Cards -->
+  <div class="insights-grid">
+    <div class="insight-card total-orders">
+      <div class="card-icon">
+        <i class="fa-solid fa-shopping-cart"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-value">1,254</h3>
+        <p class="card-label">Total Orders</p>
+        <span class="card-trend positive">
+          <i class="fa-solid fa-arrow-up"></i> 12.5%
+        </span>
+      </div>
+    </div>
+
+    <div class="insight-card total-users">
+      <div class="card-icon">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-value">4,892</h3>
+        <p class="card-label">Total Users</p>
+        <span class="card-trend positive">
+          <i class="fa-solid fa-arrow-up"></i> 8.2%
+        </span>
+      </div>
+    </div>
+
+    <div class="insight-card total-products">
+      <div class="card-icon">
+        <i class="fa-solid fa-box"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-value">856</h3>
+        <p class="card-label">Total Products</p>
+        <span class="card-trend positive">
+          <i class="fa-solid fa-arrow-up"></i> 5.7%
+        </span>
+      </div>
+    </div>
+
+    <div class="insight-card total-revenue">
+      <div class="card-icon">
+        <i class="fa-solid fa-dollar-sign"></i>
+      </div>
+      <div class="card-content">
+        <h3 class="card-value">$42,580</h3>
+        <p class="card-label">Total Revenue</p>
+        <span class="card-trend positive">
+          <i class="fa-solid fa-arrow-up"></i> 15.3%
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="charts-section">
+    <!-- Sales Chart -->
+    <div class="chart-card large">
+      <div class="chart-header">
+        <h3>Sales Overview</h3>
+        <div class="chart-period">
+          <select class="period-select">
+            <option>Last 7 days</option>
+            <option selected>Last 30 days</option>
+            <option>Last 3 months</option>
+            <option>Last year</option>
+          </select>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas #salesChart></canvas>
+      </div>
+    </div>
+
+    <!-- Revenue Chart -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Revenue by Category</h3>
+      </div>
+      <div class="chart-container">
+        <canvas #categoryChart></canvas>
+      </div>
+    </div>
+
+    <!-- Top Products -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Top Selling Products</h3>
+      </div>
+      <div class="top-products-list">
+        <div class="product-item" *ngFor="let product of topProducts">
+          <img [src]="product.image" [alt]="product.name" class="product-image">
+          <div class="product-info">
+            <h4>{{product.name}}</h4>
+            <p>{{product.category}}</p>
+          </div>
+          <div class="product-stats">
+            <span class="sales-count">{{product.sales}} sold</span>
+            <span class="product-revenue">${{product.revenue.toLocaleString()}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Orders Table -->
+  <div class="recent-orders">
+    <div class="table-header">
+      <h3>Recent Orders</h3>
+      <a href="#" class="view-all">View All</a>
+    </div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of recentOrders">
+            <td>#{{order.id}}</td>
+            <td class="customer-cell">
+              <img [src]="order.customer.avatar" [alt]="order.customer.name">
+              <span>{{order.customer.name}}</span>
+            </td>
+            <td>{{order.date}}</td>
+            <td class="amount">${{order.amount.toFixed(2)}}</td>
+            <td>
+              <span class="status-badge" [class]="order.status">{{order.status}}</span>
+            </td>
+            <td>
+              <button class="action-btn">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -315,6 +315,10 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("BuyerEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -337,6 +341,8 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("DeliveryMethodId");
 
@@ -551,6 +557,12 @@ namespace Ecommerce.Infrastructure.Migrations
 
             modelBuilder.Entity("Ecommerce.Core.Entities.orderAggregate.Order", b =>
                 {
+                    b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "ApplicationUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Ecommerce.Core.Entities.orderAggregate.DeliveryMethod", "DeliveryMethod")
                         .WithMany()
                         .HasForeignKey("DeliveryMethodId")
@@ -607,6 +619,8 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Navigation("AddressToShip")
                         .IsRequired();
+
+                    b.Navigation("ApplicationUser");
 
                     b.Navigation("DeliveryMethod");
                 });
@@ -700,6 +714,8 @@ namespace Ecommerce.Infrastructure.Migrations
             modelBuilder.Entity("Ecommerce.Core.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Navigation("Address");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("ProductReviews");
                 });

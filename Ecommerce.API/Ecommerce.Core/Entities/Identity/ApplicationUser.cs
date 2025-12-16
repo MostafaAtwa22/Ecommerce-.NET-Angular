@@ -1,3 +1,4 @@
+using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Enums;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,5 +12,6 @@ namespace Ecommerce.Core.Entities.Identity
         public string? ProfilePictureUrl { get; set; }
         public Address? Address { get; set; } = new();
         public ICollection<ProductReview> ProductReviews { get; set; } = [];
+        public ICollection<Order> Orders { get; set; } = [];
     }
 }
