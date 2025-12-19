@@ -1,1 +1,362 @@
-<p>dashboard-products.component works!</p>
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-total">
+          <i class="fas fa-boxes"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalProducts | number }}</h3>
+          <p>Total Products</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-revenue">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="stat-content">
+          <h3>${{ totalRevenue | number:'1.0-0' }}</h3>
+          <p>Potential Revenue</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-rating">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ averageRating | number:'1.1-1' }}</h3>
+          <p>Avg. Rating</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stock-out">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ outOfStockCount | number }}</h3>
+          <p>Out of Stock</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stock-low">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ lowStockCount | number }}</h3>
+          <p>Low Stock</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stock-high">
+          <i class="fas fa-crown"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ highRatedCount | number }}</h3>
+          <p>Top Rated</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Toolbar -->
+  <div class="toolbar card-shadow mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Add Product Button -->
+        <button
+          class="btn btn-primary d-flex align-items-center"
+          (click)="openAddProduct()"
+        >
+          <i class="fas fa-plus-circle me-2"></i>
+          Add Product
+        </button>
+
+        <!-- Filter Toggle -->
+        <button
+          class="btn btn-outline-success d-flex align-items-center"
+          (click)="toggleFilters()"
+        >
+          <i class="fa fa-filter me-2"></i>
+          {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+        </button>
+
+        <!-- Brand Filter -->
+        @if (showFilters) {
+          <div class="filter-dropdown">
+            <select
+              class="form-select modern-select"
+              [(ngModel)]="shopParams.brandId"
+              (change)="onBrandSelected(shopParams.brandId!)"
+            >
+              <option [value]="null">All Brands</option>
+              @for (brand of brands; track brand.id) {
+                <option [value]="brand.id">
+                  {{ brand.name }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+
+        <!-- Type Filter -->
+        @if (showFilters) {
+          <div class="filter-dropdown">
+            <select
+              class="form-select modern-select"
+              [(ngModel)]="shopParams.typeId"
+              (change)="onTypeSelected(shopParams.typeId!)"
+            >
+              <option [value]="null">All Types</option>
+              @for (type of types; track type.id) {
+                <option [value]="type.id">
+                  {{ type.name }}
+                </option>
+              }
+            </select>
+          </div>
+        }
+
+        <!-- Sort Dropdown -->
+        <div class="sort-dropdown">
+          <select
+            class="form-select modern-select"
+            [(ngModel)]="shopParams.sort"
+            (change)="onSortSelected(shopParams.sort)"
+          >
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">
+                {{ option.name }}
+              </option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar d-flex flex-grow-1">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search products by name or description..."
+          [(ngModel)]="shopParams.search"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-dark ms-2" (click)="onSearch()">
+          <i class="fa fa-search"></i>
+        </button>
+        @if (shopParams.search || shopParams.brandId || shopParams.typeId) {
+          <button class="btn btn-outline-secondary ms-2" (click)="resetSearch()">
+            <i class="fa fa-times"></i>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="products-table-container card-shadow">
+    <div class="card-header d-flex justify-content-between align-items-center p-3">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-boxes me-2"></i>All Products
+      </h4>
+      <div class="table-info">
+        <span class="badge bg-primary">{{ totalProducts }} total</span>
+        <span class="text-muted ms-2">Page {{ shopParams.pageIndex }} of {{ totalPages }}</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      @if (loading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading products...</p>
+        </div>
+      } @else {
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-bold ps-4">Product</th>
+              <th scope="col" class="fw-bold">Category</th>
+              <th scope="col" class="fw-bold">Price</th>
+              <th scope="col" class="fw-bold">Stock</th>
+              <th scope="col" class="fw-bold">Rating</th>
+              <th scope="col" class="fw-bold text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (products.length === 0) {
+              <tr>
+                <td colspan="6" class="text-center py-5 empty-state">
+                  <i class="fas fa-box-open fa-2x mb-3 text-muted"></i>
+                  <h5>No Products Found</h5>
+                  <p class="text-muted mb-3">Try adjusting your search or filter criteria.</p>
+                  <button class="btn btn-outline-dark px-4" (click)="resetSearch()">
+                    <i class="fas fa-redo me-2"></i>Reset Filters
+                  </button>
+                </td>
+              </tr>
+            } @else {
+              @for (product of products; track product.id) {
+                <tr class="fade-item">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <div class="product-image-container me-3">
+                        @if (product.pictureUrl) {
+                          <img
+                            [src]="product.pictureUrl"
+                            [alt]="product.name"
+                            class="product-thumb"
+                          >
+                        } @else {
+                          <div class="product-thumb-placeholder">
+                            <i class="fas fa-image"></i>
+                          </div>
+                        }
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ product.name }}</h6>
+                        @if (product.description) {
+                          <small class="text-muted">{{ (product.description.length > 50) ? (product.description | slice:0:50) + '...' : product.description }}</small>
+                        }
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex flex-column gap-1">
+                      <span class="badge bg-light text-dark">
+                        <i class="fas fa-tag me-1"></i>
+                        {{ (product.productBrandName) }}
+                      </span>
+                      <span class="badge bg-light text-dark">
+                        <i class="fas fa-th-large me-1"></i>
+                        {{ (product.productTypeName) }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <strong class="text-primary">${{ product.price | number:'1.2-2' }}</strong>
+                  </td>
+                  <td>
+                    <span class="badge {{ getStockStatusClass(product.quantity) }}">
+                      {{ getStockStatusText(product.quantity) }}
+                      @if (product.quantity && product.quantity > 0) {
+                        <span class="ms-1">({{ product.quantity }})</span>
+                      }
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="{{ getRatingColor(product.averageRating) }} me-2">
+                        {{ getRatingStars(product.averageRating) }}
+                      </span>
+                    </div>
+                  </td>
+                  <td class="text-end pe-4">
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-outline-primary"
+                        title="View Product"
+                        [routerLink]="['/shop', product.id]"
+                      >
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-warning"
+                        title="Edit Product"
+                        (click)="openEditProduct(product)"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        title="Delete Product"
+                        (click)="deleteProduct(product.id)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <!-- Pagination -->
+    @if (!loading && products.length > 0) {
+      <div class="card-footer border-top p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="text-muted">
+            Showing {{ (shopParams.pageIndex - 1) * shopParams.pageSize + 1 }}
+            to {{ getMaxDisplayNumber() }}
+            of {{ totalProducts }} products
+          </div>
+          <div class="pagination-controls">
+            <button
+              class="btn btn-sm btn-outline-dark me-2"
+              [disabled]="shopParams.pageIndex === 1"
+              (click)="onPageChanged(shopParams.pageIndex - 1)"
+            >
+              <i class="fas fa-chevron-left"></i> Previous
+            </button>
+            <span class="mx-2">Page {{ shopParams.pageIndex }} of {{ totalPages }}</span>
+            <button
+              class="btn btn-sm btn-outline-dark ms-2"
+              [disabled]="shopParams.pageIndex === totalPages"
+              (click)="onPageChanged(shopParams.pageIndex + 1)"
+            >
+              Next <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Product Form Modal -->
+@if (showProductForm) {
+  <div class="modal-overlay" (click)="closeProductForm()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header p-3">
+        <h5 class="modal-title">
+          <i class="fas {{ isEditing ? 'fa-edit' : 'fa-plus-circle' }} me-2"></i>
+          {{ isEditing ? 'Edit Product' : 'Add New Product' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeProductForm()"></button>
+      </div>
+      <div class="modal-body p-3">
+        <!-- Add product form content here -->
+        <p class="text-center text-muted py-4">
+          Product form would go here with fields for name, description, price, etc.
+        </p>
+      </div>
+      <div class="modal-footer p-3">
+        <button type="button" class="btn btn-outline-secondary" (click)="closeProductForm()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" disabled>
+          {{ isEditing ? 'Update Product' : 'Create Product' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

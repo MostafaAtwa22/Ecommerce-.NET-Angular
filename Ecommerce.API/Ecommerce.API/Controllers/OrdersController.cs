@@ -34,7 +34,7 @@ namespace Ecommerce.API.Controllers
 
         [Cached(100)]
         [HttpGet("getall")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
         public async Task<ActionResult<Pagination<AllOrdersDto>>> GetAll([FromQuery] OrdersSpecParams specParams)
         {

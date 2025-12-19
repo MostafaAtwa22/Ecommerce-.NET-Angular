@@ -13,5 +13,7 @@ namespace Ecommerce.Core.Params
         }
 
         public string? Sort { get; set; }
+        public string? Search { get; set; }
+        public string? Status { get; set; }
     }
 }

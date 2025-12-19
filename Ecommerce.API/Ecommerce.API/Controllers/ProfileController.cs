@@ -38,7 +38,7 @@ namespace Ecommerce.API.Controllers
 
         [Cached(600)]
         [HttpGet("users")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         public async Task<ActionResult<Pagination<ProfileResponseDto>>> GetAllUsers(
             [FromQuery] UserSpecParams specParams)
         {

@@ -11,6 +11,7 @@ using Ecommerce.Core.Params;
 using Ecommerce.Core.Spec;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.API.Controllers
 {
@@ -67,6 +68,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Create([FromForm] ProductCreationDto creationDto)
         {
@@ -86,6 +88,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Update([FromForm] ProductUpdateDto updateDto)
         {
@@ -130,6 +133,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Delete([FromRoute] int id)
         {

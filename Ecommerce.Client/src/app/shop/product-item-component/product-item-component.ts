@@ -24,7 +24,7 @@ export class ProductItemComponent implements OnInit {
   ngOnInit(): void {}
 
   getStarsArray(): string[] {
-    const rating = parseFloat(this.product.averageRating) || 0;
+    const rating = (this.product.averageRating) || 0;
     const stars = [];
 
     for (let i = 1; i <= 5; i++) {

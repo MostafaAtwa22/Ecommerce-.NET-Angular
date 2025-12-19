@@ -2,7 +2,7 @@ export interface IProduct {
   id: number
   name: string
   quantity: number
-  averageRating: string
+  averageRating: number
   description: string
   pictureUrl: string
   price: number
