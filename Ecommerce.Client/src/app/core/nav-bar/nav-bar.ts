@@ -82,6 +82,24 @@ export class NavBar implements OnInit {
     img.src = gender === 'Male' ? 'default-male.png' : 'default-female.png';
   }
 
+  isAdmin(): boolean {
+    const user = this.currentUser();
+    return user?.roles?.some(role => 
+      role.toLowerCase() === 'admin' || role.toLowerCase() === 'superadmin'
+    ) || false;
+  }
+
+  isSuperAdmin(): boolean {
+    const user = this.currentUser();
+    return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
+  }
+
+  isCustomer(): boolean {
+    const user = this.currentUser();
+    if (!user?.roles || user.roles.length === 0) return true;
+    return user.roles.every(role => role.toLowerCase() === 'customer');
+  }
+
   logout() {
     console.log('Logout called');
     this.accountService.logout();

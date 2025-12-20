@@ -5,6 +5,7 @@ import { IAllOrders } from '../../shared/modules/order';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OrdersParams } from '../../shared/modules/OrdersParams';
 import { CheckoutService } from '../../checkout/checkout-service';
+import { getOrderStatusLabel } from '../../shared/modules/order-status';
 
 @Component({
   selector: 'app-dashboard-orders',
@@ -186,6 +187,10 @@ export class DashboardOrdersComponent implements OnInit {
     // Implement order status update logic here
     console.log(`Update order ${orderId} to status: ${newStatus}`);
     // Call your service to update order status
+  }
+
+  getStatusLabel(status: string | number): string {
+    return getOrderStatusLabel(status);
   }
 
   getStatusBadgeClass(status: string): string {

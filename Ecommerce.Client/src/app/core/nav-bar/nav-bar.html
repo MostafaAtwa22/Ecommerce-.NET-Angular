@@ -8,15 +8,8 @@
     </a>
 
     <!-- Toggler -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarContent"
-      aria-controls="navbarContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -36,20 +29,26 @@
         <li class="nav-item mx-2">
           <a class="nav-link text-decoration-none" href="#contact" id="contactLink">Contact Us</a>
         </li>
+        <!-- Dashboard link for Admin/SuperAdmin -->
+        <li class="nav-item mx-2" *ngIf="isLoggedIn() && isAdmin()">
+          <a class="nav-link text-decoration-none" routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-chart-line me-1"></i>Dashboard
+          </a>
+        </li>
       </ul>
 
       <!-- Right Section -->
       <ul class="navbar-nav align-items-center flex-row">
-        <!-- Wishlist Icon -->
-        <li class="nav-item position-relative me-3">
+        <!-- Wishlist Icon - Only for customers -->
+        <li class="nav-item position-relative me-3" *ngIf="!isAdmin()">
           <a class="nav-link wishlist-icon" routerLink="/wishlist">
             <i class="fas fa-heart"></i>
             <span class="wishlist-badge" *ngIf="wishList$ | async as wishList">{{ wishList.items.length }}</span>
           </a>
         </li>
 
-        <!-- Shopping Cart -->
-        <li class="nav-item position-relative me-4">
+        <!-- Shopping Cart - Only for customers -->
+        <li class="nav-item position-relative me-4" *ngIf="!isAdmin()">
           <a class="nav-link cart-icon" routerLink="/basket">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-badge" *ngIf="basket$ | async as basket">{{ basket.items.length }}</span>
@@ -59,19 +58,11 @@
         <!-- Conditional User Buttons -->
         <ng-container *ngIf="isLoggedIn() && currentUser(); else guestButtons">
           <li class="nav-item dropdown">
-            <button
-              class="btn user-account-btn d-flex align-items-center gap-2"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
+            <button class="btn user-account-btn d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
               <div class="user-avatar-small">
-                <img
-                  [src]="getAvatarUrl(currentUser())"
-                  [alt]="currentUser()!.firstName || 'User'"
-                  class="avatar-img"
-                  (error)="setDefaultAvatar($event, currentUser()?.gender)"
-                />
+                <img [src]="getAvatarUrl(currentUser())" [alt]="currentUser()!.firstName || 'User'" class="avatar-img"
+                  (error)="setDefaultAvatar($event, currentUser()?.gender)" />
               </div>
               <span class="user-name d-none d-lg-inline">{{ currentUser()!.firstName }}</span>
               <i class="fas fa-chevron-down dropdown-arrow"></i>
@@ -82,12 +73,8 @@
               <li class="dropdown-header user-info-header">
                 <div class="d-flex align-items-center gap-3">
                   <div class="user-avatar-large">
-                  <img
-                  [src]="getAvatarUrl(currentUser())"
-                  [alt]="currentUser()?.firstName || 'User'"
-                  class="avatar-img"
-                  (error)="setDefaultAvatar($event, currentUser()?.gender)"
-                />
+                    <img [src]="getAvatarUrl(currentUser())" [alt]="currentUser()?.firstName || 'User'"
+                      class="avatar-img" (error)="setDefaultAvatar($event, currentUser()?.gender)" />
                   </div>
                   <div class="user-details">
                     <div class="user-full-name">
@@ -102,7 +89,9 @@
                 </div>
               </li>
 
-              <li><hr class="dropdown-divider"></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
 
               <!-- Menu Items -->
               <li>
@@ -111,20 +100,25 @@
                   <span>Profile</span>
                 </a>
               </li>
-              <li>
+              <!-- Show Orders for Customers -->
+              <li *ngIf="isCustomer()">
                 <a class="dropdown-item" routerLink="/orders">
                   <i class="fas fa-shopping-bag"></i>
                   <span>Orders</span>
                 </a>
               </li>
-              <li>
-                <a class="dropdown-item" routerLink="/settings">
-                  <i class="fas fa-cog"></i>
-                  <span>Settings</span>
+
+              <!-- Show Dashboard for Admins/SuperAdmins -->
+              <li *ngIf="isAdmin()">
+                <a class="dropdown-item" routerLink="/dashboard">
+                  <i class="fas fa-chart-line"></i>
+                  <span>Dashboard</span>
                 </a>
               </li>
 
-              <li><hr class="dropdown-divider"></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
 
               <li>
                 <button class="dropdown-item logout-item" (click)="logout()">
@@ -135,7 +129,7 @@
             </ul>
           </li>
         </ng-container>
-                <!-- Guest Buttons -->
+        <!-- Guest Buttons -->
         <ng-template #guestButtons>
           <li class="nav-item me-2">
             <a routerLink="/login" class="btn btn-outline-dark rounded-pill px-3 py-1 fw-semibold hover-scale">

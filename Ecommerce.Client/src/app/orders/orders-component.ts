@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CheckoutService } from '../checkout/checkout-service';
 import { IOrder } from '../shared/modules/order';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { getOrderStatusLabel } from '../shared/modules/order-status';
 
 @Component({
   selector: 'app-orders-component',
@@ -30,16 +31,25 @@ export class OrdersComponent implements OnInit {
     });
   }
 
-  getStatusClass(status: string): string {
+  getStatusLabel(status: string | number): string {
+    return getOrderStatusLabel(status);
+  }
+
+  getStatusClass(status: string | number): string {
+    const statusLabel = getOrderStatusLabel(status).toLowerCase();
     const statusMap: { [key: string]: string } = {
       'pending': 'pending',
       'processing': 'processing',
+      'payment received': 'processing',
+      'payment failed': 'cancelled',
       'shipped': 'shipped',
       'delivered': 'delivered',
+      'complete': 'completed',
       'completed': 'completed',
-      'cancelled': 'cancelled'
+      'cancelled': 'cancelled',
+      'canceled': 'cancelled'
     };
-    return statusMap[status.toLowerCase()] || 'pending';
+    return statusMap[statusLabel] || 'pending';
   }
 
   viewOrderDetails(orderId: number) {

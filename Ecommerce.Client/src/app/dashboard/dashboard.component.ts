@@ -1,6 +1,7 @@
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AccountService } from '../account/account-service';
 
 @Component({
   selector: 'app-dashboard.component',
@@ -10,8 +11,15 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from "@angular/router";
 })
 export class DashboardComponent {
   isSidebarActive = false;
+  private accountService = inject(AccountService);
 
   toggleSidebar() {
     this.isSidebarActive = !this.isSidebarActive;
   }
+
+  isSuperAdmin(): boolean {
+    const user = this.accountService.user();
+    return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
+  }
 }
+

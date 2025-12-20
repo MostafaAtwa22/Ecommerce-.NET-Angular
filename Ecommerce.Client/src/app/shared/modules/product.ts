@@ -9,4 +9,5 @@ export interface IProduct {
   numberOfReviews: number
   productBrandName: string
   productTypeName: string
+  createdAt: Date
 }

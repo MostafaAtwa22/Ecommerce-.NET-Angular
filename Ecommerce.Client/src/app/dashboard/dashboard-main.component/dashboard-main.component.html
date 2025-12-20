@@ -1,159 +1,249 @@
-<div class="dashboard-content">
-  <!-- Dashboard Header -->
-  <div class="dashboard-header">
-    <div class="header-left">
-      <h1>E-Commerce Analytics</h1>
-      <ul class="breadcrumb">
-        <li><a href="#">Dashboard</a></li>
-        <li>/</li>
-        <li><a href="#" class="active">Overview</a></li>
-      </ul>
-    </div>
-    <button (click)="refreshDashboard()" class="refresh-btn">
-      <i class="fas fa-sync-alt"></i>
-      <span>Refresh Data</span>
-    </button>
-  </div>
-
-  <!-- Insights Cards - Full width grid -->
-  <div class="insights-grid">
-    <div class="insight-card total-orders">
-      <div class="card-icon">
-        <i class="fas fa-shopping-bag"></i>
-      </div>
-      <div class="card-content">
-        <h3 class="card-value">{{totalOrders | number}}</h3>
-        <p class="card-label">Total Orders</p>
-        <span class="card-trend" [class.positive]="orderGrowth >= 0" [class.negative]="orderGrowth < 0">
-          <i class="fas" [ngClass]="orderGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
-          {{orderGrowth >= 0 ? '+' : ''}}{{orderGrowth | number:'1.1-1'}}%
-        </span>
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6 col-12">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-users">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalUsers | number }}</h3>
+          <p>Total Users</p>
+        </div>
       </div>
     </div>
 
-    <div class="insight-card total-users">
-      <div class="card-icon">
-        <i class="fas fa-users"></i>
-      </div>
-      <div class="card-content">
-        <h3 class="card-value">{{totalUsers | number}}</h3>
-        <p class="card-label">Total Users</p>
-        <span class="card-trend" [class.positive]="userGrowth >= 0" [class.negative]="userGrowth < 0">
-          <i class="fas" [ngClass]="userGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
-          {{userGrowth >= 0 ? '+' : ''}}{{userGrowth | number:'1.1-1'}}%
-        </span>
+    <div class="col-lg-3 col-md-6 col-12">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-roles">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalRoles | number }}</h3>
+          <p>Total Roles</p>
+        </div>
       </div>
     </div>
 
-    <div class="insight-card total-products">
-      <div class="card-icon">
-        <i class="fas fa-boxes"></i>
-      </div>
-      <div class="card-content">
-        <h3 class="card-value">{{totalProducts | number}}</h3>
-        <p class="card-label">Products in Store</p>
-        <span class="card-trend" [class.positive]="productGrowth >= 0" [class.negative]="productGrowth < 0">
-          <i class="fas" [ngClass]="productGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
-          {{productGrowth >= 0 ? '+' : ''}}{{productGrowth | number:'1.1-1'}}%
-        </span>
+    <div class="col-lg-3 col-md-6 col-12">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-orders">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalOrders | number }}</h3>
+          <p>Total Orders</p>
+        </div>
       </div>
     </div>
 
-    <div class="insight-card total-revenue">
-      <div class="card-icon">
-        <i class="fas fa-chart-line"></i>
-      </div>
-      <div class="card-content">
-        <h3 class="card-value">{{formatCurrency(totalRevenue)}}</h3>
-        <p class="card-label">Total Revenue</p>
-        <span class="card-trend" [class.positive]="revenueGrowth >= 0" [class.negative]="revenueGrowth < 0">
-          <i class="fas" [ngClass]="revenueGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
-          {{revenueGrowth >= 0 ? '+' : ''}}{{revenueGrowth | number:'1.1-1'}}%
-        </span>
+    <div class="col-lg-3 col-md-6 col-12">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-products">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalProducts | number }}</h3>
+          <p>Total Products</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Charts Section - All charts full width -->
-  <div class="charts-section">
-    <!-- Sales Chart - Full width -->
-    <div class="chart-card full-width">
-      <div class="chart-header">
-        <div class="header-left">
-          <h3><i class="fas fa-chart-line"></i> Revenue & Orders Overview</h3>
-          <p class="chart-subtitle">Monthly performance analysis</p>
-        </div>
-        <div class="chart-controls">
-          <select class="period-select" (change)="onPeriodChange($event)">
-            <option value="7">Last 7 days</option>
-            <option value="30" selected>Last 30 days</option>
-            <option value="90">Last 3 months</option>
-            <option value="365">Last 12 months</option>
-          </select>
-        </div>
-      </div>
-      <div class="chart-container">
-        <canvas #salesChart></canvas>
-      </div>
-    </div>
-
-    <!-- Revenue by Brand - Full width -->
-    <div class="chart-card full-width">
-      <div class="chart-header">
-        <h3><i class="fas fa-tags"></i> Revenue by Brand</h3>
-        <p class="chart-subtitle">Distribution across product brands</p>
-      </div>
-      <div class="chart-container">
-        <canvas #categoryChart></canvas>
-      </div>
-    </div>
-
-    <!-- Top Products - Full width -->
-    <div class="chart-card full-width">
-      <div class="chart-header">
-        <h3><i class="fas fa-trophy"></i> Top Products</h3>
-        <p class="chart-subtitle">Best selling items based on sales and revenue</p>
-      </div>
-      <div class="products-container">
-        @if (topProducts.length === 0) {
-          <div class="empty-state">
-            <i class="fas fa-box-open"></i>
-            <h4>No Products Found</h4>
-            <p>No product data available yet.</p>
+  <!-- Charts Row -->
+  <div class="row g-4 mb-5">
+    <!-- Orders Chart -->
+    <div class="col-12">
+      <div class="chart-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-chart-line me-2"></i>Orders Overview
+          </h5>
+          <div class="chart-period">
+            <select class="form-select modern-select" [(ngModel)]="selectedPeriod" (change)="updateOrdersChart()">
+              <option value="7">Last 7 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last 90 Days</option>
+            </select>
           </div>
-        } @else {
-          <div class="top-products-list">
-            @for (product of topProducts; track product.id; let i = $index) {
-              <div class="product-item">
-                <div class="product-rank">{{i + 1}}</div>
-                <img [src]="product.image || 'https://via.placeholder.com/50'"
-                     [alt]="product.name"
-                     class="product-image"
-                     (error)="product.image = 'https://via.placeholder.com/50'">
-                <div class="product-info">
-                  <h4 [title]="product.name">{{product.name}}</h4>
-                  <div class="product-meta">
-                    <span class="product-brand">{{product.brand}}</span>
-                    <div class="product-rating">
-                      <i class="fas fa-star"></i>
-                      <span>{{product.rating | number:'1.1-1'}}</span>
-                      <small>({{product.reviews}})</small>
+        </div>
+        <div class="chart-wrapper">
+          <canvas #ordersChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Distribution Chart -->
+    <div class="col-12">
+      <div class="chart-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-chart-pie me-2"></i>Products Distribution
+          </h5>
+          <div class="chart-type">
+            <select class="form-select modern-select" [(ngModel)]="chartType" (change)="updateDistributionChart()">
+              <option value="brand">By Brand</option>
+              <option value="type">By Type</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas #distributionChart></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div class="row g-4">
+    <!-- Recent Products Table -->
+    <div class="col-12">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-boxes me-2"></i>Recent Products
+          </h5>
+          <span class="badge bg-primary">{{ recentProducts.length }} products</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingProducts) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading products...</p>
+          </div>
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Product</th>
+                <th scope="col" class="fw-bold">Brand</th>
+                <th scope="col" class="fw-bold">Type</th>
+                <th scope="col" class="fw-bold">Price</th>
+                <th scope="col" class="fw-bold">Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (recentProducts.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-5 empty-state">
+                  <i class="fas fa-box-open fa-2x mb-3 text-muted"></i>
+                  <h6>No Products Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (product of recentProducts; track product.id) {
+              <tr class="fade-item">
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (product.pictureUrl) {
+                    <img [src]="product.pictureUrl" alt="{{ product.name }}" class="product-thumb me-3">
+                    }
+                    <div>
+                      <h6 class="mb-0">{{ product.name }}</h6>
+                      <small class="text-muted">Added {{ formatDate(product.createdAt) }}</small>
                     </div>
                   </div>
-                </div>
-                <div class="product-stats">
-                  <div class="sales-info">
-                    <span class="sales-count">{{product.sales | number}} sold</span>
-                    <span class="product-revenue">{{formatCurrency(product.revenue)}}</span>
+                </td>
+                <td>
+                  <span class="badge badge-info">
+                    {{ product.productBrandName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-secondary">
+                    {{ product.productTypeName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <strong>${{ product.price | number:'1.2-2' }}</strong>
+                </td>
+                <td>
+                  <div class="stock-indicator">
+                    @if (product.quantity > 10) {
+                    <span class="badge badge-success">{{ product.quantity }} in stock</span>
+                    } @else if (product.quantity > 0) {
+                    <span class="badge badge-warning">Low stock: {{ product.quantity }}</span>
+                    } @else {
+                    <span class="badge badge-danger">Out of stock</span>
+                    }
                   </div>
-                  <div class="sales-progress">
-                    <div class="progress-bar" [style.width.%]="getSalesPercentage(product)"></div>
-                  </div>
-                </div>
-              </div>
-            }
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders Table -->
+    <div class="col-12">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-shopping-bag me-2"></i>Recent Orders
+          </h5>
+          <span class="badge bg-primary">{{ recentOrders.length }} orders</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingOrders) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading orders...</p>
           </div>
-        }
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Order ID</th>
+                <th scope="col" class="fw-bold">Customer</th>
+                <th scope="col" class="fw-bold">Date</th>
+                <th scope="col" class="fw-bold">Amount</th>
+                <th scope="col" class="fw-bold">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (recentOrders.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-5 empty-state">
+                  <i class="fas fa-shopping-bag fa-2x mb-3 text-muted"></i>
+                  <h6>No Orders Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (order of recentOrders; track order.id) {
+              <tr class="fade-item">
+                <td>
+                  <strong>#{{ order.id }}</strong>
+                </td>
+                <td>
+                  <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>
+                </td>
+                <td>
+                  <div class="text-muted">
+                    {{ formatDate(order.orderDate) }}
+                  </div>
+                </td>
+                <td>
+                  <strong>${{ order.subTotal | number:'1.2-2' }}</strong>
+                </td>
+                <td>
+                  <span class="badge {{ getStatusBadgeClass(order.status) }}">
+                    <i class="fas {{ getStatusIcon(order.status) }} me-1"></i>
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
       </div>
     </div>
   </div>

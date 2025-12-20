@@ -30,7 +30,7 @@
         Users
       </a>
     </li>
-    <li>
+    <li *ngIf="isSuperAdmin()">
       <a routerLink="/dashboard/roles" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-user-shield"></i>
         Roles

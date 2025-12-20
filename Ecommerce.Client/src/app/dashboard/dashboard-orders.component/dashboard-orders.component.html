@@ -79,42 +79,33 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <!-- Filter Toggle -->
-        <button
-          class="btn btn-outline-success d-flex align-items-center"
-          (click)="toggleFilters()"
-        >
+        <button class="btn btn-outline-success d-flex align-items-center" (click)="toggleFilters()">
           <i class="fa fa-filter me-2"></i>
           {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
         </button>
 
         <!-- Status Filter -->
         @if (showFilters) {
-          <div class="status-filter">
-            <select
-              class="form-select modern-select"
-              [(ngModel)]="ordersParams.status"
-              (change)="onStatusSelected(ordersParams.status || '')"
-            >
-              @for (option of statusOptions; track option.value) {
-                <option [value]="option.value">
-                  {{ option.name }}
-                </option>
-              }
-            </select>
-          </div>
+        <div class="status-filter">
+          <select class="form-select modern-select" [(ngModel)]="ordersParams.status"
+            (change)="onStatusSelected(ordersParams.status || '')">
+            @for (option of statusOptions; track option.value) {
+            <option [value]="option.value">
+              {{ option.name }}
+            </option>
+            }
+          </select>
+        </div>
         }
 
         <!-- Sort Dropdown -->
         <div class="sort-dropdown">
-          <select
-            class="form-select modern-select"
-            [(ngModel)]="ordersParams.sort"
-            (change)="onSortSelected(ordersParams.sort)"
-          >
+          <select class="form-select modern-select" [(ngModel)]="ordersParams.sort"
+            (change)="onSortSelected(ordersParams.sort)">
             @for (option of sortOptions; track option.value) {
-              <option [value]="option.value">
-                {{ option.name }}
-              </option>
+            <option [value]="option.value">
+              {{ option.name }}
+            </option>
             }
           </select>
         </div>
@@ -122,20 +113,15 @@
 
       <!-- Search Bar (optional for orders) -->
       <div class="search-bar d-flex flex-grow-1">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search orders by ID, customer name, or email..."
-          [(ngModel)]="ordersParams.search"
-          (keyup.enter)="onSearch()"
-        />
+        <input type="text" class="form-control" placeholder="Search orders by ID, customer name, or email..."
+          [(ngModel)]="ordersParams.search" (keyup.enter)="onSearch()" />
         <button class="btn btn-dark ms-2" (click)="onSearch()">
           <i class="fa fa-search"></i>
         </button>
         @if (ordersParams.search || ordersParams.status) {
-          <button class="btn btn-outline-secondary ms-2" (click)="resetSearch()">
-            <i class="fa fa-times"></i>
-          </button>
+        <button class="btn btn-outline-secondary ms-2" (click)="resetSearch()">
+          <i class="fa fa-times"></i>
+        </button>
         }
       </div>
     </div>
@@ -155,221 +141,204 @@
 
     <div class="table-responsive">
       @if (loading) {
-        <div class="loading-wrapper">
-          <div class="loading-spinner"></div>
-          <p class="loading-text">Loading orders...</p>
-        </div>
+      <div class="loading-wrapper">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Loading orders...</p>
+      </div>
       } @else {
-        <table class="table table-hover mb-0">
-          <thead>
-            <tr>
-              <th scope="col" class="fw-bold">Order ID</th>
-              <th scope="col" class="fw-bold">Customer</th>
-              <th scope="col" class="fw-bold">Date</th>
-              <th scope="col" class="fw-bold">Amount</th>
-              <th scope="col" class="fw-bold">Status</th>
-              <th scope="col" class="fw-bold text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (orders.length === 0) {
-              <tr>
-                <td colspan="6" class="text-center py-5 empty-state">
-                  <i class="fas fa-shopping-bag fa-2x mb-3 text-muted"></i>
-                  <h5>No Orders Found</h5>
-                  <p class="text-muted mb-3">Try adjusting your search or filter criteria.</p>
-                  <button class="btn btn-outline-dark px-4" (click)="resetFilters()">
-                    <i class="fas fa-redo me-2"></i>Reset Filters
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th scope="col" class="fw-bold">Order ID</th>
+            <th scope="col" class="fw-bold">Customer</th>
+            <th scope="col" class="fw-bold">Date</th>
+            <th scope="col" class="fw-bold">Amount</th>
+            <th scope="col" class="fw-bold">Status</th>
+            <th scope="col" class="fw-bold text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (orders.length === 0) {
+          <tr>
+            <td colspan="6" class="text-center py-5 empty-state">
+              <i class="fas fa-shopping-bag fa-2x mb-3 text-muted"></i>
+              <h5>No Orders Found</h5>
+              <p class="text-muted mb-3">Try adjusting your search or filter criteria.</p>
+              <button class="btn btn-outline-dark px-4" (click)="resetFilters()">
+                <i class="fas fa-redo me-2"></i>Reset Filters
+              </button>
+            </td>
+          </tr>
+          } @else {
+          @for (order of orders; track order.id) {
+          <tr class="fade-item">
+            <td>
+              <strong>#{{ order.id }}</strong>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="avatar-container me-3">
+                  @if (order.profilePictureUrl) {
+                  <img [src]="order.profilePictureUrl" alt="{{ order.firstName }} {{ order.lastName }}" class="avatar">
+                  } @else {
+                  <div class="avatar-placeholder">
+                    {{ getInitials(order.firstName, order.lastName) }}
+                  </div>
+                  }
+                </div>
+                <div>
+                  <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>
+                  <!-- <small class="text-muted">{{ order.buyerEmail }}</small> -->
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="text-muted">
+                {{ formatDate(order.orderDate) }}
+              </div>
+            </td>
+            <td>
+              <strong>${{ order.subTotal | number:'1.2-2' }}</strong>
+            </td>
+            <td>
+              <span class="badge {{ getStatusBadgeClass(order.status) }}">
+                <i class="fas {{ getStatusIcon(order.status) }} me-1"></i>
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </td>
+            <td class="text-end">
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-primary" title="View Order Details"
+                  (click)="viewOrderDetails(order)">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cog"></i>
                   </button>
-                </td>
-              </tr>
-            } @else {
-              @for (order of orders; track order.id) {
-                <tr class="fade-item">
-                  <td>
-                    <strong>#{{ order.id }}</strong>
-                  </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <div class="avatar-container me-3">
-                        @if (order.profilePictureUrl) {
-                          <img
-                            [src]="order.profilePictureUrl"
-                            alt="{{ order.firstName }} {{ order.lastName }}"
-                            class="avatar"
-                          >
-                        } @else {
-                          <div class="avatar-placeholder">
-                            {{ getInitials(order.firstName, order.lastName) }}
-                          </div>
-                        }
-                      </div>
-                      <div>
-                        <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>
-                        <!-- <small class="text-muted">{{ order.buyerEmail }}</small> -->
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="text-muted">
-                      {{ formatDate(order.orderDate) }}
-                    </div>
-                  </td>
-                  <td>
-                    <strong>${{ order.subTotal | number:'1.2-2' }}</strong>
-                  </td>
-                  <td>
-                    <span class="badge {{ getStatusBadgeClass(order.status) }}">
-                      <i class="fas {{ getStatusIcon(order.status) }} me-1"></i>
-                      {{ order.status }}
-                    </span>
-                  </td>
-                  <td class="text-end">
-                    <div class="btn-group" role="group">
-                      <button
-                        class="btn btn-sm btn-outline-primary"
-                        title="View Order Details"
-                        (click)="viewOrderDetails(order)"
-                      >
-                        <i class="fas fa-eye"></i>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    @if (order.status !== 'Shipped') {
+                    <li>
+                      <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Shipped')">
+                        <i class="fas fa-truck me-2"></i>Mark as Shipped
                       </button>
-                      <div class="btn-group" role="group">
-                        <button
-                          type="button"
-                          class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                          aria-expanded="false"
-                        >
-                          <i class="fas fa-cog"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                          @if (order.status !== 'Shipped') {
-                            <li>
-                              <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Shipped')">
-                                <i class="fas fa-truck me-2"></i>Mark as Shipped
-                              </button>
-                            </li>
-                          }
-                          @if (order.status !== 'Complete') {
-                            <li>
-                              <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Complete')">
-                                <i class="fas fa-check-circle me-2"></i>Mark as Complete
-                              </button>
-                            </li>
-                          }
-                          @if (order.status !== 'Canceled') {
-                            <li>
-                              <button class="dropdown-item text-danger" (click)="updateOrderStatus(order.id, 'Canceled')">
-                                <i class="fas fa-times-circle me-2"></i>Cancel Order
-                              </button>
-                            </li>
-                          }
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              }
-            }
-          </tbody>
-        </table>
+                    </li>
+                    }
+                    @if (order.status !== 'Complete') {
+                    <li>
+                      <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Complete')">
+                        <i class="fas fa-check-circle me-2"></i>Mark as Complete
+                      </button>
+                    </li>
+                    }
+                    @if (order.status !== 'Canceled') {
+                    <li>
+                      <button class="dropdown-item text-danger" (click)="updateOrderStatus(order.id, 'Canceled')">
+                        <i class="fas fa-times-circle me-2"></i>Cancel Order
+                      </button>
+                    </li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
       }
     </div>
 
     <!-- Pagination -->
     @if (!loading && orders.length > 0) {
-      <div class="card-footer border-top">
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="text-muted">
-            Showing {{ (ordersParams.pageIndex - 1) * ordersParams.pageSize + 1 }}
-            to {{ getMaxDisplayNumber() }}
-            of {{ totalOrders }} orders
-          </div>
-          <div class="pagination-controls">
-            <button
-              class="btn btn-sm btn-outline-dark me-2"
-              [disabled]="ordersParams.pageIndex === 1"
-              (click)="onPageChanged(ordersParams.pageIndex - 1)"
-            >
-              <i class="fas fa-chevron-left"></i> Previous
-            </button>
-            <span class="mx-2">Page {{ ordersParams.pageIndex }} of {{ totalPages }}</span>
-            <button
-              class="btn btn-sm btn-outline-dark ms-2"
-              [disabled]="ordersParams.pageIndex === totalPages"
-              (click)="onPageChanged(ordersParams.pageIndex + 1)"
-            >
-              Next <i class="fas fa-chevron-right"></i>
-            </button>
-          </div>
+    <div class="card-footer border-top">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+          Showing {{ (ordersParams.pageIndex - 1) * ordersParams.pageSize + 1 }}
+          to {{ getMaxDisplayNumber() }}
+          of {{ totalOrders }} orders
+        </div>
+        <div class="pagination-controls">
+          <button class="btn btn-sm btn-outline-dark me-2" [disabled]="ordersParams.pageIndex === 1"
+            (click)="onPageChanged(ordersParams.pageIndex - 1)">
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+          <span class="mx-2">Page {{ ordersParams.pageIndex }} of {{ totalPages }}</span>
+          <button class="btn btn-sm btn-outline-dark ms-2" [disabled]="ordersParams.pageIndex === totalPages"
+            (click)="onPageChanged(ordersParams.pageIndex + 1)">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
         </div>
       </div>
+    </div>
     }
   </div>
 </div>
 
 <!-- Order Details Modal -->
 @if (showOrderDetails && selectedOrder) {
-  <div class="modal-overlay" (click)="closeOrderDetails()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="fas fa-receipt me-2"></i>Order #{{ selectedOrder.id }}
-        </h5>
-        <button type="button" class="btn-close" (click)="closeOrderDetails()"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row mb-4">
-          <div class="col-md-6">
-            <h6 class="fw-bold mb-3">Order Details</h6>
-            <p><strong>Date:</strong> {{ formatDate(selectedOrder.orderDate) }}</p>
-            <p><strong>Status:</strong>
-              <span class="badge {{ getStatusBadgeClass(selectedOrder.status) }}">
-                {{ selectedOrder.status }}
-              </span>
-            </p>
-            <p><strong>Subtotal:</strong> ${{ selectedOrder.subTotal | number:'1.2-2' }}</p>
-          </div>
-          <div class="col-md-6">
-            <h6 class="fw-bold mb-3">Customer Information</h6>
-            <p><strong>Name:</strong> {{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</p>
-            <!-- <p><strong>Email:</strong> {{ selectedOrder.buyerEmail }}</p> -->
-          </div>
+<div class="modal-overlay" (click)="closeOrderDetails()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5 class="modal-title">
+        <i class="fas fa-receipt me-2"></i>Order #{{ selectedOrder.id }}
+      </h5>
+      <button type="button" class="btn-close" (click)="closeOrderDetails()"></button>
+    </div>
+    <div class="modal-body">
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <h6 class="fw-bold mb-3">Order Details</h6>
+          <p><strong>Date:</strong> {{ formatDate(selectedOrder.orderDate) }}</p>
+          <p><strong>Status:</strong>
+            <span class="badge {{ getStatusBadgeClass(selectedOrder.status) }}">
+              {{ selectedOrder.status }}
+            </span>
+          </p>
+          <p><strong>Subtotal:</strong> ${{ selectedOrder.subTotal | number:'1.2-2' }}</p>
         </div>
+        <div class="col-md-6">
+          <h6 class="fw-bold mb-3">Customer Information</h6>
+          <p><strong>Name:</strong> {{ selectedOrder.firstName }} {{ selectedOrder.lastName }}</p>
+          <!-- <p><strong>Email:</strong> {{ selectedOrder.buyerEmail }}</p> -->
+        </div>
+      </div>
 
-        <!-- Order Items Table -->
-        <div class="mb-4">
-          <h6 class="fw-bold mb-3">Order Items</h6>
-          <div class="table-responsive">
-            <table class="table table-sm">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- You would populate this with actual order items -->
-                <tr>
-                  <td colspan="4" class="text-center text-muted">
-                    No items loaded. Would need to fetch from API.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <!-- Order Items Table -->
+      <div class="mb-4">
+        <h6 class="fw-bold mb-3">Order Items</h6>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- You would populate this with actual order items -->
+              <tr>
+                <td colspan="4" class="text-center text-muted">
+                  No items loaded. Would need to fetch from API.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeOrderDetails()">
-          Close
-        </button>
-        <button type="button" class="btn btn-primary">
-          <i class="fas fa-print me-2"></i>Print Invoice
-        </button>
       </div>
     </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" (click)="closeOrderDetails()">
+        Close
+      </button>
+      <button type="button" class="btn btn-primary">
+        <i class="fas fa-print me-2"></i>Print Invoice
+      </button>
+    </div>
   </div>
+</div>
 }

@@ -14,6 +14,7 @@ export interface IAllOrders {
   firstName: string;
   lastName: string;
   profilePictureUrl?: string | null;
+  createdAt: Date;
 }
 
 export interface IOrder {
