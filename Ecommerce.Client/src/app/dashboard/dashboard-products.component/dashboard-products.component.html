@@ -102,11 +102,11 @@
             <select
               class="form-select modern-select"
               [(ngModel)]="shopParams.brandId"
-              (change)="onBrandSelected(shopParams.brandId!)"
+              (change)="onBrandSelected(shopParams.brandId ?? 0)"
             >
-              <option [value]="null">All Brands</option>
+              <option [ngValue]="null">All Brands</option>
               @for (brand of brands; track brand.id) {
-                <option [value]="brand.id">
+                <option [ngValue]="brand.id">
                   {{ brand.name }}
                 </option>
               }
@@ -120,11 +120,11 @@
             <select
               class="form-select modern-select"
               [(ngModel)]="shopParams.typeId"
-              (change)="onTypeSelected(shopParams.typeId!)"
+              (change)="onTypeSelected(shopParams.typeId ?? 0)"
             >
-              <option [value]="null">All Types</option>
+              <option [ngValue]="null">All Types</option>
               @for (type of types; track type.id) {
-                <option [value]="type.id">
+                <option [ngValue]="type.id">
                   {{ type.name }}
                 </option>
               }
@@ -241,11 +241,11 @@
                     <div class="d-flex flex-column gap-1">
                       <span class="badge bg-light text-dark">
                         <i class="fas fa-tag me-1"></i>
-                        {{ (product.productBrandName) }}
+                        {{ product.productBrandName || getBrandName(product.productBrandId) }}
                       </span>
                       <span class="badge bg-light text-dark">
                         <i class="fas fa-th-large me-1"></i>
-                        {{ (product.productTypeName) }}
+                        {{ product.productTypeName || getTypeName(product.productTypeId) }}
                       </span>
                     </div>
                   </td>
@@ -253,7 +253,7 @@
                     <strong class="text-primary">${{ product.price | number:'1.2-2' }}</strong>
                   </td>
                   <td>
-                    <span class="badge {{ getStockStatusClass(product.quantity) }}">
+                    <span class="{{ getStockStatusClass(product.quantity) }}">
                       {{ getStockStatusText(product.quantity) }}
                       @if (product.quantity && product.quantity > 0) {
                         <span class="ms-1">({{ product.quantity }})</span>
@@ -330,33 +330,35 @@
       </div>
     }
   </div>
-</div>
 
-<!-- Product Form Modal -->
-@if (showProductForm) {
-  <div class="modal-overlay" (click)="closeProductForm()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-      <div class="modal-header p-3">
-        <h5 class="modal-title">
-          <i class="fas {{ isEditing ? 'fa-edit' : 'fa-plus-circle' }} me-2"></i>
-          {{ isEditing ? 'Edit Product' : 'Add New Product' }}
-        </h5>
-        <button type="button" class="btn-close" (click)="closeProductForm()"></button>
-      </div>
-      <div class="modal-body p-3">
-        <!-- Add product form content here -->
-        <p class="text-center text-muted py-4">
-          Product form would go here with fields for name, description, price, etc.
-        </p>
-      </div>
-      <div class="modal-footer p-3">
-        <button type="button" class="btn btn-outline-secondary" (click)="closeProductForm()">
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary" disabled>
-          {{ isEditing ? 'Update Product' : 'Create Product' }}
-        </button>
+  <!-- Product Form Modal -->
+  @if (showProductForm) {
+    <div class="modal-backdrop fade show" (click)="closeProductForm()"></div>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              @if (isEditing) {
+                <i class="fas fa-edit me-2"></i>Edit Product
+              } @else {
+                <i class="fas fa-plus-circle me-2"></i>Add New Product
+              }
+            </h5>
+            <button type="button" class="btn-close" (click)="closeProductForm()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-3">
+            <app-product-form
+              [isEditing]="isEditing"
+              [product]="selectedProduct"
+              [brands]="brands"
+              [types]="types"
+              (submitForm)="onProductSubmit($event)"
+              (cancel)="closeProductForm()">
+            </app-product-form>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-}
+  }
+</div>

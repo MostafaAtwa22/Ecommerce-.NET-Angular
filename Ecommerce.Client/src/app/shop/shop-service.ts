@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { Environment } from '../environment';
 import { IPagination, Pagination } from '../shared/modules/pagination';
-import { IProduct } from '../shared/modules/product';
+import { IProduct, IProductCreate, IProductUpdate } from '../shared/modules/product';
 import { ShopParams } from '../shared/modules/ShopParams';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ShopService {
   private baseUrl = `${Environment.baseUrl}/api`;
@@ -16,7 +16,7 @@ export class ShopService {
   pagination = new Pagination<IProduct>();
   shopParams = new ShopParams();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllProducts(useCache: boolean = true): Observable<IPagination<IProduct>> {
     const cachedProducts = this.cache.get(1) || [];
@@ -47,7 +47,7 @@ export class ShopService {
     if (this.shopParams.search) params = params.set('search', this.shopParams.search);
 
     return this.http.get<IPagination<IProduct>>(`${this.baseUrl}/products`, { params }).pipe(
-      tap(response => {
+      tap((response) => {
         const currentCache = this.cache.get(1) || [];
         this.cache.set(1, [...currentCache, ...response.data]);
         this.pagination = response;
@@ -70,28 +70,60 @@ export class ShopService {
 
   getProduct(id: number): Observable<IProduct> {
     const cachedProducts = this.cache.get(1) || [];
-    const product = cachedProducts.find(p => p.id === id);
+    const product = cachedProducts.find((p) => p.id === id);
 
     return product ? of(product) : this.http.get<IProduct>(`${this.baseUrl}/products/${id}`);
   }
 
-  createProduct(product: IProduct): Observable<IProduct> {
-    return this.http.post<IProduct>(`${this.baseUrl}/products`, product).pipe(
-      tap(created => {
+  createProduct(product: IProductCreate): Observable<IProduct> {
+    const formData = new FormData();
+
+    // Property names must match C# DTO property names exactly
+    formData.append('Name', product.name);
+    formData.append('Description', product.description);
+    formData.append('Price', product.price.toString());
+    formData.append('Quantity', product.quantity.toString());
+    formData.append('ProductTypeId', product.productTypeId.toString());
+    formData.append('ProductBrandId', product.productBrandId.toString());
+
+    if (product.imageFile) {
+      formData.append('ImageFile', product.imageFile, product.imageFile.name);
+    }
+
+    return this.http.post<IProduct>(`${this.baseUrl}/products`, formData).pipe(
+      tap((created) => {
         const cached = this.cache.get(1) || [];
-        cached.push(created);
-        this.cache.set(1, cached);
+        this.cache.set(1, [created, ...cached]);
+        this.pagination.totalData += 1;
       })
     );
   }
 
-  updateProduct(product: IProduct): Observable<IProduct> {
-    return this.http.put<IProduct>(`${this.baseUrl}/products`, product).pipe(
-      tap(updated => {
+  updateProduct(product: IProductUpdate): Observable<IProduct> {
+    const formData = new FormData();
+
+    formData.append('ProductId', product.productId.toString());
+    formData.append('Name', product.name);
+    formData.append('Description', product.description);
+    formData.append('Price', product.price.toString());
+    formData.append('Quantity', product.quantity.toString());
+    formData.append('ProductTypeId', product.productTypeId.toString());
+    formData.append('ProductBrandId', product.productBrandId.toString());
+
+    // For update, ImageFile is optional
+    if (product.imageFile && product.imageFile instanceof File) {
+      formData.append('ImageFile', product.imageFile, product.imageFile.name);
+    }
+
+    return this.http.put<IProduct>(`${this.baseUrl}/products`, formData).pipe(
+      tap((updated) => {
         const cached = this.cache.get(1) || [];
         const index = cached.findIndex(p => p.id === updated.id);
-        if (index !== -1) cached[index] = updated;
-        this.cache.set(1, cached);
+
+        if (index !== -1) {
+          cached[index] = updated;
+          this.cache.set(1, [...cached]);
+        }
       })
     );
   }
@@ -100,7 +132,10 @@ export class ShopService {
     return this.http.delete<void>(`${this.baseUrl}/products/${id}`).pipe(
       tap(() => {
         const cached = this.cache.get(1) || [];
-        this.cache.set(1, cached.filter(p => p.id !== id));
+        this.cache.set(
+          1,
+          cached.filter((p) => p.id !== id)
+        );
       })
     );
   }

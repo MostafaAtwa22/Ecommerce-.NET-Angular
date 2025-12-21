@@ -1,0 +1,99 @@
+.product-form {
+  .form-label {
+    color: #0c111d;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .form-control, .form-select {
+    border: 1px solid #d1d7dc;
+    border-radius: 4px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    color: #0c111d;
+    background: white;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: #5624d0;
+      box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+    }
+
+    &.is-invalid {
+      border-color: #f44336;
+
+      &:focus {
+        box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+      }
+    }
+  }
+
+  .invalid-feedback {
+    font-size: 0.75rem;
+    color: #f44336;
+    margin-top: 0.25rem;
+  }
+
+  .image-upload-container {
+    .image-preview-wrapper {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1rem;
+      background: #f8f9fa;
+      text-align: center;
+
+      img {
+        max-width: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+
+  .btn {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &.btn-primary {
+      background: #5624d0;
+      border: 1px solid #5624d0;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #401b9c;
+        border-color: #401b9c;
+      }
+
+      &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+      }
+    }
+
+    &.btn-outline-secondary {
+      border: 1px solid #d1d7dc;
+      color: #6a6f73;
+
+      &:hover {
+        background: #f7f9fa;
+        color: #0c111d;
+      }
+    }
+
+    &.btn-outline-danger {
+      border: 1px solid #f44336;
+      color: #f44336;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+
+      &:hover {
+        background: #f44336;
+        color: white;
+      }
+    }
+  }
+}

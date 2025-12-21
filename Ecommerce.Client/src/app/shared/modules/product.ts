@@ -9,5 +9,25 @@ export interface IProduct {
   numberOfReviews: number
   productBrandName: string
   productTypeName: string
+  productBrandId: number
+  productTypeId: number  
   createdAt: Date
+}
+
+interface IProductForm {
+  name: string;
+  description: string;
+  price: number;
+  quantity: number;
+  productTypeId: number;
+  productBrandId: number;
+}
+
+export interface IProductCreate extends IProductForm {
+  imageFile: File;
+}
+
+export interface IProductUpdate extends IProductForm  {
+  productId: number;
+  imageFile?: File | null;
 }

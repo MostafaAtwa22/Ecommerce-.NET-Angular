@@ -1,0 +1,244 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="product-form">
+
+  <!-- Name Field -->
+  <div class="mb-3">
+    <label for="name" class="form-label fw-semibold">Name</label>
+    <input
+      type="text"
+      id="name"
+      class="form-control"
+      formControlName="name"
+      [class.is-invalid]="name?.invalid && name?.touched"
+      placeholder="Enter product name"
+    >
+    @if (name?.invalid && name?.touched) {
+      <div class="invalid-feedback">
+        @if (name?.errors?.['required']) {
+          <span>Name is required</span>
+        }
+        @if (name?.errors?.['minlength']) {
+          <span>Name must be at least 3 characters</span>
+        }
+        @if (name?.errors?.['maxlength']) {
+          <span>Name cannot exceed 50 characters</span>
+        }
+        @if (name?.errors?.['pattern']) {
+          <span>Only letters, numbers, spaces, hyphens and underscores are allowed</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Description Field -->
+  <div class="mb-3">
+    <label for="description" class="form-label fw-semibold">Description</label>
+    <textarea
+      id="description"
+      class="form-control"
+      rows="4"
+      formControlName="description"
+      [class.is-invalid]="description?.invalid && description?.touched"
+      placeholder="Enter product description"
+    ></textarea>
+    @if (description?.invalid && description?.touched) {
+      <div class="invalid-feedback">
+        @if (description?.errors?.['required']) {
+          <span>Description is required</span>
+        }
+        @if (description?.errors?.['minlength']) {
+          <span>Description must be at least 10 characters</span>
+        }
+        @if (description?.errors?.['maxlength']) {
+          <span>Description cannot exceed 1500 characters</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Price & Quantity Row -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="price" class="form-label fw-semibold">Price ($)</label>
+      <input
+        type="number"
+        id="price"
+        class="form-control"
+        formControlName="price"
+        [class.is-invalid]="price?.invalid && price?.touched"
+        min="1"
+        max="10000"
+        step="0.01"
+      >
+      @if (price?.invalid && price?.touched) {
+        <div class="invalid-feedback">
+          @if (price?.errors?.['required']) {
+            <span>Price is required</span>
+          }
+          @if (price?.errors?.['min']) {
+            <span>Price must be at least $1</span>
+          }
+          @if (price?.errors?.['max']) {
+            <span>Price cannot exceed $10,000</span>
+          }
+        </div>
+      }
+    </div>
+    <div class="col-md-6">
+      <label for="quantity" class="form-label fw-semibold">Quantity</label>
+      <input
+        type="number"
+        id="quantity"
+        class="form-control"
+        formControlName="quantity"
+        [class.is-invalid]="quantity?.invalid && quantity?.touched"
+        min="5"
+        max="10000"
+      >
+      @if (quantity?.invalid && quantity?.touched) {
+        <div class="invalid-feedback">
+          @if (quantity?.errors?.['required']) {
+            <span>Quantity is required</span>
+          }
+          @if (quantity?.errors?.['min']) {
+            <span>Quantity must be at least 5</span>
+          }
+          @if (quantity?.errors?.['max']) {
+            <span>Quantity cannot exceed 10,000</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Brand & Type Row -->
+  <div class="row g-3 mb-3">
+    <div class="col-md-6">
+      <label for="productBrandId" class="form-label fw-semibold">Brand</label>
+      <select
+        id="productBrandId"
+        class="form-select"
+        formControlName="productBrandId"
+        [class.is-invalid]="productBrandId?.invalid && productBrandId?.touched"
+      >
+        <option [ngValue]="null" disabled>Select brand</option>
+        @for (brand of brands; track brand.id) {
+          <option [ngValue]="brand.id">{{ brand.name }}</option>
+        }
+      </select>
+      @if (productBrandId?.invalid && productBrandId?.touched) {
+        <div class="invalid-feedback">
+          <span>Please select a brand</span>
+        </div>
+      }
+    </div>
+    <div class="col-md-6">
+      <label for="productTypeId" class="form-label fw-semibold">Type</label>
+      <select
+        id="productTypeId"
+        class="form-select"
+        formControlName="productTypeId"
+        [class.is-invalid]="productTypeId?.invalid && productTypeId?.touched"
+      >
+        <option [ngValue]="null" disabled>Select type</option>
+        @for (type of types; track type.id) {
+          <option [ngValue]="type.id">{{ type.name }}</option>
+        }
+      </select>
+      @if (productTypeId?.invalid && productTypeId?.touched) {
+        <div class="invalid-feedback">
+          <span>Please select a type</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Image Upload -->
+  <div class="mb-3">
+    <label for="imageUpload" class="form-label fw-semibold">Product Image</label>
+    <div class="image-upload-container">
+      <input
+        type="file"
+        id="imageUpload"
+        class="form-control"
+        [class.is-invalid]="imageFile?.invalid && imageFile?.touched"
+        accept=".jpg,.jpeg,.png"
+        (change)="onFileSelected($event)"
+      >
+      @if (imageFile?.invalid && imageFile?.touched) {
+        <div class="invalid-feedback">
+          @if (imageFile?.errors?.['required']) {
+            <span>Image file is required for new products</span>
+          }
+          @if (imageFile?.errors?.['invalidExtension']) {
+            <span>Only .jpg, .jpeg, .png files are allowed</span>
+          }
+          @if (imageFile?.errors?.['fileTooLarge']) {
+            <span>File size must be less than 1MB</span>
+          }
+        </div>
+      }
+      <small class="text-muted d-block mt-1">
+        Allowed formats: .jpg, .jpeg, .png | Max size: 1MB
+      </small>
+
+      @if (imagePreview) {
+        <div class="mt-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <small class="text-muted">Image Preview</small>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              (click)="removeImage()"
+            >
+              <i class="fas fa-times me-1"></i>Remove
+            </button>
+          </div>
+          <div class="image-preview-wrapper">
+            <img
+              [src]="imagePreview"
+              alt="Product preview"
+              class="img-fluid rounded border"
+              style="max-height: 200px;"
+            >
+          </div>
+        </div>
+      } @else if (isEditing && product?.pictureUrl) {
+        <div class="mt-3">
+          <small class="text-muted">Current Image</small>
+          <div class="image-preview-wrapper">
+            <img
+              [src]="product?.pictureUrl"
+              alt="Current product image"
+              class="img-fluid rounded border"
+              style="max-height: 200px;"
+            >
+          </div>
+          <small class="text-muted d-block mt-1">Upload a new image to replace this one</small>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Form Actions -->
+  <div class="modal-footer mt-4 pt-3 border-top">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="form.invalid"
+    >
+      @if (isEditing) {
+        <i class="fas fa-save me-2"></i>Update Product
+      } @else {
+        <i class="fas fa-plus-circle me-2"></i>Create Product
+      }
+    </button>
+  </div>
+
+</form>

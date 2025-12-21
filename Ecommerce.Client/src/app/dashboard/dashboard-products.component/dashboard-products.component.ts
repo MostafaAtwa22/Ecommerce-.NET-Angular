@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweetAlertService } from '../../shared/services/sweet-alert.service';
-import { IProduct } from '../../shared/modules/product';
+import { IProduct, IProductCreate, IProductUpdate } from '../../shared/modules/product';
 import { ShopParams } from '../../shared/modules/ShopParams';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShopService } from '../../shop/shop-service';
@@ -11,13 +11,14 @@ import { IBrand } from '../../shared/modules/brand';
 import { IType } from '../../shared/modules/type';
 import { BrandService } from '../../shared/services/brand-service';
 import { TypeService } from '../../shared/services/type-service';
+import { ProductFormComponent } from "./product-form.component/product-form.component";
 
 @Component({
   selector: 'app-dashboard-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, ProductFormComponent],
   templateUrl: './dashboard-products.component.html',
-  styleUrls: ['./dashboard-products.component.scss']
+  styleUrls: ['./dashboard-products.component.scss'],
 })
 export class DashboardProductsComponent implements OnInit {
   products: IProduct[] = [];
@@ -49,7 +50,7 @@ export class DashboardProductsComponent implements OnInit {
     { value: 'PriceAsc', name: 'Price: Low to High' },
     { value: 'PriceDesc', name: 'Price: High to Low' },
     { value: 'RatingDesc', name: 'Rating: High to Low' },
-    { value: 'RatingAsc', name: 'Rating: Low to High' }
+    { value: 'RatingAsc', name: 'Rating: Low to High' },
   ];
 
   // Brand and Type options (fetched from API)
@@ -84,13 +85,15 @@ export class DashboardProductsComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.loading = false;
         if (err.status === 401 || err.status === 403) {
-          this.errorMessage = 'You don\'t have permission to access products.';
+          this.errorMessage = "You don't have permission to access products.";
         } else if (err.status === 0) {
-          this.errorMessage = 'Unable to connect to the server. Please check if the API is running.';
+          this.errorMessage =
+            'Unable to connect to the server. Please check if the API is running.';
         } else {
-          this.errorMessage = err.error?.message || 'An unexpected error occurred while loading products.';
+          this.errorMessage =
+            err.error?.message || 'An unexpected error occurred while loading products.';
         }
-      }
+      },
     });
   }
 
@@ -111,7 +114,7 @@ export class DashboardProductsComponent implements OnInit {
         console.error('Failed to load brands:', err);
         this.brands = [];
         this.loadingFilters = false;
-      }
+      },
     });
 
     loadTypes$.subscribe({
@@ -123,7 +126,7 @@ export class DashboardProductsComponent implements OnInit {
         console.error('Failed to load types:', err);
         this.types = [];
         this.loadingFilters = false;
-      }
+      },
     });
   }
 
@@ -137,7 +140,7 @@ export class DashboardProductsComponent implements OnInit {
     let totalRating = 0;
     let ratedProducts = 0;
 
-    this.products.forEach(product => {
+    this.products.forEach((product) => {
       // Calculate revenue (price * stock)
       this.totalRevenue += (product.price || 0) * (product.quantity || 0);
 
@@ -234,51 +237,59 @@ export class DashboardProductsComponent implements OnInit {
     this.selectedProduct = null;
   }
 
-  saveProduct(product: IProduct): void {
-    if (this.isEditing && product.id) {
-      this.shopService.updateProduct(product).subscribe({
+  onProductSubmit(payload: IProductCreate | IProductUpdate): void {
+    if (this.isEditing && this.selectedProduct) {
+      const updatePayload: IProductUpdate = {
+        ...(payload as IProductUpdate),
+        productId: this.selectedProduct.id,
+      };
+
+      this.shopService.updateProduct(updatePayload).subscribe({
         next: () => {
-          this.sweetAlert.success('Product updated successfully!');
+          this.sweetAlert.success('Product updated successfully');
           this.loadProducts();
           this.closeProductForm();
         },
-        error: (err) => {
-          this.sweetAlert.error('Failed to update product. Please try again.');
-        }
+        error: () => this.sweetAlert.error('Update failed'),
       });
     } else {
-      this.shopService.createProduct(product).subscribe({
+      const createPayload: IProductCreate = {
+        ...(payload as IProductCreate),
+        imageFile: (payload as IProductCreate).imageFile!,
+      };
+
+      this.shopService.createProduct(createPayload).subscribe({
         next: () => {
-          this.sweetAlert.success('Product created successfully!');
+          this.sweetAlert.success('Product created successfully');
           this.loadProducts();
           this.closeProductForm();
         },
-        error: (err) => {
-          this.sweetAlert.error('Failed to create product. Please try again.');
-        }
+        error: () => this.sweetAlert.error('Creation failed'),
       });
     }
   }
 
   deleteProduct(id: number): void {
-    this.sweetAlert.confirm({
-      title: 'Delete Product',
-      text: 'Are you sure you want to delete this product? This action cannot be undone.',
-      icon: 'warning',
-      confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.shopService.deleteProduct(id).subscribe({
-          next: () => {
-            this.sweetAlert.success('Product deleted successfully!');
-            this.loadProducts();
-          },
-          error: (err) => {
-            this.sweetAlert.error('Failed to delete product. Please try again.');
-          }
-        });
-      }
-    });
+    this.sweetAlert
+      .confirm({
+        title: 'Delete Product',
+        text: 'Are you sure you want to delete this product? This action cannot be undone.',
+        icon: 'warning',
+        confirmButtonText: 'Yes, delete it!',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.shopService.deleteProduct(id).subscribe({
+            next: () => {
+              this.sweetAlert.success('Product deleted successfully!');
+              this.loadProducts();
+            },
+            error: (err) => {
+              this.sweetAlert.error('Failed to delete product. Please try again.');
+            },
+          });
+        }
+      });
   }
 
   getStockStatusClass(quantity: number | undefined): string {
@@ -314,13 +325,13 @@ export class DashboardProductsComponent implements OnInit {
 
   getBrandName(brandId: number | undefined): string {
     if (!brandId) return 'N/A';
-    const brand = this.brands.find(b => b.id === brandId);
+    const brand = this.brands.find((b) => b.id === brandId);
     return brand?.name ? String(brand.name) : 'Unknown Brand';
   }
 
   getTypeName(typeId: number | undefined): string {
     if (!typeId) return 'N/A';
-    const type = this.types.find(t => t.id === typeId);
+    const type = this.types.find((t) => t.id === typeId);
     return type?.name ? String(type.name) : 'Unknown Type';
   }
 }

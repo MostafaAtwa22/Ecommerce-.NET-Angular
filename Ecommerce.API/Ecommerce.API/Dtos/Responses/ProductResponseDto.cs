@@ -18,6 +18,10 @@ namespace Ecommerce.API.Dtos.Responses
 
         public decimal AverageRating { get; set; }
 
+        public int ProductBrandId { get; set; }
+        
+        public int ProductTypeId { get; set; }
+
         public string ProductBrandName { get; set; } = string.Empty;
 
         public string ProductTypeName { get; set; } = string.Empty;
