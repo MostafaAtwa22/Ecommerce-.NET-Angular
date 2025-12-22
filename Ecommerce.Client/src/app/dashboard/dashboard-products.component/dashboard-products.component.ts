@@ -74,6 +74,11 @@ export class DashboardProductsComponent implements OnInit {
     this.loading = true;
     this.errorMessage = null;
 
+    // Store original params and temporarily set dashboard-specific params
+    const originalParams = { ...this.shopService.shopParams };
+    this.shopService.shopParams = { ...this.shopParams };
+    this.shopService.shopParams.pageSize = this.shopParams.pageSize;
+
     this.shopService.getAllProducts(false).subscribe({
       next: (response) => {
         this.products = response.data;
@@ -81,9 +86,14 @@ export class DashboardProductsComponent implements OnInit {
         this.totalPages = this.calculateTotalPages();
         this.calculateStatistics();
         this.loading = false;
+        console.log(this.products);
+        // Restore original params
+        this.shopService.shopParams = originalParams;
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
+        // Restore original params on error as well
+        this.shopService.shopParams = originalParams;
         if (err.status === 401 || err.status === 403) {
           this.errorMessage = "You don't have permission to access products.";
         } else if (err.status === 0) {

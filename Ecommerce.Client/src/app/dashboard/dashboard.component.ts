@@ -21,5 +21,10 @@ export class DashboardComponent {
     const user = this.accountService.user();
     return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
   }
+
+  logout() {
+    console.log('Logout called');
+    this.accountService.logout();
+  }
 }
 

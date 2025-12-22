@@ -12,7 +12,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-male">
@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-female">
@@ -36,7 +36,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-customer">
@@ -48,7 +48,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-admin">
@@ -60,7 +60,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-superadmin">
@@ -78,6 +78,14 @@
   <div class="toolbar card-shadow mb-4">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button
+          *ngIf="isSuperAdmin()"
+          class="btn btn-success d-flex align-items-center"
+          routerLink="/register"
+        >
+          <i class="fas fa-user-plus me-2"></i>
+          Add User
+        </button>
         <!-- Filter Toggle -->
         <button
           class="btn btn-outline-success d-flex align-items-center"
@@ -152,7 +160,7 @@
         <span class="text-muted ms-2">Page {{ pagination.pageIndex }} of {{ totalPages }}</span>
       </div>
     </div>
-    
+
     <div class="table-responsive">
       @if (loading) {
         <div class="loading-wrapper">
@@ -188,8 +196,8 @@
                   <td>
                     <div class="d-flex align-items-center">
                     <div class="avatar-container me-3">
-                    <img 
-                        [src]="getUserAvatar(user)" 
+                    <img
+                        [src]="getUserAvatar(user)"
                         [alt]="user.firstName + ' ' + user.lastName"
                         class="avatar"
                         (error)="handleImageError($event)"
@@ -217,7 +225,7 @@
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
-                      <i 
+                      <i
                         class="fas me-2 {{ getGenderIcon(user.gender) }} {{ getGenderColor(user.gender) }}"
                       ></i>
                       <span class="text-capitalize">{{ user.gender || 'Not specified' }}</span>
@@ -226,7 +234,7 @@
                   <td>
                     <div class="d-flex flex-wrap gap-1">
                       @for (role of user.roles; track role) {
-                        <span 
+                        <span
                           class="badge {{ getRoleBadgeClass(role) }}"
                         >
                           {{ role }}
@@ -262,21 +270,21 @@
       <div class="card-footer border-top">
         <div class="d-flex justify-content-between align-items-center">
           <div class="text-muted">
-            Showing {{ (pagination.pageIndex - 1) * pagination.pageSize + 1 }} 
-            to {{ getMaxDisplayNumber() }} 
+            Showing {{ (pagination.pageIndex - 1) * pagination.pageSize + 1 }}
+            to {{ getMaxDisplayNumber() }}
             of {{ totalUsers }} users
           </div>
           <div class="pagination-controls">
-            <button 
-              class="btn btn-sm btn-outline-dark me-2" 
+            <button
+              class="btn btn-sm btn-outline-dark me-2"
               [disabled]="pagination.pageIndex === 1"
               (click)="onPageChanged(pagination.pageIndex - 1)"
             >
               <i class="fas fa-chevron-left"></i> Previous
             </button>
             <span class="mx-2">Page {{ pagination.pageIndex }} of {{ totalPages }}</span>
-            <button 
-              class="btn btn-sm btn-outline-dark ms-2" 
+            <button
+              class="btn btn-sm btn-outline-dark ms-2"
               [disabled]="pagination.pageIndex === totalPages"
               (click)="onPageChanged(pagination.pageIndex + 1)"
             >

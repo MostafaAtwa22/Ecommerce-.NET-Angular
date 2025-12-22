@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IAllOrders } from '../../shared/modules/order';
+import { IAllOrders, IOrder } from '../../shared/modules/order';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OrdersParams } from '../../shared/modules/OrdersParams';
 import { CheckoutService } from '../../checkout/checkout-service';
@@ -31,7 +31,7 @@ export class DashboardOrdersComponent implements OnInit {
   ordersParams = new OrdersParams();
   showFilters = false;
   showOrderDetails = false;
-  selectedOrder: any = null;
+  selectedOrder: IOrder | null = null;
 
   // Pagination
   totalPages = 0;
@@ -168,14 +168,24 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   viewOrderDetails(order: IAllOrders): void {
-    // You would typically fetch full order details here
-    this.selectedOrder = {
-      ...order,
-      items: [], // Add order items here if available
-      shippingAddress: {}, // Add shipping address here
-      deliveryMethod: {} // Add delivery method here
-    };
-    this.showOrderDetails = true;
+    // Fetch full order details with items
+    this.checkoutService.getUserOrderById(order.id).subscribe({
+      next: (fullOrder) => {
+        this.selectedOrder = fullOrder;
+        this.showOrderDetails = true;
+      },
+      error: (err) => {
+        console.error('Error fetching order details:', err);
+        // Fallback to basic order info if fetch fails
+        this.selectedOrder = {
+          ...order,
+          orderItems: [], // Empty array as fallback
+          addressToShip: undefined,
+          deliveryMethod: undefined
+        } as any;
+        this.showOrderDetails = true;
+      }
+    });
   }
 
   closeOrderDetails(): void {

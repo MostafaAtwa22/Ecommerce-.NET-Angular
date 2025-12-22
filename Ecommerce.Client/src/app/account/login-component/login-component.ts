@@ -39,8 +39,14 @@ export class LoginComponent implements OnInit {
   isLoading = false;
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
-    password: ['', [Validators.required]],
+    email: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+      ]
+    ],
+    password: ['', Validators.required],
     rememberMe: [false]
   });
 
@@ -49,7 +55,7 @@ export class LoginComponent implements OnInit {
       this.returnUrl = params['returnUrl'] || '/';
     });
 
-    // Subscribe to Google authentication state
+    // Google auth listener
     this.authService.authState.subscribe({
       next: (user: SocialUser) => {
         if (user) {
@@ -62,11 +68,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  togglePasswordVisibility() {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  onSubmit() {
+  onSubmit(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -78,7 +84,7 @@ export class LoginComponent implements OnInit {
     this.accountService.login(loginData).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigateByUrl(this.returnUrl);
+        this.navigateByRole();
       },
       error: (err) => {
         this.isLoading = false;
@@ -87,15 +93,14 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // Handle Google login
-  private handleGoogleLogin(user: SocialUser) {
+  // Google login handler
+  private handleGoogleLogin(user: SocialUser): void {
     this.isLoading = true;
 
-    // Send the ID token to your backend
     this.accountService.googleLogin(user.idToken).subscribe({
       next: () => {
         this.isLoading = false;
-        this.router.navigateByUrl(this.returnUrl);
+        this.navigateByRole();
       },
       error: (err) => {
         this.isLoading = false;
@@ -104,6 +109,27 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  get email() { return this.loginForm.get('email'); }
-  get password() { return this.loginForm.get('password'); }
+  // 🔥 Role-based navigation
+  private navigateByRole(): void {
+    const user = this.accountService.user();
+
+    if (!user || !user.roles) {
+      this.router.navigateByUrl('/');
+      return;
+    }
+
+    if (user.roles.includes('Admin') || user.roles.includes('SuperAdmin')) {
+      this.router.navigateByUrl('/dashboard');
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
+
+  get email() {
+    return this.loginForm.get('email');
+  }
+
+  get password() {
+    return this.loginForm.get('password');
+  }
 }

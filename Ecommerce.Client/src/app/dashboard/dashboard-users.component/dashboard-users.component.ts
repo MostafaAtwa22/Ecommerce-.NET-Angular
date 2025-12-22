@@ -6,11 +6,13 @@ import { IPagination, Pagination } from '../../shared/modules/pagination';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProfileService } from '../../shared/services/profile-service';
 import { UserParams } from '../../shared/modules/UserParams ';
+import { RouterLink } from '@angular/router';
+import { AccountService } from '../../account/account-service';
 
 @Component({
   selector: 'app-dashboard-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink],
   templateUrl: './dashboard-users.component.html',
   styleUrl: './dashboard-users.component.scss'
 })
@@ -18,7 +20,7 @@ export class DashboardUsersComponent implements OnInit {
   users: IProfile[] = [];
   loading = false;
   errorMessage: string | null = null;
-  
+
   // Statistics
   totalUsers = 0;
   maleCount = 0;
@@ -26,11 +28,11 @@ export class DashboardUsersComponent implements OnInit {
   customerCount = 0;
   adminCount = 0;
   superAdminCount = 0;
-  
+
   // Filter/Search
   userParams = new UserParams();
   showFilters = false;
-  
+
   // Pagination
   pagination: IPagination<IProfile> = {
     data: [],
@@ -38,10 +40,10 @@ export class DashboardUsersComponent implements OnInit {
     pageSize: 10,
     totalData: 0,
   };
-  
+
   // Add local totalPages property
   totalPages = 0;
-  
+
   // Sort options
   sortOptions = [
     { value: 'name', name: 'Name: A-Z' },
@@ -50,7 +52,7 @@ export class DashboardUsersComponent implements OnInit {
     { value: 'oldest', name: 'Oldest First' },
     { value: 'email', name: 'Email: A-Z' }
   ];
-  
+
   // Role filter options
   roleOptions = [
     { value: '', name: 'All Users' },
@@ -59,29 +61,32 @@ export class DashboardUsersComponent implements OnInit {
     { value: 'SuperAdmin', name: 'Super Admin' }
   ];
 
-  constructor(private profileService: ProfileService) {}
+  constructor(
+    private profileService: ProfileService,
+    private accountService: AccountService
+  ) {}
   getUserAvatar(user: IProfile): string {
     if (user.profilePicture) {
       return user.profilePicture;
     }
-    
+
     // Default avatars based on gender
     if (user.gender?.toLowerCase() === 'male') {
       return 'default-male.png';
     } else if (user.gender?.toLowerCase() === 'female') {
       return 'default-female.png';
     }
-    
+
     // Default neutral avatar
     return 'default-user.png';
   }
 
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
-    const userGender = this.users.find(u => 
+    const userGender = this.users.find(u =>
       `${u.firstName} ${u.lastName}` === imgElement.alt
     )?.gender?.toLowerCase();
-    
+
     if (userGender === 'male') {
       imgElement.src = 'default-male.png';
     } else if (userGender === 'female') {
@@ -89,7 +94,7 @@ export class DashboardUsersComponent implements OnInit {
     } else {
       imgElement.src = 'default-user.png';
     }
-    
+
     // Add a CSS class for broken images
     imgElement.classList.add('broken-image');
   }
@@ -100,16 +105,16 @@ export class DashboardUsersComponent implements OnInit {
   loadUsers(): void {
     this.loading = true;
     this.errorMessage = null;
-    
+
     this.profileService.getAllUsers(false).subscribe({
       next: (response) => {
         this.pagination = response;
         this.users = response.data;
         this.totalUsers = response.totalData;
-        
+
         // Calculate totalPages locally
         this.totalPages = this.calculateTotalPages();
-        
+
         this.calculateStatistics();
         this.loading = false;
       },
@@ -226,12 +231,17 @@ export class DashboardUsersComponent implements OnInit {
   }
 
   getGenderIcon(gender: string): string {
-    return gender?.toLowerCase() === 'male' ? 'fa-mars' : 
+    return gender?.toLowerCase() === 'male' ? 'fa-mars' :
            gender?.toLowerCase() === 'female' ? 'fa-venus' : 'fa-genderless';
   }
 
   getGenderColor(gender: string): string {
-    return gender?.toLowerCase() === 'male' ? 'text-primary' : 
+    return gender?.toLowerCase() === 'male' ? 'text-primary' :
            gender?.toLowerCase() === 'female' ? 'text-pink' : 'text-muted';
+  }
+
+  isSuperAdmin(): boolean {
+    const user = this.accountService.user();
+    return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
   }
 }

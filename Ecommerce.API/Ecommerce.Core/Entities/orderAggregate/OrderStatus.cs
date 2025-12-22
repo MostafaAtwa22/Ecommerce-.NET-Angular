@@ -17,6 +17,9 @@ namespace Ecommerce.Core.Entities.orderAggregate
         Shipped,
 
         [EnumMember(Value = "Complete")]
-        Complete
+        Complete,
+
+        [EnumMember(Value = "Cancel")]
+        Cancel
     }
 }
