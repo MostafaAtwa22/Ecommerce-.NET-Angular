@@ -57,6 +57,25 @@ namespace Ecommerce.API.Controllers
                 data));
         }
 
+        [HttpPut("status/{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        public async Task<ActionResult<OrderResponseDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
+        {
+            var order = await _unitOfWork
+                .Repository<Order>()
+                .GetByIdAsync(id);
+            
+            if (order is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+            
+            order.Status = dto.Status;
+
+            _unitOfWork.Repository<Order>().Update(order);
+            await _unitOfWork.Complete();
+
+            return Ok(_mapper.Map<Order, OrderResponseDto>(order));
+        }
+
         [HttpPost]
         public async Task<ActionResult<OrderResponseDto>> CreateOrder(OrderDto dto)
         {
@@ -75,6 +94,22 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<Order, OrderResponseDto>(order));
         }
 
+        [HttpGet("details/{id}")]
+        [Authorize(Roles = "Admin,SuperAdmin")]
+        [DisableRateLimiting]
+        public async Task<ActionResult<OrderResponseDto>> GetOrderDetailsById([FromRoute] int id)
+        {
+            var spec = new OrdersWithUserSpecification(id);
+            var order = await _unitOfWork
+                .Repository<Order>()
+                .GetWithSpecAsync(spec);
+            
+            if (order is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+            
+            return Ok(_mapper.Map<Order, OrderResponseDto>(order));
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderResponseDto>> GetOrderById([FromRoute] int id)
         {
@@ -82,7 +117,7 @@ namespace Ecommerce.API.Controllers
             var order = await _orderService.GetOrderByIdAsync(id, userEmail);
             
             if (order is null)
-                return NotFound(new ApiResponse(404, "Order not found"));
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
             
             return Ok(_mapper.Map<Order, OrderResponseDto>(order));
         }

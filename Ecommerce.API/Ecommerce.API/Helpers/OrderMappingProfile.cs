@@ -22,6 +22,7 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.Status, o => o.MapFrom(src => src.Status.ToString()));
 
             CreateMap<Order, AllOrdersDto>()
+                .ForMember(dest => dest.Total, o => o.MapFrom(src => src.GetTotal()))
                 .ForMember(dest => dest.FirstName,
                     o => o.MapFrom(src => src.ApplicationUser.FirstName))
                 .ForMember(dest => dest.LastName,

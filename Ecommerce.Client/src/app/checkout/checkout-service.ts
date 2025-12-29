@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Environment } from '../environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, tap } from 'rxjs';
-import { IAllOrders, IOrder, IOrderToCreate } from '../shared/modules/order';
+import { IAllOrders, IOrder, IOrderToCreate, IUpdateOrderStatusDto } from '../shared/modules/order';
 import { OrdersParams } from '../shared/modules/OrdersParams';
 import { IPagination, Pagination } from '../shared/modules/pagination';
 
@@ -72,6 +72,7 @@ export class CheckoutService {
     this.ordersParams = new OrdersParams();
     return this.ordersParams;
   }
+
   getAllUserOrders(): Observable<IOrder[]> {
     return this.http.get<IOrder[]>(`${this.baseUrl}`);
   }
@@ -80,7 +81,16 @@ export class CheckoutService {
     return this.http.get<IOrder>(`${this.baseUrl}/${id}`);
   }
 
+  getOrderDetailsById(id: number): Observable<IOrder> {
+    return this.http.get<IOrder>(`${this.baseUrl}/details/${id}`);
+  }
+
   createOrder(order: IOrderToCreate): Observable<IOrder> {
     return this.http.post<IOrder>(`${this.baseUrl}`, order)
+  }
+
+  updateOrderStatus(orderId: number, status: string): Observable<IOrder> {
+    const dto: IUpdateOrderStatusDto = { status };
+    return this.http.put<IOrder>(`${this.baseUrl}/status/${orderId}`, dto);
   }
 }

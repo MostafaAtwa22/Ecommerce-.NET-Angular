@@ -6,10 +6,12 @@ namespace Ecommerce.API.Dtos.Responses
     {
         public int Id { get; set; }
         public DateTimeOffset OrderDate { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public OrderStatus Status { get; set; }
-        public decimal SubTotal { get; set; }
+        public decimal Total { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? ProfilePictureUrl { get; set; }
+        public string BuyerEmail { get; set; } = string.Empty;
     }
 }

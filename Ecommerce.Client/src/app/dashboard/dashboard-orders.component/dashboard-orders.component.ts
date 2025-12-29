@@ -17,7 +17,10 @@ import { getOrderStatusLabel } from '../../shared/modules/order-status';
 export class DashboardOrdersComponent implements OnInit {
   orders: IAllOrders[] = [];
   loading = false;
+  loadingStatistics = false;
   errorMessage: string | null = null;
+  updatingStatus = false;
+  updateOrderId: number | null = null; // Track which order is being updated
 
   // Statistics
   totalOrders = 0;
@@ -69,8 +72,10 @@ export class DashboardOrdersComponent implements OnInit {
         this.orders = response.data;
         this.totalOrders = response.totalData;
         this.totalPages = this.calculateTotalPages();
-        this.calculateStatistics();
         this.loading = false;
+
+        // Load statistics separately (all orders, no pagination)
+        this.loadStatistics();
       },
       error: (err: HttpErrorResponse) => {
         this.loading = false;
@@ -85,23 +90,41 @@ export class DashboardOrdersComponent implements OnInit {
     });
   }
 
-  calculateStatistics(): void {
+  loadStatistics(): void {
+    this.loadingStatistics = true;
+
+    // Load all orders without pagination for statistics
+    this.checkoutService.getAllOrders(true).subscribe({
+      next: (response) => {
+        const allOrders = response.data;
+        this.calculateStatisticsFromArray(allOrders);
+        this.loadingStatistics = false;
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error loading statistics:', err);
+        this.loadingStatistics = false;
+        // Fallback: calculate from current page if we can't get all orders
+        this.calculateStatisticsFromArray(this.orders);
+      }
+    });
+  }
+
+  calculateStatisticsFromArray(ordersArray: IAllOrders[]): void {
     this.totalRevenue = 0;
     this.pendingCount = 0;
     this.shippedCount = 0;
     this.completeCount = 0;
     this.canceledCount = 0;
 
-    this.orders.forEach(order => {
-      // Convert status to string to handle cases where API returns non-string types
+    ordersArray.forEach(order => {
       const statusStr = String(order.status || '').toLowerCase();
-      
-      // Calculate total revenue (only from completed orders)
+
+      // Only count revenue from completed orders
       if (statusStr === 'complete') {
-        this.totalRevenue += order.subTotal;
+        this.totalRevenue += order.total;
       }
 
-      // Count by status
+      // Count orders by status
       switch(statusStr) {
         case 'pending':
           this.pendingCount++;
@@ -117,6 +140,43 @@ export class DashboardOrdersComponent implements OnInit {
           break;
       }
     });
+  }
+
+  updateStatisticsOnStatusChange(oldStatus: string, newStatus: string, orderTotal: number): void {
+    const oldStatusStr = String(oldStatus || '').toLowerCase();
+    const newStatusStr = String(newStatus || '').toLowerCase();
+
+    switch(oldStatusStr) {
+      case 'pending':
+        this.pendingCount = Math.max(0, this.pendingCount - 1);
+        break;
+      case 'shipped':
+        this.shippedCount = Math.max(0, this.shippedCount - 1);
+        break;
+      case 'complete':
+        this.completeCount = Math.max(0, this.completeCount - 1);
+        this.totalRevenue = Math.max(0, this.totalRevenue - orderTotal);
+        break;
+      case 'canceled':
+        this.canceledCount = Math.max(0, this.canceledCount - 1);
+        break;
+    }
+
+    switch(newStatusStr) {
+      case 'pending':
+        this.pendingCount++;
+        break;
+      case 'shipped':
+        this.shippedCount++;
+        break;
+      case 'complete':
+        this.completeCount++;
+        this.totalRevenue += orderTotal;
+        break;
+      case 'canceled':
+        this.canceledCount++;
+        break;
+    }
   }
 
   calculateTotalPages(): number {
@@ -146,7 +206,7 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   onStatusSelected(status: string): void {
-
+    this.ordersParams.status = status;
     this.ordersParams.pageIndex = 1;
     this.checkoutService.setOrdersParams(this.ordersParams);
     this.loadOrders();
@@ -168,22 +228,18 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   viewOrderDetails(order: IAllOrders): void {
-    // Fetch full order details with items
-    this.checkoutService.getUserOrderById(order.id).subscribe({
-      next: (fullOrder) => {
-        this.selectedOrder = fullOrder;
+    this.loading = true;
+    this.errorMessage = null;
+    this.checkoutService.getOrderDetailsById(order.id).subscribe({
+      next: (orderDetails: IOrder) => {
+        this.selectedOrder = orderDetails;
         this.showOrderDetails = true;
+        this.loading = false;
       },
-      error: (err) => {
-        console.error('Error fetching order details:', err);
-        // Fallback to basic order info if fetch fails
-        this.selectedOrder = {
-          ...order,
-          orderItems: [], // Empty array as fallback
-          addressToShip: undefined,
-          deliveryMethod: undefined
-        } as any;
-        this.showOrderDetails = true;
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        console.error('Error loading order details:', err);
+        this.errorMessage = 'Failed to load order details. Please try again.';
       }
     });
   }
@@ -191,12 +247,42 @@ export class DashboardOrdersComponent implements OnInit {
   closeOrderDetails(): void {
     this.showOrderDetails = false;
     this.selectedOrder = null;
+    this.errorMessage = null;
   }
 
   updateOrderStatus(orderId: number, newStatus: string): void {
-    // Implement order status update logic here
-    console.log(`Update order ${orderId} to status: ${newStatus}`);
-    // Call your service to update order status
+    if (!orderId || !newStatus) return;
+
+    this.updatingStatus = true;
+    this.updateOrderId = orderId;
+    this.errorMessage = null;
+
+    this.checkoutService.updateOrderStatus(orderId, newStatus).subscribe({
+      next: (updatedOrder: IOrder) => {
+        if (this.selectedOrder && this.selectedOrder.id === orderId) {
+          this.selectedOrder = updatedOrder;
+        }
+
+        // Update the order in the current page
+        const orderIndex = this.orders.findIndex(o => o.id === orderId);
+        if (orderIndex !== -1) {
+          const oldStatus = this.orders[orderIndex].status;
+          this.orders[orderIndex].status = newStatus;
+
+          // Update statistics based on status change
+          this.updateStatisticsOnStatusChange(oldStatus, newStatus, updatedOrder.total);
+        }
+
+        this.updatingStatus = false;
+        this.updateOrderId = null;
+      },
+      error: (err: HttpErrorResponse) => {
+        this.updatingStatus = false;
+        this.updateOrderId = null;
+        console.error('Error updating order status:', err);
+        this.errorMessage = err.error?.message || 'Failed to update order status. Please try again.';
+      }
+    });
   }
 
   getStatusLabel(status: string | number): string {
@@ -235,11 +321,12 @@ export class DashboardOrdersComponent implements OnInit {
     }
   }
 
-  getInitials(firstName: string, lastName: string): string {
+  getInitials(firstName?: string, lastName?: string): string {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
 
-  formatDate(dateString: string): string {
+  formatDate(dateString: string | Date): string {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',

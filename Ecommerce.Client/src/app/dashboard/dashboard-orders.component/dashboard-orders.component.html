@@ -111,7 +111,7 @@
         </div>
       </div>
 
-      <!-- Search Bar (optional for orders) -->
+      <!-- Search Bar -->
       <div class="search-bar d-flex flex-grow-1">
         <input type="text" class="form-control" placeholder="Search orders by ID, customer name, or email..."
           [(ngModel)]="ordersParams.search" (keyup.enter)="onSearch()" />
@@ -188,7 +188,7 @@
                 </div>
                 <div>
                   <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>
-                  <!-- <small class="text-muted">{{ order.buyerEmail }}</small> -->
+                  <small class="text-muted">{{ order.buyerEmail }}</small>
                 </div>
               </div>
             </td>
@@ -198,7 +198,7 @@
               </div>
             </td>
             <td>
-              <strong>${{ order.subTotal | number:'1.2-2' }}</strong>
+              <strong>${{ order.total | number:'1.2-2' }}</strong>
             </td>
             <td>
               <span class="badge {{ getStatusBadgeClass(order.status) }}">
@@ -207,41 +207,9 @@
               </span>
             </td>
             <td class="text-end">
-              <div class="btn-group" role="group">
-                <button class="btn btn-sm btn-outline-primary" title="View Order Details"
-                  (click)="viewOrderDetails(order)">
-                  <i class="fas fa-eye"></i>
-                </button>
-                <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-cog"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end">
-                    @if (order.status !== 'Shipped') {
-                    <li>
-                      <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Shipped')">
-                        <i class="fas fa-truck me-2"></i>Mark as Shipped
-                      </button>
-                    </li>
-                    }
-                    @if (order.status !== 'Complete') {
-                    <li>
-                      <button class="dropdown-item" (click)="updateOrderStatus(order.id, 'Complete')">
-                        <i class="fas fa-check-circle me-2"></i>Mark as Complete
-                      </button>
-                    </li>
-                    }
-                    @if (order.status !== 'Canceled') {
-                    <li>
-                      <button class="dropdown-item text-danger" (click)="updateOrderStatus(order.id, 'Canceled')">
-                        <i class="fas fa-times-circle me-2"></i>Cancel Order
-                      </button>
-                    </li>
-                    }
-                  </ul>
-                </div>
-              </div>
+              <button class="btn btn-view-details" title="View Order Details" (click)="viewOrderDetails(order)">
+                <i class="fas fa-eye"></i>
+              </button>
             </td>
           </tr>
           }
@@ -290,71 +258,177 @@
     <div class="modal-body">
       <div class="row mb-4">
         <div class="col-md-6">
-          <h6 class="fw-bold mb-3">Order Details</h6>
-          <p><strong>Date:</strong> {{ formatDate(selectedOrder.orderDate) }}</p>
+          <h6 class="fw-bold mb-3">
+            <i class="fas fa-shopping-cart me-2"></i>Order Details
+          </h6>
+          <p><strong>Order Date:</strong> {{ formatDate(selectedOrder.orderDate) }}</p>
           <p><strong>Status:</strong>
             <span class="badge {{ getStatusBadgeClass(selectedOrder.status) }}">
+              <i class="fas {{ getStatusIcon(selectedOrder.status) }} me-1"></i>
               {{ getStatusLabel(selectedOrder.status) }}
             </span>
           </p>
           <p><strong>Subtotal:</strong> ${{ selectedOrder.subTotal | number:'1.2-2' }}</p>
+          <p><strong>Shipping:</strong> ${{ selectedOrder.shippingPrice | number:'1.2-2' }}</p>
+          <p class="mb-0"><strong>Total Amount:</strong>
+            <span class="text-success fw-bold">${{ selectedOrder.total | number:'1.2-2' }}</span>
+          </p>
         </div>
         <div class="col-md-6">
-          <h6 class="fw-bold mb-3">Customer Information</h6>
-          <p><strong>Email:</strong> {{ selectedOrder.buyerEmail }}</p>
+          <h6 class="fw-bold mb-3">
+            <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
+          </h6>
+          <p class="mb-1">{{ selectedOrder.addressToShip.street }}</p>
+          <p class="mb-1">{{ selectedOrder.addressToShip.city }}, {{ selectedOrder.addressToShip.government }}</p>
+          <p class="mb-1">{{ selectedOrder.addressToShip.country }}</p>
+          <p class="mb-0">ZIP: {{ selectedOrder.addressToShip.zipcode }}</p>
+
+          @if (selectedOrder.deliveryMethod) {
+          <div class="mt-3">
+            <p class="mb-0"><strong>Delivery Method:</strong> {{ selectedOrder.deliveryMethod }}</p>
+          </div>
+          }
         </div>
       </div>
 
       <!-- Order Items Table -->
       <div class="mb-4">
-        <h6 class="fw-bold mb-3">Order Items</h6>
+        <h6 class="fw-bold mb-3">
+          <i class="fas fa-box me-2"></i>Order Items
+          @if (selectedOrder.orderItems && selectedOrder.orderItems.length > 0) {
+          <span class="badge bg-secondary ms-2">{{ selectedOrder.orderItems.length }} item(s)</span>
+          }
+        </h6>
         <div class="table-responsive">
-          <table class="table table-sm">
-            <thead>
+          <table class="table table-hover">
+            <thead class="table-light">
               <tr>
                 <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Total</th>
+                <th class="text-center">Quantity</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Subtotal</th>
               </tr>
             </thead>
             <tbody>
-              @if (selectedOrder?.orderItems && selectedOrder.orderItems.length > 0) {
-                @for (item of selectedOrder.orderItems; track item.productItemId) {
-                  <tr>
-                    <td>
-                      <div class="d-flex align-items-center">
-                        @if (item.pictureUrl) {
-                          <img [src]="item.pictureUrl" [alt]="item.productName"
-                               class="me-3" style="width: 40px; height: 40px; object-fit: cover;">
-                        }
-                        <span>{{ item.productName }}</span>
-                      </div>
-                    </td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ item.price | number:'1.2-2' }}</td>
-                    <td>${{ (item.price * item.quantity) | number:'1.2-2' }}</td>
-                  </tr>
-                }
+              @if (selectedOrder.orderItems && selectedOrder.orderItems.length > 0) {
+              @for (item of selectedOrder.orderItems; track item.productItemId) {
+              <tr>
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (item.pictureUrl) {
+                    <img [src]="item.pictureUrl" [alt]="item.productName" class="rounded me-3"
+                      style="width: 50px; height: 50px; object-fit: cover; border: 1px solid #dee2e6;">
+                    } @else {
+                    <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center"
+                      style="width: 50px; height: 50px; border: 1px solid #dee2e6;">
+                      <i class="fas fa-image text-muted"></i>
+                    </div>
+                    }
+                    <div>
+                      <div class="fw-semibold">{{ item.productName }}</div>
+                      <small class="text-muted">ID: {{ item.productItemId }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-center align-middle">
+                  <span class="badge bg-light text-dark">{{ item.quantity }}</span>
+                </td>
+                <td class="text-end align-middle">${{ item.price | number:'1.2-2' }}</td>
+                <td class="text-end align-middle fw-semibold">${{ (item.price * item.quantity) | number:'1.2-2' }}</td>
+              </tr>
+              }
               } @else {
-                <tr>
-                  <td colspan="4" class="text-center text-muted">
-                    No order items available.
-                  </td>
-                </tr>
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                  No order items available.
+                </td>
+              </tr>
               }
             </tbody>
           </table>
         </div>
       </div>
+
+      <!-- Loading indicator -->
+      @if (updatingStatus) {
+      <div class="loading-overlay">
+        <div class="loading-spinner-small"></div>
+        <span>Updating status...</span>
+      </div>
+      }
+
+      <!-- Error message -->
+      @if (errorMessage) {
+      <div class="error-message">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        {{ errorMessage }}
+        <button class="btn-close-error" (click)="errorMessage = null">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      }
     </div>
+
+    <!-- Modal Footer with Status Buttons -->
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" (click)="closeOrderDetails()">
-        Close
-      </button>
-      <button type="button" class="btn btn-primary">
-        <i class="fas fa-print me-2"></i>Print Invoice
-      </button>
+      <div class="footer-content">
+        <!-- Status Indicator -->
+        <div class="current-status">
+          <span class="status-label">Current Status:</span>
+          <span class="status-value {{ getStatusBadgeClass(selectedOrder.status) }}">
+            <i class="fas {{ getStatusIcon(selectedOrder.status) }} me-1"></i>
+            {{ getStatusLabel(selectedOrder.status) }}
+          </span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <!-- Cancel Order Button -->
+          @if (selectedOrder.status !== 'Canceled' && selectedOrder.status !== 'Complete') {
+          <button class="btn-action btn-cancel"
+                  [disabled]="updatingStatus"
+                  (click)="updateOrderStatus(selectedOrder.id, 'Canceled')">
+            @if (updatingStatus && updateOrderId === selectedOrder.id) {
+            <div class="btn-spinner"></div>
+            }
+            <i class="fas fa-ban"></i>
+            <span>Cancel Order</span>
+          </button>
+          }
+
+          <!-- Status Update Buttons -->
+          @if (selectedOrder.status === 'Pending') {
+          <button class="btn-action btn-ship"
+                  [disabled]="updatingStatus"
+                  (click)="updateOrderStatus(selectedOrder.id, 'Shipped')">
+            @if (updatingStatus && updateOrderId === selectedOrder.id) {
+            <div class="btn-spinner"></div>
+            }
+            <i class="fas fa-shipping-fast"></i>
+            <span>Ship Order</span>
+          </button>
+          } @else if (selectedOrder.status === 'Shipped') {
+          <button class="btn-action btn-complete"
+                  [disabled]="updatingStatus"
+                  (click)="updateOrderStatus(selectedOrder.id, 'Complete')">
+            @if (updatingStatus && updateOrderId === selectedOrder.id) {
+            <div class="btn-spinner"></div>
+            }
+            <i class="fas fa-check-double"></i>
+            <span>Mark Complete</span>
+          </button>
+          }
+
+          <!-- Close Button -->
+          <button class="btn-action btn-close-modal"
+                  [disabled]="updatingStatus"
+                  (click)="closeOrderDetails()">
+            <i class="fas fa-times"></i>
+            <span>Close</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

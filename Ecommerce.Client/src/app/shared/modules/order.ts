@@ -10,11 +10,12 @@ export interface IAllOrders {
   id: number;
   orderDate: string;
   status: string;
-  subTotal: number;
+  total: number;
   firstName: string;
   lastName: string;
   profilePictureUrl?: string | null;
   createdAt: Date;
+  buyerEmail: string;
 }
 
 export interface IOrder {
@@ -36,4 +37,8 @@ export interface IOrderItem {
   pictureUrl: string
   price: number
   quantity: number
+}
+
+export interface IUpdateOrderStatusDto {
+  status: string;
 }

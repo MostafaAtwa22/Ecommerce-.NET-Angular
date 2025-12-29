@@ -5,6 +5,13 @@ namespace Ecommerce.Core.Spec
 {
     public class OrdersWithUserSpecification : BaseSepcifications<Order>
     {
+        public OrdersWithUserSpecification(int orderId) 
+            : base(o => o.Id == orderId)
+        {
+            Includes.Add(o => o.ApplicationUser);
+            Includes.Add(o => o.OrderItems);
+        }
+
         public OrdersWithUserSpecification(OrdersSpecParams specParams, bool forCount = false)
         {
             if (!forCount)
