@@ -11,7 +11,7 @@ import { IBrand } from '../../shared/modules/brand';
 import { IType } from '../../shared/modules/type';
 import { BrandService } from '../../shared/services/brand-service';
 import { TypeService } from '../../shared/services/type-service';
-import { ProductFormComponent } from "./product-form.component/product-form.component";
+import { ProductFormComponent } from './product-form.component/product-form.component';
 
 @Component({
   selector: 'app-dashboard-products',
@@ -151,25 +151,18 @@ export class DashboardProductsComponent implements OnInit {
     let ratedProducts = 0;
 
     this.products.forEach((product) => {
-      // Calculate revenue (price * stock)
-      this.totalRevenue += (product.price || 0) * (product.quantity || 0);
+      const stock = product.quantity - product.boughtQuantity;
 
-      // Count out of stock
-      if (product.quantity === 0) {
-        this.outOfStockCount++;
-      }
+      // revenue = sold quantity * price
+      this.totalRevenue += product.price * product.boughtQuantity;
 
-      // Count low stock (less than 10)
-      if (product.quantity && product.quantity > 0 && product.quantity < 10) {
-        this.lowStockCount++;
-      }
+      if (stock === 0) this.outOfStockCount++;
+      if (stock > 0 && stock < 10) this.lowStockCount++;
 
-      // Calculate average rating
-      if (product.averageRating && product.averageRating > 0) {
+      if (product.averageRating > 0) {
         totalRating += product.averageRating;
         ratedProducts++;
 
-        // Count high rated products (4+ stars)
         if (product.averageRating >= 4) {
           this.highRatedCount++;
         }
@@ -302,17 +295,20 @@ export class DashboardProductsComponent implements OnInit {
       });
   }
 
-  getStockStatusClass(quantity: number | undefined): string {
-    if (!quantity && quantity !== 0) return 'badge-secondary';
-    if (quantity === 0) return 'badge-danger';
-    if (quantity < 10) return 'badge-warning';
+  getStockStatusClass(product: IProduct): string {
+    const stock = product.quantity - product.boughtQuantity;
+
+    if (stock === 0) return 'badge-danger';
+    if (stock < 10) return 'badge-warning';
     return 'badge-success';
   }
 
-  getStockStatusText(quantity: number | undefined): string {
-    if (!quantity && quantity !== 0) return 'Unknown';
-    if (quantity === 0) return 'Out of Stock';
-    if (quantity < 10) return 'Low Stock';
+
+  getStockStatusText(product: IProduct): string {
+    const stock = product.quantity - product.boughtQuantity;
+
+    if (stock === 0) return 'Out of Stock';
+    if (stock < 10) return 'Low Stock';
     return 'In Stock';
   }
 

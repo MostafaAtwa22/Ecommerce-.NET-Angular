@@ -253,8 +253,8 @@
                     <strong class="text-primary">${{ product.price | number:'1.2-2' }}</strong>
                   </td>
                   <td>
-                    <span class="{{ getStockStatusClass(product.quantity) }}">
-                      {{ getStockStatusText(product.quantity) }}
+                    <span class="{{ getStockStatusClass(product) }}">
+                      {{ getStockStatusText(product) }}
                       @if (product.quantity && product.quantity > 0) {
                         <span class="ms-1">({{ product.quantity }})</span>
                       }

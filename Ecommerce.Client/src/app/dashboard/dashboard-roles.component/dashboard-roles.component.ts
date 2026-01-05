@@ -81,16 +81,17 @@ export class DashboardRolesComponent implements OnInit {
     this.adminCount = 0;
     this.customerCount = 0;
 
-    // Count roles by name (case-insensitive)
+    // Count users in each role
     this.roles.forEach(role => {
       const roleName = role.name.toLowerCase();
+      const count = role.userCount || 0;
       
       if (roleName.includes('superadmin') || roleName.includes('super-admin')) {
-        this.superAdminCount++;
+        this.superAdminCount += count;
       } else if (roleName.includes('admin')) {
-        this.adminCount++;
+        this.adminCount += count;
       } else if (roleName.includes('customer') || roleName.includes('user')) {
-        this.customerCount++;
+        this.customerCount += count;
       }
     });
   }

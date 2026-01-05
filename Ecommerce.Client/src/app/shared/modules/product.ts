@@ -2,6 +2,7 @@ export interface IProduct {
   id: number
   name: string
   quantity: number
+  boughtQuantity: number
   averageRating: number
   description: string
   pictureUrl: string
@@ -10,7 +11,7 @@ export interface IProduct {
   productBrandName: string
   productTypeName: string
   productBrandId: number
-  productTypeId: number  
+  productTypeId: number
   createdAt: Date
 }
 

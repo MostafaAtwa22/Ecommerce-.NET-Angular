@@ -1,20 +1,26 @@
 [
   {
-    "Name": "Angular"
+    "Name": "Apple"
   },
   {
-    "Name": "NetCore"
+    "Name": "Samsung"
   },
   {
-    "Name": "VS Code"
+    "Name": "Dell"
   },
   {
-    "Name": "React"
+    "Name": "Lenovo"
   },
   {
-    "Name": "Typescript"
+    "Name": "Microsoft"
   },
   {
-    "Name": "Redis"
+    "Name": "Google"
+  },
+  {
+    "Name": "OnePlus"
+  },
+  {
+    "Name": "ASUS"
   }
 ]

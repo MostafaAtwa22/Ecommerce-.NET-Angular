@@ -20,6 +20,8 @@ namespace Ecommerce.Core.Entities
         [Required]
         public int Quantity { get; set; }
 
+        public int BoughtQuantity { get; set; } = 0;
+
         public decimal AverageRating { get; set; } = 0m;
 
         public int NumberOfReviews { get; set; } = 0;

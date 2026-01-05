@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { BasketService } from '../../shared/services/basket-service';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
+import { AccountService } from '../../account/account-service';
 
 @Component({
   selector: 'app-product-item',
@@ -19,9 +20,24 @@ export class ProductItemComponent implements OnInit {
   constructor(
     private _basketService: BasketService,
     private _wishListService: WishlistService,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private _accountService: AccountService
   ) {}
   ngOnInit(): void {}
+
+  isCustomer(): boolean {
+    const user = this._accountService.user();
+    if (!user) return true;
+
+    // Check if user has roles that should be excluded (Admin, SuperAdmin)
+    const roles = user.roles || [];
+    const isAdminOrSuper = roles.some(r => {
+      const role = r.toLowerCase();
+      return role === 'admin' || role === 'superadmin';
+    });
+
+    return !isAdminOrSuper;
+  }
 
   getStarsArray(): string[] {
     const rating = (this.product.averageRating) || 0;
@@ -42,7 +58,8 @@ export class ProductItemComponent implements OnInit {
 
   isInStock(): boolean {
     const quantity = this.product.quantity || 0;
-    return quantity > 0;
+    const boughtQuantity = this.product.boughtQuantity || 0;
+    return quantity > boughtQuantity;
   }
 
   canAddToBasket(): boolean {
@@ -87,4 +104,5 @@ export class ProductItemComponent implements OnInit {
 
     return wishlist.items.some((item) => item.id === productId);
   }
+
 }

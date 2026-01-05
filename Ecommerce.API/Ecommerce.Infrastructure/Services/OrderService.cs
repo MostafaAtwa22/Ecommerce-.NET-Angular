@@ -27,8 +27,8 @@ namespace Ecommerce.Infrastructure.Services
             var basket = await _basketRepository.GetAsync(basketId);
 
             if (basket == null || !basket.Items.Any())
-                    throw new Exception("Basket is empty");
-    
+                throw new Exception("Basket is empty");
+
             // get item from product repo
             var items = new List<OrderItem>();
             foreach (var item in basket!.Items)
@@ -36,15 +36,17 @@ namespace Ecommerce.Infrastructure.Services
                 var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
                 if (productItem is null)
                     throw new Exception("Product not found");
-                if (productItem.Quantity < item.Quantity)
-                    throw new Exception($"Not enough stock for product: {productItem.Name}");
 
+                var availableStock = productItem.Quantity - productItem.BoughtQuantity;
+                if (availableStock < item.Quantity)
+                    throw new Exception($"Only {availableStock} items available for {productItem.Name}");
+                
                 var itemOrdered = new ProductItemOrdered(productItem!.Id, productItem.Name, productItem.PictureUrl);
 
                 var orderItem = new OrderItem(item.Price, item.Quantity, itemOrdered);
                 items.Add(orderItem);
 
-                productItem.Quantity -= item.Quantity;
+                productItem.BoughtQuantity += item.Quantity;
                 _unitOfWork.Repository<Product>().Update(productItem);
             }
 
@@ -54,7 +56,7 @@ namespace Ecommerce.Infrastructure.Services
 
             // calc subtotal
             decimal subTotal = items.Sum(item => item.Price * item.Quantity);
-            
+
             // check to see if order exists
             var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
             var existsOrder = await _unitOfWork.Repository<Order>().GetWithSpecAsync(spec);
@@ -94,7 +96,7 @@ namespace Ecommerce.Infrastructure.Services
         {
             var orderSpec = new OrderWithOrderItemsAndDeliverySpec(buyerEmail);
 
-            return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpec)!;        
+            return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpec)!;
         }
     }
 }

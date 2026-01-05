@@ -2,11 +2,7 @@
   <div class="card-inner">
     <!-- Image Container -->
     <div class="image-container">
-      <img
-        [src]="product.pictureUrl"
-        class="product-image"
-        alt="{{ product.name }}"
-      />
+      <img [src]="product.pictureUrl" class="product-image" alt="{{ product.name }}" />
 
       <!-- Stock Status Badge -->
       <div class="product-badges">
@@ -17,11 +13,9 @@
 
       <div class="image-overlay">
         <div class="quick-actions">
-          <button class="btn-action wishlist-btn" title="Add to Wishlist"
-            (click)="addItemToWishList()">
-            <i
-              class="fas fa-heart"
-              [ngClass]="{ 'active-heart': isInWishlist(product.id) }">
+          <button class="btn-action wishlist-btn" title="Add to Wishlist" (click)="addItemToWishList()"
+            *ngIf="isCustomer()">
+            <i class="fas fa-heart" [ngClass]="{ 'active-heart': isInWishlist(product.id) }">
             </i>
           </button>
           <button class="btn-action quick-view-btn" [routerLink]="[`/shop/${product.id}`]" title="Quick View">
@@ -47,7 +41,7 @@
       <div class="product-rating">
         <div class="stars">
           @for (star of getStarsArray(); track $index) {
-            <i [class]="star"></i>
+          <i [class]="star"></i>
           }
         </div>
         <span class="rating-text">({{ product.averageRating }})</span>
@@ -60,11 +54,8 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button
-          class="btn-add-cart"
-          (click)="addItemToBasket()"
-          [disabled]="!canAddToBasket()"
-          [title]="!canAddToBasket() ? 'Maximum quantity in basket' : 'Add to cart'">
+        <button class="btn-add-cart" (click)="addItemToBasket()" [disabled]="!canAddToBasket()"
+          [title]="!canAddToBasket() ? 'Maximum quantity in basket' : 'Add to cart'" *ngIf="isCustomer()">
           <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
         </button>
         <button class="btn-view-details text-dark" [routerLink]="[`/shop/${product.id}`]">

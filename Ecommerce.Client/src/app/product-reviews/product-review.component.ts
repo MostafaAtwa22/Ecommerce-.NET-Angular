@@ -145,6 +145,20 @@ export class ProductReviewComponent {
     return currentUser?.userName === review.userName;
   }
 
+  isCustomer(): boolean {
+    const user = this.accountService.user();
+    if (!user) return false;
+    
+    // Check if user has roles that should be excluded (Admin, SuperAdmin)
+    const roles = user.roles || [];
+    const isAdminOrSuper = roles.some(r => {
+      const role = r.toLowerCase();
+      return role === 'admin' || role === 'superadmin';
+    });
+    
+    return !isAdminOrSuper;
+  }
+
   getInitials(firstName: string, lastName: string): string {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }

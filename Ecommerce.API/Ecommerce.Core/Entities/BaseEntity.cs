@@ -6,5 +6,7 @@ namespace Ecommerce.Core.Entities
     {
         [Key]
         public int Id { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
     }
 }

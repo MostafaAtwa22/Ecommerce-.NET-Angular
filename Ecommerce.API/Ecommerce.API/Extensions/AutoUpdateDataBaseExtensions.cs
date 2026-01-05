@@ -20,7 +20,7 @@ namespace Ecommerce.API.Extensions
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 await context.Database.MigrateAsync();
 
-                // 2. Seed Identity (Roles + Users)
+                // 2. Seed Identity (Roles + Users + permissions)
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                 await ApplicationIdentityDbContextSeed.SeedAsync(userManager, roleManager, loggerFactory);

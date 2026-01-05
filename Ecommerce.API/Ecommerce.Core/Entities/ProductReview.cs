@@ -21,8 +21,6 @@ namespace Ecommerce.Core.Entities
         [Required, MaxLength(3000)]
         public string Comment { get; set; } = string.Empty;
         
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
         public Product Product { get; set; } = default!;
         public ApplicationUser ApplicationUser { get; set; } = default!;
     }

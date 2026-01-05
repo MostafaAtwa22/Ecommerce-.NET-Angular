@@ -18,12 +18,8 @@
           <i class="fas fa-filter"></i>
           Filter by rating
         </label>
-        <select
-          id="ratingFilter"
-          class="form-select filter-select"
-          [(ngModel)]="selectedRatingFilter"
-          (change)="onFilterChange()"
-        >
+        <select id="ratingFilter" class="form-select filter-select" [(ngModel)]="selectedRatingFilter"
+          (change)="onFilterChange()">
           <option [ngValue]="null">All Ratings</option>
           <option [value]="5">5 Stars only</option>
           <option [value]="4">4 Stars & above</option>
@@ -38,12 +34,7 @@
           <i class="fas fa-sort-amount-down"></i>
           Sort by
         </label>
-        <select
-          id="sortFilter"
-          class="form-select filter-select"
-          [(ngModel)]="selectedSort"
-          (change)="onSortChange()"
-        >
+        <select id="sortFilter" class="form-select filter-select" [(ngModel)]="selectedSort" (change)="onSortChange()">
           <option value="datedesc">Newest First</option>
           <option value="dateasc">Oldest First</option>
           <option value="ratingdesc">Highest Rated</option>
@@ -73,11 +64,7 @@
         <span class="star-label">{{ dist.stars }} star</span>
         <div class="progress-bar-container">
           <div class="progress-bar">
-            <div
-              class="progress-fill"
-              [style.width.%]="dist.percentage"
-              [ngClass]="'rating-' + dist.stars"
-            ></div>
+            <div class="progress-fill" [style.width.%]="dist.percentage" [ngClass]="'rating-' + dist.stars"></div>
           </div>
         </div>
         <span class="percentage">{{ dist.percentage.toFixed(1) }}%</span>
@@ -86,11 +73,8 @@
   </div>
 
   <!-- Write Review Button (always visible at top) -->
-  <div class="write-review-top" *ngIf="accountService.isLoggedIn()">
-    <button
-      class="btn-write-review-top"
-      (click)="toggleReviewForm()"
-    >
+  <div class="write-review-top" *ngIf="accountService.isLoggedIn() && isCustomer()">
+    <button class="btn-write-review-top" (click)="toggleReviewForm()">
       <i class="fas fa-pen"></i>
       {{ currentUserReview ? 'Edit your review' : 'Write a customer review' }}
     </button>
@@ -112,13 +96,9 @@
       <h5>Overall rating *</h5>
       <div class="star-rating-select">
         <div class="stars-select">
-          <i
-            *ngFor="let star of [1,2,3,4,5]"
-            [class]="star <= newReview.rating ? 'fas fa-star selected' : 'far fa-star'"
-            (click)="setRating(star)"
-            (mouseenter)="hoverRating = star"
-            (mouseleave)="hoverRating = 0"
-          ></i>
+          <i *ngFor="let star of [1,2,3,4,5]"
+            [class]="star <= newReview.rating ? 'fas fa-star selected' : 'far fa-star'" (click)="setRating(star)"
+            (mouseenter)="hoverRating = star" (mouseleave)="hoverRating = 0"></i>
         </div>
         <div class="rating-text">{{ getRatingText(newReview.rating) }}</div>
       </div>
@@ -126,28 +106,17 @@
 
     <div class="review-text-section">
       <h5>Add a headline *</h5>
-      <input
-        type="text"
-        class="form-control review-headline"
-        [class.is-invalid]="formErrors.headline"
-        placeholder="What's most important to know?"
-        [(ngModel)]="newReview.headline"
-        maxlength="100"
-      >
+      <input type="text" class="form-control review-headline" [class.is-invalid]="formErrors.headline"
+        placeholder="What's most important to know?" [(ngModel)]="newReview.headline" maxlength="100">
       <div class="char-count">{{ (newReview.headline || '').length }}/100</div>
       <div class="invalid-feedback" *ngIf="formErrors.headline">
         {{ formErrors.headline }}
       </div>
 
       <h5>Add a written review *</h5>
-      <textarea
-        class="form-control review-textarea"
-        [class.is-invalid]="formErrors.comment"
-        [(ngModel)]="newReview.comment"
-        placeholder="What did you like or dislike? What did you use this product for?"
-        rows="6"
-        maxlength="3000"
-      ></textarea>
+      <textarea class="form-control review-textarea" [class.is-invalid]="formErrors.comment"
+        [(ngModel)]="newReview.comment" placeholder="What did you like or dislike? What did you use this product for?"
+        rows="6" maxlength="3000"></textarea>
       <div class="char-count">{{ (newReview.comment || '').length }}/3000</div>
       <div class="invalid-feedback" *ngIf="formErrors.comment">
         {{ formErrors.comment }}
@@ -155,19 +124,11 @@
     </div>
 
     <div class="form-actions">
-      <button
-        class="btn-submit-review"
-        (click)="onSubmitReview()"
-        [disabled]="isSubmitting || !isReviewValid()"
-      >
+      <button class="btn-submit-review" (click)="onSubmitReview()" [disabled]="isSubmitting || !isReviewValid()">
         <i class="fas" [class]="isSubmitting ? 'fa-spinner fa-spin' : 'fa-check'"></i>
         {{ isSubmitting ? 'Submitting...' : (currentUserReview ? 'Update review' : 'Submit review') }}
       </button>
-      <button
-        class="btn-cancel-review"
-        (click)="resetForm()"
-        [disabled]="isSubmitting"
-      >
+      <button class="btn-cancel-review" (click)="resetForm()" [disabled]="isSubmitting">
         Cancel
       </button>
     </div>
@@ -190,11 +151,7 @@
       </div>
       <h3>No reviews yet</h3>
       <p>Be the first to review "{{ productName }}"</p>
-      <button
-        class="btn-be-first"
-        *ngIf="accountService.isLoggedIn()"
-        (click)="toggleReviewForm()"
-      >
+      <button class="btn-be-first" *ngIf="accountService.isLoggedIn() && isCustomer()" (click)="toggleReviewForm()">
         <i class="fas fa-pen"></i>
         Write the first review
       </button>
@@ -244,7 +201,7 @@
           </div>
         </div>
 
-        <div class="review-card-footer">
+        <div class="review-card-footer" *ngIf="isCustomer()">
           <div class="helpful-section">
             <span class="helpful-text">Was this review helpful?</span>
             <div class="helpful-buttons">
@@ -266,11 +223,7 @@
 
     <!-- Load More -->
     <div class="load-more-section" *ngIf="pagination?.hasNextPage && reviews.length > 0">
-      <button
-        class="btn-load-more"
-        (click)="loadMore()"
-        [disabled]="loadingMore"
-      >
+      <button class="btn-load-more" (click)="loadMore()" [disabled]="loadingMore">
         <i class="fas" [class]="loadingMore ? 'fa-spinner fa-spin' : 'fa-chevron-down'"></i>
         {{ loadingMore ? 'Loading...' : 'Load more reviews' }}
       </button>

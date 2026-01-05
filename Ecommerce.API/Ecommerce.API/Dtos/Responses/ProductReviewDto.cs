@@ -22,6 +22,6 @@ namespace Ecommerce.API.Dtos.Responses
 
         public string? Comment { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

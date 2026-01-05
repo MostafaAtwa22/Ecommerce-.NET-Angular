@@ -1,14 +1,20 @@
 [
   {
-    "Name": "Boards"
+    "Name": "Smartphone"
   },
   {
-    "Name": "Hats"
+    "Name": "Laptop"
   },
   {
-    "Name": "Boots"
+    "Name": "Tablet"
   },
   {
-    "Name": "Gloves"
+    "Name": "Gaming Laptop"
+  },
+  {
+    "Name": "Ultrabook"
+  },
+  {
+    "Name": "Convertible Laptop"
   }
 ]

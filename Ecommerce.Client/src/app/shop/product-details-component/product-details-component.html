@@ -10,15 +10,10 @@
             <img [src]="product.pictureUrl" [alt]="product.name" class="product-image img-fluid" />
             <!-- Stock Badge -->
             <div class="stock-badge-container">
-              <div
-                class="badge stock-badge"
-                [ngClass]="{ 'in-stock': isInStock(), 'out-of-stock': !isInStock() }"
-              >
+              <div class="badge stock-badge" [ngClass]="{ 'in-stock': isInStock(), 'out-of-stock': !isInStock() }">
                 <i class="fas" [class]="isInStock() ? 'fa-check-circle' : 'fa-times-circle'"></i>
                 {{ isInStock() ? 'In Stock' : 'Out of Stock' }}
-                <span *ngIf="isInStock()" class="stock-quantity"
-                  >({{ product.quantity }} available)</span
-                >
+                <span *ngIf="isInStock()" class="stock-quantity">({{ product.quantity }} available)</span>
               </div>
             </div>
           </div>
@@ -104,26 +99,14 @@
             <div class="quantity-section mb-4">
               <label class="quantity-label mb-2 me-3">Quantity</label>
               <div class="quantity-selector">
-                <button
-                  class="btn-quantity"
-                  (click)="decreaseQuantity()"
-                  [disabled]="quantity <= 1 || !canAddToBasket()"
-                >
+                <button class="btn-quantity" (click)="decreaseQuantity()"
+                  [disabled]="quantity <= 1 || !canAddToBasket()">
                   <i class="fas fa-minus"></i>
                 </button>
-                <input
-                  type="number"
-                  [(ngModel)]="quantity"
-                  [min]="canAddToBasket() ? 1 : 0"
-                  [max]="getMaxQuantity()"
-                  class="quantity-input"
-                  [disabled]="!canAddToBasket()"
-                />
-                <button
-                  class="btn-quantity"
-                  (click)="increaseQuantity()"
-                  [disabled]="quantity >= getMaxQuantity() || !canAddToBasket()"
-                >
+                <input type="number" [(ngModel)]="quantity" [min]="canAddToBasket() ? 1 : 0" [max]="getMaxQuantity()"
+                  class="quantity-input" [disabled]="!canAddToBasket()" />
+                <button class="btn-quantity" (click)="increaseQuantity()"
+                  [disabled]="quantity >= getMaxQuantity() || !canAddToBasket()">
                   <i class="fas fa-plus"></i>
                 </button>
               </div>
@@ -131,10 +114,7 @@
                 <i class="fas fa-exclamation-triangle me-1"></i> This product is currently out of
                 stock
               </div>
-              <div
-                *ngIf="isInStock() && !canAddToBasket()"
-                class="out-of-stock-message text-warning mt-5"
-              >
+              <div *ngIf="isInStock() && !canAddToBasket()" class="out-of-stock-message text-warning mt-5">
                 <i class="fas fa-info-circle me-1"></i> You already added the maximum available
                 quantity
               </div>
@@ -143,17 +123,15 @@
             <!-- Action Buttons -->
             <div class="action-buttons mb-5 mt-auto">
               <div class="primary-actions d-flex flex-column flex-sm-row gap-2 row">
-                <button class="btn-add-cart col-12 text-uppercase" (click)="addToBasket()" [disabled]="!canAddToBasket()">
+                <button class="btn-add-cart col-12 text-uppercase" (click)="addToBasket()"
+                  [disabled]="!canAddToBasket()" *ngIf="isCustomer()">
                   <i class="fas fa-shopping-cart me-2"></i>
                   {{
-                    !isInStock() ? 'Out of Stock' : canAddToBasket() ? 'Add to Cart' : 'Max Added'
+                  !isInStock() ? 'Out of Stock' : canAddToBasket() ? 'Add to Cart' : 'Max Added'
                   }}
                 </button>
-                <button
-                  class="btn-add-wishlist text-uppercase"
-                  (click)="addToWishlist()"
-                  [ngClass]="{ 'active-heart': isInWishlist(product.id) }"
-                >
+                <button class="btn-add-wishlist text-uppercase" (click)="addToWishlist()"
+                  [ngClass]="{ 'active-heart': isInWishlist(product.id) }" *ngIf="isCustomer()">
                   <i class="fas fa-heart me-2"></i> Add To Wishlist
                 </button>
                 <button class="btn-continue text-uppercase" routerLink="/">

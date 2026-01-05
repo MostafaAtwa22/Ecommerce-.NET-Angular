@@ -117,7 +117,8 @@ export class DashboardOrdersComponent implements OnInit {
     this.canceledCount = 0;
 
     ordersArray.forEach(order => {
-      const statusStr = String(order.status || '').toLowerCase();
+      // Use helper to get consistent string representation
+      const statusStr = getOrderStatusLabel(order.status).toLowerCase();
 
       // Only count revenue from completed orders
       if (statusStr === 'complete') {
@@ -143,8 +144,8 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   updateStatisticsOnStatusChange(oldStatus: string, newStatus: string, orderTotal: number): void {
-    const oldStatusStr = String(oldStatus || '').toLowerCase();
-    const newStatusStr = String(newStatus || '').toLowerCase();
+    const oldStatusStr = getOrderStatusLabel(oldStatus).toLowerCase();
+    const newStatusStr = getOrderStatusLabel(newStatus).toLowerCase();
 
     switch(oldStatusStr) {
       case 'pending':
@@ -290,7 +291,7 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   getStatusBadgeClass(status: string): string {
-    const statusStr = String(status || '').toLowerCase();
+    const statusStr = getOrderStatusLabel(status).toLowerCase();
     switch(statusStr) {
       case 'pending':
         return 'badge-warning';
@@ -306,7 +307,7 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   getStatusIcon(status: string): string {
-    const statusStr = String(status || '').toLowerCase();
+    const statusStr = getOrderStatusLabel(status).toLowerCase();
     switch(statusStr) {
       case 'pending':
         return 'fa-clock';

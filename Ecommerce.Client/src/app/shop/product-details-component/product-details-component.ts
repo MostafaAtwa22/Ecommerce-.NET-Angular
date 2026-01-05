@@ -10,6 +10,7 @@ import { BasketService } from '../../shared/services/basket-service';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductReviewComponent } from "../../product-reviews/product-review.component";
+import { AccountService } from '../../account/account-service';
 
 @Component({
   selector: 'app-product-details',
@@ -35,7 +36,8 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     private _activatedRoute: ActivatedRoute,
     private _basketService: BasketService,
     private _wishlistService: WishlistService,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
+    private _accountService: AccountService
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +73,9 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
   }
 
   isInStock(): boolean {
-    return this.product.quantity > 0;
+    const quantity = this.product.quantity || 0;
+    const boughtQuantity = this.product.boughtQuantity || 0;
+    return quantity > boughtQuantity;
   }
 
   getMaxQuantity(): number {
@@ -150,5 +154,18 @@ export class ProductDetailsComponent implements OnInit, OnDestroy {
     if (this.quantity > maxQuantity) {
       this.quantity = maxQuantity;
     }
+  }
+
+  isCustomer(): boolean {
+    const user = this._accountService.user();
+    if (!user) return true;
+
+    const roles = user.roles || [];
+    const isAdminOrSuper = roles.some(r => {
+      const role = r.toLowerCase();
+      return role === 'admin' || role === 'superadmin';
+    });
+
+    return !isAdminOrSuper;
   }
 }
