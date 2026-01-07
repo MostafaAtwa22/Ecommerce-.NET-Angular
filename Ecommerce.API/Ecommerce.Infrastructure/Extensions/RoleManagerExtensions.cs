@@ -37,7 +37,6 @@ namespace Ecommerce.Infrastructure.Extensions
             }
         }
 
-
         public static async Task SeedClaimsForAdmin(
             this RoleManager<IdentityRole> roleManager)
         {

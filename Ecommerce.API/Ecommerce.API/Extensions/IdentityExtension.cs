@@ -31,7 +31,7 @@ namespace Ecommerce.API.Extensions
             .AddSignInManager<SignInManager<ApplicationUser>>()
             .AddDefaultTokenProviders();
 
-            // // Authentication
+            // Authentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

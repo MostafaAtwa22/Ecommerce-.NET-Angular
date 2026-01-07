@@ -4,29 +4,32 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities.Identity;
+using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Controllers
 {
-    [Authorize(Roles = "SuperAdmin")]
     public class RolesController : BaseApiController
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IPermissionService _permissionService;
+        
 
         public RolesController(
             RoleManager<IdentityRole> roleManager,
             UserManager<ApplicationUser> userManager,
-            IMapper mapper)
+            IMapper mapper,
+            IPermissionService permissionService)
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
+            _permissionService = permissionService;
         }
 
         [HttpGet]
@@ -34,15 +37,10 @@ namespace Ecommerce.API.Controllers
         public async Task<ActionResult<ICollection<RoleDto>>> GetAllRoles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            var roleUserCounts = new Dictionary<string, int>();
+            var roleDtos = _mapper.Map<List<RoleDto>>(roles);
 
-            foreach (var role in roles)
-                roleUserCounts[role.Name!] =
-                    (await _userManager.GetUsersInRoleAsync(role.Name!)).Count;
-
-            var roleDtos = _mapper.Map<ICollection<RoleDto>>(roles);
             foreach (var dto in roleDtos)
-                dto.UserCount = roleUserCounts[dto.Name];
+                dto.UserCount = (await _userManager.GetUsersInRoleAsync(dto.Name)).Count;
 
             return Ok(roleDtos);
         }
@@ -52,15 +50,11 @@ namespace Ecommerce.API.Controllers
         public async Task<ActionResult<RoleDto>> GetRoleById(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
-
             if (role is null)
                 return NotFound(new ApiResponse(404, "Role not found"));
 
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
-            var userCount = usersInRole.Count;
-
             var roleDto = _mapper.Map<RoleDto>(role);
-            roleDto.UserCount = userCount;
+            roleDto.UserCount = (await _userManager.GetUsersInRoleAsync(role.Name!)).Count;
 
             return Ok(roleDto);
         }
@@ -69,22 +63,19 @@ namespace Ecommerce.API.Controllers
         [AuthorizePermission(Modules.Roles, CRUD.Create)]
         public async Task<ActionResult<RoleDto>> Create(RoleToCreateDto dto)
         {
-            var normalizedRoleName = dto.Name?.Trim()!;
+            var roleName = dto.Name.Trim();
 
-            if (await _roleManager.RoleExistsAsync(normalizedRoleName))
-                return BadRequest(new ApiResponse(400, "Role name is already exists"));
+            if (await _roleManager.RoleExistsAsync(roleName))
+                return BadRequest(new ApiResponse(400, "Role already exists"));
 
-            dto.Name = normalizedRoleName;
             var role = _mapper.Map<IdentityRole>(dto);
+            role.Name = roleName;
 
             var result = await _roleManager.CreateAsync(role);
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400,
-                    string.Join(", ", result.Errors.Select(e => e.Description))));
+                return BadRequest(new ApiResponse(400, string.Join(", ", result.Errors.Select(e => e.Description))));
 
-            var roleDto = _mapper.Map<RoleDto>(role);
-
-            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, roleDto);
+            return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, _mapper.Map<RoleDto>(role));
         }
 
         [HttpDelete("{id}")]
@@ -95,8 +86,7 @@ namespace Ecommerce.API.Controllers
             if (role is null)
                 return NotFound(new ApiResponse(404, "Role not found"));
 
-            var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name!);
-            if (usersInRole.Any())
+            if ((await _userManager.GetUsersInRoleAsync(role.Name!)).Any())
                 return BadRequest(new ApiResponse(400, "Cannot delete role with assigned users"));
 
             var result = await _roleManager.DeleteAsync(role);
@@ -158,12 +148,15 @@ namespace Ecommerce.API.Controllers
             return Ok(userRolesDto);
         }
 
-        [HttpGet("manage-permissions/{Id}")]
+        [HttpGet("manage-permissions/{id}")]
         [AuthorizePermission(Modules.Roles, CRUD.Read)]
         public async Task<ActionResult<RolePermissionsDto>> GetManagePermissions(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
-            var roleClaimValues = await GetRolePermissionClaimsAsync(role!);
+            if (role is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Role not found"));
+    
+            var roleClaimValues = await _permissionService.GetRolePermissionsAsync(role);
             var allPermissions = Permissions.GenerateAllPermissions();
 
             var permissionDtos = allPermissions
@@ -181,41 +174,20 @@ namespace Ecommerce.API.Controllers
         public async Task<ActionResult<RolePermissionsDto>> UpdatePermissions(string id, List<PermissionCheckboxDto> permissions)
         {
             var role = await _roleManager.FindByIdAsync(id);
-            await RemoveAllPermissionClaimsAsync(role!);
+            if (role is null)
+                return NotFound(new ApiResponse(404, "Role not found"));
+
+            await _permissionService.RemoveAllPermissionsAsync(role);
 
             var selectedPermissions = permissions
                 .Where(p => p.IsSelected)
                 .Select(p => p.PermissionName);
 
-            await AddPermissionClaimsAsync(role!, selectedPermissions);
-
+            await _permissionService.AddPermissionsAsync(role, selectedPermissions);
             var rolePermissionsDto = _mapper.Map<RolePermissionsDto>(role);
             rolePermissionsDto.Permissions = permissions;
 
             return Ok(rolePermissionsDto);
-        }
-
-        private async Task RemoveAllPermissionClaimsAsync(IdentityRole role)
-        {
-            var allClaims = await _roleManager.GetClaimsAsync(role);
-            var permissionClaims = allClaims.Where(c => c.Type == Permissions.ClaimType);
-
-            foreach (var claim in permissionClaims)
-            {
-                var result = await _roleManager.RemoveClaimAsync(role, claim);
-                if (!result.Succeeded)
-                    throw new Exception("Can't Remove the Permissions!");
-            }
-        }
-
-        private async Task AddPermissionClaimsAsync(IdentityRole role, IEnumerable<string> permissions)
-        {
-            foreach (var permission in permissions)
-            {
-                var result = await _roleManager.AddClaimAsync(role, new Claim(Permissions.ClaimType, permission));
-                if (!result.Succeeded)
-                    throw new Exception("Can't Add the Permissions!");
-            }
         }
 
         private static PermissionCheckboxDto CreatePermissionCheckboxDto(string permission, bool isSelected)
@@ -228,15 +200,6 @@ namespace Ecommerce.API.Controllers
                 Action = parts.Length > 2 ? parts[2] : string.Empty,
                 IsSelected = isSelected
             };
-        }
-
-        private async Task<HashSet<string>> GetRolePermissionClaimsAsync(IdentityRole role)
-        {
-            var claims = await _roleManager.GetClaimsAsync(role);
-            return claims
-                .Where(c => c.Type == Permissions.ClaimType)
-                .Select(c => c.Value)
-                .ToHashSet();
         }
     }
 }

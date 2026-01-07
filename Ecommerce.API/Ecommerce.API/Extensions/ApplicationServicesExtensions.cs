@@ -1,5 +1,6 @@
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
+using Ecommerce.API.Filters;
 using Ecommerce.API.Helpers.Resolver;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Entities.Identity;
@@ -7,6 +8,7 @@ using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Repositories;
 using Ecommerce.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Extensions
@@ -24,7 +26,9 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IEmailService, EmailService>();
-
+            services.AddScoped<IPermissionService, PermissionService>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProviderFilter>();
+            
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),

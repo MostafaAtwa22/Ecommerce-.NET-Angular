@@ -52,11 +52,13 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
   // Recent Data
   recentProducts: IProduct[] = [];
   recentOrders: IAllOrders[] = [];
+  topBoughtProducts: IProduct[] = [];
 
   // Loading States
   loadingProducts: boolean = true;
   loadingOrders: boolean = true;
   loadingStats: boolean = true;
+  loadingTopBought: boolean = true;
 
   // Subscriptions
   private subscriptions: Subscription[] = [];
@@ -92,16 +94,57 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
     this.loadRecentOrders();
     this.loadBrandsAndTypes();
     this.loadRoles();
+    this.loadTopBoughtProducts();
   }
 
   loadStatistics(): void {
-    // Load products count
+    this.loadingStats = true;
+
+    // Save current shop params
+    const originalPageIndex = this.shopService.shopParams.pageIndex;
+    const originalPageSize = this.shopService.shopParams.pageSize;
+    const originalSort = this.shopService.shopParams.sort;
+    const originalBrandId = this.shopService.shopParams.brandId;
+    const originalTypeId = this.shopService.shopParams.typeId;
+    const originalSearch = this.shopService.shopParams.search;
+
+    // Set params to get ALL products (large pageSize)
+    this.shopService.shopParams.pageIndex = 1;
+    this.shopService.shopParams.pageSize = 10000; // Large number to get all products
+    this.shopService.shopParams.sort = '';
+    delete this.shopService.shopParams.brandId;
+    delete this.shopService.shopParams.typeId;
+    delete this.shopService.shopParams.search;
+
+    // Load products count and ALL products data
     const productsSub = this.shopService.getAllProducts(false).subscribe({
       next: (response) => {
         this.totalProducts = response.totalData;
-        this.productsData = response.data;
+        this.productsData = response.data; // All products for statistics and distribution chart
+        this.loadingStats = false;
+
+        // Restore original params
+        this.shopService.shopParams.pageIndex = originalPageIndex;
+        this.shopService.shopParams.pageSize = originalPageSize;
+        this.shopService.shopParams.sort = originalSort;
+        this.shopService.shopParams.brandId = originalBrandId;
+        this.shopService.shopParams.typeId = originalTypeId;
+        this.shopService.shopParams.search = originalSearch;
+
+        // Update distribution chart after products load
+        setTimeout(() => this.updateDistributionChart(), 100);
       },
-      error: (error) => console.error('Error loading products:', error)
+      error: (error) => {
+        console.error('Error loading products:', error);
+        this.loadingStats = false;
+        // Restore original params on error
+        this.shopService.shopParams.pageIndex = originalPageIndex;
+        this.shopService.shopParams.pageSize = originalPageSize;
+        this.shopService.shopParams.sort = originalSort;
+        this.shopService.shopParams.brandId = originalBrandId;
+        this.shopService.shopParams.typeId = originalTypeId;
+        this.shopService.shopParams.search = originalSearch;
+      }
     });
 
     // Load orders count
@@ -195,6 +238,64 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
       error: (error) => console.error('Error loading roles:', error)
     });
     this.subscriptions.push(rolesSub);
+  }
+
+  loadTopBoughtProducts(): void {
+    this.loadingTopBought = true;
+
+    // Save current shop params
+    const originalPageIndex = this.shopService.shopParams.pageIndex;
+    const originalPageSize = this.shopService.shopParams.pageSize;
+    const originalSort = this.shopService.shopParams.sort;
+    const originalBrandId = this.shopService.shopParams.brandId;
+    const originalTypeId = this.shopService.shopParams.typeId;
+    const originalSearch = this.shopService.shopParams.search;
+
+    // Set params to get ALL products
+    this.shopService.shopParams.pageIndex = 1;
+    this.shopService.shopParams.pageSize = 10000;
+    this.shopService.shopParams.sort = '';
+    delete this.shopService.shopParams.brandId;
+    delete this.shopService.shopParams.typeId;
+    delete this.shopService.shopParams.search;
+
+    const sub = this.shopService.getAllProducts(false).subscribe({
+      next: (response) => {
+        // Sort by BoughtQuantity descending and take top 5
+        this.topBoughtProducts = response.data
+          .filter(p => p.boughtQuantity > 0) // Only products that have been bought
+          .sort((a, b) => b.boughtQuantity - a.boughtQuantity)
+          .slice(0, 5);
+
+        this.loadingTopBought = false;
+
+        // Restore original params
+        this.shopService.shopParams.pageIndex = originalPageIndex;
+        this.shopService.shopParams.pageSize = originalPageSize;
+        this.shopService.shopParams.sort = originalSort;
+        this.shopService.shopParams.brandId = originalBrandId;
+        this.shopService.shopParams.typeId = originalTypeId;
+        this.shopService.shopParams.search = originalSearch;
+      },
+      error: (error) => {
+        console.error('Error loading top bought products:', error);
+        this.loadingTopBought = false;
+        // Restore original params on error
+        this.shopService.shopParams.pageIndex = originalPageIndex;
+        this.shopService.shopParams.pageSize = originalPageSize;
+        this.shopService.shopParams.sort = originalSort;
+        this.shopService.shopParams.brandId = originalBrandId;
+        this.shopService.shopParams.typeId = originalTypeId;
+        this.shopService.shopParams.search = originalSearch;
+      }
+    });
+
+    this.subscriptions.push(sub);
+  }
+
+  getBoughtPercentage(product: IProduct): number {
+    if (product.quantity === 0) return 0;
+    return (product.boughtQuantity / product.quantity) * 100;
   }
 
   initializeCharts(): void {

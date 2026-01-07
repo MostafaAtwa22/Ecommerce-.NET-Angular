@@ -3,6 +3,7 @@ using Ecommerce.API.Extensions;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
 using Ecommerce.Infrastructure.Settings;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 
@@ -27,6 +28,11 @@ namespace Ecommerce.API
                 builder.Configuration.GetSection("RequestTiming"));
             builder.Services.Configure<MailSettings>(
                 builder.Configuration.GetSection("MailSettings"));
+            
+            builder.Services.Configure<SecurityStampValidatorOptions>(opt =>
+            {
+                opt.ValidationInterval = TimeSpan.Zero;
+            });
 
             builder.Services.AddAuthentication()
                 .AddGoogle(opt =>

@@ -33,7 +33,9 @@ namespace Ecommerce.Infrastructure.Data
             await SeedUsersAsync(userManager, roleManager, logger);
         }
 
-        private static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager, ILogger logger)
+        private static async Task SeedRolesAsync(
+            RoleManager<IdentityRole> roleManager, 
+            ILogger logger)
         {
             try
             {
@@ -131,8 +133,7 @@ namespace Ecommerce.Infrastructure.Data
 
         private static async Task SeedSuperAdminUserAsync(
             RoleManager<IdentityRole> roleManager,
-            ILogger logger
-        )
+            ILogger logger)
         {
             try
             {

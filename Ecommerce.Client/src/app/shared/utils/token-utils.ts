@@ -62,4 +62,3 @@ export function getTokenExpirationDate(token: string): Date | null {
   }
   return new Date(decoded.exp * 1000);
 }
-

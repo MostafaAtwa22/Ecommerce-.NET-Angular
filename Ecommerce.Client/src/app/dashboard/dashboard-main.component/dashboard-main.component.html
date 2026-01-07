@@ -179,6 +179,94 @@
       </div>
     </div>
 
+    <!-- Top Bought Products Table -->
+    <div class="col-12">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-star me-2"></i>Top 5 Bought Products
+          </h5>
+          <span class="badge bg-primary">{{ topBoughtProducts.length }} products</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingTopBought) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading top products...</p>
+          </div>
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Product</th>
+                <th scope="col" class="fw-bold">Brand</th>
+                <th scope="col" class="fw-bold">Type</th>
+                <th scope="col" class="fw-bold">Bought Quantity</th>
+                <th scope="col" class="fw-bold">Total Quantity</th>
+                <th scope="col" class="fw-bold">Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (topBoughtProducts.length === 0) {
+              <tr>
+                <td colspan="6" class="text-center py-5 empty-state">
+                  <i class="fas fa-star fa-2x mb-3 text-muted"></i>
+                  <h6>No Products Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (product of topBoughtProducts; track product.id) {
+              <tr class="fade-item">
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (product.pictureUrl) {
+                    <img [src]="product.pictureUrl" alt="{{ product.name }}" class="product-thumb me-3">
+                    }
+                    <div>
+                      <h6 class="mb-0">{{ product.name }}</h6>
+                      <small class="text-muted">${{ product.price | number:'1.2-2' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-info">
+                    {{ product.productBrandName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-secondary">
+                    {{ product.productTypeName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <strong class="text-primary">{{ product.boughtQuantity | number }}</strong>
+                </td>
+                <td>
+                  <span class="text-muted">{{ product.quantity | number }}</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="progress me-2" style="width: 100px; height: 20px;">
+                      <div class="progress-bar" [ngClass]="{
+                                 'bg-success': getBoughtPercentage(product) >= 70,
+                                 'bg-warning': getBoughtPercentage(product) >= 40 && getBoughtPercentage(product) < 70,
+                                 'bg-danger': getBoughtPercentage(product) < 40
+                               }" [style.width.%]="getBoughtPercentage(product)" role="progressbar">
+                      </div>
+                    </div>
+                    <span class="fw-bold">{{ getBoughtPercentage(product) | number:'1.1-1' }}%</span>
+                  </div>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
+      </div>
+    </div>
     <!-- Recent Orders Table -->
     <div class="col-12">
       <div class="table-container card-shadow p-4">
