@@ -55,10 +55,30 @@ export const routes: Routes = [
       {
         path: 'users', loadComponent: () =>
         import('./dashboard/dashboard-users.component/dashboard-users.component').then(m =>m.DashboardUsersComponent ),
+        children: [
+          {
+            path: '', loadComponent: () =>
+            import('./dashboard/dashboard-users.component/main-user-info.component/main-user-info.component').then(m =>m.MainUserInfoComponent ),
+          },
+          {
+            path: 'roles/:id', loadComponent: () =>
+            import('./dashboard/dashboard-users.component/user-roles.component/user-roles.component').then(m =>m.UserRolesComponent ),
+          }
+        ]
       },
       {
         path: 'roles', loadComponent: () =>
         import('./dashboard/dashboard-roles.component/dashboard-roles.component').then(m =>m.DashboardRolesComponent ),
+        children: [
+          {
+            path: '', loadComponent: () =>
+            import('./dashboard/dashboard-roles.component/main-role-info.component/main-role-info.component').then(m =>m.MainRoleInfoComponent ),
+          },
+          {
+            path: 'permissions/:id', loadComponent: () =>
+            import('./dashboard/dashboard-roles.component/permissions.component/permissions.component').then(m =>m.PermissionsComponent ),
+          }
+        ]
       },
     ]
   },

@@ -11,8 +11,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Permissions Header */
-.permissions-header {
+/* User Roles Header */
+.user-roles-header {
   .card-header {
     background: white;
     border-bottom: 1px solid #d1d7dc;
@@ -36,8 +36,8 @@
   }
 }
 
-/* Permissions Table Container */
-.permissions-table-container {
+/* Roles Table Container */
+.roles-table-container {
   .card-header {
     background: white;
     border-bottom: 1px solid #d1d7dc;
@@ -101,10 +101,9 @@
   }
 }
 
-.module-name {
+.role-name {
   font-size: 0.875rem;
   color: #0c111d;
-  min-width: 200px;
 
   strong {
     font-weight: 600;
@@ -112,7 +111,7 @@
 }
 
 /* Checkbox Styles */
-.permission-checkbox {
+.role-checkbox {
   width: 1.25rem;
   height: 1.25rem;
   cursor: pointer;
@@ -295,8 +294,8 @@
     padding: 1rem;
   }
 
-  .permissions-header,
-  .permissions-table-container {
+  .user-roles-header,
+  .roles-table-container {
     .card-header {
       padding: 1rem;
       flex-direction: column;
@@ -315,35 +314,6 @@
       padding: 0.75rem 1rem;
       font-size: 0.8rem;
     }
-  }
-
-  .module-name {
-    min-width: 150px;
-  }
-}
-
-@media (max-width: 576px) {
-  .permissions-header .card-header {
-    h4 {
-      font-size: 1rem;
-    }
-  }
-
-  .table {
-    thead th {
-      font-size: 0.75rem;
-      padding: 0.5rem 0.75rem;
-    }
-
-    tbody td {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.75rem;
-    }
-  }
-
-  .permission-checkbox {
-    width: 1rem;
-    height: 1rem;
   }
 }
 

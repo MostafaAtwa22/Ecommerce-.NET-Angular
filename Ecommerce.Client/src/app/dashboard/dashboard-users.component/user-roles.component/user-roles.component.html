@@ -1,0 +1,110 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="user-roles-header card-shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="fw-bold mb-0">
+          <i class="fas fa-user-cog me-2"></i>Manage User Roles
+        </h4>
+        <p class="text-muted mb-0 mt-2">
+          User: <strong>{{ userName }}</strong> ({{ email }})
+        </p>
+      </div>
+      <button
+        class="btn btn-outline-secondary"
+        (click)="goBack()"
+        [disabled]="saving"
+      >
+        <i class="fas fa-arrow-left me-2"></i>Back to Users
+      </button>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+      <i class="fas fa-check-circle me-2"></i>
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = null"></button>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = null"></button>
+    </div>
+  }
+
+  <!-- Roles Table -->
+  <div class="roles-table-container card-shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-list-alt me-2"></i>User Roles
+      </h4>
+      <button
+        class="btn btn-primary"
+        (click)="saveUserRoles()"
+        [disabled]="saving || loading"
+      >
+        @if (saving) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Saving...
+        } @else {
+          <i class="fas fa-save me-2"></i>Save Roles
+        }
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      @if (loading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading user roles...</p>
+        </div>
+      } @else {
+        <table class="table table-hover table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-bold">Role Name</th>
+              <th scope="col" class="fw-bold text-center">Selected</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (roles.length === 0) {
+              <tr>
+                <td colspan="2" class="text-center py-4 empty-state">
+                  <i class="fas fa-inbox fa-2x mb-3 text-muted"></i>
+                  <h5>No Roles Found</h5>
+                  <p class="text-muted">No roles available for assignment.</p>
+                </td>
+              </tr>
+            } @else {
+              @for (role of roles; track role.roleId) {
+                <tr class="fade-item">
+                  <td class="role-name">
+                    <strong>{{ role.roleName }}</strong>
+                  </td>
+                  <td class="text-center">
+                    <div class="form-check d-flex justify-content-center">
+                      <input
+                        class="form-check-input role-checkbox"
+                        type="checkbox"
+                        [checked]="role.isSelected"
+                        [disabled]="saving"
+                        (change)="toggleRole(role)"
+                        [id]="'role-' + role.roleId"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>
+

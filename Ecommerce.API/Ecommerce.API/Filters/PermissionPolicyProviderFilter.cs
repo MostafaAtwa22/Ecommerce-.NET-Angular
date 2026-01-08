@@ -21,7 +21,7 @@ namespace Ecommerce.API.Filters
 
         public async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
-            if (policyName.StartsWith(Permissions.ClaimType, StringComparison.OrdinalIgnoreCase))
+            if (policyName.StartsWith(Permissions.ClaimValue, StringComparison.OrdinalIgnoreCase))
             {
                 var policy = new AuthorizationPolicyBuilder();
                 policy.AddRequirements(new PermissionRequirementFilter(policyName));

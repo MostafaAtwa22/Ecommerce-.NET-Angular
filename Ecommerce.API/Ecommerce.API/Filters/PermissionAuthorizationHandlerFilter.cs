@@ -5,13 +5,6 @@ namespace Ecommerce.API.Filters
 {
     public class PermissionAuthorizationHandlerFilter : AuthorizationHandler<PermissionRequirementFilter>
     {
-        private readonly string _issuer;
-
-        public PermissionAuthorizationHandlerFilter(IConfiguration config)
-        {
-            _issuer = config["Token:Issuer"]!;
-        }
-
         protected override Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             PermissionRequirementFilter requirement)
@@ -21,8 +14,7 @@ namespace Ecommerce.API.Filters
 
             var hasPermission = context.User.Claims.Any(c =>
                 c.Type == Permissions.ClaimType &&
-                c.Value == requirement.Permission &&
-                c.Issuer == _issuer);
+                c.Value == requirement.Permission);
 
             if (hasPermission)
                 context.Succeed(requirement);

@@ -1,0 +1,199 @@
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-admin">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{getRoleCount('SuperAdmin') | number}}</h3>
+          <p>Super Admins</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-manager">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{getRoleCount('Admin') | number}}</h3>
+          <p>Admins</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-customer">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{getRoleCount('Customer') | number}}</h3>
+          <p>Customers</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Role Form -->
+  <div class="add-role-card card-shadow mb-4">
+    <div class="card-header">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-plus-circle me-2"></i>Add New Role
+      </h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="roleForm" (ngSubmit)="addRole()" class="row g-3">
+        <div class="col-md-8">
+          <label for="roleName" class="form-label">Role Name</label>
+          <input
+            type="text"
+            id="roleName"
+            class="form-control modern-input"
+            formControlName="name"
+            placeholder="Enter role name (e.g., Manager, Editor)"
+            [class.is-invalid]="name?.invalid && (name?.dirty || name?.touched)"
+          />
+          @if (name?.invalid && (name?.dirty || name?.touched)) {
+            <div class="invalid-feedback d-block">
+              @if (name?.errors?.['required']) {
+                <span>Role name is required</span>
+              }
+              @if (name?.errors?.['minlength']) {
+                <span>Minimum 3 characters required</span>
+              }
+              @if (name?.errors?.['maxlength']) {
+                <span>Maximum 50 characters allowed</span>
+              }
+              @if (name?.errors?.['pattern']) {
+                <span>Only letters (A-Z, a-z) are allowed</span>
+              }
+            </div>
+          }
+        </div>
+        <div class="col-md-4 d-flex align-items-end">
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="roleForm.invalid || loading"
+          >
+            @if (loading) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Adding...
+            } @else {
+              <i class="fas fa-plus me-2"></i>Add Role
+            }
+          </button>
+        </div>
+      </form>
+
+      <!-- Success/Error Messages -->
+      @if (successMessage) {
+        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+          <i class="fas fa-check-circle me-2"></i>
+          {{ successMessage }}
+          <button type="button" class="btn-close" (click)="successMessage = null"></button>
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          {{ errorMessage }}
+          <button type="button" class="btn-close" (click)="errorMessage = null"></button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Roles Table -->
+  <div class="roles-table-container card-shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-list-alt me-2"></i>All Roles
+      </h4>
+      <div class="table-info">
+        <span class="badge bg-primary">{{ roles.length }} total</span>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      @if (loading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading roles...</p>
+        </div>
+      } @else {
+        <table class="table table-hover table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-bold">#</th>
+              <th scope="col" class="fw-bold">Role Name</th>
+              <th scope="col" class="fw-bold">Users Count</th>
+              <th scope="col" class="fw-bold text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (roles.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-4 empty-state">
+                  <i class="fas fa-inbox fa-2x mb-3 text-muted"></i>
+                  <h5>No Roles Found</h5>
+                  <p class="text-muted">Start by adding your first role above.</p>
+                </td>
+              </tr>
+            } @else {
+              @for (role of roles; track role.id; let i = $index) {
+                <tr class="fade-item">
+                  <td class="text-muted">{{ i + 1 }}</td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div
+                        class="role-badge me-3"
+                        [class.bg-superadmin]="role.name === 'SuperAdmin'"
+                        [class.bg-admin]="role.name === 'Admin'"
+                        [class.bg-customer]="role.name === 'Customer'"
+                        [class.bg-default]="!['SuperAdmin','Admin','Customer'].includes(role.name)"
+                      >
+                        {{ getRoleInitial(role.name) }}
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ role.name }}</h6>
+                        <small class="text-muted">{{ role.id }}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge bg-light text-dark">
+                      <i class="fas fa-users me-1"></i>
+                      {{ role.userCount || 0 }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <button
+                      class="btn btn-sm btn-outline-danger me-2"
+                      (click)="deleteRole(role.id)"
+                      [disabled]="role.userCount > 0"
+                      [title]="role.userCount > 0 ? 'Cannot delete role with assigned users' : 'Delete role'"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                    <button
+                      [routerLink]="['permissions', role.id]"
+                      class="btn btn-sm btn-outline-info">
+                      <i class="fa fa-gears"></i>
+                    </button>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>
+

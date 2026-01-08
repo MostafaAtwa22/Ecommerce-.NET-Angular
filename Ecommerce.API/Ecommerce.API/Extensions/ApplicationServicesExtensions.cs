@@ -28,6 +28,7 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProviderFilter>();
+            services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandlerFilter>();
             
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
