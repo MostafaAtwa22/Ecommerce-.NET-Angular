@@ -8,7 +8,7 @@ export interface IProfile {
   id: string;
   phoneNumber: string;
   roles: string[];
-  lockoutEnabled?: boolean;
+  isLocked: boolean;
 }
 
 export interface IProfileUpdate {

@@ -102,6 +102,14 @@ export class ProfileService {
     return this.http.post<boolean>(`${this.baseUrl}/setPassword`, password);
   }
 
+  lockUser(id: string): Observable<IProfile> {
+    return this.http.post<IProfile>(`${this.baseUrl}/lock/${id}`, {});
+  }
+
+  unlockUser(id: string): Observable<IProfile> {
+    return this.http.post<IProfile>(`${this.baseUrl}/unlock/${id}`, {});
+  }
+
   deleteProfile(password: IDeleteAccount): Observable<boolean> {
     return this.http.delete<boolean>(`${this.baseUrl}/deleteProfile`, {
       body: password,

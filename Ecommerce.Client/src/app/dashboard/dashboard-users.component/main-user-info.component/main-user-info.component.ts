@@ -8,13 +8,14 @@ import { ProfileService } from '../../../shared/services/profile-service';
 import { UserParams } from '../../../shared/modules/UserParams ';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../account/account-service';
+import { SweetAlertService } from '../../../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-main-user-info',
   standalone: true,
   imports: [CommonModule, FormsModule, DecimalPipe, RouterLink],
   templateUrl: './main-user-info.component.html',
-  styleUrl: './main-user-info.component.scss'
+  styleUrl: './main-user-info.component.scss',
 })
 export class MainUserInfoComponent implements OnInit {
   users: IProfile[] = [];
@@ -50,7 +51,7 @@ export class MainUserInfoComponent implements OnInit {
     { value: 'nameDesc', name: 'Name: Z-A' },
     { value: 'newest', name: 'Newest First' },
     { value: 'oldest', name: 'Oldest First' },
-    { value: 'email', name: 'Email: A-Z' }
+    { value: 'email', name: 'Email: A-Z' },
   ];
 
   // Role filter options
@@ -58,12 +59,13 @@ export class MainUserInfoComponent implements OnInit {
     { value: '', name: 'All Users' },
     { value: 'Customer', name: 'Customer' },
     { value: 'Admin', name: 'Admin' },
-    { value: 'SuperAdmin', name: 'Super Admin' }
+    { value: 'SuperAdmin', name: 'Super Admin' },
   ];
 
   constructor(
     private profileService: ProfileService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private swal: SweetAlertService
   ) {}
 
   getUserAvatar(user: IProfile): string {
@@ -84,9 +86,9 @@ export class MainUserInfoComponent implements OnInit {
 
   handleImageError(event: Event): void {
     const imgElement = event.target as HTMLImageElement;
-    const userGender = this.users.find(u =>
-      `${u.firstName} ${u.lastName}` === imgElement.alt
-    )?.gender?.toLowerCase();
+    const userGender = this.users
+      .find((u) => `${u.firstName} ${u.lastName}` === imgElement.alt)
+      ?.gender?.toLowerCase();
 
     if (userGender === 'male') {
       imgElement.src = 'default-male.png';
@@ -123,13 +125,15 @@ export class MainUserInfoComponent implements OnInit {
       error: (err: HttpErrorResponse) => {
         this.loading = false;
         if (err.status === 401 || err.status === 403) {
-          this.errorMessage = 'You don\'t have permission to access users.';
+          this.errorMessage = "You don't have permission to access users.";
         } else if (err.status === 0) {
-          this.errorMessage = 'Unable to connect to the server. Please check if the API is running.';
+          this.errorMessage =
+            'Unable to connect to the server. Please check if the API is running.';
         } else {
-          this.errorMessage = err.error?.message || 'An unexpected error occurred while loading users.';
+          this.errorMessage =
+            err.error?.message || 'An unexpected error occurred while loading users.';
         }
-      }
+      },
     });
   }
 
@@ -147,7 +151,7 @@ export class MainUserInfoComponent implements OnInit {
     this.adminCount = 0;
     this.superAdminCount = 0;
 
-    this.users.forEach(user => {
+    this.users.forEach((user) => {
       // Count gender
       if (user.gender?.toLowerCase() === 'male') {
         this.maleCount++;
@@ -157,7 +161,7 @@ export class MainUserInfoComponent implements OnInit {
 
       // Count roles
       if (user.roles) {
-        user.roles.forEach(role => {
+        user.roles.forEach((role) => {
           const roleLower = role.toLowerCase();
           if (roleLower.includes('superadmin')) {
             this.superAdminCount++;
@@ -232,46 +236,73 @@ export class MainUserInfoComponent implements OnInit {
   }
 
   getGenderIcon(gender: string): string {
-    return gender?.toLowerCase() === 'male' ? 'fa-mars' :
-           gender?.toLowerCase() === 'female' ? 'fa-venus' : 'fa-genderless';
+    return gender?.toLowerCase() === 'male'
+      ? 'fa-mars'
+      : gender?.toLowerCase() === 'female'
+      ? 'fa-venus'
+      : 'fa-genderless';
   }
 
   getGenderColor(gender: string): string {
-    return gender?.toLowerCase() === 'male' ? 'text-primary' :
-           gender?.toLowerCase() === 'female' ? 'text-pink' : 'text-muted';
+    return gender?.toLowerCase() === 'male'
+      ? 'text-primary'
+      : gender?.toLowerCase() === 'female'
+      ? 'text-pink'
+      : 'text-muted';
   }
 
   isSuperAdmin(): boolean {
     const user = this.accountService.user();
-    return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
+    return user?.roles?.some((role) => role.toLowerCase() === 'superadmin') || false;
   }
 
-  lockUser(userId: string): void {
-    // TODO: Implement lock user API call when endpoint is available
-    // this.profileService.lockUser(userId).subscribe({
-    //   next: () => {
-    //     this.loadUsers();
-    //   },
-    //   error: (err) => {
-    //     console.error('Failed to lock user:', err);
-    //   }
-    // });
-    console.log('Lock user:', userId);
-    alert('Lock user functionality - API endpoint needs to be implemented');
+  lockUser(user: IProfile): void {
+    this.swal
+      .confirm({
+        title: 'Lock User?',
+        text: `Are you sure you want to lock the account of ${user.firstName} ${user.lastName}?`,
+        icon: 'warning',
+        confirmButtonText: 'Yes, lock it!',
+        cancelButtonText: 'Cancel',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.profileService.lockUser(user.id).subscribe({
+            next: (updatedUser) => {
+              user.isLocked = updatedUser.isLocked; // تحديث الحالة بعد Lock
+              this.swal.success(`User ${user.userName} has been locked!`);
+            },
+            error: (err) => {
+              console.error(err);
+              this.swal.error('Failed to lock user.');
+            },
+          });
+        }
+      });
   }
 
-  unlockUser(userId: string): void {
-    // TODO: Implement unlock user API call when endpoint is available
-    // this.profileService.unlockUser(userId).subscribe({
-    //   next: () => {
-    //     this.loadUsers();
-    //   },
-    //   error: (err) => {
-    //     console.error('Failed to unlock user:', err);
-    //   }
-    // });
-    console.log('Unlock user:', userId);
-    alert('Unlock user functionality - API endpoint needs to be implemented');
+  unlockUser(user: IProfile): void {
+    this.swal
+      .confirm({
+        title: 'Unlock User?',
+        text: `Are you sure you want to unlock the account of ${user.firstName} ${user.lastName}?`,
+        icon: 'question',
+        confirmButtonText: 'Yes, unlock it!',
+        cancelButtonText: 'Cancel',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.profileService.unlockUser(user.id).subscribe({
+            next: (updatedUser) => {
+              user.isLocked = updatedUser.isLocked; // تحديث الحالة بعد Unlock
+              this.swal.success(`User ${user.userName} has been unlocked!`);
+            },
+            error: (err) => {
+              console.error(err);
+              this.swal.error('Failed to unlock user.');
+            },
+          });
+        }
+      });
   }
 }
-

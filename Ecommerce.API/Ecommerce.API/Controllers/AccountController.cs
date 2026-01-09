@@ -46,19 +46,18 @@ namespace Ecommerce.API.Controllers
             if (user is null)
                 return Unauthorized(new ApiResponse(401));
 
-            if (await _userManager.IsLockedOutAsync(user))
-                return BadRequest(new ApiResponse(400,
-                    "Your account is locked. Please try again later after 5 minutes."));
+            var lockMessage = GetLockMessage(user);
+            if (!string.IsNullOrEmpty(lockMessage))
+                return BadRequest(new ApiResponse(400, lockMessage));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: true);
 
             if (result.IsLockedOut)
                 return BadRequest(new ApiResponse(400,
-                    "Your account has been locked due to multiple failed attempts. Please try again later after 5 minutes."));
+                    "Your account has been locked due to multiple failed attempts. Try again later."));
 
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400,
-                    "Email or password is wrong. Try again!"));
+                return BadRequest(new ApiResponse(400, "Email or password is wrong. Try again!"));
 
             var response = await CreateUserResponseAsync(user);
             return Ok(response);
@@ -101,22 +100,22 @@ namespace Ecommerce.API.Controllers
                     };
 
                     var createResult = await _userManager.CreateAsync(user);
-                    
+
                     if (!createResult.Succeeded)
-                        return BadRequest(new ApiResponse(400, 
+                        return BadRequest(new ApiResponse(400,
                             BuildErrors(createResult.Errors)));
 
                     // Add to Customer role by default
                     var roleResult = await _userManager.AddToRoleAsync(user, Role.Customer.ToString());
-                    
+
                     if (!roleResult.Succeeded)
-                        return BadRequest(new ApiResponse(400, 
+                        return BadRequest(new ApiResponse(400,
                             BuildErrors(roleResult.Errors)));
                 }
                 else
                 {
                     // Optionally update user profile picture if it changed
-                    if (!string.IsNullOrEmpty(payload.Picture) && 
+                    if (!string.IsNullOrEmpty(payload.Picture) &&
                         user.ProfilePictureUrl != payload.Picture)
                     {
                         user.ProfilePictureUrl = payload.Picture;
@@ -138,7 +137,7 @@ namespace Ecommerce.API.Controllers
             }
             catch
             {
-                return BadRequest(new ApiResponse(400, 
+                return BadRequest(new ApiResponse(400,
                     "Something went wrong during Google authentication. Please try again."));
             }
         }
@@ -173,7 +172,6 @@ namespace Ecommerce.API.Controllers
             return Ok(response);
         }
 
-        // CHECK EMAIL / USERNAME
         [HttpGet("emailexists/{email}")]
         [EnableRateLimiting("customer-browsing")]
         public async Task<bool> CheckEmailExistsAsync(string email)
@@ -200,9 +198,9 @@ namespace Ecommerce.API.Controllers
         public async Task<ActionResult> ResendResetPassword([FromForm] string email)
         {
             var (response, error) = await GenerateAndSendResetPasswordEmailAsync(email);
-            
+
             if (error != null)
-                return StatusCode(500, new ApiResponse(500, error)); 
+                return StatusCode(500, new ApiResponse(500, error));
 
             return Ok(response);
         }
@@ -226,6 +224,20 @@ namespace Ecommerce.API.Controllers
         }
 
         // HELPERS
+        private string? GetLockMessage(IdentityUser user, int defaultLockMinutes = 5)
+        {
+            if (user.LockoutEnabled && user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow)
+            {
+                var remainingMinutes = (user.LockoutEnd.Value - DateTimeOffset.UtcNow).TotalMinutes;
+
+                if (remainingMinutes <= defaultLockMinutes)
+                    return $"Your account is locked due to multiple failed attempts. Try again after {Math.Ceiling(remainingMinutes)} minutes.";
+
+                return "Your account has been locked by an admin. Please contact support.";
+            }
+
+            return null; 
+        }
 
         private async Task<(UserDto? User, string? ErrorMessage)> GenerateAndSendResetPasswordEmailAsync(string email)
         {

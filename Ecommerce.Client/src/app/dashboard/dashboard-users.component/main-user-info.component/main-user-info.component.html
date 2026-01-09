@@ -253,11 +253,12 @@
                       >
                         <i class="fas fa-user-cog"></i>
                       </button>
-                      @if (user.lockoutEnabled) {
+                      @if (user.isLocked) {
                         <button
                           class="btn btn-sm btn-outline-success"
                           title="Unlock User"
-                          (click)="unlockUser(user.id)"
+                          [disabled]="user.roles.includes('SuperAdmin')"
+                          (click)="unlockUser(user)"
                         >
                           <i class="fas fa-unlock"></i>
                         </button>
@@ -265,7 +266,8 @@
                         <button
                           class="btn btn-sm btn-outline-warning"
                           title="Lock User"
-                          (click)="lockUser(user.id)"
+                          [disabled]="user.roles.includes('SuperAdmin')"
+                          (click)="lockUser(user)"
                         >
                           <i class="fas fa-lock"></i>
                         </button>

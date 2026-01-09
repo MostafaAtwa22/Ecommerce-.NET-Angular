@@ -64,7 +64,6 @@ namespace Ecommerce.API.Controllers
             ));
         }
 
-
         [HttpGet("profile")]
         [Cached(500)]
         public async Task<ActionResult<ProfileResponseDto>> GetProfile()
@@ -165,6 +164,41 @@ namespace Ecommerce.API.Controllers
             var user = await _userManager.FindUserByClaimsPrinciplesWithAddressAsync(HttpContext.User);
 
             return Ok(_mapper.Map<Address, AddressDto>(user?.Address!));
+        }
+        
+        [HttpPost("lock/{id}")]
+        public async Task<ActionResult<ProfileResponseDto>> LockUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+            
+            if (!user.LockoutEnabled)
+            {
+                user.LockoutEnabled = true;
+                var updateResult = await _userManager.UpdateAsync(user);
+                if(!updateResult.Succeeded)
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Failed to enable lockout for user."));
+            }
+            var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddMonths(1));
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+            
+            return Ok(_mapper.Map<ProfileResponseDto>(user));
+        }
+
+        [HttpPost("unlock/{id}")]
+        public async Task<ActionResult<ProfileResponseDto>> UnlockUserAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+            
+            var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow);
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+            
+            return Ok(_mapper.Map<ProfileResponseDto>(user));
         }
 
         [HttpPut("address")]

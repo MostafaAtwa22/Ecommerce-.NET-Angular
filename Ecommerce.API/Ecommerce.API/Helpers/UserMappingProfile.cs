@@ -23,8 +23,12 @@ namespace Ecommerce.API.Helpers
                 .IncludeBase<ApplicationUser, UserCommonDto>();
 
             CreateMap<ApplicationUser, ProfileResponseDto>()
-                .IncludeBase<ApplicationUser, UserCommonDto>();
-                
+                .IncludeBase<ApplicationUser, UserCommonDto>()
+                .ForMember(dest => dest.IsLocked,
+                    opt => opt.MapFrom(src =>
+                        src.LockoutEnabled && src.LockoutEnd.HasValue && src.LockoutEnd > DateTimeOffset.UtcNow
+                    ));
+
             CreateMap<ApplicationUser, ProfileUpdateDto>()
                 .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender));
             CreateMap<ProfileUpdateDto, ApplicationUser>()
