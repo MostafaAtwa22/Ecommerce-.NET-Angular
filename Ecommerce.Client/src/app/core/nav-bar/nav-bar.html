@@ -30,7 +30,7 @@
           <a class="nav-link text-decoration-none" href="#contact" id="contactLink">Contact Us</a>
         </li>
         <!-- Dashboard link for Admin/SuperAdmin -->
-        <li class="nav-item mx-2" *ngIf="isLoggedIn() && isAdmin()">
+        <li class="nav-item mx-2" *ngIf="isLoggedIn() && hasAdminRole()">
           <a class="nav-link text-decoration-none" routerLink="/dashboard" routerLinkActive="active">
             <i class="fas fa-chart-line me-1"></i>Dashboard
           </a>
@@ -39,16 +39,16 @@
 
       <!-- Right Section -->
       <ul class="navbar-nav align-items-center flex-row">
-        <!-- Wishlist Icon - Only for customers -->
-        <li class="nav-item position-relative me-3" *ngIf="!isAdmin()">
+        <!-- Wishlist Icon - Only for customers and users without admin roles -->
+        <li class="nav-item position-relative me-3" *ngIf="!hasAdminRole()">
           <a class="nav-link wishlist-icon" routerLink="/wishlist">
             <i class="fas fa-heart"></i>
             <span class="wishlist-badge" *ngIf="wishList$ | async as wishList">{{ wishList.items.length }}</span>
           </a>
         </li>
 
-        <!-- Shopping Cart - Only for customers -->
-        <li class="nav-item position-relative me-4" *ngIf="!isAdmin()">
+        <!-- Shopping Cart - Only for customers and users without admin roles -->
+        <li class="nav-item position-relative me-4" *ngIf="!hasAdminRole()">
           <a class="nav-link cart-icon" routerLink="/basket">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-badge" *ngIf="basket$ | async as basket">{{ basket.items.length }}</span>
@@ -81,9 +81,23 @@
                       {{ currentUser()!.firstName }} {{ currentUser()!.lastName }}
                     </div>
                     <div class="user-email">{{ currentUser()!.email }}</div>
-                    <div class="user-role" *ngIf="currentUser()!.roles && currentUser()!.roles.length > 0">
-                      <i class="fas fa-shield-alt"></i>
-                      {{ currentUser()!.roles[0] }}
+                    <!-- Display multiple roles -->
+                    <div class="user-roles" *ngIf="currentUser()!.roles && currentUser()!.roles.length > 0">
+                      <div class="role-badges">
+                        @for (role of currentUser()!.roles; track role) {
+                          <span class="role-badge {{ getRoleBadgeClass(role) }}">
+                            <i class="fas {{ getRoleIcon(role) }} me-1"></i>
+                            {{ getRoleDisplayName(role) }}
+                          </span>
+                        }
+                      </div>
+                    </div>
+                    <!-- Show primary role -->
+                    <div class="user-primary-role" *ngIf="getPrimaryRole() as primaryRole">
+                      <small class="text-muted">
+                        <i class="fas fa-user-tie me-1"></i>
+                        Primary: {{ getRoleDisplayName(primaryRole) }}
+                      </small>
                     </div>
                   </div>
                 </div>
@@ -100,19 +114,35 @@
                   <span>Profile</span>
                 </a>
               </li>
+
               <!-- Show Orders for Customers -->
-              <li *ngIf="isCustomer()">
+              <li *ngIf="hasCustomerRole() && !hasAdminRole()">
                 <a class="dropdown-item" routerLink="/orders">
                   <i class="fas fa-shopping-bag"></i>
                   <span>Orders</span>
                 </a>
               </li>
 
-              <!-- Show Dashboard for Admins/SuperAdmins -->
-              <li *ngIf="isAdmin()">
+              <!-- Show Dashboard for users with admin roles -->
+              <li *ngIf="hasAdminRole()">
                 <a class="dropdown-item" routerLink="/dashboard">
                   <i class="fas fa-chart-line"></i>
                   <span>Dashboard</span>
+                </a>
+              </li>
+
+              <!-- Admin-specific menu items -->
+              <li *ngIf="hasAdminRole()">
+                <a class="dropdown-item" routerLink="/dashboard/products">
+                  <i class="fas fa-box"></i>
+                  <span>Manage Products</span>
+                </a>
+              </li>
+
+              <li *ngIf="hasSuperAdminRole()">
+                <a class="dropdown-item" routerLink="/dashboard/users">
+                  <i class="fas fa-users"></i>
+                  <span>Manage Users</span>
                 </a>
               </li>
 
@@ -147,4 +177,3 @@
     </div>
   </div>
 </nav>
-<!-- Navbar -->

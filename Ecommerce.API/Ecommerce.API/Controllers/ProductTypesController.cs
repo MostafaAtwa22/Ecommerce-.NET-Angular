@@ -6,6 +6,7 @@ using Ecommerce.API.Errors;
 using Ecommerce.API.Helpers.Attributes;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
+using Ecommerce.Infrastructure.Constants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -44,6 +45,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [DisableRateLimiting]
+        [AuthorizePermission(Modules.Roles, CRUD.Create)]
         public async Task<ActionResult<ProductBrandAndTypeResponseDto>> Create(ProductBrandAndTypeCreationDto creationDto)
         {
             var type = _mapper.Map<ProductBrandAndTypeCreationDto, ProductType>(creationDto);
@@ -56,6 +58,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpDelete("{id:int}")]
         [DisableRateLimiting]
+        [AuthorizePermission(Modules.Roles, CRUD.Delete)]
         public async Task<IActionResult> Delete(int id)
         {
             var type = await _unitOfWork.Repository<ProductType>().GetByIdAsync(id);

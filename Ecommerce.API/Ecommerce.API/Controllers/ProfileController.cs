@@ -10,6 +10,7 @@ using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
 using Ecommerce.Core.Spec;
+using Ecommerce.Infrastructure.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
@@ -167,6 +168,7 @@ namespace Ecommerce.API.Controllers
         }
         
         [HttpPost("lock/{id}")]
+        [AuthorizePermission(Modules.Roles, CRUD.Create)]
         public async Task<ActionResult<ProfileResponseDto>> LockUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -188,6 +190,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost("unlock/{id}")]
+        [AuthorizePermission(Modules.Roles, CRUD.Create)]
         public async Task<ActionResult<ProfileResponseDto>> UnlockUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);

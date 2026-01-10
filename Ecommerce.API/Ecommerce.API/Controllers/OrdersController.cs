@@ -9,6 +9,7 @@ using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
 using Ecommerce.Core.Spec;
+using Ecommerce.Infrastructure.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -36,6 +37,7 @@ namespace Ecommerce.API.Controllers
         [HttpGet("getall")]
         [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
+        [AuthorizePermission(Modules.Roles, CRUD.Read)]
         public async Task<ActionResult<Pagination<AllOrdersDto>>> GetAll([FromQuery] OrdersSpecParams specParams)
         {
             var spec = new OrdersWithUserSpecification(specParams);
@@ -59,6 +61,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPut("status/{id}")]
         [Authorize(Roles = "Admin,SuperAdmin")]
+        [AuthorizePermission(Modules.Roles, CRUD.Update)]
         public async Task<ActionResult<OrderResponseDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
         {
             var order = await _unitOfWork
@@ -77,6 +80,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [AuthorizePermission(Modules.Roles, CRUD.Create)]
         public async Task<ActionResult<OrderResponseDto>> CreateOrder(OrderDto dto)
         {
             var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -97,6 +101,7 @@ namespace Ecommerce.API.Controllers
         [HttpGet("details/{id}")]
         [Authorize(Roles = "Admin,SuperAdmin")]
         [DisableRateLimiting]
+        [AuthorizePermission(Modules.Roles, CRUD.Read)]
         public async Task<ActionResult<OrderResponseDto>> GetOrderDetailsById([FromRoute] int id)
         {
             var spec = new OrdersWithUserSpecification(id);
@@ -111,6 +116,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [AuthorizePermission(Modules.Roles, CRUD.Read)]
         public async Task<ActionResult<OrderResponseDto>> GetOrderById([FromRoute] int id)
         {
             var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -123,6 +129,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet]
+        [AuthorizePermission(Modules.Roles, CRUD.Read)]
         public async Task<ActionResult<IReadOnlyList<OrderResponseDto>>> GetOrders()
         {
             var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();

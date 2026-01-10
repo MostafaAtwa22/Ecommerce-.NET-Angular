@@ -20,7 +20,7 @@ export class DeliveryMethodService {
     return this.http.get<IDeliveryMethod>(`${this.baseUrl}/${id}`);
   }
 
-  cearteDeliveryMethod(deliveryMethod: IDeliveryMethod): Observable<IDeliveryMethod> {
+  createDeliveryMethod(deliveryMethod: IDeliveryMethod): Observable<IDeliveryMethod> {
     return this.http.post<IDeliveryMethod>(`${this.baseUrl}`, deliveryMethod);
   }
 

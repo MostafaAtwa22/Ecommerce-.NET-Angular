@@ -53,6 +53,10 @@ export const routes: Routes = [
         import('./dashboard/dashboard-orders.component/dashboard-orders.component').then(m =>m.DashboardOrdersComponent ),
       },
       {
+        path: 'delivery', loadComponent: () =>
+        import('./dashboard/dashboard-delivery-method.component/dashboard-delivery-method.component').then(m =>m.DashboardDeliveryMethodComponent ),
+      },
+      {
         path: 'users', loadComponent: () =>
         import('./dashboard/dashboard-users.component/dashboard-users.component').then(m =>m.DashboardUsersComponent ),
         children: [
