@@ -12,6 +12,7 @@ namespace Ecommerce.Core.Entities.Identity
         public string? ProfilePictureUrl { get; set; }
         public Address? Address { get; set; } = new();
         public ICollection<ProductReview> ProductReviews { get; set; } = [];
-        public ICollection<Order> Orders { get; set; } = [];
+        public ICollection<Order> Orders { get; set; } = []; 
+        public ICollection<RefreshToken>? RefreshTokens { get; set; } = []; 
     }
 }

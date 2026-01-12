@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
@@ -16,15 +17,18 @@ namespace Ecommerce.Infrastructure.Services
         private readonly SymmetricSecurityKey _key;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUnitOfWork _unitOfWork;
 
         public TokenService(IConfiguration config, 
         UserManager<ApplicationUser> userManager, 
-        RoleManager<IdentityRole> roleManager)
+        RoleManager<IdentityRole> roleManager,
+        IUnitOfWork unitOfWork)
         {
             _config = config;
             _userManager = userManager;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
             _roleManager = roleManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<string> CreateToken(ApplicationUser user)
@@ -87,8 +91,14 @@ namespace Ecommerce.Infrastructure.Services
             // Create token
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = tokenHandler.WriteToken(token);
 
-            return tokenHandler.WriteToken(token);
+            return jwtToken;
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
         }
     }
 }
