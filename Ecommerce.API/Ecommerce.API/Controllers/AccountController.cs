@@ -1,4 +1,6 @@
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using AutoMapper;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
@@ -6,10 +8,12 @@ using Ecommerce.API.Errors;
 using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
+using Ecommerce.Infrastructure.Services;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Controllers
 {
@@ -44,7 +48,7 @@ namespace Ecommerce.API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
-                return Unauthorized(new ApiResponse(401));
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
 
             var lockMessage = GetLockMessage(user);
             if (!string.IsNullOrEmpty(lockMessage))
@@ -172,6 +176,115 @@ namespace Ecommerce.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("refresh-token")]
+        public async Task<ActionResult<UserDto>> GetRefreshToken()
+        {
+            //  Read refresh token from cookie
+            var rawToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(rawToken))
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Refresh token missing"));
+
+            //  Hash token
+            var tokenHash = TokenService.HashToken(rawToken);
+
+            //  Find user with this refresh token   
+            var user = await _userManager.Users
+                .Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u =>
+                    u.RefreshTokens!.Any(t => t.TokenHash == tokenHash));
+
+            if (user == null)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Invalid refresh token"));
+
+            //  Get stored refresh token
+            var storedToken = user.RefreshTokens!
+                .Single(t => t.TokenHash == tokenHash);
+
+            if (!storedToken.IsActive)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Refresh token expired or revoked"));
+
+            //  ROTATE refresh token
+            storedToken.RevokedOn = DateTime.UtcNow;
+
+            var (newRawToken, newRefreshToken) =
+                _tokenService.GenerateRefreshToken();
+
+            storedToken.ReplacedByTokenHash = newRefreshToken.TokenHash;
+            user.RefreshTokens!.Add(newRefreshToken);
+
+            await _userManager.UpdateAsync(user);
+
+            // Set new refresh token cookie
+            _tokenService.SetRefreshTokenInCookie(
+                newRawToken,
+                newRefreshToken.ExpiresOn);
+
+            // Return new access token
+            return await CreateUserResponseAsync(user);
+        }
+
+        [HttpPost("revoke-token")]
+        public async Task<ActionResult<string>> RevokeToken([FromBody] RevokeTokenDto dto)
+        {
+            var token = dto.Token ?? Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Token is required"));
+
+            token = WebUtility.UrlDecode(token).Trim();
+
+            var tokenHash = TokenService.HashToken(token);
+
+            // Find user who owns this refresh token
+            var user = await _userManager.Users
+                .Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.RefreshTokens!.Any(t => t.TokenHash == tokenHash));
+
+            if (user == null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Token not found"));
+
+            var refreshToken = user.RefreshTokens!.Single(t => t.TokenHash == tokenHash);
+
+            if (!refreshToken.IsActive)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Token is already revoked or expired"));
+
+            // Revoke the token
+            refreshToken.RevokedOn = DateTime.UtcNow;
+
+            await _userManager.UpdateAsync(user);
+
+            // If the token came from cookie, delete it
+            if (dto.Token == null)
+                Response.Cookies.Delete("refreshToken");
+
+            return Ok("Revoke Success!");
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var rawToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(rawToken))
+                return NoContent();
+
+            var hash = TokenService.HashToken(rawToken);
+
+            var user = await _userManager.Users
+                .Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u =>
+                    u.RefreshTokens!.Any(t => t.TokenHash == hash));
+
+            if (user == null)
+                return NoContent();
+
+            var token = user.RefreshTokens!.Single(t => t.TokenHash == hash);
+            token.RevokedOn = DateTime.UtcNow;
+
+            await _userManager.UpdateAsync(user);
+
+            Response.Cookies.Delete("refreshToken");
+            return NoContent();
+        }
+        
         [HttpGet("emailexists/{email}")]
         [EnableRateLimiting("customer-browsing")]
         public async Task<bool> CheckEmailExistsAsync(string email)
@@ -265,6 +378,29 @@ namespace Ecommerce.API.Controllers
         {
             var response = _mapper.Map<UserDto>(user);
             response.Token = await _tokenService.CreateToken(user);
+
+            // Ensure RefreshTokens list exists
+            user.RefreshTokens ??= new List<RefreshToken>();
+
+            // Remove expired or revoked tokens
+            foreach (var token in user.RefreshTokens.Where(t => !t.IsActive).ToList())
+                user.RefreshTokens.Remove(token);
+
+            // Get active refresh token or generate a new one
+            var activeToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
+            if (activeToken is null)
+            {
+                var (rawToken, newRefreshToken) = _tokenService.GenerateRefreshToken();
+                user.RefreshTokens.Add(newRefreshToken);
+                await _userManager.UpdateAsync(user);
+
+                _tokenService.SetRefreshTokenInCookie(rawToken, newRefreshToken.ExpiresOn);
+                activeToken = newRefreshToken;
+            }
+
+            // Set refresh token expiration in DTO (for client info only)
+            response.RefreshTokenExpiration = activeToken.ExpiresOn;
+
             return response;
         }
 
@@ -278,7 +414,7 @@ namespace Ecommerce.API.Controllers
 
             if (!User.Identity?.IsAuthenticated ?? true)
                 return new UnauthorizedObjectResult(
-                    new ApiResponse(401,
+                    new ApiResponse(StatusCodes.Status401Unauthorized,
                         "You must be logged in as SuperAdmin to assign Admin or SuperAdmin roles."));
 
             if (!User.IsInRole(Role.SuperAdmin.ToString()))

@@ -19,7 +19,7 @@ export class DashboardComponent {
 
   isSuperAdmin(): boolean {
     const user = this.accountService.user();
-    return user?.roles?.some(role => role.toLowerCase() === 'superadmin') || false;
+    return user?.roles?.some(role => role.toLowerCase() === 'superadmin' || role.toLowerCase() === 'admin' ) || false;
   }
 
   logout() {

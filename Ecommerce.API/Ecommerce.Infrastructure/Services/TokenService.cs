@@ -2,9 +2,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Azure;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Constants;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -18,17 +20,21 @@ namespace Ecommerce.Infrastructure.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
 
         public TokenService(IConfiguration config, 
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IHttpContextAccessor httpContextAccessor)
         {
             _config = config;
             _userManager = userManager;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
             _roleManager = roleManager;
             _unitOfWork = unitOfWork;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<string> CreateToken(ApplicationUser user)
@@ -96,9 +102,44 @@ namespace Ecommerce.Infrastructure.Services
             return jwtToken;
         }
 
-        public string GenerateRefreshToken()
+        public (string RawToken, RefreshToken RefreshToken) GenerateRefreshToken()
         {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            var bytes = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(bytes);
+
+            var rawToken = Convert.ToBase64String(bytes);
+
+            return (rawToken, new RefreshToken
+            {
+                TokenHash = HashToken(rawToken),
+                CreatedOn = DateTime.UtcNow,
+                ExpiresOn = DateTime.UtcNow.AddDays(30)
+            });
+        }
+
+        public void SetRefreshTokenInCookie(string rawToken, DateTime expires)
+        {
+            var options = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = expires
+            };
+
+            _httpContextAccessor.HttpContext!
+                .Response
+                .Cookies
+                .Append("refreshToken", rawToken, options);
+        }
+
+        public static string HashToken(string token)
+        {
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(token);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
         }
     }
 }

@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore;
 namespace Ecommerce.Core.Entities.Identity
 {
     [Owned]
-    public class RefreshToken 
+    public class RefreshToken
     {
-        public string Token { get; set; } = string.Empty;
+        public string TokenHash { get; set; } = string.Empty;
+
         public DateTime CreatedOn { get; set; }
-        public DateTime? RevokedOn { get; set; }
         public DateTime ExpiresOn { get; set; }
+        public DateTime? RevokedOn { get; set; }
+        public string? ReplacedByTokenHash { get; set; }
+
         public bool IsExpired => DateTime.UtcNow >= ExpiresOn;
-        public bool IsActive => RevokedOn is null && !IsExpired;
+        public bool IsActive => RevokedOn == null && !IsExpired;
     }
 }

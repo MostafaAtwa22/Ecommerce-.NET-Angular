@@ -18,10 +18,11 @@ namespace Ecommerce.Infrastructure.Migrations
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TokenHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RevokedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpiresOn = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ReplacedByTokenHash = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -557,10 +557,13 @@ namespace Ecommerce.Infrastructure.Migrations
                             b1.Property<DateTime>("ExpiresOn")
                                 .HasColumnType("datetime2");
 
+                            b1.Property<string>("ReplacedByTokenHash")
+                                .HasColumnType("nvarchar(max)");
+
                             b1.Property<DateTime?>("RevokedOn")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<string>("Token")
+                            b1.Property<string>("TokenHash")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 

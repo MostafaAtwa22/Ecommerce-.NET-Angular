@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260112124233_RefreshTokenTbl")]
+    [Migration("20260113151235_RefreshTokenTbl")]
     partial class RefreshTokenTbl
     {
         /// <inheritdoc />
@@ -560,10 +560,13 @@ namespace Ecommerce.Infrastructure.Migrations
                             b1.Property<DateTime>("ExpiresOn")
                                 .HasColumnType("datetime2");
 
+                            b1.Property<string>("ReplacedByTokenHash")
+                                .HasColumnType("nvarchar(max)");
+
                             b1.Property<DateTime?>("RevokedOn")
                                 .HasColumnType("datetime2");
 
-                            b1.Property<string>("Token")
+                            b1.Property<string>("TokenHash")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
