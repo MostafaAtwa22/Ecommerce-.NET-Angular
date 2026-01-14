@@ -102,20 +102,18 @@ namespace Ecommerce.Infrastructure.Services
             return jwtToken;
         }
 
-        public (string RawToken, RefreshToken RefreshToken) GenerateRefreshToken()
+        public RefreshToken GenerateRefreshToken()
         {
             var bytes = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(bytes);
 
-            var rawToken = Convert.ToBase64String(bytes);
-
-            return (rawToken, new RefreshToken
+            return new RefreshToken
             {
-                TokenHash = HashToken(rawToken),
+                Token = Convert.ToBase64String(bytes),
                 CreatedOn = DateTime.UtcNow,
                 ExpiresOn = DateTime.UtcNow.AddDays(30)
-            });
+            };
         }
 
         public void SetRefreshTokenInCookie(string rawToken, DateTime expires)
@@ -124,22 +122,14 @@ namespace Ecommerce.Infrastructure.Services
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = expires
+                SameSite = SameSiteMode.None,
+                Expires = expires.ToLocalTime()
             };
 
             _httpContextAccessor.HttpContext!
                 .Response
                 .Cookies
                 .Append("refreshToken", rawToken, options);
-        }
-
-        public static string HashToken(string token)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = Encoding.UTF8.GetBytes(token);
-            var hash = sha256.ComputeHash(bytes);
-            return Convert.ToBase64String(hash);
         }
     }
 }

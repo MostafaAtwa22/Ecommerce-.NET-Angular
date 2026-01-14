@@ -177,106 +177,89 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("refresh-token")]
-        public async Task<ActionResult<UserDto>> GetRefreshToken()
+        public async Task<ActionResult<UserDto>> RefreshToken()
         {
-            //  Read refresh token from cookie
-            var rawToken = Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(rawToken))
-                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Refresh token missing"));
+            var token = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(token))
+                return Unauthorized(new ApiResponse(401, "Refresh token missing"));
 
-            //  Hash token
-            var tokenHash = TokenService.HashToken(rawToken);
-
-            //  Find user with this refresh token   
             var user = await _userManager.Users
                 .Include(u => u.RefreshTokens)
-                .FirstOrDefaultAsync(u =>
-                    u.RefreshTokens!.Any(t => t.TokenHash == tokenHash));
+                .SingleOrDefaultAsync(u => u.RefreshTokens!.Any(t => t.Token == token));
 
             if (user == null)
-                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Invalid refresh token"));
+                return Unauthorized(new ApiResponse(401, "Invalid refresh token"));
 
-            //  Get stored refresh token
-            var storedToken = user.RefreshTokens!
-                .Single(t => t.TokenHash == tokenHash);
+            var storedToken = user.RefreshTokens!.Single(t => t.Token == token);
 
             if (!storedToken.IsActive)
-                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "Refresh token expired or revoked"));
+                return Unauthorized(new ApiResponse(401, "Refresh token expired"));
 
-            //  ROTATE refresh token
+            // Rotate refresh token
             storedToken.RevokedOn = DateTime.UtcNow;
 
-            var (newRawToken, newRefreshToken) =
-                _tokenService.GenerateRefreshToken();
-
-            storedToken.ReplacedByTokenHash = newRefreshToken.TokenHash;
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
             user.RefreshTokens!.Add(newRefreshToken);
 
             await _userManager.UpdateAsync(user);
 
-            // Set new refresh token cookie
             _tokenService.SetRefreshTokenInCookie(
-                newRawToken,
+                newRefreshToken.Token,
                 newRefreshToken.ExpiresOn);
 
-            // Return new access token
-            return await CreateUserResponseAsync(user);
+            var response = _mapper.Map<UserDto>(user);
+            response.Token = await _tokenService.CreateToken(user);
+            response.RefreshTokenExpiration = newRefreshToken.ExpiresOn;
+
+            return Ok(response);
         }
 
         [HttpPost("revoke-token")]
-        public async Task<ActionResult<string>> RevokeToken([FromBody] RevokeTokenDto dto)
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto dto)
         {
             var token = dto.Token ?? Request.Cookies["refreshToken"];
+
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Token is required"));
 
-            token = WebUtility.UrlDecode(token).Trim();
-
-            var tokenHash = TokenService.HashToken(token);
-
-            // Find user who owns this refresh token
             var user = await _userManager.Users
                 .Include(u => u.RefreshTokens)
-                .FirstOrDefaultAsync(u => u.RefreshTokens!.Any(t => t.TokenHash == tokenHash));
+                .FirstOrDefaultAsync(u =>
+                    u.RefreshTokens!.Any(t => t.Token == token));
 
-            if (user == null)
-                return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Token not found"));
+            if (user is null)
+                return Ok("Token revoked");
 
-            var refreshToken = user.RefreshTokens!.Single(t => t.TokenHash == tokenHash);
+            var refreshToken = user.RefreshTokens!.Single(t => t.Token == token);
 
-            if (!refreshToken.IsActive)
-                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Token is already revoked or expired"));
+            if (refreshToken.IsActive)
+            {
+                refreshToken.RevokedOn = DateTime.UtcNow;
+                await _userManager.UpdateAsync(user);
+            }
 
-            // Revoke the token
-            refreshToken.RevokedOn = DateTime.UtcNow;
-
-            await _userManager.UpdateAsync(user);
-
-            // If the token came from cookie, delete it
-            if (dto.Token == null)
+            if (dto.Token is null)
                 Response.Cookies.Delete("refreshToken");
 
-            return Ok("Revoke Success!");
+            return Ok("Token revoked");
         }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var rawToken = Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(rawToken))
+            var refreshToken = Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(refreshToken))
                 return NoContent();
-
-            var hash = TokenService.HashToken(rawToken);
 
             var user = await _userManager.Users
                 .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u =>
-                    u.RefreshTokens!.Any(t => t.TokenHash == hash));
+                    u.RefreshTokens!.Any(t => t.Token == refreshToken));
 
             if (user == null)
                 return NoContent();
 
-            var token = user.RefreshTokens!.Single(t => t.TokenHash == hash);
+            var token = user.RefreshTokens!.Single(t => t.Token == refreshToken);
             token.RevokedOn = DateTime.UtcNow;
 
             await _userManager.UpdateAsync(user);
@@ -379,27 +362,28 @@ namespace Ecommerce.API.Controllers
             var response = _mapper.Map<UserDto>(user);
             response.Token = await _tokenService.CreateToken(user);
 
-            // Ensure RefreshTokens list exists
             user.RefreshTokens ??= new List<RefreshToken>();
 
-            // Remove expired or revoked tokens
-            foreach (var token in user.RefreshTokens.Where(t => !t.IsActive).ToList())
+            // Remove inactive tokens
+            var inactiveTokens = user.RefreshTokens
+                .Where(t => !t.IsActive)
+                .ToList();
+
+            foreach (var token in inactiveTokens)
                 user.RefreshTokens.Remove(token);
 
-            // Get active refresh token or generate a new one
-            var activeToken = user.RefreshTokens.FirstOrDefault(t => t.IsActive);
-            if (activeToken is null)
-            {
-                var (rawToken, newRefreshToken) = _tokenService.GenerateRefreshToken();
-                user.RefreshTokens.Add(newRefreshToken);
-                await _userManager.UpdateAsync(user);
+            // Create new refresh token
+            var refreshToken = _tokenService.GenerateRefreshToken();
+            user.RefreshTokens.Add(refreshToken);
 
-                _tokenService.SetRefreshTokenInCookie(rawToken, newRefreshToken.ExpiresOn);
-                activeToken = newRefreshToken;
-            }
+            await _userManager.UpdateAsync(user);
 
-            // Set refresh token expiration in DTO (for client info only)
-            response.RefreshTokenExpiration = activeToken.ExpiresOn;
+            _tokenService.SetRefreshTokenInCookie(
+                refreshToken.Token,
+                refreshToken.ExpiresOn);
+
+            // NEVER expose refresh token
+            response.RefreshTokenExpiration = refreshToken.ExpiresOn;
 
             return response;
         }

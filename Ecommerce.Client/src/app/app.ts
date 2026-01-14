@@ -9,7 +9,6 @@ import { BusyService } from './shared/services/busy-service';
 import { SpinnerComponent } from './shared/components/spinner-component/spinner-component';
 import { BasketService } from './shared/services/basket-service';
 import { AccountService } from './account/account-service';
-import { isTokenExpired } from './shared/utils/token-utils';
 import { WishlistService } from './wishlist/wishlist-service';
 
 @Component({
@@ -39,15 +38,8 @@ export class App implements OnInit{
     });
   }
   ngOnInit(): void {
-    // Check token expiration on app initialization
-    const token = localStorage.getItem('token');
-    if (token && isTokenExpired(token)) {
-      console.warn('Token expired on app initialization, logging out...');
-      this.accountService.logout();
-    } else {
-      // Load current user if token is valid
-      this.accountService.loadCurrentUser();
-    }
+    // Load current user - this handles token refresh if needed
+    this.accountService.loadCurrentUser();
 
     const basketId = localStorage.getItem('basket_id');
     if (basketId) {

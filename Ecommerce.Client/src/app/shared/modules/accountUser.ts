@@ -7,6 +7,7 @@ export interface IAccountUser {
   profilePicture: string | null
   roles: string[]
   token: string
+  refreshTokenExpiration: string
 }
 
 export interface IForgetPassword {

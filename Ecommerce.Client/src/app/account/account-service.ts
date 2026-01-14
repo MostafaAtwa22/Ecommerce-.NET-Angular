@@ -22,14 +22,18 @@ export class AccountService {
 
   login(loginData: ILogin) {
     return this.http
-      .post<IAccountUser>(`${this.baseUrl}/login`, loginData)
+      .post<IAccountUser>(`${this.baseUrl}/login`, loginData, {
+        withCredentials: true,
+      })
       .pipe(tap((user) => this.setUser(user)));
   }
 
   // Add Google login method
   googleLogin(idToken: string) {
     return this.http
-      .post<IAccountUser>(`${this.baseUrl}/googlelogin`, { idToken })
+      .post<IAccountUser>(`${this.baseUrl}/googlelogin`, { idToken }, {
+        withCredentials: true,
+      })
       .pipe(tap((user) => this.setUser(user)));
   }
 
@@ -37,13 +41,36 @@ export class AccountService {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
-    return this.http.post<IAccountUser>(`${this.baseUrl}/register`, registerData, { headers }).pipe(
+    return this.http
+      .post<IAccountUser>(`${this.baseUrl}/register`, registerData, {
+        headers,
+        withCredentials: true,
+      })
+      .pipe(
       tap((user) => {
         const existingToken = localStorage.getItem('token');
         if (!existingToken) {
           this.setUser(user);
         }
       })
+    );
+  }
+
+  refreshToken() {
+    return this.http
+      .get<IAccountUser>(`${this.baseUrl}/refresh-token`, {
+        withCredentials: true,
+      })
+      .pipe(tap(user => this.setUser(user)));
+  }
+
+  revokeRefreshToken(token?: string) {
+    return this.http.post(
+      `${this.baseUrl}/revoke-token`,
+      token ? { token } : {},
+      {
+        withCredentials: true,
+      }
     );
   }
 
@@ -74,6 +101,18 @@ export class AccountService {
   }
 
   logout() {
+    this.revokeRefreshToken()
+      .subscribe({
+        next: () => {
+          this.clearUserData();
+        },
+        error: () => {
+          this.clearUserData();
+        }
+      });
+  }
+
+  private clearUserData() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     this.userSignal.set(null);
@@ -91,9 +130,19 @@ export class AccountService {
       return;
     }
 
+    // If token is expired, try to refresh it first
     if (isTokenExpired(token)) {
-      console.warn('Token has expired, logging out...');
-      this.logout();
+      console.warn('Token has expired, attempting to refresh...');
+      this.refreshToken().subscribe({
+        next: (user) => {
+          console.log('Token refreshed successfully');
+          // User is already set by the tap in refreshToken()
+        },
+        error: (err) => {
+          console.warn('Failed to refresh token, logging out...', err);
+          this.clearUserData();
+        }
+      });
       return;
     }
 
@@ -118,6 +167,7 @@ export class AccountService {
         email: user.email,
         profilePicture: user.profilePicture,
         roles: user.roles,
+        refreshTokenExpiration: user.refreshTokenExpiration
       })
     );
   }
@@ -130,10 +180,9 @@ export class AccountService {
       return null;
     }
 
+    // Don't clear data here - let loadCurrentUser handle the refresh attempt
     if (isTokenExpired(token)) {
-      console.warn('Token has expired, clearing user data...');
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      console.warn('Token has expired, will attempt refresh...');
       return null;
     }
 
