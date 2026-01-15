@@ -3,11 +3,11 @@ import { HomeComponent } from './home/home-component';
 import { NotFoundComponent } from './core/not-found-component/not-found-component';
 import { BasketComponent } from './basket/basket-component';
 import { authGuard } from './core/guards/auth-guard';
-import { loginGuard } from './core/guards/login-guard';
 import { registerGuard } from './core/guards/register-guard';
 import { OrderDetailsComponent } from './orders/order-details-component/order-details-component';
 import { OrdersComponent } from './orders/orders-component';
 import { WishlistComponent } from './wishlist/wishlist.component';
+import { guestGuard } from './core/guards/guest-guard';
 export const routes: Routes = [
   {path: '', redirectTo:'home', pathMatch:'full'},
   {path: 'home', component: HomeComponent},
@@ -130,20 +130,27 @@ export const routes: Routes = [
       .then(s => s.ForgetPasswordComponent)
   },
   {
+    path: 'email-verification',
+    loadComponent: () =>
+      import('./account/verify-email.component/verify-email.component')
+      .then(s => s.VerifyEmailComponent),
+    canActivate: [guestGuard],
+  },
+  {
     path: 'resetpassword',
     loadComponent: () =>
       import('./account/reset-password.component/reset-password.component')
       .then(s => s.ResetPasswordComponent)
   },
   {
-    path: 'checkinbox',
+    path: 'check-inbox',
     loadComponent: () =>
       import('./account/check-inbox.component/check-inbox.component')
       .then(s => s.CheckInboxComponent)
   },
   {
     path: 'login',
-    canActivate: [loginGuard],
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./account/login-component/login-component')
       .then(s => s.LoginComponent)

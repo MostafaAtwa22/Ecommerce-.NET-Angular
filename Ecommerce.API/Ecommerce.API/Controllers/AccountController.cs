@@ -6,6 +6,7 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.Core.Constants;
+using Ecommerce.Core.Entities.Emails;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Services;
@@ -49,19 +50,23 @@ namespace Ecommerce.API.Controllers
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
                 return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
-
+            
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
+                    "Confierm your email first"));
+        
             var lockMessage = GetLockMessage(user);
             if (!string.IsNullOrEmpty(lockMessage))
-                return BadRequest(new ApiResponse(400, lockMessage));
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, lockMessage));
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: true);
 
             if (result.IsLockedOut)
-                return BadRequest(new ApiResponse(400,
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                     "Your account has been locked due to multiple failed attempts. Try again later."));
 
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400, "Email or password is wrong. Try again!"));
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Email or password is wrong. Try again!"));
 
             var response = await CreateUserResponseAsync(user);
             return Ok(response);
@@ -85,7 +90,7 @@ namespace Ecommerce.API.Controllers
                 var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken, settings);
 
                 if (payload is null)
-                    return BadRequest(new ApiResponse(400, "Invalid Google token"));
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Invalid Google token"));
 
                 // Check if user exists
                 var user = await _userManager.FindByEmailAsync(payload.Email);
@@ -106,14 +111,14 @@ namespace Ecommerce.API.Controllers
                     var createResult = await _userManager.CreateAsync(user);
 
                     if (!createResult.Succeeded)
-                        return BadRequest(new ApiResponse(400,
+                        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                             BuildErrors(createResult.Errors)));
 
                     // Add to Customer role by default
                     var roleResult = await _userManager.AddToRoleAsync(user, Role.Customer.ToString());
 
                     if (!roleResult.Succeeded)
-                        return BadRequest(new ApiResponse(400,
+                        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                             BuildErrors(roleResult.Errors)));
                 }
                 else
@@ -129,7 +134,7 @@ namespace Ecommerce.API.Controllers
 
                 // Check if account is locked
                 if (await _userManager.IsLockedOutAsync(user))
-                    return BadRequest(new ApiResponse(400,
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                         "Your account is locked. Please try again later."));
 
                 var response = await CreateUserResponseAsync(user);
@@ -137,26 +142,26 @@ namespace Ecommerce.API.Controllers
             }
             catch (InvalidJwtException)
             {
-                return BadRequest(new ApiResponse(400, "Invalid Google token"));
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Invalid Google token"));
             }
             catch
             {
-                return BadRequest(new ApiResponse(400,
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                     "Something went wrong during Google authentication. Please try again."));
             }
         }
 
         [HttpPost("register")]
         [EnableRateLimiting("customer-register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto dto)
+        public async Task<ActionResult<string>> Register(RegisterDto dto)
         {
-            if (await CheckEmailExistsAsync(dto.Email) == true)
+            if (await CheckEmailExistsAsync(dto.Email))
                 return BadRequest(new ApiResponse(400, "Email already in use"));
 
-            if (!Enum.TryParse(dto.RoleName, true, out Role parsedRole))
-                return BadRequest(new ApiResponse(400, "Invalid role specified."));
+            if (!Enum.TryParse(dto.RoleName, true, out Role role))
+                return BadRequest(new ApiResponse(400, "Invalid role specified"));
 
-            var roleAuthResult = ValidateRoleAuthorization(parsedRole);
+            var roleAuthResult = ValidateRoleAuthorization(role);
             if (roleAuthResult != null)
                 return roleAuthResult;
 
@@ -164,16 +169,59 @@ namespace Ecommerce.API.Controllers
 
             var createResult = await _userManager.CreateAsync(user, dto.Password);
             if (!createResult.Succeeded)
-                return BadRequest(new ApiResponse(400,
-                    BuildErrors(createResult.Errors)));
+                return BadRequest(new ApiResponse(400, BuildErrors(createResult.Errors)));
 
-            var roleResult = await _userManager.AddToRoleAsync(user, parsedRole.ToString());
+            var roleResult = await _userManager.AddToRoleAsync(user, role.ToString());
             if (!roleResult.Succeeded)
-                return BadRequest(new ApiResponse(400,
-                    BuildErrors(roleResult.Errors)));
+                return BadRequest(new ApiResponse(400, BuildErrors(roleResult.Errors)));
 
+            var sent = await SendEmailVerificationAsync(user);
+            if (!sent)
+                return StatusCode(500, new ApiResponse(500, "Failed to send verification email"));
+
+            return Ok("Please confirm your email. Check your inbox.");
+        }
+
+
+        [HttpPost("email-verification")]
+        [EnableRateLimiting("customer-register")]
+        public async Task<ActionResult<UserDto>> EmailVerfication([FromBody] EmailVerficationDto dto)
+        {
+            if (dto.Email is null || dto.Code is null)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+            
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+            
+            var isVerified = await _userManager.ConfirmEmailAsync(user, dto.Code);
+
+            if (!isVerified.Succeeded)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+            
             var response = await CreateUserResponseAsync(user);
             return Ok(response);
+        }
+
+        [HttpPost("resend-verification")]
+        [EnableRateLimiting("customer-register")]
+        public async Task<IActionResult> ResendVerificationEmail(ResendVerificationEmailDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new ApiResponse(400, "Email is required"));
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return NotFound(new ApiResponse(404, "User not found"));
+
+            if (user.EmailConfirmed)
+                return BadRequest(new ApiResponse(400, "Email is already verified"));
+
+            var sent = await SendEmailVerificationAsync(user);
+            if (!sent)
+                return StatusCode(500, new ApiResponse(500, "Failed to send verification email"));
+
+            return Ok("Verification email resent successfully");
         }
 
         [HttpGet("refresh-token")]
@@ -284,7 +332,7 @@ namespace Ecommerce.API.Controllers
         {
             var (response, error) = await GenerateAndSendResetPasswordEmailAsync(dto.Email);
             if (error != null)
-                return BadRequest(new ApiResponse(400, error));
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, error));
 
             return Ok(response);
         }
@@ -307,13 +355,13 @@ namespace Ecommerce.API.Controllers
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
-                return BadRequest(new ApiResponse(400,
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                     "No user with this email exists"));
 
             var result = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
 
             if (!result.Succeeded)
-                return BadRequest(new ApiResponse(400,
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
                     BuildErrors(result.Errors)));
 
             return Ok("Reset password done successfully!");
@@ -347,7 +395,15 @@ namespace Ecommerce.API.Controllers
 
             var resetLink = $"{_config["UiUrl"]}/resetpassword?email={user.Email}&token={WebUtility.UrlEncode(token)}";
 
-            var emailSent = await _emailService.SendResetPasswordEmailAsync(email, resetLink);
+            var body = EmailTemplates.ResetPassword(resetLink);
+
+            var emailSent = await _emailService.SendAsync(new EmailMessage
+            {
+                To = user.Email!,
+                Subject = "Reset Your Password",
+                HtmlBody = body
+            });
+
             if (!emailSent)
                 return (null, "Failed to send reset password email");
 
@@ -391,7 +447,7 @@ namespace Ecommerce.API.Controllers
         private static string BuildErrors(IEnumerable<IdentityError> errors)
             => string.Join(", ", errors.Select(e => e.Description));
 
-        private ActionResult<UserDto>? ValidateRoleAuthorization(Role role)
+        private ActionResult<string>? ValidateRoleAuthorization(Role role)
         {
             if (role == Role.Customer)
                 return null;
@@ -405,6 +461,23 @@ namespace Ecommerce.API.Controllers
                 return new ForbidResult();
 
             return null;
+        }
+
+        private async Task<bool> SendEmailVerificationAsync(ApplicationUser user)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var confirmLink =
+                $"{_config["UiUrl"]}/email-verification?email={user.Email}";
+
+            var emailMessage = new EmailMessage
+            {
+                To = user.Email!,
+                Subject = "Confirm your email",
+                HtmlBody = EmailTemplates.ConfirmEmail(confirmLink, code)
+            };
+
+            return await _emailService.SendAsync(emailMessage);
         }
     }
 }

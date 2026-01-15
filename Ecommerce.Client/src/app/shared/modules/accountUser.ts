@@ -10,6 +10,12 @@ export interface IAccountUser {
   refreshTokenExpiration: string
 }
 
+export interface IEmailVerification {
+  email: string;
+  code: string;
+}
+
+
 export interface IForgetPassword {
   email: string;
 }

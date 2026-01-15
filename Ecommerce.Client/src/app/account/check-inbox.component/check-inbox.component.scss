@@ -391,3 +391,32 @@
 .btn-resend:not(:disabled) {
   animation: pulse 2s infinite;
 }
+.btn-gmail-open {
+  background: linear-gradient(135deg, #ea4335 0%, #c5221f 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  text-align: center;
+
+  &:hover {
+    background: linear-gradient(135deg, #c5221f 0%, #a50e0e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(234, 67, 53, 0.3);
+    text-decoration: none;
+    color: white;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

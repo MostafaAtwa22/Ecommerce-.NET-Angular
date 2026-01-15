@@ -21,15 +21,9 @@ import { AnimatedOverlayComponent } from '../animated-overlay-component/animated
   templateUrl: './register-component.html',
   styleUrls: ['./register-component.scss'],
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    CommonModule,
-    RouterLink,
-    AnimatedOverlayComponent
-  ]
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, AnimatedOverlayComponent],
 })
 export class RegisterComponent {
-
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -37,7 +31,6 @@ export class RegisterComponent {
   showPassword = false;
   isLoading = false;
 
-  // 🔐 Used to show role dropdown only for SuperAdmin
   get isSuperAdmin(): boolean {
     const user = this.accountService.user();
     return !!user && user.roles?.includes('SuperAdmin');
@@ -49,46 +42,60 @@ export class RegisterComponent {
         '',
         [
           Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+          Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
         ],
-        [this.validateEmailNotTaken()]
+        [this.validateEmailNotTaken()],
       ],
       userName: [
         '',
         [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)],
-        [this.validateUsernameNotTaken()]
+        [this.validateUsernameNotTaken()],
       ],
       firstName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       lastName: ['', [Validators.required, Validators.pattern(/^[A-Za-z]+$/)]],
       gender: ['', Validators.required],
-      phoneNumber: [
-        '',
-        [Validators.required, Validators.pattern(/^[0-9+\-() ]+$/)]
-      ],
+      phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9+\-() ]+$/)]],
       password: [
         '',
         [
           Validators.required,
           Validators.minLength(6),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{6,}$/)
-        ]
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W).{6,}$/),
+        ],
       ],
       confirmPassword: ['', Validators.required],
-      roleName: ['Customer', Validators.required]
+      roleName: ['Customer', Validators.required],
     },
     { validators: this.passwordMatchValidator }
   );
 
-  // Getters
-  get email() { return this.registerForm.get('email'); }
-  get userName() { return this.registerForm.get('userName'); }
-  get firstName() { return this.registerForm.get('firstName'); }
-  get lastName() { return this.registerForm.get('lastName'); }
-  get gender() { return this.registerForm.get('gender'); }
-  get phoneNumber() { return this.registerForm.get('phoneNumber'); }
-  get password() { return this.registerForm.get('password'); }
-  get confirmPassword() { return this.registerForm.get('confirmPassword'); }
-  get roleName() { return this.registerForm.get('roleName'); }
+  get email() {
+    return this.registerForm.get('email');
+  }
+  get userName() {
+    return this.registerForm.get('userName');
+  }
+  get firstName() {
+    return this.registerForm.get('firstName');
+  }
+  get lastName() {
+    return this.registerForm.get('lastName');
+  }
+  get gender() {
+    return this.registerForm.get('gender');
+  }
+  get phoneNumber() {
+    return this.registerForm.get('phoneNumber');
+  }
+  get password() {
+    return this.registerForm.get('password');
+  }
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+  get roleName() {
+    return this.registerForm.get('roleName');
+  }
 
   // 🔍 Password helpers (for UI)
   passwordIsLength6() {
@@ -107,14 +114,13 @@ export class RegisterComponent {
     return /[\W_]/.test(this.password?.value ?? '');
   }
 
-  // 🔁 Async Validators
   validateEmailNotTaken(): AsyncValidatorFn {
     return (control: AbstractControl) => {
       if (!control.value) return of(null);
       return timer(500).pipe(
         switchMap(() =>
           this.accountService.emailExists(control.value).pipe(
-            map(res => (res ? { emailExists: true } : null)),
+            map((res) => (res ? { emailExists: true } : null)),
             catchError(() => of(null))
           )
         )
@@ -128,7 +134,7 @@ export class RegisterComponent {
       return timer(500).pipe(
         switchMap(() =>
           this.accountService.usernameExists(control.value).pipe(
-            map(res => (res ? { usernameExists: true } : null)),
+            map((res) => (res ? { usernameExists: true } : null)),
             catchError(() => of(null))
           )
         )
@@ -136,7 +142,6 @@ export class RegisterComponent {
     };
   }
 
-  // 🔐 Password match validator
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;
     const confirm = control.get('confirmPassword');
@@ -152,7 +157,6 @@ export class RegisterComponent {
     }
     return null;
   }
-
   onSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -171,34 +175,33 @@ export class RegisterComponent {
       phoneNumber: v.phoneNumber!,
       password: v.password!,
       confirmPassword: v.confirmPassword!,
-      roleName: v.roleName!
+      roleName: v.roleName!,
     };
 
     this.accountService.register(registerData).subscribe({
-      next: () => {
+      next: (response) => {
         this.isLoading = false;
-        this.navigateByRole();
+
+        // Navigate to check-inbox with username and email
+        // Your check-inbox component looks for 'username' parameter to determine flow
+        this.router.navigate(['/check-inbox'], {
+          queryParams: {
+            username: v.userName!,
+            email: v.email!,
+            // Optionally add a flow parameter if you want to be explicit
+            flow: 'verification',
+          },
+          state: {
+            username: v.userName!,
+            email: v.email!,
+          },
+        });
       },
-      error: err => {
+      error: (err) => {
         this.isLoading = false;
         console.error('Registration failed:', err);
-      }
+        // You might want to show a toast notification here
+      },
     });
-  }
-
-  // 🚀 Same role-based navigation as Login
-  private navigateByRole(): void {
-    const user = this.accountService.user();
-
-    if (!user || !user.roles) {
-      this.router.navigateByUrl('/');
-      return;
-    }
-
-    if (user.roles.includes('Admin') || user.roles.includes('SuperAdmin')) {
-      this.router.navigateByUrl('/dashboard');
-    } else {
-      this.router.navigateByUrl('/');
-    }
   }
 }

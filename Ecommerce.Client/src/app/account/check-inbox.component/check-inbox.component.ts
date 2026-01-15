@@ -8,7 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AnimatedOverlayComponent } from '../animated-overlay-component/animated-overlay-component';
 
 @Component({
-  selector: 'app-check-inbox.component',
+  selector: 'app-check-inbox',
   imports: [CommonModule, RouterLink, AnimatedOverlayComponent],
   templateUrl: './check-inbox.component.html',
   styleUrls: ['./check-inbox.component.scss'],
@@ -17,9 +17,12 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private accountService = inject(AccountService);
-  private toastr = inject(ToastrService); // Inject ToastrService
+  private toastr = inject(ToastrService);
 
   email: string = '';
+  username: string = '';
+  verificationCode: string = '';
+  isPasswordReset: boolean = true; 
   isResending: boolean = false;
   resendCooldown: number = 0;
   private cooldownSubscription?: Subscription;
@@ -27,24 +30,38 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       this.email = params['email'] || '';
+      this.username = params['username'] || '';
+      this.verificationCode = params['code'] || '';
 
-      // Show info toast when component loads with email
+      this.isPasswordReset = !this.username && !this.verificationCode;
+
       if (this.email) {
-        this.toastr.info(`Password reset link sent to ${this.email}`, 'Check Your Inbox', {
-          timeOut: 5000,
-          positionClass: 'toast-top-right',
-          progressBar: true,
-        });
+        if (this.isPasswordReset) {
+          this.toastr.info(`Password reset link sent to ${this.email}`, 'Check Your Inbox', {
+            timeOut: 5000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+          });
+        } else {
+          this.toastr.info(`Verification email sent to ${this.email}`, 'Verify Your Email', {
+            timeOut: 5000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+          });
+        }
       }
     });
 
-    // Alternatively, get from state
     const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state?.['email']) {
-      this.email = navigation.extras.state['email'];
+    if (navigation?.extras?.state) {
+      const state = navigation.extras.state;
+      this.email = state['email'] || this.email;
+      this.username = state['username'] || this.username;
+      this.verificationCode = state['code'] || this.verificationCode;
+
+      this.isPasswordReset = !this.username && !this.verificationCode;
     }
 
-    // Start with 30-second cooldown to prevent spam
     this.startCooldown(30);
   }
 
@@ -52,7 +69,13 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
     this.stopCooldown();
   }
 
-  // Resend email functionality
+  // Helper to split verification code into digits for display
+  getCodeDigits(): string[] {
+    if (!this.verificationCode) return [];
+    return this.verificationCode.split('');
+  }
+
+  // Unified resend email functionality
   resendEmail() {
     if (this.resendCooldown > 0 || this.isResending) {
       if (this.resendCooldown > 0) {
@@ -80,33 +103,43 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
     this.isResending = true;
 
     // Show loading toast
-    const loadingToast = this.toastr.info('Resending reset email...', 'Processing', {
-      disableTimeOut: true,
-      positionClass: 'toast-top-center',
-    });
+    const loadingToast = this.toastr.info(
+      this.isPasswordReset
+        ? 'Resending password reset email...'
+        : 'Resending verification email...',
+      'Processing',
+      {
+        disableTimeOut: true,
+        positionClass: 'toast-top-center',
+      }
+    );
 
-    // Debug log
-    console.log('Attempting to resend email to:', this.email);
+    // Call appropriate service method based on flow
+    const resendObservable = this.isPasswordReset
+      ? this.accountService.resendResetEmail(this.email)
+      : this.accountService.resendVerificationEmail(this.email);
 
-    this.accountService.resendResetEmail(this.email).subscribe({
+    resendObservable.subscribe({
       next: (response) => {
         // Clear loading toast
         this.toastr.clear(loadingToast.toastId);
-
         this.isResending = false;
 
-        // Debug log
-        console.log('Resend successful! Response:', response);
-
         // Show success toast
-        this.toastr.success('Password reset email has been resent successfully!', 'Email Resent', {
-          timeOut: 4000,
-          positionClass: 'toast-top-right',
-          progressBar: true,
-          closeButton: true,
-        });
+        this.toastr.success(
+          this.isPasswordReset
+            ? 'Password reset email has been resent successfully!'
+            : 'Verification email has been resent successfully!',
+          'Email Resent',
+          {
+            timeOut: 4000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+            closeButton: true,
+          }
+        );
 
-        // User stays on the same page - just restarts cooldown
+        // Restart cooldown
         this.startCooldown(30);
 
         // Show info about cooldown
@@ -118,106 +151,61 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
       error: (err) => {
         // Clear loading toast
         this.toastr.clear(loadingToast.toastId);
-
         this.isResending = false;
 
-        // Enhanced error logging
-        console.error('=== RESEND ERROR DETAILS ===');
-        console.error('Error object:', err);
-        console.error('Status code:', err?.status);
-        console.error('Status text:', err?.statusText);
-        console.error('Error message:', err?.error?.message || err?.message);
-        console.error('Full error:', JSON.stringify(err, null, 2));
-        console.error('=== END ERROR DETAILS ===');
-
-        // Get detailed error message
-        const errorMessage = this.getDetailedResendErrorMessage(err);
-
         // Show error toast
+        const errorMessage = this.getResendErrorMessage(err);
         this.toastr.error(errorMessage, 'Resend Failed', {
           timeOut: 6000,
           positionClass: 'toast-top-center',
           closeButton: true,
-          enableHtml: false,
         });
-
-        // If it's a 400 error, show more specific guidance
-        if (err?.status === 400) {
-          this.toastr.warning(
-            'Please check if the email is correct and try again.',
-            'Bad Request',
-            {
-              timeOut: 4000,
-              positionClass: 'toast-bottom-right',
-            }
-          );
-        }
       },
     });
   }
 
-  // Enhanced error message helper
-  private getDetailedResendErrorMessage(err: any): string {
-    if (!err) {
-      return 'An unknown error occurred. Please try again.';
-    }
+  // Error message helper
+  private getResendErrorMessage(err: any): string {
+    if (!err) return 'An unknown error occurred. Please try again.';
 
-    // Check for network errors
-    if (err.status === 0) {
-      return 'Network error. Please check your internet connection.';
-    }
+    if (err.status === 0) return 'Network error. Please check your internet connection.';
 
-    // Check for specific status codes
     switch (err.status) {
       case 400:
-        if (err.error?.message) {
-          return `Bad request: ${err.error.message}`;
-        }
-        return 'Invalid request. Please check your input and try again.';
-
+        return err.error?.message || 'Invalid request. Please check your input.';
       case 404:
-        return 'Email address not found. Please use a different email.';
-
+        return this.isPasswordReset
+          ? 'Email address not found. Please use a different email.'
+          : 'Email address not found or already verified.';
       case 429:
-        return 'Too many resend attempts. Please wait a few minutes before trying again.';
-
+        return 'Too many resend attempts. Please wait a few minutes.';
       case 500:
-        if (err.error?.message) {
-          return `Server error: ${err.error.message}`;
-        }
-        return 'Server error. Please try again later.';
-
+        return err.error?.message || 'Server error. Please try again later.';
       default:
-        // Try to extract message from error object
-        const message = err.error?.message || err.message || err.statusText;
-        return message || 'Failed to resend email. Please try again.';
+        return err.error?.message || err.message || 'Failed to resend email. Please try again.';
     }
   }
 
-  // Also update your existing getResendErrorMessage method if you want to keep it:
-  private getResendErrorMessage(err: any): string {
-    if (err.status === 404) {
-      return 'Email address not found. Please use a different email.';
-    } else if (err.status === 429) {
-      return 'Too many resend attempts. Please wait a few minutes.';
-    } else if (err.status === 500) {
-      return 'Server error. Please try again later.';
-    }
-    return 'Failed to resend email. Please try again.';
-  }
-
+  // Change email (for password reset flow)
   changeEmail() {
-    // Show info toast before navigating
     this.toastr.info('Redirecting to email change...', 'Changing Email', {
       timeOut: 2000,
       positionClass: 'toast-top-center',
     });
-
     this.router.navigate(['/forgotpassword'], {
       state: { email: this.email },
     });
   }
 
+  // Go to verification page (for email verification flow)
+  goToVerificationPage() {
+    this.router.navigate(['/verify-email'], {
+      queryParams: { email: this.email },
+      state: { username: this.username }
+    });
+  }
+
+  // Start cooldown timer
   private startCooldown(seconds: number) {
     this.resendCooldown = seconds;
     this.stopCooldown();
@@ -225,19 +213,10 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
     this.cooldownSubscription = interval(1000).subscribe(() => {
       if (this.resendCooldown > 0) {
         this.resendCooldown--;
-
-        // Optional: Show toast when cooldown reaches certain points
-        if (this.resendCooldown === 10 || this.resendCooldown === 5) {
-          this.toastr.info(`Resend available in ${this.resendCooldown} seconds`, 'Almost Ready', {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-right',
-          });
-        }
       } else {
         this.stopCooldown();
-
         // Notify user that resend is available
-        this.toastr.success('You can now resend the reset email', 'Ready to Resend', {
+        this.toastr.success('You can now resend the email', 'Ready to Resend', {
           timeOut: 3000,
           positionClass: 'toast-bottom-right',
         });
@@ -252,8 +231,8 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Simulate email provider opening
   simulateEmailOpen(provider: string) {
-    // Show info toast when user opens email provider
     this.toastr.info(`Opening ${provider}...`, 'Redirecting', {
       timeOut: 2000,
       positionClass: 'toast-top-center',

@@ -2,7 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Environment } from '../environment';
-import { IAccountUser, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
+import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
 import { tap } from 'rxjs';
@@ -41,20 +41,32 @@ export class AccountService {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
+    return this.http.post(`${this.baseUrl}/register`, registerData, {
+      headers,
+      withCredentials: true,
+      responseType: 'text',
+    });
+  }
+
+  verifyEmail(emailVerification: IEmailVerification) {
     return this.http
-      .post<IAccountUser>(`${this.baseUrl}/register`, registerData, {
-        headers,
-        withCredentials: true,
-      })
+      .post<IAccountUser>(
+        `${this.baseUrl}/email-verification`,
+        emailVerification,
+        { withCredentials: true }
+      )
       .pipe(
-      tap((user) => {
-        const existingToken = localStorage.getItem('token');
-        if (!existingToken) {
-          this.setUser(user);
-        }
-      })
+        tap(user => this.setUser(user))
+      );
+  }
+
+  resendVerificationEmail(email: string) {
+    return this.http.post(
+      `${this.baseUrl}/resend-verification`,
+      { email }
     );
   }
+
 
   refreshToken() {
     return this.http

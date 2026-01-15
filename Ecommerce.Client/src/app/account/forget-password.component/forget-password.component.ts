@@ -95,12 +95,14 @@ export class ForgetPasswordComponent implements OnDestroy {
 
     this.accountService.forgetPassword(data).subscribe({
       next: (response) => {
-        this.resetToken = response?.token || '';
-
-        this.successMessage = 'Password reset email sent! Please check your inbox (and spam folder).';
         this.loading = false;
 
-        this.startAutoRedirect();
+        // Navigate directly to check-inbox page
+        this.router.navigate(['/check-inbox'], {
+          queryParams: {
+            email: this.email?.value
+          }
+        });
       },
       error: (err) => {
         this.errorMessage = this.getErrorMessage(err);

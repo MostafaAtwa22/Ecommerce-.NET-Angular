@@ -1,0 +1,493 @@
+namespace Ecommerce.Infrastructure.Services
+{
+    public static class EmailTemplates
+    {
+        public static string ResetPassword(string resetLink)
+        {
+            return $@"
+                <!DOCTYPE html>
+                <html lang='en'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Reset Your Password</title>
+                    <style>
+                        body {{
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #0c111d;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f7f9fa;
+                        }}
+                        .email-container {{
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: white;
+                            border-radius: 8px;
+                            border: 1px solid #d1d7dc;
+                            overflow: hidden;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        }}
+                        .email-header {{
+                            background-color: #5624d0;
+                            color: white;
+                            padding: 2rem;
+                            text-align: center;
+                        }}
+                        .email-header h1 {{
+                            margin: 0;
+                            font-size: 1.75rem;
+                            font-weight: 600;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.5rem;
+                        }}
+                        .email-header i {{
+                            font-size: 1.5rem;
+                        }}
+                        .email-body {{
+                            padding: 2rem;
+                        }}
+                        .email-body h2 {{
+                            margin: 0 0 1rem 0;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            color: #0c111d;
+                        }}
+                        .email-body p {{
+                            margin: 0 0 1.5rem 0;
+                            font-size: 0.875rem;
+                            color: #6a6f73;
+                        }}
+                        .reset-button {{
+                            display: inline-block;
+                            background-color: #5624d0;
+                            text-decoration: none;
+                            padding: 0.75rem 1.5rem;
+                            border-radius: 4px;
+                            font-weight: 600;
+                            font-size: 0.875rem;
+                            text-align: center;
+                            transition: all 0.2s ease;
+                            border: none;
+                            cursor: pointer;
+                            margin: 1rem 0;
+                            color: white !important;
+                        }}
+                        .reset-button:hover {{
+                            background-color: #401b9c;
+                        }}
+                        .security-notice {{
+                            background-color: rgba(86, 36, 208, 0.05);
+                            border: 1px solid rgba(86, 36, 208, 0.1);
+                            border-radius: 4px;
+                            padding: 1rem;
+                            margin: 1.5rem 0;
+                        }}
+                        .security-notice h3 {{
+                            margin: 0 0 0.5rem 0;
+                            font-size: 0.875rem;
+                            font-weight: 600;
+                            color: #5624d0;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }}
+                        .security-notice ul {{
+                            margin: 0;
+                            padding-left: 1.25rem;
+                        }}
+                        .security-notice li {{
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                            margin-bottom: 0.25rem;
+                        }}
+                        .link-backup {{
+                            background-color: #f7f9fa;
+                            border: 1px solid #d1d7dc;
+                            border-radius: 4px;
+                            padding: 1rem;
+                            margin: 1.5rem 0;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                            word-break: break-all;
+                        }}
+                        .email-footer {{
+                            border-top: 1px solid #d1d7dc;
+                            padding: 1.5rem 2rem;
+                            text-align: center;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                        }}
+                        .email-footer a {{
+                            color: #5624d0;
+                            text-decoration: none;
+                        }}
+                        @media (max-width: 600px) {{
+                            .email-container {{
+                                border-radius: 0;
+                                border: none;
+                            }}
+                            .email-header, .email-body, .email-footer {{
+                                padding: 1.5rem;
+                            }}
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='email-container'>
+                        <div class='email-header'>
+                            <h1>
+                                🔐 Password Reset
+                            </h1>
+                        </div>
+                        
+                        <div class='email-body'>
+                            <h2>Hello,</h2>
+                            
+                            <p>We received a request to reset the password for your account. To proceed with resetting your password, click the button below:</p>
+                            
+                            <div style='text-align: center;'>
+                                <a href='{resetLink}' class='reset-button'>
+                                    Reset My Password
+                                </a>
+                            </div>
+                            
+                            <div class='security-notice'>
+                                <h3>
+                                    <span>🛡️</span> Security Notice
+                                </h3>
+                                <ul>
+                                    <li>This link will expire in <strong>24 hours</strong></li>
+                                    <li>If you didn't request this password reset, please ignore this email</li>
+                                    <li>Never share your password or this link with anyone</li>
+                                </ul>
+                            </div>
+                            
+                            <p>If the button above doesn't work, you can copy and paste the following link into your browser:</p>
+                            
+                            <div class='link-backup'>
+                                {resetLink}
+                            </div>
+                            
+                            <p>If you're having trouble or didn't request a password reset, please contact our support team immediately.</p>
+                            
+                            <p>Best regards,<br>
+                            <strong>The Team</strong></p>
+                        </div>
+                        
+                        <div class='email-footer'>
+                            <p>
+                                © {DateTime.Now.Year} Ecommerce. All rights reserved.<br>
+                                This email was sent to you because you requested a password reset.<br>
+                                <a href='#'>Privacy Policy</a> • <a href='#'>Contact Support</a>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+        }
+
+        public static string ConfirmEmail(string confirmLink, string code)
+        {
+            return $@"
+                <!DOCTYPE html>
+                <html lang='en'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Confirm Your Email Address</title>
+                    <style>
+                        body {{
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #0c111d;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f7f9fa;
+                        }}
+                        .email-container {{
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: white;
+                            border-radius: 8px;
+                            border: 1px solid #d1d7dc;
+                            overflow: hidden;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        }}
+                        .email-header {{
+                            background: linear-gradient(135deg, #5624d0 0%, #401b9c 100%);
+                            color: white;
+                            padding: 2rem;
+                            text-align: center;
+                        }}
+                        .email-header h1 {{
+                            margin: 0;
+                            font-size: 1.75rem;
+                            font-weight: 600;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 0.5rem;
+                        }}
+                        .email-header i {{
+                            font-size: 1.5rem;
+                        }}
+                        .email-body {{
+                            padding: 2rem;
+                        }}
+                        .email-body h2 {{
+                            margin: 0 0 1rem 0;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            color: #0c111d;
+                        }}
+                        .email-body p {{
+                            margin: 0 0 1.5rem 0;
+                            font-size: 0.875rem;
+                            color: #6a6f73;
+                        }}
+                        .confirm-button {{
+                            display: inline-block;
+                            background: linear-gradient(135deg, #5624d0 0%, #401b9c 100%);
+                            text-decoration: none;
+                            padding: 0.75rem 1.5rem;
+                            border-radius: 4px;
+                            font-weight: 600;
+                            font-size: 0.875rem;
+                            text-align: center;
+                            transition: all 0.2s ease;
+                            border: none;
+                            cursor: pointer;
+                            margin: 1rem 0;
+                            color: white !important;
+                        }}
+                        .confirm-button:hover {{
+                            background: linear-gradient(135deg, #401b9c 0%, #2d136d 100%);
+                            transform: translateY(-1px);
+                            box-shadow: 0 4px 12px rgba(86, 36, 208, 0.3);
+                        }}
+                        .code-container {{
+                            background-color: #f7f9fa;
+                            border: 2px dashed #d1d7dc;
+                            border-radius: 8px;
+                            padding: 1.5rem;
+                            margin: 1.5rem 0;
+                            text-align: center;
+                            font-family: 'Courier New', monospace;
+                        }}
+                        .verification-code {{
+                            font-size: 2rem;
+                            font-weight: 700;
+                            letter-spacing: 0.5rem;
+                            color: #5624d0;
+                            margin: 0.5rem 0;
+                        }}
+                        .code-label {{
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                            text-transform: uppercase;
+                            letter-spacing: 0.1rem;
+                            margin-bottom: 0.5rem;
+                        }}
+                        .security-notice {{
+                            background-color: rgba(86, 36, 208, 0.05);
+                            border: 1px solid rgba(86, 36, 208, 0.1);
+                            border-radius: 4px;
+                            padding: 1rem;
+                            margin: 1.5rem 0;
+                        }}
+                        .security-notice h3 {{
+                            margin: 0 0 0.5rem 0;
+                            font-size: 0.875rem;
+                            font-weight: 600;
+                            color: #5624d0;
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }}
+                        .security-notice ul {{
+                            margin: 0;
+                            padding-left: 1.25rem;
+                        }}
+                        .security-notice li {{
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                            margin-bottom: 0.25rem;
+                        }}
+                        .link-backup {{
+                            background-color: #f7f9fa;
+                            border: 1px solid #d1d7dc;
+                            border-radius: 4px;
+                            padding: 1rem;
+                            margin: 1.5rem 0;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                            word-break: break-all;
+                        }}
+                        .steps-container {{
+                            background-color: #f7f9fa;
+                            border-radius: 8px;
+                            padding: 1.5rem;
+                            margin: 1.5rem 0;
+                        }}
+                        .step {{
+                            display: flex;
+                            align-items: flex-start;
+                            margin-bottom: 1rem;
+                            padding-bottom: 1rem;
+                            border-bottom: 1px solid #e8e8e8;
+                        }}
+                        .step:last-child {{
+                            margin-bottom: 0;
+                            padding-bottom: 0;
+                            border-bottom: none;
+                        }}
+                        .step-number {{
+                            background-color: #5624d0;
+                            color: white;
+                            width: 24px;
+                            height: 24px;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-size: 0.75rem;
+                            font-weight: 600;
+                            margin-right: 1rem;
+                            flex-shrink: 0;
+                        }}
+                        .step-content h4 {{
+                            margin: 0 0 0.25rem 0;
+                            font-size: 0.875rem;
+                            font-weight: 600;
+                            color: #0c111d;
+                        }}
+                        .step-content p {{
+                            margin: 0;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                        }}
+                        .email-footer {{
+                            border-top: 1px solid #d1d7dc;
+                            padding: 1.5rem 2rem;
+                            text-align: center;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                        }}
+                        .email-footer a {{
+                            color: #5624d0;
+                            text-decoration: none;
+                        }}
+                        @media (max-width: 600px) {{
+                            .email-container {{
+                                border-radius: 0;
+                                border: none;
+                            }}
+                            .email-header, .email-body, .email-footer {{
+                                padding: 1.5rem;
+                            }}
+                            .verification-code {{
+                                font-size: 1.5rem;
+                                letter-spacing: 0.25rem;
+                            }}
+                            .step {{
+                                flex-direction: column;
+                            }}
+                            .step-number {{
+                                margin-right: 0;
+                                margin-bottom: 0.5rem;
+                            }}
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='email-container'>
+                        <div class='email-header'>
+                            <h1>
+                                📧 Verify Your Email
+                            </h1>
+                        </div>
+                        
+                        <div class='email-body'>
+                            <h2>Welcome to Our Platform!</h2>
+                            
+                            <p>Thank you for signing up! To complete your registration and activate your account, please verify your email address by clicking the button below:</p>
+                            
+                            <div style='text-align: center;'>
+                                <a href='{confirmLink}' class='confirm-button'>
+                                    Verify Email Address
+                                </a>
+                            </div>
+                            
+                            <div class='code-container'>
+                                <div class='code-label'>Verification Code</div>
+                                <div class='verification-code'>{code}</div>
+                                <p style='font-size: 0.75rem; color: #6a6f73; margin: 0.5rem 0 0 0;'>
+                                    Enter this code on the verification page if the button doesn't work
+                                </p>
+                            </div>
+                            
+                            <div class='steps-container'>
+                                <div class='step'>
+                                    <div class='step-number'>1</div>
+                                    <div class='step-content'>
+                                        <h4>Verify Your Email</h4>
+                                        <p>Click the button above or use the verification code to confirm your email address</p>
+                                    </div>
+                                </div>
+                                <div class='step'>
+                                    <div class='step-number'>2</div>
+                                    <div class='step-content'>
+                                        <h4>Complete Your Profile</h4>
+                                        <p>Add your details and preferences to personalize your experience</p>
+                                    </div>
+                                </div>
+                                <div class='step'>
+                                    <div class='step-number'>3</div>
+                                    <div class='step-content'>
+                                        <h4>Start Exploring</h4>
+                                        <p>Access all features and services available to verified members</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class='security-notice'>
+                                <h3>
+                                    <span>🔒</span> Account Security
+                                </h3>
+                                <ul>
+                                    <li>This verification link will expire in <strong>1 hour</strong></li>
+                                    <li>Never share your verification code with anyone</li>
+                                    <li>Our team will never ask for your password or verification code</li>
+                                    <li>If you didn't create this account, please ignore this email</li>
+                                </ul>
+                            </div>
+                            
+                            <p>If the button above doesn't work, you can copy and paste the following link into your browser:</p>
+                            
+                            <div class='link-backup'>
+                                {confirmLink}
+                            </div>
+                            
+                            <p>Having trouble verifying your email? Contact our support team for assistance.</p>
+                            
+                            <p>Welcome aboard,<br>
+                            <strong>The Team</strong></p>
+                        </div>
+                        
+                        <div class='email-footer'>
+                            <p>
+                                © {DateTime.Now.Year} Ecommerce. All rights reserved.<br>
+                                This email was sent to verify your email address for account creation.<br>
+                                <a href='#'>Privacy Policy</a> • <a href='#'>Contact Support</a>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+        }
+    }
+}
