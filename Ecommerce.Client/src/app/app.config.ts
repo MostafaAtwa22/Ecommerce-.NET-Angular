@@ -41,7 +41,13 @@ export const appConfig: ApplicationConfig = {
         }
       } as SocialAuthServiceConfig,
     },
-    provideHttpClient(withInterceptors([errorInterceptor, loadingInterceptor, jwtInterceptor])),
+      provideHttpClient(
+        withInterceptors([
+        loadingInterceptor,
+        jwtInterceptor,
+        errorInterceptor
+      ])
+    ),
 
     importProvidersFrom(
       BrowserAnimationsModule,

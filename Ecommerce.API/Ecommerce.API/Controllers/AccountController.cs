@@ -286,8 +286,7 @@ namespace Ecommerce.API.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            if (dto.Token is null)
-                Response.Cookies.Delete("refreshToken");
+            Response.Cookies.Delete("refreshToken");
 
             return Ok("Token revoked");
         }

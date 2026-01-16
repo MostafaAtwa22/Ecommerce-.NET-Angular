@@ -69,7 +69,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
-        [AuthorizePermission(Modules.Roles, CRUD.Create)]
+        [AuthorizePermission(Modules.Products, CRUD.Create)]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Create([FromForm] ProductCreationDto creationDto)
         {
@@ -89,7 +89,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPut]
-        [AuthorizePermission(Modules.Roles, CRUD.Update)]
+        [AuthorizePermission(Modules.Products, CRUD.Update)]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Update([FromForm] ProductUpdateDto updateDto)
         {
@@ -134,7 +134,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [AuthorizePermission(Modules.Roles, CRUD.Delete)]
+        [AuthorizePermission(Modules.Products, CRUD.Delete)]
         [DisableRateLimiting]
         public async Task<ActionResult<ProductResponseDto>> Delete([FromRoute] int id)
         {

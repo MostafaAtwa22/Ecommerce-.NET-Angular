@@ -121,9 +121,9 @@ namespace Ecommerce.Infrastructure.Services
             var options = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Expires = expires.ToLocalTime()
+                Expires = expires.ToLocalTime(),
+                Secure = true, 
+                SameSite = SameSiteMode.None, 
             };
 
             _httpContextAccessor.HttpContext!

@@ -6,15 +6,21 @@ import { catchError, throwError, switchMap, BehaviorSubject, filter, take } from
 import { AccountService } from '../../account/account-service';
 
 let isRefreshing = false;
-const refreshTokenSubject = new BehaviorSubject<any>(null);
+const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   const toastrService = inject(ToastrService);
   const accountService = inject(AccountService);
 
+  console.log('Intercepting request to:', req.url);
+  console.log('Has token:', !!localStorage.getItem('token'));
+  console.log('Cookies available:', !!document.cookie);
+
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      console.log('Error intercepted:', error.status, error.url);
+
       if (error) {
         switch (error.status) {
           case 400:
@@ -22,80 +28,100 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
             if (req.url.includes('/revoke-token')) {
               break;
             }
-            if (error.error.errors)
-                throw error.error.errors;
-            else
-              toastrService.error(error.error.message || 'Bad Request',
-              error.error.StatusCode);
+            if (error.error.errors) {
+              throw error.error.errors;
+            } else {
+              toastrService.error(error.error.message || 'Bad Request', error.error.StatusCode);
+            }
             break;
 
           case 401:
-            // Check if this is a refresh-token or revoke-token request
-            const isRefreshRequest = req.url.includes('/refresh-token');
-            const isRevokeRequest = req.url.includes('/revoke-token');
-            
-            // Don't try to refresh on login/register/home requests
-            const isAuthRequest = req.url.includes('/api/auth/login') ||
-                                  req.url.includes('/api/auth/register') ||
-                                  req.url.includes('/api/account/login') ||
-                                  req.url.includes('/api/account/register') ||
-                                  req.url.includes('/api/account/googlelogin') ||
-                                  req.url.includes('/api/home');
+            console.log('🔴 401 Unauthorized for:', req.url);
 
-            // If this is a refresh or revoke request that failed, logout immediately
-            if (isRefreshRequest || isRevokeRequest) {
-              toastrService.warning('Your session has expired. Please login again.', 'Session Expired');
-              accountService.logout();
+            // Don't try to refresh on these endpoints
+            const skipRefreshEndpoints = [
+              '/login',
+              '/register',
+              '/googlelogin',
+              '/email-verification',
+              '/forgetpassword',
+              '/resetpassword',
+              '/home'
+            ];
+
+            const shouldSkipRefresh = skipRefreshEndpoints.some(endpoint =>
+              req.url.includes(endpoint)
+            );
+
+            if (shouldSkipRefresh) {
+              console.log('Skipping refresh for public endpoint:', req.url);
+              toastrService.error(error.error.message || 'Unauthorized', 'Error');
               return throwError(() => error);
             }
 
-            if (!isAuthRequest) {
-              // Try to refresh the token
-              if (!isRefreshing) {
-                isRefreshing = true;
-                refreshTokenSubject.next(null);
-
-                return accountService.refreshToken().pipe(
-                  switchMap((user) => {
-                    isRefreshing = false;
-                    refreshTokenSubject.next(user.token);
-                    
-                    // Retry the failed request with new token
-                    const clonedReq = req.clone({
-                      setHeaders: {
-                        Authorization: `Bearer ${user.token}`
-                      }
-                    });
-                    return next(clonedReq);
-                  }),
-                  catchError((refreshError) => {
-                    isRefreshing = false;
-                    toastrService.warning('Your session has expired. Please login again.', 'Session Expired');
-                    accountService.logout();
-                    return throwError(() => refreshError);
-                  })
-                );
-              } else {
-                // Wait for the token to be refreshed
-                return refreshTokenSubject.pipe(
-                  filter(token => token !== null),
-                  take(1),
-                  switchMap(token => {
-                    const clonedReq = req.clone({
-                      setHeaders: {
-                        Authorization: `Bearer ${token}`
-                      }
-                    });
-                    return next(clonedReq);
-                  })
-                );
-              }
-            } else {
-              // This is a login/register error, just show the error
-              toastrService.error(error.error.message || 'Unauthorized Access',
-                error.error.StatusCode);
+            // If this is already a refresh request that failed, logout
+            if (req.url.includes('/refresh-token')) {
+              console.log('❌ Refresh token request failed - refresh token likely expired or invalid');
+              console.log('Error from refresh endpoint:', error.error?.message);
+              isRefreshing = false;
+              refreshTokenSubject.next(null);
+              toastrService.warning('Session expired. Please login again.', 'Session Expired');
+              accountService.clearUserDataOnly();
+              return throwError(() => error);
             }
-            break;
+
+            // Try to refresh token
+            if (!isRefreshing) {
+              console.log('🔄 Attempting token refresh...');
+              isRefreshing = true;
+              refreshTokenSubject.next(null);
+
+              return accountService.refreshToken().pipe(
+                switchMap((user) => {
+                  console.log('✅ Token refresh successful, retrying original request');
+                  isRefreshing = false;
+                  refreshTokenSubject.next(user.token);
+
+                  // Retry the original request with new token
+                  const clonedReq = req.clone({
+                    setHeaders: { Authorization: `Bearer ${user.token}` },
+                    withCredentials: true
+                  });
+                  return next(clonedReq);
+                }),
+                catchError((refreshError) => {
+                  console.error('❌ Token refresh failed:', refreshError.status, refreshError.error?.message);
+                  isRefreshing = false;
+                  refreshTokenSubject.next(null);
+
+                  // If refresh failed with 401, it means refresh token is invalid
+                  if (refreshError.status === 401) {
+                    console.error('Refresh token is invalid - clearing session');
+                    toastrService.warning('Session expired. Please login again.', 'Session Expired');
+                    accountService.clearUserDataOnly();
+                  } else {
+                    toastrService.error('Failed to refresh session', 'Error');
+                  }
+
+                  return throwError(() => refreshError);
+                })
+              );
+            } else {
+              console.log('⏳ Refresh already in progress, waiting...');
+              // Wait for ongoing refresh to complete
+              return refreshTokenSubject.pipe(
+                filter(token => token !== null),
+                take(1),
+                switchMap(token => {
+                  console.log('🔄 Using refreshed token for queued request');
+                  const clonedReq = req.clone({
+                    setHeaders: { Authorization: `Bearer ${token}` },
+                    withCredentials: true
+                  });
+                  return next(clonedReq);
+                })
+              );
+            }
 
           case 404:
             router.navigateByUrl('/not-found');
@@ -103,7 +129,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
           case 500:
             const navExtras: NavigationExtras = {
-              state: {error: error.error}
+              state: { error: error.error }
             };
             router.navigateByUrl('/server-error', navExtras);
             break;

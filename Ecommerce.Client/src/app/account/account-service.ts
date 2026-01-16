@@ -5,7 +5,7 @@ import { Environment } from '../environment';
 import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
-import { tap } from 'rxjs';
+import { tap, catchError, throwError } from 'rxjs';
 import { isTokenExpired } from '../shared/utils/token-utils';
 
 @Injectable({
@@ -67,13 +67,28 @@ export class AccountService {
     );
   }
 
-
   refreshToken() {
+    console.log('Attempting to refresh token...');
+    console.log('Current cookies:', document.cookie);
+    console.log('Refresh token cookie present:', document.cookie.includes('refreshToken'));
+
     return this.http
       .get<IAccountUser>(`${this.baseUrl}/refresh-token`, {
         withCredentials: true,
       })
-      .pipe(tap(user => this.setUser(user)));
+      .pipe(
+        tap(user => {
+          console.log('✅ Refresh successful:', user);
+          this.setUser(user);
+        }),
+        catchError(error => {
+          console.error('❌ Refresh failed:', error);
+          console.error('Refresh error status:', error.status);
+          console.error('Refresh error message:', error.error?.message);
+          // Don't clear user data here, let error-interceptor handle it
+          return throwError(() => error);
+        })
+      );
   }
 
   revokeRefreshToken(token?: string) {
@@ -135,6 +150,10 @@ export class AccountService {
     return this.userSignal();
   }
 
+  clearUserDataOnly() {
+    this.clearUserData();
+  }
+
   loadCurrentUser() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -142,16 +161,15 @@ export class AccountService {
       return;
     }
 
-    // If token is expired, try to refresh it first
+    // If token is expired, try to refresh it
     if (isTokenExpired(token)) {
       console.warn('Token has expired, attempting to refresh...');
       this.refreshToken().subscribe({
         next: (user) => {
           console.log('Token refreshed successfully');
-          // User is already set by the tap in refreshToken()
         },
         error: (err) => {
-          console.warn('Failed to refresh token, logging out...', err);
+          console.warn('Failed to refresh token, clearing session...', err);
           this.clearUserData();
         }
       });
@@ -246,5 +264,19 @@ export class AccountService {
 
   clearLocalUserProfilePicture(): void {
     this.updateLocalUserProfilePicture(null);
+  }
+
+  // Debug method to check cookies
+  checkRefreshTokenCookie() {
+    const cookies = document.cookie.split(';');
+    const refreshTokenCookie = cookies.find(c => c.trim().startsWith('refreshToken='));
+
+    if (refreshTokenCookie) {
+      console.log('Refresh token cookie exists:', refreshTokenCookie.substring(0, 50) + '...');
+      return true;
+    } else {
+      console.warn('No refresh token cookie found');
+      return false;
+    }
   }
 }

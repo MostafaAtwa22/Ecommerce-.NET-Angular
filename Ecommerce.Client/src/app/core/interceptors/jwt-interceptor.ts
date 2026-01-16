@@ -1,81 +1,66 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AccountService } from '../../account/account-service';
-import { catchError, switchMap, throwError, BehaviorSubject, filter, take, Observable } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { isTokenExpired } from '../../shared/utils/token-utils';
-
-let isRefreshing = false;
-const refreshTokenSubject = new BehaviorSubject<string | null>(null);
-
-const handleTokenRefresh = (
-  req: HttpRequest<any>,
-  next: HttpHandlerFn,
-  accountService: AccountService
-): Observable<any> => {
-  if (!isRefreshing) {
-    isRefreshing = true;
-    refreshTokenSubject.next(null);
-
-    return accountService.refreshToken().pipe(
-      switchMap((user) => {
-        isRefreshing = false;
-        refreshTokenSubject.next(user.token);
-        const retryReq = req.clone({
-          setHeaders: { Authorization: `Bearer ${user.token}` },
-        });
-        return next(retryReq);
-      }),
-      catchError((err) => {
-        isRefreshing = false;
-        accountService.logout();
-        return throwError(() => err);
-      })
-    );
-  } else {
-    return refreshTokenSubject.pipe(
-      filter((t) => t != null),
-      take(1),
-      switchMap((newToken) => {
-        const retryReq = req.clone({
-          setHeaders: { Authorization: `Bearer ${newToken}` },
-        });
-        return next(retryReq);
-      })
-    );
-  }
-};
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('token');
   const accountService = inject(AccountService);
 
-  // Skip auth headers for login/register/home/refresh-token
-  if (
-    req.url.includes('/login') ||
-    req.url.includes('/register') ||
-    req.url.includes('/home') ||
-    req.url.includes('/refresh-token')
-  ) {
+  // Always add credentials for refresh-token endpoint (carries refresh token cookie)
+  if (req.url.includes('/refresh-token')) {
+    console.log('Refresh token endpoint - sending with credentials only');
+    return next(req.clone({ withCredentials: true }));
+  }
+
+  // Skip auth headers for public endpoints
+  const publicEndpoints = [
+    '/login',
+    '/register',
+    '/googlelogin',
+    '/home',
+    '/revoke-token',
+    '/email-verification',
+    '/forgetpassword',
+    '/resetpassword',
+    '/products',
+    '/categories'
+  ];
+
+  const isPublicEndpoint = publicEndpoints.some(endpoint =>
+    req.url.includes(endpoint)
+  );
+
+  if (isPublicEndpoint) {
+    console.log('Public endpoint, skipping auth:', req.url);
     return next(req);
   }
 
-  // Proactive check: If token is expired, refresh before sending
-  if (token && isTokenExpired(token)) {
-      return handleTokenRefresh(req, next, accountService);
-  }
-
-  // Normal request with valid (or assumed valid) token
+  // Add token if available
   if (token) {
-    req = req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+    try {
+      const isExpired = isTokenExpired(token);
+
+      if (!isExpired) {
+        console.log('Adding valid token to request:', req.url);
+        req = req.clone({
+          setHeaders: { Authorization: `Bearer ${token}` },
+          withCredentials: true
+        });
+      } else {
+        // Token expired - let error interceptor handle refresh
+        console.warn('Token expired for:', req.url, '- will trigger refresh via error interceptor');
+        return next(req.clone({ withCredentials: true }));
+      }
+    } catch (error) {
+      console.warn('Invalid token format:', error);
+      return next(req.clone({ withCredentials: true }));
+    }
+  } else {
+    console.warn('No token found for protected endpoint:', req.url);
+    return next(req.clone({ withCredentials: true }));
   }
 
-  return next(req).pipe(
-    catchError((error) => {
-      // Fallback: If token was valid client-side but server rejected it (e.g. revoked)
-      if (error.status === 401) {
-        return handleTokenRefresh(req, next, accountService);
-      }
-      return throwError(() => error);
-    })
-  );
+  return next(req);
 };

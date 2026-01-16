@@ -1,12 +1,3 @@
-/**
- * Utility functions for JWT token management
- */
-
-/**
- * Decodes a JWT token and returns the payload
- * @param token - The JWT token string
- * @returns The decoded payload or null if invalid
- */
 export function decodeToken(token: string): any | null {
   try {
     const base64Url = token.split('.')[1];
@@ -27,11 +18,6 @@ export function decodeToken(token: string): any | null {
   }
 }
 
-/**
- * Checks if a JWT token is expired
- * @param token - The JWT token string
- * @returns true if token is expired or invalid, false otherwise
- */
 export function isTokenExpired(token: string): boolean {
   if (!token) {
     return true;
@@ -50,11 +36,6 @@ export function isTokenExpired(token: string): boolean {
   return now >= expirationDate - 5000;
 }
 
-/**
- * Gets the expiration date of a JWT token
- * @param token - The JWT token string
- * @returns The expiration date or null if invalid
- */
 export function getTokenExpirationDate(token: string): Date | null {
   const decoded = decodeToken(token);
   if (!decoded || !decoded.exp) {

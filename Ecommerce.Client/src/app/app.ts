@@ -37,23 +37,36 @@ export class App implements OnInit{
       }
     });
   }
+
   ngOnInit(): void {
-    // Load current user - this handles token refresh if needed
+    // Debug: Check if refresh token cookie exists
+    this.accountService.checkRefreshTokenCookie();
+
+    // Load current user first - this handles token refresh if needed
     this.accountService.loadCurrentUser();
 
-    const basketId = localStorage.getItem('basket_id');
-    if (basketId) {
-      this.basketService.getBasket(basketId).subscribe(() => {
-        console.log("Bakset Init");
-      }, err => console.log(err));
-    }
+    // Check if we have a valid user before loading basket/wishlist
+    setTimeout(() => {
+      if (this.accountService.isLoggedIn()) {
+        const basketId = localStorage.getItem('basket_id');
+        if (basketId) {
+          this.basketService.getBasket(basketId).subscribe(
+            () => console.log("Basket Init"),
+            err => console.log("Basket load error:", err)
+          );
+        }
 
-    const wishListId = localStorage.getItem('wishlist_id');
-    if(wishListId) {
-      this.wishlistService.getWishList(wishListId)
-        .subscribe(() => {
-          console.log('wish list init');
-        }, err => console.error(err));
-    }
+        const wishListId = localStorage.getItem('wishlist_id');
+        if(wishListId) {
+          this.wishlistService.getWishList(wishListId)
+            .subscribe(
+              () => console.log('Wish list init'),
+              err => console.error('Wishlist load error:', err)
+            );
+        }
+      } else {
+        console.log('User not logged in, skipping basket/wishlist load');
+      }
+    }, 1000);
   }
 }

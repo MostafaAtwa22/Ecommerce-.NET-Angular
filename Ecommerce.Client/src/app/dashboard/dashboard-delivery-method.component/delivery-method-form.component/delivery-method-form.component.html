@@ -1,19 +1,17 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="delivery-form">
-  <!-- Short Name Field -->
+  <!-- Method Name Field -->
   <div class="mb-3">
-    <label for="shortName" class="form-label fw-semibold">
-      Method Name <span class="text-danger">*</span>
-    </label>
+    <label for="shortName" class="form-label fw-semibold">Method Name</label>
     <input
       type="text"
       id="shortName"
       class="form-control"
       formControlName="shortName"
-      [class.is-invalid]="isShortNameInvalid"
+      [class.is-invalid]="shortName?.invalid && shortName?.touched"
       placeholder="e.g., Standard Shipping, Express Delivery"
       maxlength="{{ MAX_NAME_LENGTH }}"
     >
-    @if (isShortNameInvalid) {
+    @if (shortName?.invalid && shortName?.touched) {
       <div class="invalid-feedback">
         @if (shortName?.errors?.['required']) {
           <span>Method name is required</span>
@@ -29,26 +27,21 @@
         }
       </div>
     }
-    <small class="text-muted d-block mt-1">
-      {{ shortName?.value?.length || 0 }}/{{ MAX_NAME_LENGTH }} characters
-    </small>
   </div>
 
   <!-- Description Field -->
   <div class="mb-3">
-    <label for="description" class="form-label fw-semibold">
-      Description <span class="text-danger">*</span>
-    </label>
+    <label for="description" class="form-label fw-semibold">Description</label>
     <textarea
       id="description"
       class="form-control"
       rows="4"
       formControlName="description"
-      [class.is-invalid]="isDescriptionInvalid"
+      [class.is-invalid]="description?.invalid && description?.touched"
       placeholder="Describe this delivery method..."
       maxlength="{{ MAX_DESC_LENGTH }}"
     ></textarea>
-    @if (isDescriptionInvalid) {
+    @if (description?.invalid && description?.touched) {
       <div class="invalid-feedback">
         @if (description?.errors?.['required']) {
           <span>Description is required</span>
@@ -61,32 +54,24 @@
         }
       </div>
     }
-    <small class="text-muted d-block mt-1">
-      {{ description?.value?.length || 0 }}/{{ MAX_DESC_LENGTH }} characters
-    </small>
   </div>
 
   <!-- Delivery Time & Price Row -->
   <div class="row g-3 mb-3">
     <!-- Delivery Time -->
     <div class="col-md-6">
-      <label for="deliveryTime" class="form-label fw-semibold">
-        Delivery Time (Days) <span class="text-danger">*</span>
-      </label>
-      <div class="input-group">
-        <input
-          type="number"
-          id="deliveryTime"
-          class="form-control"
-          formControlName="deliveryTime"
-          [class.is-invalid]="isDeliveryTimeInvalid"
-          min="{{ MIN_DELIVERY_TIME }}"
-          max="{{ MAX_DELIVERY_TIME }}"
-          step="1"
-        >
-        <span class="input-group-text">days</span>
-      </div>
-      @if (isDeliveryTimeInvalid) {
+      <label for="deliveryTime" class="form-label fw-semibold">Delivery Time (Days)</label>
+      <input
+        type="number"
+        id="deliveryTime"
+        class="form-control"
+        formControlName="deliveryTime"
+        [class.is-invalid]="deliveryTime?.invalid && deliveryTime?.touched"
+        min="{{ MIN_DELIVERY_TIME }}"
+        max="{{ MAX_DELIVERY_TIME }}"
+        step="1"
+      >
+      @if (deliveryTime?.invalid && deliveryTime?.touched) {
         <div class="invalid-feedback">
           @if (deliveryTime?.errors?.['required']) {
             <span>Delivery time is required</span>
@@ -97,38 +82,24 @@
           @if (deliveryTime?.errors?.['max']) {
             <span>Delivery time cannot exceed {{ MAX_DELIVERY_TIME }} days</span>
           }
-          @if (deliveryTime?.errors?.['pattern']) {
-            <span>Delivery time must be a whole number</span>
-          }
         </div>
-      }
-      @if (deliveryTime?.valid) {
-        <small class="text-success d-block mt-1">
-          <i class="fas fa-calendar-check me-1"></i>
-          Estimated delivery: {{ getEstimatedDeliveryDate() }}
-        </small>
       }
     </div>
 
     <!-- Price -->
     <div class="col-md-6">
-      <label for="price" class="form-label fw-semibold">
-        Price ($) <span class="text-danger">*</span>
-      </label>
-      <div class="input-group">
-        <span class="input-group-text">$</span>
-        <input
-          type="number"
-          id="price"
-          class="form-control"
-          formControlName="price"
-          [class.is-invalid]="isPriceInvalid"
-          min="{{ MIN_PRICE }}"
-          max="{{ MAX_PRICE }}"
-          step="0.01"
-        >
-      </div>
-      @if (isPriceInvalid) {
+      <label for="price" class="form-label fw-semibold">Price ($)</label>
+      <input
+        type="number"
+        id="price"
+        class="form-control"
+        formControlName="price"
+        [class.is-invalid]="price?.invalid && price?.touched"
+        min="{{ MIN_PRICE }}"
+        max="{{ MAX_PRICE }}"
+        step="0.5"
+      >
+      @if (price?.invalid && price?.touched) {
         <div class="invalid-feedback">
           @if (price?.errors?.['required']) {
             <span>Price is required</span>
@@ -139,52 +110,40 @@
           @if (price?.errors?.['max']) {
             <span>Price cannot exceed ${{ MAX_PRICE }}</span>
           }
-          @if (price?.errors?.['pattern']) {
-            <span>Price must be a valid number (max 2 decimal places)</span>
-          }
         </div>
-      }
-      @if (price?.valid && price?.value === 0) {
-        <small class="text-success d-block mt-1">
-          <i class="fas fa-gift me-1"></i>This will be displayed as FREE shipping
-        </small>
-      } @else if (price?.valid && price?.value > 0) {
-        <small class="text-muted d-block mt-1">
-          Shipping cost: {{ formatPrice(price?.value) }}
-        </small>
       }
     </div>
   </div>
 
-  <!-- Summary Card -->
+  <!-- Summary Card (Optional - Only show if you want the preview) -->
   @if (form.valid) {
-    <div class="card summary-card mb-3">
+    <div class="card border-light mb-3">
       <div class="card-header bg-light">
-        <h6 class="mb-0"><i class="fas fa-eye me-2"></i>Preview</h6>
+        <h6 class="mb-0">Preview</h6>
       </div>
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <h6 class="text-muted">Method Name</h6>
-            <p class="fw-bold">{{ shortName?.value }}</p>
+            <small class="text-muted">Method Name</small>
+            <p class="fw-bold mb-2">{{ shortName?.value }}</p>
           </div>
           <div class="col-md-6">
-            <h6 class="text-muted">Cost</h6>
-            <p class="fw-bold {{ price?.value === 0 ? 'text-success' : '' }}">
-              {{ formatPrice(price?.value) }}
+            <small class="text-muted">Cost</small>
+            <p class="fw-bold mb-2 {{ price?.value === 0 ? 'text-success' : '' }}">
+              @if (price?.value === 0) {
+                FREE
+              } @else {
+                ${{ price?.value | number:'1.2-2' }}
+              }
             </p>
           </div>
           <div class="col-md-6">
-            <h6 class="text-muted">Delivery Time</h6>
-            <p class="fw-bold">{{ deliveryTime?.value }} days</p>
-          </div>
-          <div class="col-md-6">
-            <h6 class="text-muted">Estimated Delivery</h6>
-            <p class="fw-bold">{{ getEstimatedDeliveryDate() }}</p>
+            <small class="text-muted">Delivery Time</small>
+            <p class="fw-bold mb-2">{{ deliveryTime?.value }} days</p>
           </div>
         </div>
-        <hr>
-        <h6 class="text-muted">Description</h6>
+        <hr class="my-2">
+        <small class="text-muted">Description</small>
         <p class="mb-0">{{ description?.value }}</p>
       </div>
     </div>

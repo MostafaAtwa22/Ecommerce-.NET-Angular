@@ -66,9 +66,8 @@ namespace Ecommerce.API.Controllers
             ));
         }
 
-        [Authorize(Roles = "Customer")]
         [HttpPost]
-        [AuthorizePermission(Modules.Roles, CRUD.Create)]
+        [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
         public async Task<ActionResult<ProductReviewDto>> Create(ProductReviewFromDto dto)
         {
             var user = await GetCurrentUserAsync();
@@ -106,9 +105,8 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<ProductReviewDto>(review));
         }
 
-        [Authorize(Roles = "Customer")]
         [HttpPut("{id}")]
-        [AuthorizePermission(Modules.Roles, CRUD.Update)]
+        [AuthorizePermission(Modules.ProductReviews, CRUD.Update)]
         public async Task<ActionResult<ProductReviewDto>> Update(int id, ProductReviewFromDto dto)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -142,9 +140,8 @@ namespace Ecommerce.API.Controllers
             return Ok(_mapper.Map<ProductReviewDto>(review));
         }
 
-        [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]
-        [AuthorizePermission(Modules.Roles, CRUD.Delete)]
+        [AuthorizePermission(Modules.ProductReviews, CRUD.Delete)]
         public async Task<ActionResult<ProductReviewDto>> Delete(int id)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -179,7 +176,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost("{id}/helpful")]
         [Authorize]
-        [AuthorizePermission(Modules.Roles, CRUD.Create)]
+        [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
         public async Task<ActionResult> MarkHelpful(int id)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -206,7 +203,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost("{id}/not-helpful")]
         [Authorize] 
-        [AuthorizePermission(Modules.Roles, CRUD.Create)]
+        [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
         public async Task<ActionResult> MarkNotHelpful(int id) 
         { 
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id); 
