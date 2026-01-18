@@ -64,7 +64,7 @@
     <div class="col-xl-2 col-lg-4 col-md-6">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-canceled">
-          <i class="fas fa-times-circle"></i>
+          <i class="fas fa-ban"></i>
         </div>
         <div class="stat-content">
           <h3>{{ canceledCount | number }}</h3>
@@ -385,37 +385,43 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
           <!-- Cancel Order Button -->
-          @if (selectedOrder.status !== 'Canceled' && selectedOrder.status !== 'Complete') {
+          @if (canCancelOrder(selectedOrder.status)) {
           <button class="btn-action btn-cancel"
-                  [disabled]="updatingStatus"
-                  (click)="updateOrderStatus(selectedOrder.id, 'Canceled')">
+                  [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
+                  (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Canceled.toString())">
             @if (updatingStatus && updateOrderId === selectedOrder.id) {
             <div class="btn-spinner"></div>
-            }
+            } @else {
             <i class="fas fa-ban"></i>
+            }
             <span>Cancel Order</span>
           </button>
           }
 
-          <!-- Status Update Buttons -->
-          @if (selectedOrder.status === 'Pending') {
+          <!-- Ship Order Button -->
+          @if (canShipOrder(selectedOrder.status)) {
           <button class="btn-action btn-ship"
-                  [disabled]="updatingStatus"
-                  (click)="updateOrderStatus(selectedOrder.id, 'Shipped')">
+                  [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
+                  (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Shipped.toString())">
             @if (updatingStatus && updateOrderId === selectedOrder.id) {
             <div class="btn-spinner"></div>
-            }
+            } @else {
             <i class="fas fa-shipping-fast"></i>
+            }
             <span>Ship Order</span>
           </button>
-          } @else if (selectedOrder.status === 'Shipped') {
+          }
+
+          <!-- Mark Complete Button -->
+          @if (canCompleteOrder(selectedOrder.status)) {
           <button class="btn-action btn-complete"
-                  [disabled]="updatingStatus"
-                  (click)="updateOrderStatus(selectedOrder.id, 'Complete')">
+                  [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
+                  (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Complete.toString())">
             @if (updatingStatus && updateOrderId === selectedOrder.id) {
             <div class="btn-spinner"></div>
-            }
+            } @else {
             <i class="fas fa-check-double"></i>
+            }
             <span>Mark Complete</span>
           </button>
           }

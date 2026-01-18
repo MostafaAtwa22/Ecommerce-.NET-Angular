@@ -121,8 +121,8 @@ namespace Ecommerce.Infrastructure.Extensions
             AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Orders}.{CRUD.Create}");
             AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Orders}.{CRUD.Read}");
 
-            AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Profile}.{CRUD.Read}");
-            AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Profile}.{CRUD.Update}");
+            AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Profiles}.{CRUD.Read}");
+            AddIfNotExists($"{Permissions.ClaimValue}.{Modules.Profiles}.{CRUD.Update}");
         }
     }
 }

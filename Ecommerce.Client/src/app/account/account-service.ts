@@ -5,7 +5,7 @@ import { Environment } from '../environment';
 import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
-import { tap, catchError, throwError } from 'rxjs';
+import { tap, catchError, throwError, finalize, shareReplay, Observable } from 'rxjs';
 import { isTokenExpired } from '../shared/utils/token-utils';
 
 @Injectable({
@@ -15,6 +15,7 @@ export class AccountService {
   private baseUrl = `${Environment.baseUrl}/api/account`;
 
   private userSignal = signal<IAccountUser | null>(this.getUserFromLocalStorage());
+  private refreshTokenRequest$: Observable<IAccountUser> | null = null;
 
   isLoggedIn = computed(() => !!this.userSignal());
 
@@ -68,27 +69,33 @@ export class AccountService {
   }
 
   refreshToken() {
-    console.log('Attempting to refresh token...');
-    console.log('Current cookies:', document.cookie);
-    console.log('Refresh token cookie present:', document.cookie.includes('refreshToken'));
+    if (!this.refreshTokenRequest$) {
+      console.log('Attempting to refresh token...');
 
-    return this.http
-      .get<IAccountUser>(`${this.baseUrl}/refresh-token`, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap(user => {
-          console.log('✅ Refresh successful:', user);
-          this.setUser(user);
-        }),
-        catchError(error => {
-          console.error('❌ Refresh failed:', error);
-          console.error('Refresh error status:', error.status);
-          console.error('Refresh error message:', error.error?.message);
-          // Don't clear user data here, let error-interceptor handle it
-          return throwError(() => error);
+      this.refreshTokenRequest$ = this.http
+        .get<IAccountUser>(`${this.baseUrl}/refresh-token`, {
+          withCredentials: true,
         })
-      );
+        .pipe(
+          tap(user => {
+            console.log('✅ Refresh successful:', user);
+            this.setUser(user);
+          }),
+          catchError(error => {
+            console.error('❌ Refresh failed:', error);
+            console.error('Refresh error status:', error.status);
+            console.error('Refresh error message:', error.error?.message);
+            // Don't clear user data here, let error-interceptor handle it
+            return throwError(() => error);
+          }),
+          finalize(() => {
+            this.refreshTokenRequest$ = null;
+          }),
+          shareReplay(1)
+        );
+    }
+
+    return this.refreshTokenRequest$;
   }
 
   revokeRefreshToken(token?: string) {

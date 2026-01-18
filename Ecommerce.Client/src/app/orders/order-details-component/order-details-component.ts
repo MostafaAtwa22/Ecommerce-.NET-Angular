@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { IOrder } from '../../shared/modules/order';
 import { CheckoutService } from '../../checkout/checkout-service';
 import { CommonModule } from '@angular/common';
+import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
 
 @Component({
   selector: 'app-order-details-component',
@@ -14,16 +15,45 @@ export class OrderDetailsComponent implements OnInit {
   order!: IOrder;
   orderId!: number;
 
-  // Order progress steps
+  // OrderStatus enum for template access
+  OrderStatus = OrderStatus;
+
+  // Order progress steps - now mapped to OrderStatus enum
   orderSteps = [
-    { label: 'Ordered', status: 'ordered', title: 'Order Placed', description: 'Your order has been successfully placed and confirmed.', date: '' },
-    { label: 'Confirmed', status: 'confirmed', title: 'Order Confirmed', description: 'We\'re preparing your items for shipment.', date: '' },
-    { label: 'Shipped', status: 'shipped', title: 'Order Shipped', description: 'Your order is on the way to you.', date: '' },
-    { label: 'Delivered', status: 'delivered', title: 'Order Delivered', description: 'Your order has been successfully delivered.', date: '' }
+    {
+      label: 'Pending',
+      status: OrderStatus.Pending,
+      title: 'Order Pending',
+      description: 'Your order has been placed and is awaiting payment confirmation.',
+      date: ''
+    },
+    {
+      label: 'Payment Received',
+      status: OrderStatus.PaymentReceived,
+      title: 'Payment Confirmed',
+      description: 'Payment has been received. We\'re preparing your items for shipment.',
+      date: ''
+    },
+    {
+      label: 'Shipped',
+      status: OrderStatus.Shipped,
+      title: 'Order Shipped',
+      description: 'Your order is on the way to you.',
+      date: ''
+    },
+    {
+      label: 'Complete',
+      status: OrderStatus.Complete,
+      title: 'Order Complete',
+      description: 'Your order has been successfully delivered.',
+      date: ''
+    }
   ];
 
   currentStepIndex = 0;
   estimatedDeliveryDate: string = 'N/A';
+  isCancelled: boolean = false;
+  isComplete: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,22 +68,78 @@ export class OrderDetailsComponent implements OnInit {
   loadOrderDetails(): void {
     this.checkoutService.getUserOrderById(this.orderId).subscribe({
       next: (order) => {
-        console.log('Order loaded:', order); // <- Add this
+        console.log('Order loaded:', order);
         this.order = order;
         this.updateStepProgress();
         this.calculateEstimatedDeliveryDate();
+        this.checkIfCancelled();
+        this.checkIfComplete();
       },
       error: (err) => {
         console.error('Failed to load order details', err);
       }
     });
-}
+  }
+
+  checkIfCancelled(): void {
+    if (!this.order?.status) {
+      this.isCancelled = false;
+      return;
+    }
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+    this.isCancelled = statusNum === OrderStatus.Canceled;
+  }
+
+  checkIfComplete(): void {
+    if (!this.order?.status) {
+      this.isComplete = false;
+      return;
+    }
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+    this.isComplete = statusNum === OrderStatus.Complete;
+  }
 
   updateStepProgress(): void {
-    const statusOrder = ['ordered', 'confirmed', 'shipped', 'delivered'];
-    const foundIndex = statusOrder.indexOf(this.order.status?.toLowerCase() || 'ordered');
-    this.currentStepIndex = foundIndex >= 0 ? foundIndex : 0;
+    if (!this.order || !this.order.status) {
+      this.currentStepIndex = 0;
+      return;
+    }
 
+    // Convert status to number
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+
+    // Check if order is cancelled - show different flow
+    if (statusNum === OrderStatus.Canceled) {
+      this.currentStepIndex = -1; // Special case for cancelled
+      return;
+    }
+
+    // Check if payment failed - show different flow
+    if (statusNum === OrderStatus.PaymentFailed) {
+      this.currentStepIndex = 0; // Reset to pending but show payment failed
+      return;
+    }
+
+    // Find the matching step based on status
+    const stepIndex = this.orderSteps.findIndex(step => step.status === statusNum);
+
+    // If exact status found, use that step
+    if (stepIndex !== -1) {
+      this.currentStepIndex = stepIndex;
+    } else {
+      // Otherwise, determine step based on status value
+      if (statusNum >= OrderStatus.Complete) {
+        this.currentStepIndex = 3; // Complete
+      } else if (statusNum >= OrderStatus.Shipped) {
+        this.currentStepIndex = 2; // Shipped
+      } else if (statusNum >= OrderStatus.PaymentReceived) {
+        this.currentStepIndex = 1; // Payment Received
+      } else {
+        this.currentStepIndex = 0; // Pending
+      }
+    }
+
+    // Set dates for completed steps
     if (!this.order?.orderDate) {
       return;
     }
@@ -63,8 +149,10 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
 
-    this.orderSteps[0].date = orderDate.toLocaleDateString();
-
+    // Set date for current step
+    if (this.currentStepIndex >= 0) {
+      this.orderSteps[0].date = orderDate.toLocaleDateString();
+    }
     if (this.currentStepIndex >= 1) {
       this.orderSteps[1].date = new Date(orderDate.getTime() + 24 * 60 * 60 * 1000).toLocaleDateString();
     }
@@ -76,19 +164,74 @@ export class OrderDetailsComponent implements OnInit {
     }
   }
 
-  getStatusClass(status: string): string {
-    const statusMap: { [key: string]: string } = {
-      'pending': 'pending',
-      'processing': 'processing',
-      'shipped': 'shipped',
-      'delivered': 'delivered',
-      'completed': 'completed',
-      'cancelled': 'cancelled'
-    };
-    return statusMap[status.toLowerCase()] || 'pending';
+  // Helper to convert status to number - change to public
+  getOrderStatusNumber(status: string | number): number {
+    if (typeof status === 'number') {
+      return status;
+    }
+
+    // If it's already a number string, parse it
+    if (!isNaN(Number(status))) {
+      return parseInt(status, 10);
+    }
+
+    // If it's a string label, map it to enum value
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return OrderStatus.Pending;
+      case 'paymentreceived':
+      case 'payment received':
+        return OrderStatus.PaymentReceived;
+      case 'paymentfailed':
+      case 'payment failed':
+        return OrderStatus.PaymentFailed;
+      case 'shipped':
+        return OrderStatus.Shipped;
+      case 'complete':
+        return OrderStatus.Complete;
+      case 'cancelled':
+        return OrderStatus.Canceled;
+      default:
+        return OrderStatus.Pending;
+    }
+  }
+
+  // Helper to check if status is PaymentFailed
+  isPaymentFailed(): boolean {
+    if (!this.order?.status) return false;
+    return this.getOrderStatusNumber(this.order.status) === OrderStatus.PaymentFailed;
+  }
+
+  // Helper to get status label for display
+  getOrderStatusLabel(status: string | number): string {
+    return getOrderStatusLabel(status);
+  }
+
+  // Get CSS class for status badge
+  getStatusClass(status: string | number): string {
+    const statusNum = this.getOrderStatusNumber(status);
+
+    switch (statusNum) {
+      case OrderStatus.Pending:
+        return 'pending';
+      case OrderStatus.PaymentReceived:
+        return 'processing';
+      case OrderStatus.PaymentFailed:
+        return 'cancelled';
+      case OrderStatus.Shipped:
+        return 'shipped';
+      case OrderStatus.Complete:
+        return 'completed';
+      case OrderStatus.Canceled:
+        return 'cancelled';
+      default:
+        return 'pending';
+    }
   }
 
   getStepDisplay(stepIndex: number): string {
+    if (stepIndex < 0) return '✗'; // Cancelled icon
+
     if (stepIndex <= this.currentStepIndex) {
       return '✓';
     }
@@ -96,6 +239,14 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getStepState(stepIndex: number): string {
+    if (this.isCancelled) {
+      return 'cancelled';
+    }
+
+    if (this.isPaymentFailed()) {
+      return 'error';
+    }
+
     if (stepIndex < this.currentStepIndex) {
       return 'completed';
     } else if (stepIndex === this.currentStepIndex) {
@@ -106,6 +257,24 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   getCurrentStep() {
+    // Handle cancelled order
+    if (this.isCancelled) {
+      return {
+        title: 'Order Cancelled',
+        description: 'This order has been cancelled. If you have any questions, please contact customer support.',
+        date: this.order?.orderDate ? new Date(this.order.orderDate).toLocaleDateString() : ''
+      };
+    }
+
+    // Handle payment failed
+    if (this.isPaymentFailed()) {
+      return {
+        title: 'Payment Failed',
+        description: 'There was an issue processing your payment. Please update your payment method or contact support.',
+        date: this.order?.orderDate ? new Date(this.order.orderDate).toLocaleDateString() : ''
+      };
+    }
+
     const index = this.currentStepIndex >= 0 && this.currentStepIndex < this.orderSteps.length
       ? this.currentStepIndex
       : 0;
@@ -128,9 +297,26 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
 
-    // Calculate delivery days once and store the result
-    const deliveryDays = 3 + Math.floor(Math.random() * 5);
-    orderDate.setDate(orderDate.getDate() + deliveryDays);
-    this.estimatedDeliveryDate = orderDate.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    // Convert status to number before comparison
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+
+    // Handle different statuses
+    if (statusNum === OrderStatus.Canceled) {
+      this.estimatedDeliveryDate = 'Order Cancelled';
+    } else if (statusNum === OrderStatus.PaymentFailed) {
+      this.estimatedDeliveryDate = 'Payment Required';
+    } else if (statusNum >= OrderStatus.Shipped) {
+      const deliveryDays = 3 + Math.floor(Math.random() * 5);
+      orderDate.setDate(orderDate.getDate() + deliveryDays);
+      this.estimatedDeliveryDate = orderDate.toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
+      });
+    } else if (statusNum === OrderStatus.PaymentReceived) {
+      this.estimatedDeliveryDate = 'Processing - Ships in 1-2 business days';
+    } else {
+      this.estimatedDeliveryDate = 'Will be updated after payment';
+    }
   }
 }

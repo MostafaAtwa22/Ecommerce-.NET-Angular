@@ -253,7 +253,10 @@ export class MainUserInfoComponent implements OnInit {
 
   isSuperAdmin(): boolean {
     const user = this.accountService.user();
-    return user?.roles?.some((role) => role.toLowerCase() === 'superadmin') || false;
+
+    return user?.roles?.some(role =>
+      ['admin', 'superadmin'].includes(role.toLowerCase())
+    ) ?? false;
   }
 
   lockUser(user: IProfile): void {

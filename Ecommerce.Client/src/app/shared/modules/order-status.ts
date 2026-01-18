@@ -1,15 +1,14 @@
-// Order Status Enum - matches backend OrderStatus.cs
+// order-status.utils.ts
 export enum OrderStatus {
   Pending = 0,
   PaymentReceived = 1,
   PaymentFailed = 2,
   Shipped = 3,
-  Complete = 4
+  Complete = 4,
+  Canceled = 5  // Changed from 'Cancelled' to 'Canceled'
 }
 
-// Helper function to get status label from enum value
 export function getOrderStatusLabel(status: string | number): string {
-  // If it's already a string and not a number string, return it
   if (typeof status === 'string' && isNaN(Number(status))) {
     return status;
   }
@@ -29,6 +28,8 @@ export function getOrderStatusLabel(status: string | number): string {
       return 'Shipped';
     case OrderStatus.Complete:
       return 'Complete';
+    case OrderStatus.Canceled:
+      return 'Canceled';  // Changed from 'Cancelled' to 'Canceled'
     default:
       return 'Unknown';
   }

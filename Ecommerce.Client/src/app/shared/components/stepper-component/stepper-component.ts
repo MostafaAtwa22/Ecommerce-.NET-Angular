@@ -9,6 +9,9 @@ import { IDeliveryMethod } from '../../modules/deliveryMethod';
 import { CheckoutService } from '../../../checkout/checkout-service';
 import { BasketService } from '../../services/basket-service';
 import { NavigationExtras, Router } from '@angular/router';
+import { AccountService } from '../../../account/account-service';
+import { isTokenExpired } from '../../utils/token-utils';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-stepper-component',
@@ -44,6 +47,7 @@ export class StepperComponent extends CdkStepper implements OnInit {
   private basketService = inject(BasketService);
   private orderService = inject(CheckoutService);
   private router = inject(Router);
+  private accountService = inject(AccountService);
 
   ngOnInit(): void {
     this.linear = this.linearModeSelected;
@@ -164,6 +168,16 @@ export class StepperComponent extends CdkStepper implements OnInit {
     }
 
     try {
+      const token = localStorage.getItem('token');
+      if (!token || isTokenExpired(token)) {
+        try {
+          await firstValueFrom(this.accountService.refreshToken());
+        } catch (refreshError) {
+          this.toastr.error('Session expired. Please login again before completing payment.');
+          return;
+        }
+      }
+
       // First, confirm the payment with Stripe
       this.toastr.info('Processing payment...');
 
@@ -199,8 +213,16 @@ export class StepperComponent extends CdkStepper implements OnInit {
           });
         },
         error: (err) => {
-          this.toastr.error('Order created but failed to save. Please contact support.');
           console.error('Order creation error:', err);
+
+          // Check if it's a 401 error (auth issue during order creation)
+          if (err.status === 401) {
+            this.toastr.error('Session expired during order creation. The order may have been created. Please login and check your orders.');
+          } else if (err.status === 400) {
+            this.toastr.error(err.error?.message || 'Order creation failed. Please try again.');
+          } else {
+            this.toastr.error('Order creation failed. Please contact support or try again.');
+          }
         }
       });
     } catch (error: any) {

@@ -62,13 +62,21 @@ namespace Ecommerce.API.Controllers
         [AuthorizePermission(Modules.Orders, CRUD.Update)]
         public async Task<ActionResult<OrderResponseDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
         {
+            var spec = new OrdersWithUserSpecification(id);
             var order = await _unitOfWork
                 .Repository<Order>()
-                .GetByIdAsync(id);
+                .GetWithSpecAsync(spec);
             
             if (order is null)
                 return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
             
+            if (dto.Status == OrderStatus.Cancel)
+            {
+                var result = await _orderService.CancelOrder(order.OrderItems);
+                if (!result)
+                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Couldn't cancel the Order"));
+            }
+    
             order.Status = dto.Status;
 
             _unitOfWork.Repository<Order>().Update(order);

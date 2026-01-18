@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IAllOrders, IOrder } from '../../shared/modules/order';
+import { IAllOrders, IOrder, IUpdateOrderStatusDto } from '../../shared/modules/order';
 import { HttpErrorResponse } from '@angular/common/http';
 import { OrdersParams } from '../../shared/modules/OrdersParams';
 import { CheckoutService } from '../../checkout/checkout-service';
-import { getOrderStatusLabel } from '../../shared/modules/order-status';
+import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
 
 @Component({
   selector: 'app-dashboard-orders',
@@ -48,14 +48,17 @@ export class DashboardOrdersComponent implements OnInit {
     { value: 'Status', name: 'By Status' }
   ];
 
-  // Status filter options
+  // Status filter options - update to match enum
   statusOptions = [
     { value: '', name: 'All Statuses' },
-    { value: 'Pending', name: 'Pending' },
-    { value: 'Shipped', name: 'Shipped' },
-    { value: 'Complete', name: 'Complete' },
-    { value: 'Canceled', name: 'Canceled' }
+    { value: OrderStatus.Pending.toString(), name: 'Pending' },
+    { value: OrderStatus.Shipped.toString(), name: 'Shipped' },
+    { value: OrderStatus.Complete.toString(), name: 'Complete' },
+    { value: OrderStatus.Canceled.toString(), name: 'Canceled' }
   ];
+
+  // OrderStatus for template access
+  OrderStatus = OrderStatus;
 
   constructor(private checkoutService: CheckoutService) {}
 
@@ -251,8 +254,69 @@ export class DashboardOrdersComponent implements OnInit {
     this.errorMessage = null;
   }
 
+  // Helper to convert status to number
+  private getOrderStatusNumber(status: string | number): number {
+    if (typeof status === 'number') {
+      return status;
+    }
+
+    // If it's already a number string, parse it
+    if (!isNaN(Number(status))) {
+      return parseInt(status, 10);
+    }
+
+    // If it's a string label, map it to enum value
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return OrderStatus.Pending;
+      case 'paymentreceived':
+      case 'payment received':
+        return OrderStatus.PaymentReceived;
+      case 'paymentfailed':
+      case 'payment failed':
+        return OrderStatus.PaymentFailed;
+      case 'shipped':
+        return OrderStatus.Shipped;
+      case 'complete':
+        return OrderStatus.Complete;
+      case 'canceled':
+      case 'cancelled': // Handle both spellings
+        return OrderStatus.Canceled;
+      default:
+        return OrderStatus.Pending;
+    }
+  }
+
+  // Helper to check if order can be cancelled
+  canCancelOrder(orderStatus: string | number): boolean {
+    const statusNum = this.getOrderStatusNumber(orderStatus);
+    // Can cancel if not already cancelled or complete
+    return statusNum !== OrderStatus.Canceled && statusNum !== OrderStatus.Complete;
+  }
+
+  // Helper to check if order can be shipped
+  canShipOrder(orderStatus: string | number): boolean {
+    const statusNum = this.getOrderStatusNumber(orderStatus);
+    // Can ship if status is Pending
+    return statusNum === OrderStatus.Pending;
+  }
+
+  // Helper to check if order can be marked complete
+  canCompleteOrder(orderStatus: string | number): boolean {
+    const statusNum = this.getOrderStatusNumber(orderStatus);
+    // Can mark complete if status is Shipped
+    return statusNum === OrderStatus.Shipped;
+  }
+
   updateOrderStatus(orderId: number, newStatus: string): void {
     if (!orderId || !newStatus) return;
+
+    // Add confirmation for cancellation
+    if (newStatus === OrderStatus.Canceled.toString()) {
+      if (!confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
+        return;
+      }
+    }
 
     this.updatingStatus = true;
     this.updateOrderId = orderId;
@@ -290,33 +354,41 @@ export class DashboardOrdersComponent implements OnInit {
     return getOrderStatusLabel(status);
   }
 
-  getStatusBadgeClass(status: string): string {
-    const statusStr = getOrderStatusLabel(status).toLowerCase();
-    switch(statusStr) {
-      case 'pending':
+  getStatusBadgeClass(status: string | number): string {
+    const statusNum = this.getOrderStatusNumber(status);
+    switch(statusNum) {
+      case OrderStatus.Pending:
         return 'badge-warning';
-      case 'shipped':
+      case OrderStatus.PaymentReceived:
         return 'badge-info';
-      case 'complete':
+      case OrderStatus.PaymentFailed:
+        return 'badge-danger';
+      case OrderStatus.Shipped:
+        return 'badge-primary';
+      case OrderStatus.Complete:
         return 'badge-success';
-      case 'canceled':
+      case OrderStatus.Canceled:
         return 'badge-danger';
       default:
         return 'badge-secondary';
     }
   }
 
-  getStatusIcon(status: string): string {
-    const statusStr = getOrderStatusLabel(status).toLowerCase();
-    switch(statusStr) {
-      case 'pending':
+  getStatusIcon(status: string | number): string {
+    const statusNum = this.getOrderStatusNumber(status);
+    switch(statusNum) {
+      case OrderStatus.Pending:
         return 'fa-clock';
-      case 'shipped':
-        return 'fa-truck';
-      case 'complete':
-        return 'fa-check-circle';
-      case 'canceled':
+      case OrderStatus.PaymentReceived:
+        return 'fa-credit-card';
+      case OrderStatus.PaymentFailed:
         return 'fa-times-circle';
+      case OrderStatus.Shipped:
+        return 'fa-truck';
+      case OrderStatus.Complete:
+        return 'fa-check-circle';
+      case OrderStatus.Canceled:
+        return 'fa-ban';
       default:
         return 'fa-question-circle';
     }

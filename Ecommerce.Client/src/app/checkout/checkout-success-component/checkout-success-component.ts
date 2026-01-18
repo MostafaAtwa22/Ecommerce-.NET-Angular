@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { IOrder } from '../../shared/modules/order';
+import { AnimatedOverlayComponent } from "../../account/animated-overlay-component/animated-overlay-component";
 
 @Component({
   selector: 'app-checkout-success-component',
-  imports: [],
+  imports: [AnimatedOverlayComponent],
   templateUrl: './checkout-success-component.html',
   styleUrl: './checkout-success-component.scss',
 })

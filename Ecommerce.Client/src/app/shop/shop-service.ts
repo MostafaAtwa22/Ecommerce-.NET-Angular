@@ -12,47 +12,68 @@ import { ShopParams } from '../shared/modules/ShopParams';
 export class ShopService {
   private baseUrl = `${Environment.baseUrl}/api`;
 
-  private cache = new Map<number, IProduct[]>();
+  // FIXED: Use Map with cache key that includes filters
+  private cache = new Map<string, IPagination<IProduct>>();
   pagination = new Pagination<IProduct>();
   shopParams = new ShopParams();
 
   constructor(private http: HttpClient) {}
 
   getAllProducts(useCache: boolean = true): Observable<IPagination<IProduct>> {
-    const cachedProducts = this.cache.get(1) || [];
+    // FIXED: Generate cache key based on current params
+    const cacheKey = this.generateCacheKey();
 
-    if (!useCache) this.cache.set(1, []);
-
-    const pagesReceived = Math.ceil(cachedProducts.length / this.shopParams.pageSize);
-
-    if (useCache && cachedProducts.length > 0 && this.shopParams.pageIndex <= pagesReceived) {
-      this.pagination.data = cachedProducts.slice(
-        (this.shopParams.pageIndex - 1) * this.shopParams.pageSize,
-        this.shopParams.pageIndex * this.shopParams.pageSize
-      );
-      this.pagination.pageIndex = this.shopParams.pageIndex;
-      this.pagination.pageSize = this.shopParams.pageSize;
-      this.pagination.totalData = cachedProducts.length;
-
-      return of(this.pagination);
+    if (useCache) {
+      const cachedResponse = this.cache.get(cacheKey);
+      if (cachedResponse) {
+        console.log('📦 Returning cached data for:', cacheKey);
+        this.pagination = cachedResponse;
+        return of(cachedResponse);
+      }
     }
 
+    // Build HTTP params
     let params = new HttpParams()
-      .set('pageIndex', this.shopParams.pageIndex)
-      .set('pageSize', this.shopParams.pageSize)
+      .set('pageIndex', this.shopParams.pageIndex.toString())
+      .set('pageSize', this.shopParams.pageSize.toString())
       .set('sort', this.shopParams.sort);
 
-    if (this.shopParams.brandId != null) params = params.set('brandId', this.shopParams.brandId);
-    if (this.shopParams.typeId != null) params = params.set('typeId', this.shopParams.typeId);
-    if (this.shopParams.search) params = params.set('search', this.shopParams.search);
+    if (this.shopParams.brandId != null) {
+      params = params.set('brandId', this.shopParams.brandId.toString());
+    }
+    if (this.shopParams.typeId != null) {
+      params = params.set('typeId', this.shopParams.typeId.toString());
+    }
+    if (this.shopParams.search) {
+      params = params.set('search', this.shopParams.search);
+    }
 
-    return this.http.get<IPagination<IProduct>>(`${this.baseUrl}/products`, { params }).pipe(
-      tap((response) => {
-        const currentCache = this.cache.get(1) || [];
-        this.cache.set(1, [...currentCache, ...response.data]);
-        this.pagination = response;
+    console.log('🌐 Fetching from API:', cacheKey);
+
+    return this.http
+      .get<IPagination<IProduct>>(`${this.baseUrl}/products`, {
+        params,
+        withCredentials: true
       })
-    );
+      .pipe(
+        tap((response) => {
+          // Cache the complete response
+          this.cache.set(cacheKey, response);
+          this.pagination = response;
+          console.log('✅ Cached response:', {
+            key: cacheKey,
+            pageIndex: response.pageIndex,
+            pageSize: response.pageSize,
+            totalData: response.totalData,
+            dataLength: response.data.length
+          });
+        })
+      );
+  }
+
+  // FIXED: Generate unique cache key based on all params
+  private generateCacheKey(): string {
+    return `page_${this.shopParams.pageIndex}_size_${this.shopParams.pageSize}_sort_${this.shopParams.sort}_brand_${this.shopParams.brandId ?? 'all'}_type_${this.shopParams.typeId ?? 'all'}_search_${this.shopParams.search || 'none'}`;
   }
 
   setShopParams(params: ShopParams) {
@@ -65,20 +86,40 @@ export class ShopService {
 
   resetShopParams() {
     this.shopParams = new ShopParams();
+    this.clearCache(); // FIXED: Clear cache when resetting params
     return this.shopParams;
   }
 
-  getProduct(id: number): Observable<IProduct> {
-    const cachedProducts = this.cache.get(1) || [];
-    const product = cachedProducts.find((p) => p.id === id);
+  clearCache() {
+    this.cache.clear();
+    console.log('🗑️ Cache cleared');
+  }
 
-    return product ? of(product) : this.http.get<IProduct>(`${this.baseUrl}/products/${id}`);
+  getProduct(id: number): Observable<IProduct> {
+    // FIXED: Search in all cached pages
+    let product: IProduct | undefined;
+
+    for (const [key, pagination] of this.cache.entries()) {
+      product = pagination.data.find((p) => p.id === id);
+      if (product) {
+        console.log('📦 Product found in cache:', key);
+        break;
+      }
+    }
+
+    if (product) {
+      return of(product);
+    }
+
+    console.log('🌐 Fetching product from API:', id);
+    return this.http.get<IProduct>(`${this.baseUrl}/products/${id}`, {
+      withCredentials: true
+    });
   }
 
   createProduct(product: IProductCreate): Observable<IProduct> {
     const formData = new FormData();
 
-    // Property names must match C# DTO property names exactly
     formData.append('Name', product.name);
     formData.append('Description', product.description);
     formData.append('Price', product.price.toString());
@@ -90,13 +131,17 @@ export class ShopService {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);
     }
 
-    return this.http.post<IProduct>(`${this.baseUrl}/products`, formData).pipe(
-      tap((created) => {
-        const cached = this.cache.get(1) || [];
-        this.cache.set(1, [created, ...cached]);
-        this.pagination.totalData += 1;
+    return this.http
+      .post<IProduct>(`${this.baseUrl}/products`, formData, {
+        withCredentials: true
       })
-    );
+      .pipe(
+        tap((created) => {
+          // FIXED: Clear cache to ensure fresh data on next load
+          this.clearCache();
+          console.log('✅ Product created, cache cleared');
+        })
+      );
   }
 
   updateProduct(product: IProductUpdate): Observable<IProduct> {
@@ -110,33 +155,39 @@ export class ShopService {
     formData.append('ProductTypeId', product.productTypeId.toString());
     formData.append('ProductBrandId', product.productBrandId.toString());
 
-    // For update, ImageFile is optional
     if (product.imageFile && product.imageFile instanceof File) {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);
     }
 
-    return this.http.put<IProduct>(`${this.baseUrl}/products`, formData).pipe(
-      tap((updated) => {
-        const cached = this.cache.get(1) || [];
-        const index = cached.findIndex(p => p.id === updated.id);
-
-        if (index !== -1) {
-          cached[index] = updated;
-          this.cache.set(1, [...cached]);
-        }
+    return this.http
+      .put<IProduct>(`${this.baseUrl}/products`, formData, {
+        withCredentials: true
       })
-    );
+      .pipe(
+        tap((updated) => {
+          // FIXED: Update product in all cached pages where it exists
+          for (const [key, pagination] of this.cache.entries()) {
+            const index = pagination.data.findIndex(p => p.id === updated.id);
+            if (index !== -1) {
+              pagination.data[index] = updated;
+              this.cache.set(key, { ...pagination });
+              console.log('✅ Updated product in cache:', key);
+            }
+          }
+        })
+      );
   }
 
   deleteProduct(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/products/${id}`).pipe(
-      tap(() => {
-        const cached = this.cache.get(1) || [];
-        this.cache.set(
-          1,
-          cached.filter((p) => p.id !== id)
-        );
+    return this.http
+      .delete<void>(`${this.baseUrl}/products/${id}`, {
+        withCredentials: true
       })
-    );
+      .pipe(
+        tap(() => {
+          this.clearCache();
+          console.log('✅ Product deleted, cache cleared');
+        })
+      );
   }
 }

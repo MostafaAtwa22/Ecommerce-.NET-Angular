@@ -64,7 +64,7 @@ namespace Ecommerce.Infrastructure.Services
             if (existsOrder is not null)
             {
                 _unitOfWork.Repository<Order>().Delete(existsOrder!);
-                await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+                await _paymentService.CreateOrUpdatePaymentIntent(basket.Id);
             }
             // create order
             var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!)
@@ -97,6 +97,25 @@ namespace Ecommerce.Infrastructure.Services
             var orderSpec = new OrderWithOrderItemsAndDeliverySpec(buyerEmail);
 
             return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpec)!;
+        }
+
+        public async Task<bool> CancelOrder(ICollection<OrderItem> orderItems)
+        {
+            foreach (var orderItem in orderItems)
+            {
+                var product = await _unitOfWork.Repository<Product>()
+                    .GetByIdAsync(orderItem.ProductItemOrdered.ProductItemId);
+
+                if (product is null)
+                    return false;
+
+                product.BoughtQuantity -= orderItem.Quantity;
+
+                _unitOfWork.Repository<Product>().Update(product);
+            }
+
+            var affectedRows = await _unitOfWork.Complete();
+            return affectedRows > 0;
         }
     }
 }

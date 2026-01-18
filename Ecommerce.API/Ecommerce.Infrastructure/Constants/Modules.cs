@@ -13,7 +13,7 @@ namespace Ecommerce.Infrastructure.Constants
         public const string ProductTypes = "ProductTypes";
         public const string ProductReviews = "ProductReviews";
 
-        public const string Profile = "Profile";
+        public const string Profiles = "Profiles";
         public const string Roles = "Roles";
         public const string WishLists = "WishLists";
         public const string Redis = "Redis";

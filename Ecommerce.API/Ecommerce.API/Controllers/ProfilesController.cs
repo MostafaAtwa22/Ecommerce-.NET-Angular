@@ -39,7 +39,7 @@ namespace Ecommerce.API.Controllers
 
         [Cached(600)]
         [HttpGet("users")]
-        [AuthorizePermission(Modules.Profile, CRUD.Read)]
+        [AuthorizePermission(Modules.Profiles, CRUD.Read)]
         public async Task<ActionResult<Pagination<ProfileResponseDto>>> GetAllUsers(
             [FromQuery] UserSpecParams specParams)
         {
@@ -168,7 +168,7 @@ namespace Ecommerce.API.Controllers
         }
         
         [HttpPost("lock/{id}")]
-        [AuthorizePermission(Modules.Profile, CRUD.Create)]
+        [AuthorizePermission(Modules.Profiles, CRUD.Create)]
         public async Task<ActionResult<ProfileResponseDto>> LockUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -190,7 +190,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost("unlock/{id}")]
-        [AuthorizePermission(Modules.Profile, CRUD.Create)]
+        [AuthorizePermission(Modules.Profiles, CRUD.Create)]
         public async Task<ActionResult<ProfileResponseDto>> UnlockUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
