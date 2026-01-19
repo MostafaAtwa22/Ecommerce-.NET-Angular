@@ -87,7 +87,7 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
     const statusNum = this.getOrderStatusNumber(this.order.status);
-    this.isCancelled = statusNum === OrderStatus.Canceled;
+    this.isCancelled = statusNum === OrderStatus.Cancel;
   }
 
   checkIfComplete(): void {
@@ -109,7 +109,7 @@ export class OrderDetailsComponent implements OnInit {
     const statusNum = this.getOrderStatusNumber(this.order.status);
 
     // Check if order is cancelled - show different flow
-    if (statusNum === OrderStatus.Canceled) {
+    if (statusNum === OrderStatus.Cancel) {
       this.currentStepIndex = -1; // Special case for cancelled
       return;
     }
@@ -190,7 +190,7 @@ export class OrderDetailsComponent implements OnInit {
       case 'complete':
         return OrderStatus.Complete;
       case 'cancelled':
-        return OrderStatus.Canceled;
+        return OrderStatus.Cancel;
       default:
         return OrderStatus.Pending;
     }
@@ -222,7 +222,7 @@ export class OrderDetailsComponent implements OnInit {
         return 'shipped';
       case OrderStatus.Complete:
         return 'completed';
-      case OrderStatus.Canceled:
+      case OrderStatus.Cancel:
         return 'cancelled';
       default:
         return 'pending';
@@ -301,7 +301,7 @@ export class OrderDetailsComponent implements OnInit {
     const statusNum = this.getOrderStatusNumber(this.order.status);
 
     // Handle different statuses
-    if (statusNum === OrderStatus.Canceled) {
+    if (statusNum === OrderStatus.Cancel) {
       this.estimatedDeliveryDate = 'Order Cancelled';
     } else if (statusNum === OrderStatus.PaymentFailed) {
       this.estimatedDeliveryDate = 'Payment Required';

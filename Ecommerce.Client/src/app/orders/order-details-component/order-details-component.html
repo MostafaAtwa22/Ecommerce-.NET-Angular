@@ -1,5 +1,18 @@
-<div class="order-details-container">
+<div class="order-details-container" [class.cancelled-order]="isCancelled">
   <div class="order-content" *ngIf="order">
+
+    <!-- Cancelled Order Banner -->
+    <div *ngIf="isCancelled" class="cancelled-banner">
+      <div class="cancelled-banner-content">
+        <div class="cancelled-icon">
+          <i class="fas fa-ban"></i>
+        </div>
+        <div class="cancelled-info">
+          <h3>Order Cancelled</h3>
+          <p>This order has been cancelled. A full refund will be processed to your original payment method within 5-10 business days.</p>
+        </div>
+      </div>
+    </div>
 
     <div class="row g-4">
 
@@ -8,7 +21,7 @@
 
         <!-- Order Progress Stepper -->
         <div class="order-progress-section">
-          <div class="stepper-container">
+          <div class="stepper-container" [class.cancelled-stepper]="isCancelled">
             <div class="stepper-header">
               <div class="stepper-steps">
                 <!-- Wrap ngFor and ngIf in ng-container -->
@@ -44,7 +57,7 @@
             </div>
 
             <div class="stepper-content">
-              <div class="step-description-content">
+              <div class="step-description-content" [class.cancelled-content]="isCancelled">
                 <h4>{{ getCurrentStep().title }}</h4>
                 <p>{{ getCurrentStep().description }}</p>
                 <div class="step-date" *ngIf="getCurrentStep().date">
@@ -59,9 +72,16 @@
                 </div>
 
                 <!-- Show cancellation message if applicable -->
-                <div *ngIf="isCancelled" class="alert alert-secondary mt-2">
+                <div *ngIf="isCancelled" class="alert alert-cancelled mt-2">
                   <i class="fas fa-info-circle me-2"></i>
-                  This order has been cancelled. Refunds, if applicable, will be processed within 5-10 business days.
+                  <div class="alert-content">
+                    <strong>What happens next?</strong>
+                    <ul class="mt-2">
+                      <li>Your refund will be processed within 5-10 business days</li>
+                      <li>The refund will be credited to your original payment method</li>
+                      <li>If you have questions, contact our support team</li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>

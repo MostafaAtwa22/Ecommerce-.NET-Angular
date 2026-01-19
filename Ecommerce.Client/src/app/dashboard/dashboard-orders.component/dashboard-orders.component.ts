@@ -54,7 +54,7 @@ export class DashboardOrdersComponent implements OnInit {
     { value: OrderStatus.Pending.toString(), name: 'Pending' },
     { value: OrderStatus.Shipped.toString(), name: 'Shipped' },
     { value: OrderStatus.Complete.toString(), name: 'Complete' },
-    { value: OrderStatus.Canceled.toString(), name: 'Canceled' }
+    { value: OrderStatus.Cancel.toString(), name: 'Canceled' }
   ];
 
   // OrderStatus for template access
@@ -279,9 +279,10 @@ export class DashboardOrdersComponent implements OnInit {
         return OrderStatus.Shipped;
       case 'complete':
         return OrderStatus.Complete;
+      case 'cancel':
       case 'canceled':
       case 'cancelled': // Handle both spellings
-        return OrderStatus.Canceled;
+        return OrderStatus.Cancel;
       default:
         return OrderStatus.Pending;
     }
@@ -291,7 +292,7 @@ export class DashboardOrdersComponent implements OnInit {
   canCancelOrder(orderStatus: string | number): boolean {
     const statusNum = this.getOrderStatusNumber(orderStatus);
     // Can cancel if not already cancelled or complete
-    return statusNum !== OrderStatus.Canceled && statusNum !== OrderStatus.Complete;
+    return statusNum !== OrderStatus.Cancel && statusNum !== OrderStatus.Complete;
   }
 
   // Helper to check if order can be shipped
@@ -312,7 +313,7 @@ export class DashboardOrdersComponent implements OnInit {
     if (!orderId || !newStatus) return;
 
     // Add confirmation for cancellation
-    if (newStatus === OrderStatus.Canceled.toString()) {
+    if (newStatus === OrderStatus.Cancel.toString()) {
       if (!confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
         return;
       }
@@ -367,7 +368,7 @@ export class DashboardOrdersComponent implements OnInit {
         return 'badge-primary';
       case OrderStatus.Complete:
         return 'badge-success';
-      case OrderStatus.Canceled:
+      case OrderStatus.Cancel:
         return 'badge-danger';
       default:
         return 'badge-secondary';
@@ -387,7 +388,7 @@ export class DashboardOrdersComponent implements OnInit {
         return 'fa-truck';
       case OrderStatus.Complete:
         return 'fa-check-circle';
-      case OrderStatus.Canceled:
+      case OrderStatus.Cancel:
         return 'fa-ban';
       default:
         return 'fa-question-circle';

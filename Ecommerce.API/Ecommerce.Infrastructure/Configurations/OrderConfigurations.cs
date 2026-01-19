@@ -38,7 +38,8 @@ namespace Ecommerce.Infrastructure.Configurations
                         .HasColumnType("decimal(18,2)");
 
             builder.HasMany(o => o.OrderItems)
-                .WithOne()
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(o => o.ApplicationUser)

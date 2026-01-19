@@ -10,6 +10,7 @@ namespace Ecommerce.Core.Spec
         {
             Includes.Add(o => o.ApplicationUser);
             Includes.Add(o => o.OrderItems);
+            Includes.Add(o => o.DeliveryMethod);
         }
 
         public OrdersWithUserSpecification(OrdersSpecParams specParams, bool forCount = false)

@@ -40,7 +40,7 @@ namespace Ecommerce.Infrastructure.Services
                 var availableStock = productItem.Quantity - productItem.BoughtQuantity;
                 if (availableStock < item.Quantity)
                     throw new Exception($"Only {availableStock} items available for {productItem.Name}");
-                
+
                 var itemOrdered = new ProductItemOrdered(productItem!.Id, productItem.Name, productItem.PictureUrl);
 
                 var orderItem = new OrderItem(item.Price, item.Quantity, itemOrdered);
@@ -99,23 +99,26 @@ namespace Ecommerce.Infrastructure.Services
             return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpec)!;
         }
 
-        public async Task<bool> CancelOrder(ICollection<OrderItem> orderItems)
+        public async Task CancelOrder(Order order)
         {
-            foreach (var orderItem in orderItems)
+            var productIds = order.OrderItems
+                .Select(i => i.ProductItemOrdered.ProductItemId)
+                .Distinct()
+                .ToList();
+
+            var products = await _unitOfWork.Repository<Product>()
+                .FindAllAsync(p => productIds.Contains(p.Id));
+
+            foreach (var product in products)
             {
-                var product = await _unitOfWork.Repository<Product>()
-                    .GetByIdAsync(orderItem.ProductItemOrdered.ProductItemId);
+                var qty = order.OrderItems
+                    .Where(i => i.ProductItemOrdered.ProductItemId == product.Id)
+                    .Sum(i => i.Quantity);
 
-                if (product is null)
-                    return false;
-
-                product.BoughtQuantity -= orderItem.Quantity;
-
-                _unitOfWork.Repository<Product>().Update(product);
+                product.BoughtQuantity -= qty;
+                _unitOfWork.Repository<Product>()
+                    .Update(product);
             }
-
-            var affectedRows = await _unitOfWork.Complete();
-            return affectedRows > 0;
         }
     }
 }

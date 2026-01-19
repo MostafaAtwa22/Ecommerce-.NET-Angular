@@ -5,7 +5,7 @@ export enum OrderStatus {
   PaymentFailed = 2,
   Shipped = 3,
   Complete = 4,
-  Canceled = 5  // Changed from 'Cancelled' to 'Canceled'
+  Cancel = 5  
 }
 
 export function getOrderStatusLabel(status: string | number): string {
@@ -28,8 +28,8 @@ export function getOrderStatusLabel(status: string | number): string {
       return 'Shipped';
     case OrderStatus.Complete:
       return 'Complete';
-    case OrderStatus.Canceled:
-      return 'Canceled';  // Changed from 'Cancelled' to 'Canceled'
+    case OrderStatus.Cancel:
+      return 'Canceled';  // Display as "Canceled" even though enum is "Cancel"
     default:
       return 'Unknown';
   }
