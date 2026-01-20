@@ -72,85 +72,6 @@ namespace Ecommerce.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("googlelogin")]
-        [EnableRateLimiting("customer-login")]
-        public async Task<ActionResult<UserDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
-        {
-            try
-            {
-                // Validate the Google ID token
-                var settings = new GoogleJsonWebSignature.ValidationSettings
-                {
-                    Audience = new string[]
-                    {
-                        _config["Authentication:Google:ClientId"]!
-                    }
-                };
-
-                var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken, settings);
-
-                if (payload is null)
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Invalid Google token"));
-
-                // Check if user exists
-                var user = await _userManager.FindByEmailAsync(payload.Email);
-
-                if (user is null)
-                {
-                    // Create new user if they don't exist
-                    user = new ApplicationUser
-                    {
-                        Email = payload.Email,
-                        UserName = payload.Email,
-                        FirstName = payload.GivenName ?? "",
-                        LastName = payload.FamilyName ?? "",
-                        EmailConfirmed = payload.EmailVerified,
-                        ProfilePictureUrl = payload.Picture
-                    };
-
-                    var createResult = await _userManager.CreateAsync(user);
-
-                    if (!createResult.Succeeded)
-                        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                            BuildErrors(createResult.Errors)));
-
-                    // Add to Customer role by default
-                    var roleResult = await _userManager.AddToRoleAsync(user, Role.Customer.ToString());
-
-                    if (!roleResult.Succeeded)
-                        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                            BuildErrors(roleResult.Errors)));
-                }
-                else
-                {
-                    // Optionally update user profile picture if it changed
-                    if (!string.IsNullOrEmpty(payload.Picture) &&
-                        user.ProfilePictureUrl != payload.Picture)
-                    {
-                        user.ProfilePictureUrl = payload.Picture;
-                        await _userManager.UpdateAsync(user);
-                    }
-                }
-
-                // Check if account is locked
-                if (await _userManager.IsLockedOutAsync(user))
-                    return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                        "Your account is locked. Please try again later."));
-
-                var response = await CreateUserResponseAsync(user);
-                return Ok(response);
-            }
-            catch (InvalidJwtException)
-            {
-                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Invalid Google token"));
-            }
-            catch
-            {
-                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                    "Something went wrong during Google authentication. Please try again."));
-            }
-        }
-
         [HttpPost("register")]
         [EnableRateLimiting("customer-register")]
         public async Task<ActionResult<string>> Register(RegisterDto dto)
@@ -182,7 +103,6 @@ namespace Ecommerce.API.Controllers
             return Ok("Please confirm your email. Check your inbox.");
         }
 
-
         [HttpPost("email-verification")]
         [EnableRateLimiting("customer-register")]
         public async Task<ActionResult<UserDto>> EmailVerfication([FromBody] EmailVerficationDto dto)
@@ -203,7 +123,7 @@ namespace Ecommerce.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("resend-verification")]
+        [HttpPost("resend-verification")] 
         [EnableRateLimiting("customer-register")]
         public async Task<IActionResult> ResendVerificationEmail(ResendVerificationEmailDto dto)
         {

@@ -47,9 +47,9 @@ export class OrdersComponent implements OnInit {
       'complete': 'completed',
       'completed': 'completed',
       'cancelled': 'cancelled',
-      'canceled': 'cancelled'
+      'canceled': 'canceled'
     };
-    return statusMap[statusLabel] || 'pending';
+    return statusMap[statusLabel] || 'cancelled';
   }
 
   viewOrderDetails(orderId: number) {

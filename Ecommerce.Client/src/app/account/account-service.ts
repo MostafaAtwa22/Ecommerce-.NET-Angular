@@ -1,64 +1,97 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 import { Environment } from '../environment';
-import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword } from '../shared/modules/accountUser';
+import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword, JwtPayload } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
-import { tap, catchError, throwError, finalize, shareReplay, Observable } from 'rxjs';
-import { isTokenExpired } from '../shared/utils/token-utils';
+import { tap, finalize, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
+
   private baseUrl = `${Environment.baseUrl}/api/account`;
 
-  private userSignal = signal<IAccountUser | null>(this.getUserFromLocalStorage());
-  private refreshTokenRequest$: Observable<IAccountUser> | null = null;
-
+  private userSignal = signal<IAccountUser | null>(null);
+  user = computed(() => this.userSignal());
   isLoggedIn = computed(() => !!this.userSignal());
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {}
 
-  constructor(private http: HttpClient, private router: Router) {}
-
+  // 🔐 LOGIN
   login(loginData: ILogin) {
     return this.http
-      .post<IAccountUser>(`${this.baseUrl}/login`, loginData, {
-        withCredentials: true,
-      })
-      .pipe(tap((user) => this.setUser(user)));
-  }
-
-  // Add Google login method
-  googleLogin(idToken: string) {
-    return this.http
-      .post<IAccountUser>(`${this.baseUrl}/googlelogin`, { idToken }, {
-        withCredentials: true,
-      })
-      .pipe(tap((user) => this.setUser(user)));
-  }
-
-  register(registerData: IRegister) {
-    const token = localStorage.getItem('token');
-    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-
-    return this.http.post(`${this.baseUrl}/register`, registerData, {
-      headers,
-      withCredentials: true,
-      responseType: 'text',
-    });
-  }
-
-  verifyEmail(emailVerification: IEmailVerification) {
-    return this.http
       .post<IAccountUser>(
-        `${this.baseUrl}/email-verification`,
-        emailVerification,
+        `${this.baseUrl}/login`,
+        loginData,
         { withCredentials: true }
       )
       .pipe(
         tap(user => this.setUser(user))
       );
+  }
+
+  // 🔄 REFRESH TOKEN
+  refreshToken(): Observable<IAccountUser> {
+    return this.http
+      .get<IAccountUser>(
+        `${this.baseUrl}/refresh-token`,
+        { withCredentials: true }
+      )
+      .pipe(
+        tap(user => this.setUser(user))
+      );
+  }
+
+  // 🚪 LOGOUT
+  logout() {
+    this.http
+      .post(
+        `${this.baseUrl}/logout`,
+        {},
+        { withCredentials: true }
+      )
+      .pipe(finalize(() => this.clearUserData()))
+      .subscribe();
+  }
+
+  // 🔴 REVOKE TOKEN (Admin / Manual)
+  revokeRefreshToken(token?: string) {
+    return this.http.post(
+      `${this.baseUrl}/revoke-token`,
+      token ? { token } : {},
+      { withCredentials: true }
+    );
+  }
+
+  // ==========================
+  // EMAIL & PASSWORD
+  // ==========================
+
+  register(registerData: IRegister) {
+    return this.http.post(
+      `${this.baseUrl}/register`,
+      registerData,
+      {
+        withCredentials: true,
+        responseType: 'text',
+      }
+    );
+  }
+
+  verifyEmail(dto: IEmailVerification) {
+    return this.http
+      .post<IAccountUser>(
+        `${this.baseUrl}/email-verification`,
+        dto,
+        { withCredentials: true }
+      )
+      .pipe(tap(user => this.setUser(user)));
   }
 
   resendVerificationEmail(email: string) {
@@ -68,62 +101,29 @@ export class AccountService {
     );
   }
 
-  refreshToken() {
-    if (!this.refreshTokenRequest$) {
-      console.log('Attempting to refresh token...');
-
-      this.refreshTokenRequest$ = this.http
-        .get<IAccountUser>(`${this.baseUrl}/refresh-token`, {
-          withCredentials: true,
-        })
-        .pipe(
-          tap(user => {
-            console.log('✅ Refresh successful:', user);
-            this.setUser(user);
-          }),
-          catchError(error => {
-            console.error('❌ Refresh failed:', error);
-            console.error('Refresh error status:', error.status);
-            console.error('Refresh error message:', error.error?.message);
-            // Don't clear user data here, let error-interceptor handle it
-            return throwError(() => error);
-          }),
-          finalize(() => {
-            this.refreshTokenRequest$ = null;
-          }),
-          shareReplay(1)
-        );
-    }
-
-    return this.refreshTokenRequest$;
-  }
-
-  revokeRefreshToken(token?: string) {
-    return this.http.post(
-      `${this.baseUrl}/revoke-token`,
-      token ? { token } : {},
-      {
-        withCredentials: true,
-      }
-    );
-  }
-
   forgetPassword(dto: IForgetPassword) {
-    return this.http.post<IAccountUser>(`${this.baseUrl}/forgetpassword`, dto);
+    return this.http.post(
+      `${this.baseUrl}/forgetpassword`,
+      dto
+    );
   }
 
   resendResetEmail(email: string) {
     const formData = new FormData();
     formData.append('email', email);
 
-    return this.http.post<IAccountUser>(`${this.baseUrl}/resend-resetpassword`, formData);
+    return this.http.post(
+      `${this.baseUrl}/resend-resetpassword`,
+      formData
+    );
   }
 
   resetPassword(dto: IResetPassword) {
-    return this.http.post(`${this.baseUrl}/resetpassword`, dto, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      responseType: 'text',
-    });
+    return this.http.post(
+      `${this.baseUrl}/resetpassword`,
+      dto,
+      { responseType: 'text' }
+    );
   }
 
   emailExists(email: string) {
@@ -132,120 +132,6 @@ export class AccountService {
 
   usernameExists(username: string) {
     return this.http.get<boolean>(`${this.baseUrl}/usernameexists/${username}`);
-  }
-
-  logout() {
-    this.revokeRefreshToken()
-      .subscribe({
-        next: () => {
-          this.clearUserData();
-        },
-        error: () => {
-          this.clearUserData();
-        }
-      });
-  }
-
-  private clearUserData() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    this.userSignal.set(null);
-    this.router.navigate(['/']);
-  }
-
-  user() {
-    return this.userSignal();
-  }
-
-  clearUserDataOnly() {
-    this.clearUserData();
-  }
-
-  loadCurrentUser() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      this.userSignal.set(null);
-      return;
-    }
-
-    // If token is expired, try to refresh it
-    if (isTokenExpired(token)) {
-      console.warn('Token has expired, attempting to refresh...');
-      this.refreshToken().subscribe({
-        next: (user) => {
-          console.log('Token refreshed successfully');
-        },
-        error: (err) => {
-          console.warn('Failed to refresh token, clearing session...', err);
-          this.clearUserData();
-        }
-      });
-      return;
-    }
-
-    const storedUser = this.getUserFromLocalStorage();
-    if (storedUser) {
-      this.userSignal.set(storedUser);
-    } else {
-      this.userSignal.set(null);
-    }
-  }
-
-  private setUser(user: IAccountUser) {
-    this.userSignal.set(user);
-    localStorage.setItem('token', user.token);
-    localStorage.setItem(
-      'user',
-      JSON.stringify({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        userName: user.userName,
-        gender: user.gender,
-        email: user.email,
-        profilePicture: user.profilePicture,
-        roles: user.roles,
-        refreshTokenExpiration: user.refreshTokenExpiration
-      })
-    );
-  }
-
-  private getUserFromLocalStorage(): IAccountUser | null {
-    const token = localStorage.getItem('token');
-    const userStr = localStorage.getItem('user');
-
-    if (!token) {
-      return null;
-    }
-
-    // Don't clear data here - let loadCurrentUser handle the refresh attempt
-    if (isTokenExpired(token)) {
-      console.warn('Token has expired, will attempt refresh...');
-      return null;
-    }
-
-    if (!userStr) {
-      return null;
-    }
-
-    try {
-      const userData = JSON.parse(userStr);
-      if (!userData.firstName || !userData.email) {
-        console.warn('Incomplete user data in localStorage, clearing...');
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        return null;
-      }
-
-      return {
-        ...userData,
-        token,
-      } as IAccountUser;
-    } catch (error) {
-      console.error('Failed to parse user data from localStorage:', error);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      return null;
-    }
   }
 
   updateLocalUserProfilePicture(newUrl: string | null): void {
@@ -273,17 +159,62 @@ export class AccountService {
     this.updateLocalUserProfilePicture(null);
   }
 
-  // Debug method to check cookies
-  checkRefreshTokenCookie() {
-    const cookies = document.cookie.split(';');
-    const refreshTokenCookie = cookies.find(c => c.trim().startsWith('refreshToken='));
+  hasPermission(permission: string): boolean {
+    const currentUser = this.userSignal();
+    return currentUser?.permissions?.includes(permission) ?? false;
+  }
 
-    if (refreshTokenCookie) {
-      console.log('Refresh token cookie exists:', refreshTokenCookie.substring(0, 50) + '...');
-      return true;
-    } else {
-      console.warn('No refresh token cookie found');
-      return false;
+  hasRole(role: string): boolean {
+    const currentUser = this.userSignal();
+    return currentUser?.roles?.includes(role) ?? false;
+  }
+
+  // HELPERS
+  private setUser(user: IAccountUser) {
+    let permissions: string[] = [];
+
+    if (user.token) {
+      try {
+        const payload = jwtDecode<JwtPayload>(user.token);
+        permissions = payload.Permission || [];
+      } catch (err) {
+        console.error('Failed to decode JWT', err);
+      }
     }
+
+    this.userSignal.set({ ...user, permissions });
+
+    localStorage.setItem(
+      'user',
+      JSON.stringify({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        userName: user.userName,
+        email: user.email,
+        roles: user.roles,
+        permissions, // store permissions
+        profilePicture: user.profilePicture,
+        refreshTokenExpiration: user.refreshTokenExpiration,
+        token: user.token
+      })
+    );
+  }
+
+  loadCurrentUser() {
+    const userStr = localStorage.getItem('user');
+    if (!userStr) return;
+
+    try {
+      const user = JSON.parse(userStr);
+      this.userSignal.set(user);
+    } catch {
+      this.clearUserData();
+    }
+  }
+
+  private clearUserData() {
+    localStorage.removeItem('user');
+    this.userSignal.set(null);
+    this.router.navigate(['/login']);
   }
 }

@@ -63,6 +63,8 @@ export class OrderDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.orderId = +this.route.snapshot.paramMap.get('id')!;
     this.loadOrderDetails();
+  console.log('OrderStatus enum:', this.OrderStatus);
+  console.log('OrderStatus.Cancel value:', this.OrderStatus.Cancel)
   }
 
   loadOrderDetails(): void {
@@ -73,6 +75,7 @@ export class OrderDetailsComponent implements OnInit {
         this.updateStepProgress();
         this.calculateEstimatedDeliveryDate();
         this.checkIfCancelled();
+        console.log('isCancelled after check:', this.isCancelled);
         this.checkIfComplete();
       },
       error: (err) => {
@@ -86,8 +89,22 @@ export class OrderDetailsComponent implements OnInit {
       this.isCancelled = false;
       return;
     }
+
+    console.log('Checking if cancelled - status:', this.order.status);
+    console.log('Status string:', this.order.status.toString());
+    console.log('Status lowercased:', this.order.status.toString().toLowerCase());
+
     const statusNum = this.getOrderStatusNumber(this.order.status);
-    this.isCancelled = statusNum === OrderStatus.Cancel;
+    console.log('Status number from getOrderStatusNumber:', statusNum);
+    console.log('OrderStatus.Cancel value:', this.OrderStatus.Cancel);
+
+    // Check multiple ways
+    this.isCancelled = statusNum === 5 ||
+                      statusNum === this.OrderStatus.Cancel ||
+                      this.order.status.toString().toLowerCase() === 'cancel' ||
+                      this.order.status.toString().toLowerCase() === 'cancelled';
+
+    console.log('Final isCancelled value:', this.isCancelled);
   }
 
   checkIfComplete(): void {

@@ -365,7 +365,7 @@ export class DashboardOrdersComponent implements OnInit {
       case OrderStatus.PaymentFailed:
         return 'badge-danger';
       case OrderStatus.Shipped:
-        return 'badge-primary';
+        return 'badge-secondary';
       case OrderStatus.Complete:
         return 'badge-success';
       case OrderStatus.Cancel:

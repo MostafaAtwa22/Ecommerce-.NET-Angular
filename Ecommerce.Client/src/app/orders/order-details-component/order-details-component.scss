@@ -566,3 +566,198 @@
     }
   }
 }
+/* Cancelled Order Styles */
+.cancelled-order {
+  .order-content {
+    opacity: 0.9;
+  }
+
+  .section-title::before {
+    background-color: #c91a1a !important;
+  }
+
+  .step-description-content {
+    border-color: #c91a1a;
+    background-color: rgba(201, 26, 26, 0.05);
+  }
+}
+
+/* Cancelled Banner */
+.cancelled-banner {
+  background: linear-gradient(135deg, #c91a1a 0%, #e53e3e 100%);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(201, 26, 26, 0.2);
+  animation: slideInDown 0.5s ease;
+
+  .cancelled-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+    }
+  }
+
+  .cancelled-icon {
+    font-size: 2rem;
+    background: rgba(255, 255, 255, 0.2);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
+
+  .cancelled-info {
+    flex: 1;
+
+    h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    p {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-bottom: 0;
+      line-height: 1.5;
+    }
+  }
+}
+
+/* Cancelled Stepper */
+.cancelled-stepper {
+  .stepper-steps {
+    opacity: 0.6;
+  }
+
+  .cancelled-state {
+    .step-circle {
+      background-color: #c91a1a;
+      border-color: #c91a1a;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    .step-label {
+      color: #c91a1a;
+      font-weight: 600;
+    }
+  }
+
+  .step-description-content.cancelled-content {
+    border-color: #c91a1a;
+    background: rgba(201, 26, 26, 0.05);
+
+    h4 {
+      color: #c91a1a;
+    }
+
+    p {
+      color: #718096;
+    }
+
+    .step-date {
+      color: #c91a1a;
+    }
+  }
+}
+
+/* Alert for cancelled orders */
+.alert-cancelled {
+  background: rgba(201, 26, 26, 0.1);
+  border: 1px solid rgba(201, 26, 26, 0.2);
+  color: #742a2a;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1rem;
+  text-align: left;
+
+  i {
+    color: #c91a1a;
+  }
+
+  .alert-content {
+    strong {
+      color: #c91a1a;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    ul {
+      margin-bottom: 0;
+      padding-left: 1rem;
+
+      li {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        color: #742a2a;
+        line-height: 1.4;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
+
+/* Refund styling in totals */
+.total-item .refund {
+  color: #c91a1a !important;
+  font-weight: 700 !important;
+}
+
+/* Animation for cancelled state */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(201, 26, 26, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(201, 26, 26, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(201, 26, 26, 0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Also update existing error step styling to match cancelled theme */
+.step.error .step-circle {
+  background-color: #c91a1a;
+  border-color: #c91a1a;
+  color: white;
+}
+
+.step.error .step-label {
+  color: #c91a1a;
+  font-weight: 600;
+}
+
+.step.error .step-connector {
+  background-color: #c91a1a;
+}

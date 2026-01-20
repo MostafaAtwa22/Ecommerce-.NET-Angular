@@ -1,39 +1,100 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { isTokenExpired } from '../../shared/utils/token-utils';
 import { inject } from '@angular/core';
+import {
+  HttpInterceptorFn,
+  HttpRequest,
+  HttpHandlerFn,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { catchError, filter, switchMap, take } from 'rxjs/operators';
 import { AccountService } from '../../account/account-service';
 
-export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('token');
+// Shared state for handling token refresh
+let isRefreshing = false;
+const refreshTokenSubject = new BehaviorSubject<boolean>(false);
 
-  if (
-    req.url.includes('/api/auth/login') ||
-    req.url.includes('/api/auth/register') ||
-    req.url.includes('/api/home')
-  ) {
-    return next(req);
+export const jwtInterceptor: HttpInterceptorFn = (
+  request: HttpRequest<any>,
+  next: HttpHandlerFn
+) => {
+  const accountService = inject(AccountService);
+  const user = accountService.user();
+
+  // Attach access token if available
+  let authRequest = request;
+  if (user?.token) {
+    authRequest = request.clone({
+      setHeaders: {
+        Authorization: `Bearer ${user.token}`
+      },
+      withCredentials: true
+    });
+  } else {
+    authRequest = request.clone({ withCredentials: true });
   }
 
-  if (token) {
-    // Check if token is expired before adding it to the request
-    if (isTokenExpired(token)) {
-      const accountService = inject(AccountService);
-      accountService.logout();
-      return next(req);
-    }
-
-    const isFormData = req.body instanceof FormData;
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${token}`
-    };
-
-    // For non-multipart requests, ensure Content-Type is set to application/json if the caller hasn’t specified it.
-    if (!isFormData && !req.headers.has('Content-Type')) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    req = req.clone({ setHeaders: headers });
-  }
-
-  return next(req);
+  return next(authRequest).pipe(
+    catchError((error: HttpErrorResponse) => {
+      // Handle 401 errors (expired/invalid access token)
+      if (error.status === 401 && !request.url.includes('/refresh-token')) {
+        return handle401Error(authRequest, next, accountService);
+      }
+      return throwError(() => error);
+    })
+  );
 };
+
+// Refresh Token Logic
+function handle401Error(
+  request: HttpRequest<any>,
+  next: HttpHandlerFn,
+  accountService: AccountService
+) {
+  if (!isRefreshing) {
+    isRefreshing = true;
+    refreshTokenSubject.next(false);
+
+    return accountService.refreshToken().pipe(
+      switchMap(() => {
+        isRefreshing = false;
+        refreshTokenSubject.next(true);
+
+        const user = accountService.user();
+        const retryRequest = user?.token
+          ? request.clone({
+              setHeaders: {
+                Authorization: `Bearer ${user.token}`
+              },
+              withCredentials: true
+            })
+          : request;
+
+        return next(retryRequest);
+      }),
+      catchError(err => {
+        isRefreshing = false;
+        accountService.logout();
+        return throwError(() => err);
+      })
+    );
+  }
+
+  // Wait until refresh finishes
+  return refreshTokenSubject.pipe(
+    filter(done => done === true),
+    take(1),
+    switchMap(() => {
+      const user = accountService.user();
+      const retryRequest = user?.token
+        ? request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${user.token}`
+            },
+            withCredentials: true
+          })
+        : request;
+
+      return next(retryRequest);
+    })
+  );
+}

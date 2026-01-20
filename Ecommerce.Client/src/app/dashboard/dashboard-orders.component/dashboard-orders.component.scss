@@ -219,34 +219,58 @@
   gap: 0.375rem;
   border: 1px solid;
 
+  i {
+    font-size: 0.875rem;
+  }
+
   &.badge-warning {
     background: rgba(237, 137, 54, 0.1);
     color: #ed8936;
     border-color: rgba(237, 137, 54, 0.3);
+
+    i {
+      color: #ed8936;
+    }
   }
 
   &.badge-info {
     background: rgba(159, 122, 234, 0.1);
     color: #9f7aea;
     border-color: rgba(159, 122, 234, 0.3);
+
+    i {
+      color: #9f7aea;
+    }
   }
 
   &.badge-success {
     background: rgba(72, 187, 120, 0.1);
     color: #48bb78;
     border-color: rgba(72, 187, 120, 0.3);
+
+    i {
+      color: #48bb78;
+    }
   }
 
   &.badge-danger {
     background: rgba(201, 26, 26, 0.1);
     color: #c91a1a;
     border-color: rgba(201, 26, 26, 0.3);
+
+    i {
+      color: #c91a1a;
+    }
   }
 
   &.badge-secondary {
     background: rgba(106, 111, 115, 0.1);
     color: #6a6f73;
     border-color: rgba(106, 111, 115, 0.2);
+
+    i {
+      color: #6a6f73;
+    }
   }
 }
 
@@ -598,6 +622,10 @@
 .btn-cancel {
   background: #c91a1a;
 
+  i {
+    color: #ffffff;
+  }
+
   &:hover:not(:disabled) {
     background: darken(#c91a1a, 10%);
   }
@@ -605,6 +633,10 @@
 
 .btn-ship {
   background: #9f7aea;
+
+  i {
+    color: #ffffff;
+  }
 
   &:hover:not(:disabled) {
     background: darken(#9f7aea, 10%);
@@ -614,6 +646,10 @@
 .btn-complete {
   background: #48bb78;
 
+  i {
+    color: #ffffff;
+  }
+
   &:hover:not(:disabled) {
     background: darken(#48bb78, 10%);
   }
@@ -622,6 +658,10 @@
 .btn-close-modal {
   background: #6a6f73;
   min-width: 100px;
+
+  i {
+    color: #ffffff;
+  }
 
   &:hover:not(:disabled) {
     background: darken(#6a6f73, 10%);

@@ -11,6 +11,7 @@ import { BasketService } from './shared/services/basket-service';
 import { AccountService } from './account/account-service';
 import { isTokenExpired } from './shared/utils/token-utils';
 import { WishlistService } from './wishlist/wishlist-service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,49 +20,46 @@ import { WishlistService } from './wishlist/wishlist-service';
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })
-export class App implements OnInit{
+export class App implements OnInit {
   protected readonly title = signal('Tasaqolli');
   readonly loading;
 
-  constructor(private busyService: BusyService,
+  constructor(
+    private busyService: BusyService,
     private appRef: ApplicationRef,
     private basketService: BasketService,
     private wishlistService: WishlistService,
-    private accountService: AccountService) {
+    private accountService: AccountService
+  ) {
     this.loading = toSignal(this.busyService.loading$, { initialValue: true });
-
-    this.busyService.busy();
-
-    this.appRef.isStable.subscribe((stable) => {
-      if (stable) {
-        setTimeout(() => this.busyService.idle(), 1500);
-      }
-    });
   }
-  ngOnInit(): void {
-    // Check token expiration on app initialization
-    const token = localStorage.getItem('token');
-    if (token && isTokenExpired(token)) {
-      console.warn('Token expired on app initialization, logging out...');
-      this.accountService.logout();
-    } else {
-      // Load current user if token is valid
-      this.accountService.loadCurrentUser();
-    }
 
+  ngOnInit(): void {
+    // Initialize app stable state and hide loader
+    this.busyService.busy();
+    this.appRef.isStable.subscribe(stable => {
+      if (stable) setTimeout(() => this.busyService.idle(), 1500);
+    });
+
+    // Load current user (refresh handled by interceptor if needed)
+    this.accountService.loadCurrentUser();
+
+    // Initialize basket
     const basketId = localStorage.getItem('basket_id');
     if (basketId) {
-      this.basketService.getBasket(basketId).subscribe(() => {
-        console.log("Bakset Init");
-      }, err => console.log(err));
+      this.basketService.getBasket(basketId).pipe(take(1)).subscribe({
+        next: () => console.log("Basket initialized"),
+        error: err => console.error(err)
+      });
     }
 
+    // Initialize wishlist
     const wishListId = localStorage.getItem('wishlist_id');
-    if(wishListId) {
-      this.wishlistService.getWishList(wishListId)
-        .subscribe(() => {
-          console.log('wish list init');
-        }, err => console.error(err));
+    if (wishListId) {
+      this.wishlistService.getWishList(wishListId).pipe(take(1)).subscribe({
+        next: () => console.log("Wishlist initialized"),
+        error: err => console.error(err)
+      });
     }
   }
 }

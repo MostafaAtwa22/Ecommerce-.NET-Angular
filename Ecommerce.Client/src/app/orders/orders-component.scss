@@ -136,6 +136,11 @@
       color: #c91a1a;
       border-color: rgba(201, 26, 26, 0.3);
     }
+    &.canceled {
+      background: rgba(201, 26, 26, 0.1);
+      color: #c91a1a;
+      border-color: rgba(201, 26, 26, 0.3);
+    }
 
     &.processing {
       background: rgba(159, 122, 234, 0.1);
