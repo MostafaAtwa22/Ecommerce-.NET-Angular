@@ -19,7 +19,6 @@ import { AnimatedOverlayComponent } from '../animated-overlay-component/animated
   styleUrls: ['./login-component.scss']
 })
 export class LoginComponent implements OnInit {
-
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -72,6 +71,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  loginWithGoogle() {
+    this.accountService.googleLogin();
+  }
 
   // 🔥 Role-based navigation
   private navigateByRole(): void {

@@ -12,14 +12,7 @@
           (mouseenter)="showEditOptions = true"
           (mouseleave)="showEditOptions = false"
         >
-          <img
-            class="avatar"
-            [class.is-uploading]="isUploading"
-            [class.upload-success]="uploadProgress === 100"
-            [src]="profile?.profilePicture ?? (profile.gender === 'Male' ? 'default-male.png' : 'default-female.png')"
-
-            [alt]="profile.firstName + ' ' + profile.lastName"
-          />
+          <img class="avatar" [src]="profilePictureUrl" [alt]="profile.firstName" />
 
           <!-- Loading overlay -->
           <div *ngIf="isUploading" class="avatar-loading-overlay">
@@ -64,7 +57,9 @@
           <div class="progress-bar">
             <div class="progress-fill" [style.width.%]="uploadProgress"></div>
           </div>
-          <span class="progress-text">Uploading{{ uploadProgress === 100 ? ' Complete!' : '' }}</span>
+          <span class="progress-text"
+            >Uploading{{ uploadProgress === 100 ? ' Complete!' : '' }}</span
+          >
         </div>
       </div>
 

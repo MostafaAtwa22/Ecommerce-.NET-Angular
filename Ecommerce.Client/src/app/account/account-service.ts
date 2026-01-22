@@ -7,6 +7,8 @@ import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword, JwtP
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
 import { tap, finalize, Observable } from 'rxjs';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { googleAuthConfig } from './google-auth.config';
 
 @Injectable({
   providedIn: 'root',
@@ -20,8 +22,11 @@ export class AccountService {
   isLoggedIn = computed(() => !!this.userSignal());
   constructor(
     private http: HttpClient,
-    private router: Router
-  ) {}
+    private router: Router,
+    private oAuth: OAuthService,
+  ) {
+    this.oAuth.configure(googleAuthConfig);
+  }
 
   // 🔐 LOGIN
   login(loginData: ILogin) {
@@ -67,6 +72,31 @@ export class AccountService {
       token ? { token } : {},
       { withCredentials: true }
     );
+  }
+
+  // google
+  async googleLogin() {
+    await this.oAuth.loadDiscoveryDocument();
+    this.oAuth.initLoginFlow();
+  }
+
+  async processGoogleLogin() {
+    await this.oAuth.loadDiscoveryDocumentAndTryLogin();
+
+    if (!this.oAuth.hasValidIdToken())
+      return null!;
+
+    const idToken = this.oAuth.getIdToken();
+
+    return this.http
+      .post<IAccountUser>(
+        `${this.baseUrl}/google-login`,
+        { idToken },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap(user => this.setUser(user))
+      );
   }
 
   // ==========================

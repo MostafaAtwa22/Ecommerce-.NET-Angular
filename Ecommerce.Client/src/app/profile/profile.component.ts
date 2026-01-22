@@ -56,6 +56,7 @@ export class ProfileComponent implements OnInit {
   showEditOptions = false;
   isUploading = false;
   uploadProgress = 0;
+  profilePictureUrl: string = '';
 
   readonly sections: { id: ProfileSection; label: string; caption: string }[] = [
     { id: 'main-info', label: 'Overview', caption: 'Account basics' },
@@ -74,6 +75,20 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProfile();
+const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+
+      // Set profile picture or fallback based on gender
+      this.profilePictureUrl = user.profilePicture
+        ? user.profilePicture
+        : user.gender === 'Male'
+          ? 'default-male.png'
+          : 'default-female.png';
+    } else {
+      // fallback if nothing in local storage
+      this.profilePictureUrl = 'default-male.png';
+    }
   }
 
   retry(): void {

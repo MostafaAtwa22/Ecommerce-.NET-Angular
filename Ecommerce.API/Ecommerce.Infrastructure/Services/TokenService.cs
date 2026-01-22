@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Azure;
+using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Constants;
@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Ecommerce.Core.googleDto;
+using AutoMapper;
 
 namespace Ecommerce.Infrastructure.Services
 {
@@ -19,22 +21,22 @@ namespace Ecommerce.Infrastructure.Services
         private readonly SymmetricSecurityKey _key;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
 
         public TokenService(IConfiguration config, 
         UserManager<ApplicationUser> userManager, 
         RoleManager<IdentityRole> roleManager,
-        IUnitOfWork unitOfWork,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper)
         {
             _config = config;
             _userManager = userManager;
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]!));
             _roleManager = roleManager;
-            _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public async Task<string> CreateToken(ApplicationUser user)
@@ -100,6 +102,32 @@ namespace Ecommerce.Infrastructure.Services
             var jwtToken = tokenHandler.WriteToken(token);
 
             return jwtToken;
+        }
+
+        public async Task<ApplicationUser?> FindOrCreateUserByGoogleIdAsync(GoogleUserDto googleDto)
+        {
+            var user = await _userManager.FindByEmailAsync(googleDto.Email);
+
+            if (user is not null)
+            {
+                if (string.IsNullOrEmpty(user.GoogleId))
+                {
+                    user.GoogleId = googleDto.GoogleId;
+                    await _userManager.UpdateAsync(user);
+                }
+                return user;
+            }
+
+            var newUser = _mapper.Map<ApplicationUser>(googleDto);
+
+            var result = await _userManager.CreateAsync(newUser);
+
+            if (!result.Succeeded)
+                return null;
+
+            await _userManager.AddToRoleAsync(newUser, Role.Customer.ToString());
+
+            return newUser;
         }
 
         public RefreshToken GenerateRefreshToken()

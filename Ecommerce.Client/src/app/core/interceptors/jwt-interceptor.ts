@@ -20,23 +20,29 @@ export const jwtInterceptor: HttpInterceptorFn = (
   const accountService = inject(AccountService);
   const user = accountService.user();
 
-  // Attach access token if available
+  // Check if this is a request to Google OAuth endpoints
+  const isGoogleOAuth = request.url.includes('accounts.google.com') || 
+                        request.url.includes('googleapis.com');
+  
+  // Only attach credentials and token for our own API, not for external OAuth providers
   let authRequest = request;
-  if (user?.token) {
-    authRequest = request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${user.token}`
-      },
-      withCredentials: true
-    });
-  } else {
-    authRequest = request.clone({ withCredentials: true });
+  if (!isGoogleOAuth) {
+    if (user?.token) {
+      authRequest = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${user.token}`
+        },
+        withCredentials: true
+      });
+    } else {
+      authRequest = request.clone({ withCredentials: true });
+    }
   }
 
   return next(authRequest).pipe(
     catchError((error: HttpErrorResponse) => {
       // Handle 401 errors (expired/invalid access token)
-      if (error.status === 401 && !request.url.includes('/refresh-token')) {
+      if (error.status === 401 && !request.url.includes('/refresh-token') && !isGoogleOAuth) {
         return handle401Error(authRequest, next, accountService);
       }
       return throwError(() => error);

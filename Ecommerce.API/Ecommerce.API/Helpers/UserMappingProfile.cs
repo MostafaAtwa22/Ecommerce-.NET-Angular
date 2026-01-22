@@ -3,6 +3,7 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Helpers.Resolver;
 using Ecommerce.Core.Entities.Identity;
+using Ecommerce.Core.googleDto;
 using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.API.Helpers
@@ -12,6 +13,11 @@ namespace Ecommerce.API.Helpers
         public UserMappingProfile()
         {
             CreateMap<RegisterDto, ApplicationUser>();
+
+            CreateMap<GoogleUserDto, ApplicationUser>()
+                .ForMember(dest => dest.UserName, o => o.MapFrom(src => src.Email))
+                .ForMember(dest => dest.NormalizedUserName, o => o.MapFrom(src => src.Email.ToUpper()))
+                .ForMember(dest => dest.NormalizedEmail, o => o.MapFrom(src => src.Email.ToUpper()));
 
             CreateMap<ApplicationUser, UserCommonDto>()
                 .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender.ToString()))

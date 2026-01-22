@@ -26,6 +26,7 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IGoogleService, GoogleService>();
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProviderFilter>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandlerFilter>();

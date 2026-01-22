@@ -1,6 +1,4 @@
 using System.Net;
-using System.Security.Cryptography;
-using System.Text;
 using AutoMapper;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
@@ -8,9 +6,9 @@ using Ecommerce.API.Errors;
 using Ecommerce.Core.Constants;
 using Ecommerce.Core.Entities.Emails;
 using Ecommerce.Core.Entities.Identity;
+using Ecommerce.Core.googleDto;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Services;
-using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -25,6 +23,7 @@ namespace Ecommerce.API.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly IConfiguration _config;
+        private readonly IGoogleService _googleService;
         private readonly IMapper _mapper;
 
         public AccountController(
@@ -33,6 +32,7 @@ namespace Ecommerce.API.Controllers
             ITokenService tokenService,
             IEmailService emailService,
             IConfiguration config,
+            IGoogleService googleService,
             IMapper mapper)
         {
             _userManager = userManager;
@@ -40,6 +40,7 @@ namespace Ecommerce.API.Controllers
             _tokenService = tokenService;
             _emailService = emailService;
             _config = config;
+            _googleService = googleService;
             _mapper = mapper;
         }
 
@@ -102,7 +103,7 @@ namespace Ecommerce.API.Controllers
 
             return Ok("Please confirm your email. Check your inbox.");
         }
-
+    
         [HttpPost("email-verification")]
         [EnableRateLimiting("customer-register")]
         public async Task<ActionResult<UserDto>> EmailVerfication([FromBody] EmailVerficationDto dto)
@@ -235,6 +236,35 @@ namespace Ecommerce.API.Controllers
             return NoContent();
         }
         
+        [HttpPost("google-login")]
+        [EnableRateLimiting("customer-browsing")]
+        public async Task<ActionResult<UserDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
+        {
+            var validGoogleUser = await _googleService.ValidateGoogleToken(dto.IdToken);
+
+            if (validGoogleUser is null)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
+            
+            var user = await _tokenService.FindOrCreateUserByGoogleIdAsync(
+                new GoogleUserDto
+                {
+                    Email = validGoogleUser.Email,
+                    EmailConfirmed = validGoogleUser.EmailVerified,
+                    FirstName = validGoogleUser.GivenName,
+                    LastName = validGoogleUser.FamilyName,
+                    GoogleId = validGoogleUser.JwtId,
+                    ProfilePictureUrl = validGoogleUser.Picture,
+                }
+            );
+
+            if (user is null)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+
+            var response = await CreateUserResponseAsync(user);
+            response.ProfilePicture = validGoogleUser.Picture;
+            return Ok(response);
+        }
+
         [HttpGet("emailexists/{email}")]
         [EnableRateLimiting("customer-browsing")]
         public async Task<bool> CheckEmailExistsAsync(string email)

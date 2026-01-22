@@ -124,6 +124,13 @@ export const routes: Routes = [
       .then(s => s.RegisterComponent)
   },
   {
+    path: 'signin-google',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./account/google-callback.component/google-callback.component')
+      .then(s => s.GoogleCallbackComponent)
+  },
+  {
     path: 'forgetpassword',
     loadComponent: () =>
       import('./account/forget-password.component/forget-password.component')
