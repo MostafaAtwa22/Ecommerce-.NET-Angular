@@ -1,4 +1,5 @@
 using AutoMapper;
+using Ecommerce.API.BackgroundJobs;
 using Ecommerce.API.Dtos;
 using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
@@ -23,13 +24,16 @@ namespace Ecommerce.API.Controllers
     private readonly IOrderService _orderService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly OrderBackgroundService _backgroundService;
 
     public OrdersController(IOrderService orderService,
     IUnitOfWork unitOfWork,
+    OrderBackgroundService backgroundService,
     IMapper mapper)
     {
       _orderService = orderService;
       _unitOfWork = unitOfWork;
+      _backgroundService = backgroundService;
       _mapper = mapper;
     }
 
@@ -68,14 +72,14 @@ namespace Ecommerce.API.Controllers
       if (order is null)
         return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
 
-        if (order.Status == OrderStatus.Complete)
-          return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Completed orders cannot be modified"));
+      if (order.Status == OrderStatus.Complete)
+        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Completed orders cannot be modified"));
 
-        if (order.Status == OrderStatus.Cancel)
-          return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Order already cancelled"));
+      if (order.Status == OrderStatus.Cancel)
+        return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Order already cancelled"));
 
       if (dto.Status == OrderStatus.Cancel)
-        await _orderService.CancelOrder(order);
+        _backgroundService.EnqueueCancelOrder(order);
 
       order.Status = dto.Status;
 
@@ -98,8 +102,11 @@ namespace Ecommerce.API.Controllers
       var addressDto = _mapper.Map<OrderAddressDto, OrderAddress>(dto.ShipToAddress);
 
       var order = await _orderService.CreateOrderAsync(userEmail, userId, dto.DeliveryMethodId, dto.BasketId, addressDto);
+
       if (order is null)
         return BadRequest(new ApiResponse(400, "Problem creating order"));
+
+      _backgroundService.EnqueueSendEmail(order);
 
       return Ok(_mapper.Map<Order, OrderResponseDto>(order));
     }

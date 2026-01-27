@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Ecommerce.Core.googleDto;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Services
 {
@@ -157,7 +158,29 @@ namespace Ecommerce.Infrastructure.Services
             _httpContextAccessor.HttpContext!
                 .Response
                 .Cookies
-                .Append("refreshToken", rawToken, options);
+                .Append("ecommerce_refreshToken", rawToken, options);
+        }
+    
+        public async Task CleanExpiredTokens()
+        {
+            var users = _userManager.Users
+                .Include(u => u.RefreshTokens)
+                .ToList();
+
+            foreach (var user in users)
+            {
+                var expired = user.RefreshTokens!
+                    .Where(t => !t.IsActive)
+                    .ToList();
+
+                if (expired.Any())
+                {
+                    foreach (var token in expired)
+                        user.RefreshTokens!.Remove(token);
+
+                    await _userManager.UpdateAsync(user);
+                }
+            }
         }
     }
 }

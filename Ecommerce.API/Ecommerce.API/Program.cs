@@ -3,6 +3,7 @@ using Ecommerce.API.Extensions;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
 using Ecommerce.Infrastructure.Settings;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
@@ -24,8 +25,10 @@ namespace Ecommerce.API
                     options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 });
             builder.Services.AddApplicationServices();
+
             builder.Services.Configure<RequestTimingOptions>(
                 builder.Configuration.GetSection("RequestTiming"));
+
             builder.Services.Configure<MailSettings>(
                 builder.Configuration.GetSection("MailSettings"));
             
@@ -33,16 +36,6 @@ namespace Ecommerce.API
             {
                 opt.ValidationInterval = TimeSpan.Zero;
             });
-
-            builder.Services.AddAuthentication()
-                .AddGoogle(opt =>
-                {
-                    IConfigurationSection googleAuthSection = 
-                        builder.Configuration.GetSection("Authentication:Google");
-                    
-                    opt.ClientId = googleAuthSection["ClientId"]!;
-                    opt.ClientSecret = googleAuthSection["ClientSecret"]!;
-                });
             builder.Services.AddHttpClient();
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
@@ -87,6 +80,8 @@ namespace Ecommerce.API
             app.UseAuthorization();
 
             app.MapControllers();
+
+            app.UseHangfireJobs();
 
             app.Run();
         }

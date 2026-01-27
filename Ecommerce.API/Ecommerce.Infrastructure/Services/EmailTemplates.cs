@@ -1,3 +1,5 @@
+using Ecommerce.Core.Entities.orderAggregate;
+
 namespace Ecommerce.Infrastructure.Services
 {
     public static class EmailTemplates
@@ -483,6 +485,194 @@ namespace Ecommerce.Infrastructure.Services
                                 © {DateTime.Now.Year} Ecommerce. All rights reserved.<br>
                                 This email was sent to verify your email address for account creation.<br>
                                 <a href='#'>Privacy Policy</a> • <a href='#'>Contact Support</a>
+                            </p>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+        }
+
+        public static string OrderConfirmation(Order order)
+        {
+            var orderDate = order.OrderDate.ToString("MMMM dd, yyyy");
+            var orderTime = order.OrderDate.ToString("hh:mm tt");
+            var totalAmount = order.GetTotal();
+
+            return $@"
+                <!DOCTYPE html>
+                <html lang='en'>
+                <head>
+                    <meta charset='UTF-8'>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <title>Order Confirmation #{order.Id}</title>
+                    <style>
+                        body {{
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                            line-height: 1.6;
+                            color: #0c111d;
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f7f9fa;
+                        }}
+                        .email-container {{
+                            max-width: 600px;
+                            margin: 0 auto;
+                            background-color: white;
+                            border-radius: 8px;
+                            border: 1px solid #d1d7dc;
+                            overflow: hidden;
+                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                        }}
+                        .email-header {{
+                            background: linear-gradient(135deg, #5624d0 0%, #401b9c 100%);
+                            color: white;
+                            padding: 2rem;
+                            text-align: center;
+                        }}
+                        .email-header h1 {{
+                            margin: 0;
+                            font-size: 1.75rem;
+                            font-weight: 600;
+                        }}
+                        .email-body {{
+                            padding: 2rem;
+                        }}
+                        .email-body h2 {{
+                            margin: 0 0 1rem 0;
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            color: #0c111d;
+                        }}
+                        .email-body p {{
+                            margin: 0 0 1.5rem 0;
+                            font-size: 0.875rem;
+                            color: #6a6f73;
+                        }}
+                        .status-badge {{
+                            display: inline-block;
+                            background-color: #e7f7e9;
+                            color: #0a7c0a;
+                            padding: 0.5rem 1rem;
+                            border-radius: 20px;
+                            font-weight: 600;
+                            font-size: 0.875rem;
+                            margin-bottom: 1.5rem;
+                        }}
+                        .order-info {{
+                            background-color: #f7f9fa;
+                            border-radius: 8px;
+                            padding: 1.5rem;
+                            margin: 1.5rem 0;
+                        }}
+                        .info-row {{
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 0.75rem;
+                            font-size: 0.875rem;
+                        }}
+                        .info-row:last-child {{
+                            margin-bottom: 0;
+                        }}
+                        .info-label {{
+                            color: #6a6f73;
+                        }}
+                        .info-value {{
+                            font-weight: 600;
+                            color: #0c111d;
+                        }}
+                        .info-row.total {{
+                            border-top: 2px solid #d1d7dc;
+                            padding-top: 1rem;
+                            margin-top: 1rem;
+                            font-size: 1rem;
+                        }}
+                        .info-row.total .info-value {{
+                            color: #5624d0;
+                            font-size: 1.25rem;
+                        }}
+                        .email-footer {{
+                            border-top: 1px solid #d1d7dc;
+                            padding: 1.5rem 2rem;
+                            text-align: center;
+                            font-size: 0.75rem;
+                            color: #6a6f73;
+                        }}
+                        .email-footer a {{
+                            color: #5624d0;
+                            text-decoration: none;
+                        }}
+                        @media (max-width: 600px) {{
+                            .email-container {{
+                                border-radius: 0;
+                                border: none;
+                            }}
+                            .email-header, .email-body, .email-footer {{
+                                padding: 1.5rem;
+                            }}
+                            .info-row {{
+                                flex-direction: column;
+                                gap: 0.25rem;
+                            }}
+                        }}
+                    </style>
+                </head>
+                <body>
+                    <div class='email-container'>
+                        <div class='email-header'>
+                            <h1>
+                                🛍️ Order Confirmed!
+                            </h1>
+                        </div>
+                        
+                        <div class='email-body'>
+                            <div class='status-badge'>
+                                ✅ Order #{order.Id} Confirmed
+                            </div>
+                            
+                            <h2>Thank you for your order!</h2>
+                            
+                            <p>Your order has been successfully received and is being processed. We'll notify you once it ships.</p>
+                            
+                            <div class='order-info'>
+                                <div class='info-row'>
+                                    <span class='info-label'>Order Number</span>
+                                    <span class='info-value'>#{order.Id}</span>
+                                </div>
+                                <div class='info-row'>
+                                    <span class='info-label'>Order Date</span>
+                                    <span class='info-value'>{orderDate} at {orderTime}</span>
+                                </div>
+                                <div class='info-row'>
+                                    <span class='info-label'>Order Status</span>
+                                    <span class='info-value'>{order.Status}</span>
+                                </div>
+                                <div class='info-row'>
+                                    <span class='info-label'>Subtotal</span>
+                                    <span class='info-value'>{order.SubTotal:C}</span>
+                                </div>
+                                <div class='info-row'>
+                                    <span class='info-label'>Delivery</span>
+                                    <span class='info-value'>{order.DeliveryMethod?.Price:C}</span>
+                                </div>
+                                <div class='info-row total'>
+                                    <span class='info-label'>Total Amount</span>
+                                    <span class='info-value'>{totalAmount:C}</span>
+                                </div>
+                            </div>
+                            
+                            <p>You will receive another email with tracking information once your order ships.</p>
+                            
+                            <p>If you have any questions about your order, please contact our support team.</p>
+                            
+                            <p>Best regards,<br>
+                            <strong>The Team</strong></p>
+                        </div>
+                        
+                        <div class='email-footer'>
+                            <p>
+                                © {DateTime.Now.Year} Ecommerce. All rights reserved.<br>
+                                This email confirms your order #{order.Id}.<br>
+                                <a href='#'>Contact Support</a> • <a href='#'>Privacy Policy</a>
                             </p>
                         </div>
                     </div>

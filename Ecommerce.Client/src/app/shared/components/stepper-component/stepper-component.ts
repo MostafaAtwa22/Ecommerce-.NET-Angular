@@ -168,7 +168,9 @@ export class StepperComponent extends CdkStepper implements OnInit {
     }
 
     try {
-      const token = localStorage.getItem('token');
+      const user = this.accountService.user();
+      const token = user?.token;
+
       if (!token || isTokenExpired(token)) {
         try {
           await firstValueFrom(this.accountService.refreshToken());

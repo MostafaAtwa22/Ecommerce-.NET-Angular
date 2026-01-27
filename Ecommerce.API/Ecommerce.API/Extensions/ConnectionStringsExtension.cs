@@ -1,4 +1,5 @@
 using Ecommerce.Infrastructure.Data;
+using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -24,6 +25,15 @@ namespace Ecommerce.API.Extensions
                 var configuration = ConfigurationOptions.Parse(redis, true);
                 
                 return ConnectionMultiplexer.Connect(configuration);
+            });
+
+            builder.Services.AddHangfire(config =>
+            {
+                config
+                    .UseSqlServerStorage(connectionString)
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings();
             });
             return builder;
         }

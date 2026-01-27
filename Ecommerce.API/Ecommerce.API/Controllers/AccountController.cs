@@ -9,6 +9,7 @@ using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.googleDto;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -97,9 +98,7 @@ namespace Ecommerce.API.Controllers
             if (!roleResult.Succeeded)
                 return BadRequest(new ApiResponse(400, BuildErrors(roleResult.Errors)));
 
-            var sent = await SendEmailVerificationAsync(user);
-            if (!sent)
-                return StatusCode(500, new ApiResponse(500, "Failed to send verification email"));
+            await SendEmailVerificationAsync(user);
 
             return Ok("Please confirm your email. Check your inbox.");
         }
@@ -138,9 +137,7 @@ namespace Ecommerce.API.Controllers
             if (user.EmailConfirmed)
                 return BadRequest(new ApiResponse(400, "Email is already verified"));
 
-            var sent = await SendEmailVerificationAsync(user);
-            if (!sent)
-                return StatusCode(500, new ApiResponse(500, "Failed to send verification email"));
+            await SendEmailVerificationAsync(user);
 
             return Ok("Verification email resent successfully");
         }
@@ -148,7 +145,7 @@ namespace Ecommerce.API.Controllers
         [HttpGet("refresh-token")]
         public async Task<ActionResult<UserDto>> RefreshToken()
         {
-            var token = Request.Cookies["refreshToken"];
+            var token = Request.Cookies["ecommerce_refreshToken"];
             if (string.IsNullOrEmpty(token))
                 return Unauthorized(new ApiResponse(401, "Refresh token missing"));
 
@@ -186,7 +183,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDto dto)
         {
-            var token = dto.Token ?? Request.Cookies["refreshToken"];
+            var token = dto.Token ?? Request.Cookies["ecommerce_refreshToken"];
 
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Token is required"));
@@ -207,7 +204,7 @@ namespace Ecommerce.API.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            Response.Cookies.Delete("refreshToken");
+            Response.Cookies.Delete("ecommerce_refreshToken");
 
             return Ok("Token revoked");
         }
@@ -215,7 +212,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = Request.Cookies["ecommerce_refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
                 return NoContent();
 
@@ -232,7 +229,7 @@ namespace Ecommerce.API.Controllers
 
             await _userManager.UpdateAsync(user);
 
-            Response.Cookies.Delete("refreshToken");
+            Response.Cookies.Delete("ecommerce_refreshToken");
             return NoContent();
         }
         
@@ -346,15 +343,14 @@ namespace Ecommerce.API.Controllers
 
             var body = EmailTemplates.ResetPassword(resetLink);
 
-            var emailSent = await _emailService.SendAsync(new EmailMessage
-            {
-                To = user.Email!,
-                Subject = "Reset Your Password",
-                HtmlBody = body
-            });
-
-            if (!emailSent)
-                return (null, "Failed to send reset password email");
+            BackgroundJob.Enqueue<IEmailService>(x =>
+                x.SendAsync(new EmailMessage
+                {
+                    To = user.Email!,
+                    Subject = "Reset Your Password",
+                    HtmlBody = body
+                })
+            );
 
             var response = _mapper.Map<UserDto>(user);
             response.Token = token;
@@ -367,28 +363,22 @@ namespace Ecommerce.API.Controllers
             var response = _mapper.Map<UserDto>(user);
             response.Token = await _tokenService.CreateToken(user);
 
-            user.RefreshTokens ??= new List<RefreshToken>();
+            // Get an active refresh token or create a new one
+            var refreshToken = user.RefreshTokens?.FirstOrDefault(t => t.IsActive)
+                            ?? _tokenService.GenerateRefreshToken();
 
-            // Remove inactive tokens
-            var inactiveTokens = user.RefreshTokens
-                .Where(t => !t.IsActive)
-                .ToList();
+            // If it’s a new token, add it to the user and update
+            if (!user.RefreshTokens!.Contains(refreshToken))
+            {
+                user.RefreshTokens.Add(refreshToken);
+                await _userManager.UpdateAsync(user);
+            }
 
-            foreach (var token in inactiveTokens)
-                user.RefreshTokens.Remove(token);
-
-            // Create new refresh token
-            var refreshToken = _tokenService.GenerateRefreshToken();
-            user.RefreshTokens.Add(refreshToken);
-
-            await _userManager.UpdateAsync(user);
-
-            _tokenService.SetRefreshTokenInCookie(
-                refreshToken.Token,
-                refreshToken.ExpiresOn);
-
-            // NEVER expose refresh token
+            response.RefreshToken = refreshToken.Token;
             response.RefreshTokenExpiration = refreshToken.ExpiresOn;
+
+            // Set refresh token in HTTP cookie
+            _tokenService.SetRefreshTokenInCookie(refreshToken.Token, refreshToken.ExpiresOn);
 
             return response;
         }
@@ -412,7 +402,7 @@ namespace Ecommerce.API.Controllers
             return null;
         }
 
-        private async Task<bool> SendEmailVerificationAsync(ApplicationUser user)
+        private async Task SendEmailVerificationAsync(ApplicationUser user)
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
@@ -425,8 +415,7 @@ namespace Ecommerce.API.Controllers
                 Subject = "Confirm your email",
                 HtmlBody = EmailTemplates.ConfirmEmail(confirmLink, code)
             };
-
-            return await _emailService.SendAsync(emailMessage);
+            BackgroundJob.Enqueue<IEmailService>(x => x.SendAsync(emailMessage));
         }
     }
 }

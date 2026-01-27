@@ -9,5 +9,6 @@ namespace Ecommerce.Core.Interfaces
         RefreshToken GenerateRefreshToken();
         void SetRefreshTokenInCookie(string refreshToken, DateTime expires);
         Task<ApplicationUser?> FindOrCreateUserByGoogleIdAsync(GoogleUserDto googleDto);
+        Task CleanExpiredTokens();
     }
 }

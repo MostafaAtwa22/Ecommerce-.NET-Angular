@@ -1,3 +1,4 @@
+using Ecommerce.API.BackgroundJobs;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Filters;
@@ -8,6 +9,7 @@ using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Repositories;
 using Ecommerce.Infrastructure.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +32,9 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProviderFilter>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandlerFilter>();
-            
+            services.AddHangfireServer();
+            services.AddScoped<OrderBackgroundService>();
+
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
@@ -53,7 +57,7 @@ namespace Ecommerce.API.Extensions
                     "ApplicationUser.ProfilePictureUrl"));
 
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
-
+            
             // ✅ Add CORS policy
             services.AddCors(options =>
             {
