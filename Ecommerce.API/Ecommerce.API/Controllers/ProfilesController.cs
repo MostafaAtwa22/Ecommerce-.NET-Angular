@@ -275,5 +275,38 @@ namespace Ecommerce.API.Controllers
                 _fileService.DeleteFile(user.ProfilePictureUrl);
             return Ok(true);
         }
+    
+        [HttpPost("enable-2fa")]
+        [EnableRateLimiting("customer-browsing")]
+        public async Task<ActionResult> Enable2FA([FromBody] Enable2FADto dto)
+        {
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
+            
+            if (user is null)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
+
+            var result = await _userManager.SetTwoFactorEnabledAsync(user, dto.Enable);
+            
+            if (!result.Succeeded)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
+
+            var message = dto.Enable 
+                ? "Two-factor authentication has been enabled successfully" 
+                : "Two-factor authentication has been disabled successfully";
+
+            return Ok(message);
+        }
+
+        [HttpGet("2fa-status")]
+        [EnableRateLimiting("customer-browsing")]
+        public async Task<ActionResult<bool>> Get2FAStatus()
+        {
+            var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
+
+            if (user is null)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
+
+            return Ok(user.TwoFactorEnabled );
+        }
     }
 }

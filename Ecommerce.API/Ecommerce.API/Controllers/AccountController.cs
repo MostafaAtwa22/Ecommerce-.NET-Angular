@@ -10,6 +10,7 @@ using Ecommerce.Core.googleDto;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Services;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -47,7 +48,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost("login")]
         [EnableRateLimiting("customer-login")]
-        public async Task<ActionResult<UserDto>> Login(LoginDto dto)
+        public async Task<object> Login(LoginDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
@@ -55,7 +56,7 @@ namespace Ecommerce.API.Controllers
             
             if (!await _userManager.IsEmailConfirmedAsync(user))
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest,
-                    "Confierm your email first"));
+                    "Confirm your email first"));
         
             var lockMessage = GetLockMessage(user);
             if (!string.IsNullOrEmpty(lockMessage))
@@ -70,10 +71,53 @@ namespace Ecommerce.API.Controllers
             if (!result.Succeeded)
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Email or password is wrong. Try again!"));
 
+            if (user.TwoFactorEnabled)
+                return await TwoFactorAuthReturn(user);
+
             var response = await CreateUserResponseAsync(user);
             return Ok(response);
         }
 
+        [HttpPost("verify-2fa")]
+        [EnableRateLimiting("customer-login")]
+        public async Task<ActionResult<UserDto>> Verify2FA(Verify2FADto dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
+
+            if (!user.TwoFactorEnabled)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, 
+                    "Two-factor authentication is not enabled for this account"));
+
+            // Verify the 2FA token
+            var isValid = await _userManager.VerifyTwoFactorTokenAsync(user, "Email", dto.Code);
+            
+            if (!isValid)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, 
+                    "Invalid or expired verification code"));
+
+            var response = await CreateUserResponseAsync(user);
+            return Ok(response);
+        }
+
+        [HttpPost("resend-2fa")]
+        [EnableRateLimiting("customer-login")]
+        public async Task<ActionResult<string>> Resend2FA([FromBody] ResendVerificationEmailDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Email is required"));
+
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user is null)
+                return NotFound(new ApiResponse(StatusCodes.Status404NotFound, "User not found"));
+
+            if (!user.TwoFactorEnabled)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Two-factor authentication is not enabled"));
+
+            return await TwoFactorAuthReturn(user);
+        }
+        
         [HttpPost("register")]
         [EnableRateLimiting("customer-register")]
         public async Task<ActionResult<string>> Register(RegisterDto dto)
@@ -416,6 +460,24 @@ namespace Ecommerce.API.Controllers
                 HtmlBody = EmailTemplates.ConfirmEmail(confirmLink, code)
             };
             BackgroundJob.Enqueue<IEmailService>(x => x.SendAsync(emailMessage));
+        }
+
+        private async Task<ActionResult<string>> TwoFactorAuthReturn(ApplicationUser user)
+        {
+            // Generate 2FA token
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            
+            // Send 2FA code via email
+            var emailMessage = new EmailMessage
+            {
+                To = user.Email!,
+                Subject = "Your Two-Factor Authentication Code",
+                HtmlBody = EmailTemplates.TwoFactorCode(token)
+            };
+            
+            BackgroundJob.Enqueue<IEmailService>(x => x.SendAsync(emailMessage));
+
+            return Ok("Check your inbox !!");
         }
     }
 }

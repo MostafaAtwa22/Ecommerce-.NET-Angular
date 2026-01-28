@@ -679,5 +679,258 @@ namespace Ecommerce.Infrastructure.Services
                 </body>
                 </html>";
         }
+
+        public static string TwoFactorCode(string code)
+        {
+            return $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>
+                            body {{
+                                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                line-height: 1.6;
+                                color: #0c111d;
+                                background-color: #f7f9fa;
+                                margin: 0;
+                                padding: 0;
+                            }}
+                            .container {{
+                                max-width: 600px;
+                                margin: 0 auto;
+                                padding: 40px 20px;
+                            }}
+                            .email-wrapper {{
+                                background: white;
+                                border-radius: 12px;
+                                box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+                                overflow: hidden;
+                                border: 1px solid #d1d7dc;
+                            }}
+                            .header {{
+                                background: linear-gradient(135deg, #5624d0 0%, #401b9c 100%);
+                                color: white;
+                                padding: 30px;
+                                text-align: center;
+                            }}
+                            .logo {{
+                                font-size: 28px;
+                                font-weight: 700;
+                                margin-bottom: 10px;
+                                letter-spacing: -0.5px;
+                            }}
+                            .logo-accent {{
+                                color: #a78bfa;
+                            }}
+                            .title {{
+                                font-size: 22px;
+                                font-weight: 600;
+                                margin: 0;
+                            }}
+                            .content {{
+                                padding: 40px 30px;
+                            }}
+                            .greeting {{
+                                font-size: 16px;
+                                color: #6a6f73;
+                                margin-bottom: 30px;
+                                line-height: 1.7;
+                            }}
+                            .code-container {{
+                                text-align: center;
+                                margin: 40px 0;
+                            }}
+                            .code-label {{
+                                font-size: 14px;
+                                color: #6a6f73;
+                                margin-bottom: 10px;
+                                font-weight: 600;
+                                text-transform: uppercase;
+                                letter-spacing: 0.5px;
+                            }}
+                            .code-box {{
+                                background: linear-gradient(135deg, rgba(86, 36, 208, 0.08) 0%, rgba(159, 122, 234, 0.08) 100%);
+                                border: 2px solid rgba(86, 36, 208, 0.2);
+                                border-radius: 10px;
+                                padding: 25px;
+                                display: inline-block;
+                                margin: 15px 0;
+                                min-width: 300px;
+                            }}
+                            .code {{
+                                font-size: 42px;
+                                font-weight: 700;
+                                letter-spacing: 8px;
+                                color: #5624d0;
+                                font-family: 'Monaco', 'Courier New', monospace;
+                                text-shadow: 0 2px 4px rgba(86, 36, 208, 0.1);
+                            }}
+                            .expiry {{
+                                font-size: 14px;
+                                color: #6a6f73;
+                                margin-top: 15px;
+                                font-weight: 500;
+                            }}
+                            .expiry-highlight {{
+                                color: #5624d0;
+                                font-weight: 600;
+                            }}
+                            .warning-box {{
+                                background: rgba(237, 137, 54, 0.08);
+                                border-left: 4px solid #ed8936;
+                                border-radius: 4px;
+                                padding: 20px;
+                                margin-top: 40px;
+                            }}
+                            .warning-title {{
+                                color: #ed8936;
+                                font-size: 16px;
+                                font-weight: 600;
+                                margin-bottom: 10px;
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                            }}
+                            .warning-icon {{
+                                font-size: 18px;
+                            }}
+                            .warning-content {{
+                                color: #742a2a;
+                                font-size: 14px;
+                                line-height: 1.6;
+                                margin: 0;
+                            }}
+                            .footer {{
+                                background: #f7f9fa;
+                                border-top: 1px solid #d1d7dc;
+                                padding: 25px 30px;
+                                text-align: center;
+                                color: #6a6f73;
+                            }}
+                            .footer-text {{
+                                font-size: 12px;
+                                margin-bottom: 10px;
+                                line-height: 1.5;
+                            }}
+                            .support-link {{
+                                color: #5624d0;
+                                text-decoration: none;
+                                font-weight: 600;
+                            }}
+                            .button {{
+                                display: inline-block;
+                                background: #5624d0;
+                                color: white;
+                                padding: 14px 32px;
+                                border-radius: 6px;
+                                text-decoration: none;
+                                font-weight: 600;
+                                font-size: 15px;
+                                margin-top: 20px;
+                                transition: all 0.2s ease;
+                            }}
+                            .button:hover {{
+                                background: #401b9c;
+                                transform: translateY(-1px);
+                                box-shadow: 0 4px 12px rgba(86, 36, 208, 0.2);
+                            }}
+                            .security-note {{
+                                font-size: 13px;
+                                color: #6a6f73;
+                                margin-top: 30px;
+                                padding-top: 20px;
+                                border-top: 1px dashed #d1d7dc;
+                                line-height: 1.6;
+                            }}
+                            .divider {{
+                                height: 1px;
+                                background: linear-gradient(90deg, transparent, #d1d7dc, transparent);
+                                margin: 30px 0;
+                            }}
+                            @media (max-width: 480px) {{
+                                .container {{
+                                    padding: 20px 15px;
+                                }}
+                                .header {{
+                                    padding: 25px 20px;
+                                }}
+                                .content {{
+                                    padding: 30px 20px;
+                                }}
+                                .code-box {{
+                                    min-width: 250px;
+                                    padding: 20px;
+                                }}
+                                .code {{
+                                    font-size: 36px;
+                                    letter-spacing: 6px;
+                                }}
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='email-wrapper'>
+                                <div class='header'>
+                                    <div class='logo'>E<span class='logo-accent'>Shop</span></div>
+                                    <h1 class='title'>Two-Factor Authentication</h1>
+                                </div>
+                                
+                                <div class='content'>
+                                    <p class='greeting'>
+                                        Hello,<br><br>
+                                        You are attempting to log in to your EShop account. 
+                                        To complete the sign-in process, please use the verification code below:
+                                    </p>
+                                    
+                                    <div class='code-container'>
+                                        <div class='code-label'>Your Verification Code</div>
+                                        <div class='code-box'>
+                                            <div class='code'>{code}</div>
+                                        </div>
+                                        <p class='expiry'>
+                                            This code will expire in <span class='expiry-highlight'>10 minutes</span>.
+                                        </p>
+                                    </div>
+                                    
+                                    <div class='divider'></div>
+                                    
+                                    <p style='text-align: center;'>
+                                        <a href='#' class='button'>Log In Now</a>
+                                    </p>
+                                    
+                                    <div class='security-note'>
+                                        <strong>Important:</strong> For your security, never share this code with anyone. 
+                                        EShop staff will never ask for your verification code.
+                                    </div>
+                                    
+                                    <div class='warning-box'>
+                                        <div class='warning-title'>
+                                            <span class='warning-icon'>⚠</span>
+                                            Security Notice
+                                        </div>
+                                        <p class='warning-content'>
+                                            If you did not attempt to log in, please ignore this email and consider 
+                                            <strong>changing your password immediately</strong>. Your account security is important to us.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class='footer'>
+                                    <p class='footer-text'>
+                                        This is an automated message from EShop. Please do not reply to this email.
+                                    </p>
+                                    <p class='footer-text'>
+                                        Need help? Contact our <a href='mailto:support@eshop.com' class='support-link'>support team</a>
+                                    </p>
+                                    <p class='footer-text' style='font-size: 11px; opacity: 0.7; margin-top: 15px;'>
+                                        © {DateTime.Now.Year} EShop. All rights reserved.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>";
+        }
     }
 }
