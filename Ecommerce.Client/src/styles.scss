@@ -2,3 +2,73 @@
 
 /* Importing Bootstrap SCSS file. */
 @use 'bootstrap/scss/bootstrap';
+
+/* Custom SweetAlert2 Styles */
+.swal2-custom-popup {
+  border-radius: 12px !important;
+  padding: 2rem !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.swal2-custom-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #0c111d !important;
+  margin-bottom: 1rem !important;
+}
+
+.swal2-custom-html {
+  font-size: 0.9375rem !important;
+  color: #6a6f73 !important;
+  line-height: 1.6 !important;
+
+  p {
+    margin: 0.5rem 0 !important;
+  }
+}
+
+.swal2-custom-confirm {
+  border-radius: 6px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(86, 36, 208, 0.3) !important;
+
+  &:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(86, 36, 208, 0.4) !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(86, 36, 208, 0.2) !important;
+  }
+}
+
+.swal2-custom-cancel {
+  border-radius: 6px !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.9375rem !important;
+  transition: all 0.2s ease !important;
+  background: white !important;
+  border: 1px solid #d1d7dc !important;
+
+  &:hover {
+    background: #f7f9fa !important;
+    border-color: #b1b7c1 !important;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(106, 111, 115, 0.1) !important;
+  }
+}
+
+.swal2-icon {
+  margin: 1.5rem auto 1rem !important;
+}
+
+.swal2-timer-progress-bar {
+  background: rgba(86, 36, 208, 0.8) !important;
+}
+

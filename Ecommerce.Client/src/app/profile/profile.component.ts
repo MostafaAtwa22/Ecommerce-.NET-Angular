@@ -17,13 +17,16 @@ import { MainInfoComponent } from './main-info.component/main-info.component';
 import { SetPasswordComponent } from './set-password.component/set-password.component';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../account/account-service';
+import { TwoFAComponent } from './two-fa.component/two-fa.component';
 
 type ProfileSection =
   | 'main-info'
   | 'address'
   | 'change-password'
   | 'set-password'
+  | 'two-fa'
   | 'delete-profile';
+
 
 @Component({
   selector: 'app-profile',
@@ -38,6 +41,7 @@ type ProfileSection =
     ChangePasswordComponent,
     SetPasswordComponent,
     DeleteProfileComponent,
+    TwoFAComponent
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
@@ -64,6 +68,7 @@ export class ProfileComponent implements OnInit {
     { id: 'change-password', label: 'Change Password', caption: 'Update credentials' },
     { id: 'set-password', label: 'Set Password', caption: 'Create password' },
     { id: 'delete-profile', label: 'Delete Account', caption: 'Danger zone' },
+    { id: 'two-fa', label: '2FA', caption: 'Security zone' },
   ];
 
   constructor(

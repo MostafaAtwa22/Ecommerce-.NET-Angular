@@ -1,0 +1,50 @@
+<div class="section-card">
+  <div class="section-header">
+    <div class="header-content">
+      <p class="eyebrow">Security Settings</p>
+      <h3>
+        <i class="fa fa-shield"></i>
+        Two-Factor Authentication
+      </h3>
+      <p class="subtitle">
+        Add an extra layer of security to your account by requiring a verification code in addition to your password.
+      </p>
+    </div>
+  </div>
+
+  <p class="description">
+    <i class="fa fa-info-circle"></i>
+    Two-factor authentication (2FA) adds an extra layer of security to your account.
+    After entering your password, you will be asked for a one-time verification code.
+  </p>
+
+  <div class="switch-row" [class.loading]="loading">
+    <div class="status-label">
+      <span class="label-text">
+        <i class="fa fa-lock"></i>
+        2FA Status
+      </span>
+      <span class="status" [class.on]="is2FAEnabled">
+        {{ is2FAEnabled ? 'Enabled' : 'Disabled' }}
+      </span>
+    </div>
+
+    <label class="switch">
+      <input type="checkbox" [checked]="is2FAEnabled" (change)="toggle2FA()" [disabled]="loading" />
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="benefits-section">
+    <h4>
+      <i class="fa fa-check-circle"></i>
+      Benefits of 2FA
+    </h4>
+    <ul>
+      <li>Prevents unauthorized access to your account even if your password is compromised</li>
+      <li>Protects your sensitive personal and financial information</li>
+      <li>Adds an additional verification step that only you can complete</li>
+      <li>Highly recommended for accounts with sensitive data or payment information</li>
+    </ul>
+  </div>
+</div>

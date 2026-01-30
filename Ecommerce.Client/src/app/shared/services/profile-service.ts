@@ -132,6 +132,16 @@ export class ProfileService {
     return this.http.delete<IProfile>(`${this.baseUrl}/profile/image`);
   }
 
+  enable2FA(enable: boolean): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/enable-2fa`, {
+      enable: enable
+    });
+  }
+
+  get2FAStatus(): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseUrl}/2fa-status`);
+  }
+
   private createJsonPatchDocument(profile: IProfileUpdate): any[] {
     const patchOps: any[] = [];
 
