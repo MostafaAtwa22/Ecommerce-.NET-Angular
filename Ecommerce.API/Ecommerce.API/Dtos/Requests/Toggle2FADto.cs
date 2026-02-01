@@ -1,6 +1,6 @@
 namespace Ecommerce.API.Dtos.Requests
 {
-    public class Enable2FADto
+    public class Toggle2FADto
     {
         public bool Enable { get; set; }
     }

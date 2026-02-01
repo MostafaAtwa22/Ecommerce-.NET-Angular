@@ -48,7 +48,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost("login")]
         [EnableRateLimiting("customer-login")]
-        public async Task<object> Login(LoginDto dto)
+        public async Task<ActionResult<LoginResponseDto>> Login(LoginDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user is null)
@@ -72,10 +72,13 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Email or password is wrong. Try again!"));
 
             if (user.TwoFactorEnabled)
-                return await TwoFactorAuthReturn(user);
+            {
+                await TwoFactorAuthReturn(user);
+                return Ok(new LoginResponseDto { RequiresTwoFactor = true, Message = "Check your inbox for a verification code" });
+            }
 
-            var response = await CreateUserResponseAsync(user);
-            return Ok(response);
+            var userDto = await CreateUserResponseAsync(user);
+            return Ok(new LoginResponseDto { RequiresTwoFactor = false, Message = "Login successful", User = userDto });
         }
 
         [HttpPost("verify-2fa")]
@@ -115,7 +118,8 @@ namespace Ecommerce.API.Controllers
             if (!user.TwoFactorEnabled)
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Two-factor authentication is not enabled"));
 
-            return await TwoFactorAuthReturn(user);
+            await TwoFactorAuthReturn(user);
+            return Ok("Check your inbox for a verification code");
         }
         
         [HttpPost("register")]
@@ -462,12 +466,10 @@ namespace Ecommerce.API.Controllers
             BackgroundJob.Enqueue<IEmailService>(x => x.SendAsync(emailMessage));
         }
 
-        private async Task<ActionResult<string>> TwoFactorAuthReturn(ApplicationUser user)
+        private async Task TwoFactorAuthReturn(ApplicationUser user)
         {
-            // Generate 2FA token
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
             
-            // Send 2FA code via email
             var emailMessage = new EmailMessage
             {
                 To = user.Email!,
@@ -476,8 +478,6 @@ namespace Ecommerce.API.Controllers
             };
             
             BackgroundJob.Enqueue<IEmailService>(x => x.SendAsync(emailMessage));
-
-            return Ok("Check your inbox !!");
         }
     }
 }

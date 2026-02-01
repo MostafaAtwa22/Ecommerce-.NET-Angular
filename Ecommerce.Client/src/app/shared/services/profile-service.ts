@@ -132,10 +132,11 @@ export class ProfileService {
     return this.http.delete<IProfile>(`${this.baseUrl}/profile/image`);
   }
 
-  enable2FA(enable: boolean): Observable<string> {
-    return this.http.post<string>(`${this.baseUrl}/enable-2fa`, {
-      enable: enable
-    });
+  toggle2FA(enable: boolean): Observable<string> {
+    return this.http.post(`${this.baseUrl}/toggle-2fa`, 
+      { enable: enable },
+      { responseType: 'text' }
+    );
   }
 
   get2FAStatus(): Observable<boolean> {

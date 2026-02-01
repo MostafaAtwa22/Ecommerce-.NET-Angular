@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { Environment } from '../environment';
-import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword, JwtPayload } from '../shared/modules/accountUser';
+import { IAccountUser, IEmailVerification, IForgetPassword, IResetPassword, JwtPayload, ILoginResponse, IVerify2FA } from '../shared/modules/accountUser';
 import { ILogin } from '../shared/modules/login';
 import { IRegister } from '../shared/modules/register';
 import { tap, finalize, Observable } from 'rxjs';
@@ -31,9 +31,19 @@ export class AccountService {
   // 🔐 LOGIN
   login(loginData: ILogin) {
     return this.http
-      .post<IAccountUser>(
+      .post<ILoginResponse>(
         `${this.baseUrl}/login`,
         loginData,
+        { withCredentials: true }
+      );
+  }
+
+  // � VERIFY 2FA
+  verify2FA(dto: IVerify2FA) {
+    return this.http
+      .post<IAccountUser>(
+        `${this.baseUrl}/verify-2fa`,
+        dto,
         { withCredentials: true }
       )
       .pipe(
@@ -41,7 +51,17 @@ export class AccountService {
       );
   }
 
-  // 🔄 REFRESH TOKEN
+  // 🔁 RESEND 2FA CODE
+  resend2FA(email: string) {
+    return this.http
+      .post(
+        `${this.baseUrl}/resend-2fa`,
+        { email },
+        { responseType: 'text' }
+      );
+  }
+
+  // �🔄 REFRESH TOKEN
   refreshToken(): Observable<IAccountUser> {
     return this.http
       .get<IAccountUser>(

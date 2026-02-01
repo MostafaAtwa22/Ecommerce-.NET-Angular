@@ -1,50 +1,115 @@
-<div class="section-card">
-  <div class="section-header">
-    <div class="header-content">
-      <p class="eyebrow">Security Settings</p>
-      <h3>
-        <i class="fa fa-shield"></i>
-        Two-Factor Authentication
-      </h3>
-      <p class="subtitle">
-        Add an extra layer of security to your account by requiring a verification code in addition to your password.
-      </p>
+<div class="two-fa-container">
+    <div class="two-fa-card">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="icon-wrapper" [class.enabled]="is2FAEnabled">
+                <i [class]="is2FAEnabled ? 'fas fa-lock' : 'fas fa-lock-open'"></i>
+            </div>
+            <h2>Two-Factor Authentication</h2>
+            <p class="subtitle">Add an extra layer of security to your account</p>
+        </div>
+
+        <!-- Status Section -->
+        <div class="status-section">
+            <div class="status-card" [class.active]="is2FAEnabled">
+                <div class="status-indicator">
+                    <span class="status-badge" [class.enabled]="is2FAEnabled">
+                        <i [class]="is2FAEnabled ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                        {{ is2FAEnabled ? 'Enabled' : 'Disabled' }}
+                    </span>
+                </div>
+                <p class="status-message">
+                    {{ is2FAEnabled
+                    ? 'Your account is protected with two-factor authentication'
+                    : 'Your account is not protected with two-factor authentication'
+                    }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Toggle Button Section -->
+        <div class="action-section">
+            <button class="toggle-btn" [class.btn-enable]="!is2FAEnabled" [class.btn-disable]="is2FAEnabled"
+                (click)="toggle2FA()">
+                <i [class]="is2FAEnabled ? 'fas fa-lock-open' : 'fas fa-lock'"></i>
+                <span>{{ is2FAEnabled ? 'Disable' : 'Enable' }} Two-Factor Authentication</span>
+            </button>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="benefits-section">
+            <h3>
+                <i class="fas fa-shield-alt"></i>
+                Benefits of Two-Factor Authentication
+            </h3>
+
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Enhanced Account Security</h4>
+                        <p>Protects your account even if your password is compromised</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Prevent Unauthorized Access</h4>
+                        <p>Blocks hackers from accessing your account with stolen credentials</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Login Alerts</h4>
+                        <p>Get notified of any login attempts to your account</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Protect Sensitive Data</h4>
+                        <p>Safeguard your personal information and transaction history</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-check-double"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Industry Standard</h4>
+                        <p>Follow best practices recommended by security experts worldwide</p>
+                    </div>
+                </div>
+
+                <div class="benefit-item">
+                    <div class="benefit-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="benefit-content">
+                        <h4>Easy Verification</h4>
+                        <p>Simple and quick verification process through your mobile device</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="info-banner" *ngIf="!is2FAEnabled">
+            <i class="fas fa-info-circle"></i>
+            <p>We strongly recommend enabling two-factor authentication to keep your account secure.</p>
+        </div>
     </div>
-  </div>
-
-  <p class="description">
-    <i class="fa fa-info-circle"></i>
-    Two-factor authentication (2FA) adds an extra layer of security to your account.
-    After entering your password, you will be asked for a one-time verification code.
-  </p>
-
-  <div class="switch-row" [class.loading]="loading">
-    <div class="status-label">
-      <span class="label-text">
-        <i class="fa fa-lock"></i>
-        2FA Status
-      </span>
-      <span class="status" [class.on]="is2FAEnabled">
-        {{ is2FAEnabled ? 'Enabled' : 'Disabled' }}
-      </span>
-    </div>
-
-    <label class="switch">
-      <input type="checkbox" [checked]="is2FAEnabled" (change)="toggle2FA()" [disabled]="loading" />
-      <span class="slider"></span>
-    </label>
-  </div>
-
-  <div class="benefits-section">
-    <h4>
-      <i class="fa fa-check-circle"></i>
-      Benefits of 2FA
-    </h4>
-    <ul>
-      <li>Prevents unauthorized access to your account even if your password is compromised</li>
-      <li>Protects your sensitive personal and financial information</li>
-      <li>Adds an additional verification step that only you can complete</li>
-      <li>Highly recommended for accounts with sensitive data or payment information</li>
-    </ul>
-  </div>
 </div>

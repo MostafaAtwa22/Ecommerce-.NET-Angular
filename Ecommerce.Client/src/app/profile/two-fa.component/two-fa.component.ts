@@ -1,108 +1,70 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ProfileService } from '../../shared/services/profile-service';
 import { ToastrService } from 'ngx-toastr';
-import Swal from 'sweetalert2';
+import { ProfileService } from '../../shared/services/profile-service';
 
 @Component({
   selector: 'app-two-fa',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './two-fa.component.html',
   styleUrl: './two-fa.component.scss',
 })
-export class TwoFAComponent implements OnInit {
-  is2FAEnabled = false;
-  loading = false;
+export class TwoFaComponent implements OnInit {
+  private profileService = inject(ProfileService);
+  private toastr = inject(ToastrService);
 
-  constructor(
-    private profileService: ProfileService,
-    private toastr: ToastrService
-  ) {}
+  is2FAEnabled = false;
 
   ngOnInit(): void {
-    this.loadStatus();
+    this.load2FAStatus();
   }
 
-  loadStatus() {
+  load2FAStatus(): void {
     this.profileService.get2FAStatus().subscribe({
-      next: (status) => (this.is2FAEnabled = status),
-      error: () => this.toastr.error('Failed to load 2FA status', 'Error'),
+      next: (status) => {
+        this.is2FAEnabled = status;
+      },
+      error: (error) => {
+        this.toastr.error('Failed to load 2FA status', 'Error');
+        console.error('Error loading 2FA status:', error);
+      },
     });
   }
 
-  async toggle2FA() {
-    const action = this.is2FAEnabled ? 'disable' : 'enable';
-    const actionTitle = this.is2FAEnabled ? 'Disable' : 'Enable';
+  toggle2FA(): void {
+    const newStatus = !this.is2FAEnabled;
     
-    const result = await Swal.fire({
-      title: `${actionTitle} Two-Factor Authentication?`,
-      html: this.is2FAEnabled 
-        ? '<p>Disabling 2FA will make your account less secure.</p><p>Are you sure you want to continue?</p>'
-        : '<p>Enabling 2FA will add an extra layer of security to your account.</p><p>You will need a verification code each time you log in.</p>',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: this.is2FAEnabled ? '#ef4444' : '#5624d0',
-      cancelButtonColor: '#6a6f73',
-      confirmButtonText: `Yes, ${action} it!`,
-      cancelButtonText: 'Cancel',
-      reverseButtons: true,
-      customClass: {
-        popup: 'swal2-custom-popup',
-        title: 'swal2-custom-title',
-        htmlContainer: 'swal2-custom-html',
-        confirmButton: 'swal2-custom-confirm',
-        cancelButton: 'swal2-custom-cancel'
-      }
-    });
+    // Immediately update UI
+    this.is2FAEnabled = newStatus;
 
-    if (!result.isConfirmed) {
-      return;
+    // Show toast notification immediately
+    if (newStatus) {
+      this.toastr.success(
+        'Two-factor authentication has been enabled successfully',
+        'Security Enhanced',
+        { timeOut: 4000 }
+      );
+    } else {
+      this.toastr.warning(
+        'Two-factor authentication has been disabled',
+        'Security Warning',
+        { timeOut: 4000 }
+      );
     }
 
-    this.loading = true;
-
-    this.profileService.enable2FA(!this.is2FAEnabled).subscribe({
-      next: (msg) => {
-        this.is2FAEnabled = !this.is2FAEnabled;
-        
-        Swal.fire({
-          title: 'Success!',
-          text: msg || `Two-Factor Authentication has been ${this.is2FAEnabled ? 'enabled' : 'disabled'} successfully.`,
-          icon: 'success',
-          confirmButtonColor: '#5624d0',
-          timer: 3000,
-          timerProgressBar: true,
-          customClass: {
-            popup: 'swal2-custom-popup',
-            title: 'swal2-custom-title',
-            confirmButton: 'swal2-custom-confirm'
-          }
-        });
-        
-        this.toastr.success(
-          `Two-Factor Authentication ${this.is2FAEnabled ? 'enabled' : 'disabled'}`,
-          'Success'
-        );
-        this.loading = false;
+    // Call API in background
+    this.profileService.toggle2FA(newStatus).subscribe({
+      next: (message) => {
+        // API call successful, state already updated
       },
-      error: (err) => {
-        const errorMsg = err?.error?.message || 'Failed to update 2FA settings';
+      error: (error) => {
+        this.is2FAEnabled = !newStatus;
         
-        Swal.fire({
-          title: 'Error!',
-          text: errorMsg,
-          icon: 'error',
-          confirmButtonColor: '#5624d0',
-          customClass: {
-            popup: 'swal2-custom-popup',
-            title: 'swal2-custom-title',
-            confirmButton: 'swal2-custom-confirm'
-          }
-        });
-        
-        this.toastr.error(errorMsg, 'Error');
-        this.loading = false;
+        this.toastr.error(
+          'Failed to update 2FA settings. Please try again.',
+          'Error'
+        );
+        console.error('Error toggling 2FA:', error);
       },
     });
   }

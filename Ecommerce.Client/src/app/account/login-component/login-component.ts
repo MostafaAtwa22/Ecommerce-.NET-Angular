@@ -60,9 +60,20 @@ export class LoginComponent implements OnInit {
     const loginData = this.loginForm.value as ILogin;
 
     this.accountService.login(loginData).subscribe({
-      next: () => {
+      next: (response) => {
         this.isLoading = false;
-        this.navigateByRole();
+
+        // Check if 2FA is required
+        if (response.requiresTwoFactor) {
+          // Navigate to 2FA verification page with email
+          this.router.navigate(['/verify-2fa'], {
+            queryParams: { email: loginData.email }
+          });
+        } else if (response.user) {
+          // Set user and navigate based on role
+          this.accountService['setUser'](response.user);
+          this.navigateByRole();
+        }
       },
       error: (err) => {
         this.isLoading = false;

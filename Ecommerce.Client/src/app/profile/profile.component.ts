@@ -17,7 +17,7 @@ import { MainInfoComponent } from './main-info.component/main-info.component';
 import { SetPasswordComponent } from './set-password.component/set-password.component';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../account/account-service';
-import { TwoFAComponent } from './two-fa.component/two-fa.component';
+import { TwoFaComponent } from './two-fa.component/two-fa.component';
 
 type ProfileSection =
   | 'main-info'
@@ -41,7 +41,7 @@ type ProfileSection =
     ChangePasswordComponent,
     SetPasswordComponent,
     DeleteProfileComponent,
-    TwoFAComponent
+    TwoFaComponent
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],

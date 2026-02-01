@@ -33,3 +33,14 @@ export interface JwtPayload {
   roles: string[];
   Permission: string[];
 }
+
+export interface ILoginResponse {
+  requiresTwoFactor: boolean;
+  message?: string;
+  user?: IAccountUser;
+}
+
+export interface IVerify2FA {
+  email: string;
+  code: string;
+}

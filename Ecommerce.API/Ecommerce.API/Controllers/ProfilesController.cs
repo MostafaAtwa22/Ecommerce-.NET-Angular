@@ -27,13 +27,16 @@ namespace Ecommerce.API.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFileService _fileService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProfilesController> _logger;
 
         public ProfilesController(UserManager<ApplicationUser> userManager,
             IFileService fileService,
+            ILogger<ProfilesController> logger,
             IMapper mapper)
         {
             _userManager = userManager;
             _fileService = fileService;
+            _logger = logger;
             _mapper = mapper;
         }
 
@@ -276,9 +279,9 @@ namespace Ecommerce.API.Controllers
             return Ok(true);
         }
     
-        [HttpPost("enable-2fa")]
+        [HttpPost("toggle-2fa")]
         [EnableRateLimiting("customer-browsing")]
-        public async Task<ActionResult> Enable2FA([FromBody] Enable2FADto dto)
+        public async Task<ActionResult> Toggle2FA([FromBody] Toggle2FADto dto)
         {
             var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);
             
@@ -294,6 +297,8 @@ namespace Ecommerce.API.Controllers
                 ? "Two-factor authentication has been enabled successfully" 
                 : "Two-factor authentication has been disabled successfully";
 
+            _logger.LogInformation($"User {user.Id} toggle 2FA status {user.TwoFactorEnabled}");
+
             return Ok(message);
         }
 
@@ -306,7 +311,8 @@ namespace Ecommerce.API.Controllers
             if (user is null)
                 return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized));
 
-            return Ok(user.TwoFactorEnabled );
-        }
+            _logger.LogInformation($"User {user.Id} requested 2FA status {user.TwoFactorEnabled}");
+            return Ok(user.TwoFactorEnabled);
+        }   
     }
 }
