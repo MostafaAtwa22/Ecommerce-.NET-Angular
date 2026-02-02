@@ -4,6 +4,8 @@ using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
 using Ecommerce.Infrastructure.Settings;
 using Hangfire;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
@@ -17,6 +19,7 @@ namespace Ecommerce.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.GetConnectionString();
+            builder.AddHealthCheckServices();
 
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddControllers()
@@ -73,6 +76,11 @@ namespace Ecommerce.API
                     ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "http://localhost:4200");
                     ctx.Context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
                 }
+            });
+
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             });
 
             app.UseAuthentication();
