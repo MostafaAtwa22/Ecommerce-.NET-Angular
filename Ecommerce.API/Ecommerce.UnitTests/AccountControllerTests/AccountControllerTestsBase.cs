@@ -21,6 +21,7 @@ namespace Ecommerce.UnitTests.AccountControllerTests
         protected readonly Mock<IConfiguration> _config;
         protected readonly Mock<IGoogleService> _googleService;
         protected readonly Mock<IMapper> _mapper;
+        protected readonly Mock<IPermissionService> _permissionService;
 
         protected readonly AccountController _controller;
 
@@ -33,6 +34,7 @@ namespace Ecommerce.UnitTests.AccountControllerTests
             _config = new Mock<IConfiguration>();
             _googleService = new Mock<IGoogleService>();
             _mapper = new Mock<IMapper>();
+            _permissionService = new Mock<IPermissionService>();
 
             _controller = new AccountController(
                 _userManager.Object,
@@ -41,7 +43,8 @@ namespace Ecommerce.UnitTests.AccountControllerTests
                 _emailService.Object,
                 _config.Object,
                 _googleService.Object,
-                _mapper.Object
+                _mapper.Object,
+                _permissionService.Object
             );
 
             _controller.ControllerContext = new ControllerContext

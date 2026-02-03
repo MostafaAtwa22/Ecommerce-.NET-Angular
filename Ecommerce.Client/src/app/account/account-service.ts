@@ -9,6 +9,7 @@ import { IRegister } from '../shared/modules/register';
 import { tap, finalize, Observable } from 'rxjs';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { googleAuthConfig } from './google-auth.config';
+import { PermissionService } from '../shared/services/permission.service';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,7 @@ export class AccountService {
     private http: HttpClient,
     private router: Router,
     private oAuth: OAuthService,
+    private permissionService: PermissionService
   ) {
     this.oAuth.configure(googleAuthConfig);
   }
@@ -47,7 +49,10 @@ export class AccountService {
         { withCredentials: true }
       )
       .pipe(
-        tap(user => this.setUser(user))
+        tap(user => {
+          this.setUser(user);
+          this.permissionService.refreshPermissions().subscribe();
+        })
       );
   }
 
@@ -69,7 +74,10 @@ export class AccountService {
         { withCredentials: true }
       )
       .pipe(
-        tap(user => this.setUser(user))
+        tap(user => {
+          this.setUser(user);
+          this.permissionService.refreshPermissions().subscribe();
+        })
       );
   }
 
@@ -81,7 +89,10 @@ export class AccountService {
         {},
         { withCredentials: true }
       )
-      .pipe(finalize(() => this.clearUserData()))
+      .pipe(finalize(() => {
+        this.clearUserData();
+        this.permissionService.clearCache();
+      }))
       .subscribe();
   }
 
@@ -115,7 +126,10 @@ export class AccountService {
         { withCredentials: true }
       )
       .pipe(
-        tap(user => this.setUser(user))
+        tap(user => {
+          this.setUser(user);
+          this.permissionService.refreshPermissions().subscribe();
+        })
       );
   }
 
@@ -141,7 +155,10 @@ export class AccountService {
         dto,
         { withCredentials: true }
       )
-      .pipe(tap(user => this.setUser(user)));
+      .pipe(tap(user => {
+        this.setUser(user);
+        this.permissionService.refreshPermissions().subscribe();
+      }));
   }
 
   resendVerificationEmail(email: string) {
@@ -210,8 +227,7 @@ export class AccountService {
   }
 
   hasPermission(permission: string): boolean {
-    const currentUser = this.userSignal();
-    return currentUser?.permissions?.includes(permission) ?? false;
+    return this.permissionService.hasPermissionSync(permission);
   }
 
   hasRole(role: string): boolean {
@@ -221,16 +237,9 @@ export class AccountService {
 
   // HELPERS
   private setUser(user: IAccountUser) {
+    // Permissions are no longer extracted from JWT, but fetched via PermissionService
     let permissions: string[] = [];
 
-    if (user.token) {
-      try {
-        const payload = jwtDecode<JwtPayload>(user.token);
-        permissions = payload.Permission || [];
-      } catch (err) {
-        console.error('Failed to decode JWT', err);
-      }
-    }
 
     this.userSignal.set({ ...user, permissions });
 
@@ -242,7 +251,7 @@ export class AccountService {
         userName: user.userName,
         email: user.email,
         roles: user.roles,
-        permissions, // store permissions
+        permissions,
         profilePicture: user.profilePicture,
         refreshTokenExpiration: user.refreshTokenExpiration,
         token: user.token
@@ -257,6 +266,11 @@ export class AccountService {
     try {
       const user = JSON.parse(userStr);
       this.userSignal.set(user);
+
+      if (user.permissions && user.permissions.length > 0) {
+        this.permissionService.setPermissions(user.permissions);
+      }
+      this.permissionService.fetchPermissions().subscribe();
     } catch {
       this.clearUserData();
     }

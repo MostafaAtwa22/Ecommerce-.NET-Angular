@@ -1,3 +1,4 @@
+using Ecommerce.Core.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.Core.Interfaces
@@ -7,5 +8,8 @@ namespace Ecommerce.Core.Interfaces
         Task<HashSet<string>> GetRolePermissionsAsync(IdentityRole role);
         Task RemoveAllPermissionsAsync(IdentityRole role);
         Task AddPermissionsAsync(IdentityRole role, IEnumerable<string> permissions);
+        Task<List<string>> GetUserPermissionsAsync(string userId);
+        Task<List<string>> GetUserPermissionsAsync(ApplicationUser user);
+        Task<bool> HasPermissionAsync(string userId, string permission);
     }
 }

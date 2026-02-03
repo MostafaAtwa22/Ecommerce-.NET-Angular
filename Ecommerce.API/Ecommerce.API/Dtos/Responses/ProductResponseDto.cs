@@ -8,7 +8,7 @@ namespace Ecommerce.API.Dtos.Responses
 
         public string Description { get; set; } = string.Empty;
 
-        public string PictureUrl { get; set; } = string.Empty;
+        public string? PictureUrl { get; set; }
 
         public decimal Price { get; set; }
 

@@ -12,7 +12,7 @@ namespace Ecommerce.Infrastructure.Services
         {
             _configuration = configuration;
         }
-        public async Task<Payload> ValidateGoogleToken(string idToken)
+        public async Task<Payload?> ValidateGoogleToken(string idToken)
         {
             var settings = new ValidationSettings()
             {

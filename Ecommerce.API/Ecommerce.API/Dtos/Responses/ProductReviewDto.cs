@@ -10,7 +10,7 @@ namespace Ecommerce.API.Dtos.Responses
         
         public string LastName { get; set; } = string.Empty;
 
-        public string ProfilePictureUrl { get; set; } = string.Empty;
+        public string? ProfilePictureUrl { get; set; }
         
         public string Headline { get; set; } = string.Empty;
 

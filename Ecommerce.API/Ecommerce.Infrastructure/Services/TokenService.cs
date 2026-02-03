@@ -49,21 +49,8 @@ namespace Ecommerce.Infrastructure.Services
             foreach (var role in userRoles)
                 roleClaims.Add(new Claim("roles", role));
 
-            // Get all role permissions
-            var rolePermissions = new List<Claim>();
-            foreach (var roleName in userRoles)
-            {
-                var role = await _roleManager.FindByNameAsync(roleName);
-                if (role != null)
-                {
-                    var allClaims = await _roleManager.GetClaimsAsync(role);
-                    var permissionClaims = allClaims
-                        .Where(c => c.Type == Permissions.ClaimType)
-                        .Select(c => new Claim(Permissions.ClaimType, c.Value));
-
-                    rolePermissions.AddRange(permissionClaims);
-                }
-            }
+            // Removed permission claims to reduce token size and enforce dynamic checking
+            // Permissions are now checked via IPermissionService (backed by Redis)
 
             var claims = new List<Claim>
             {
@@ -79,7 +66,6 @@ namespace Ecommerce.Infrastructure.Services
             // Combine all claims
             claims.AddRange(userClaims);
             claims.AddRange(roleClaims);
-            claims.AddRange(rolePermissions);
 
             // Add standard Role claims for Identity
             claims.AddRange(userRoles.Select(r => new Claim(ClaimTypes.Role, r)));

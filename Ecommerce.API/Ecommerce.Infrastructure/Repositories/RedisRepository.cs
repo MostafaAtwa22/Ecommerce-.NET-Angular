@@ -30,12 +30,14 @@ namespace Ecommerce.Infrastructure.Repositories
             return data.IsNullOrEmpty ? null : JsonSerializer.Deserialize<T>(data!, _options);
         }
 
-        public async Task<T?> UpdateOrCreateAsync(string id, T entity)
+        public async Task<T?> UpdateOrCreateAsync(string id, T entity, TimeSpan? expiry = null)
         {
+            var timeToLive = expiry ?? TimeSpan.FromDays(int.Parse(_config["Redis:DefaultTTL"]!));
+
             var created = await _database.StringSetAsync(
                 id,
                 JsonSerializer.Serialize<T>(entity, _options),
-                TimeSpan.FromDays(int.Parse(_config["Redis:DefaultTTL"]!))
+                timeToLive
             );
 
             return created ? entity : null;

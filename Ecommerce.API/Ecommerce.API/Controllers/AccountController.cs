@@ -27,6 +27,7 @@ namespace Ecommerce.API.Controllers
         private readonly IConfiguration _config;
         private readonly IGoogleService _googleService;
         private readonly IMapper _mapper;
+        private readonly IPermissionService _permissionService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -35,7 +36,8 @@ namespace Ecommerce.API.Controllers
             IEmailService emailService,
             IConfiguration config,
             IGoogleService googleService,
-            IMapper mapper)
+            IMapper mapper,
+            IPermissionService permissionService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,6 +46,7 @@ namespace Ecommerce.API.Controllers
             _config = config;
             _googleService = googleService;
             _mapper = mapper;
+            _permissionService = permissionService;
         }
 
         [HttpPost("login")]
@@ -319,6 +322,20 @@ namespace Ecommerce.API.Controllers
         [EnableRateLimiting("customer-browsing")]
         public async Task<bool> CheckUsernameExistsAsync(string username)
             => await _userManager.FindByNameAsync(username) is not null;
+
+        [HttpGet("permissions")]
+        [Authorize]
+        [EnableRateLimiting("customer-browsing")]
+        public async Task<ActionResult<List<string>>> GetUserPermissions()
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new ApiResponse(StatusCodes.Status401Unauthorized, "User not authenticated"));
+
+            var permissions = await _permissionService.GetUserPermissionsAsync(userId);
+            return Ok(permissions);
+        }
 
         [HttpPost("forgetpassword")]
         [EnableRateLimiting("customer-browsing")]

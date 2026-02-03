@@ -1,25 +1,35 @@
 using Ecommerce.Infrastructure.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Ecommerce.Core.Interfaces;
+using Ecommerce.API.Extensions;
 
 namespace Ecommerce.API.Filters
 {
     public class PermissionAuthorizationHandlerFilter : AuthorizationHandler<PermissionRequirementFilter>
     {
-        protected override Task HandleRequirementAsync(
+        private readonly IPermissionService _permissionService;
+
+        public PermissionAuthorizationHandlerFilter(IPermissionService permissionService)
+        {
+            _permissionService = permissionService;
+        }
+
+        protected override async Task HandleRequirementAsync(
             AuthorizationHandlerContext context,
             PermissionRequirementFilter requirement)
         {
             if (context.User?.Identity?.IsAuthenticated != true)
-                return Task.CompletedTask;
+                return;
 
-            var hasPermission = context.User.Claims.Any(c =>
-                c.Type == Permissions.ClaimType &&
-                c.Value == requirement.Permission);
+            var userId = context.User.RetrieveUserIdFromPrincipal();
+            
+            if (string.IsNullOrEmpty(userId))
+                return;
+
+            var hasPermission = await _permissionService.HasPermissionAsync(userId, requirement.Permission);
 
             if (hasPermission)
                 context.Succeed(requirement);
-
-            return Task.CompletedTask;
         }
     }
 }

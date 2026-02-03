@@ -3,7 +3,7 @@ using AutoMapper;
 namespace Ecommerce.API.Helpers.Resolver
 {
     public class ImageUrlResolver<TSource, TDestination>
-        : IValueResolver<TSource, TDestination, string>
+        : IValueResolver<TSource, TDestination, string?>
     {
         private readonly IConfiguration _config;
         private readonly string _propertyName;
@@ -14,8 +14,8 @@ namespace Ecommerce.API.Helpers.Resolver
             _propertyName = propertyName;
         }
 
-        public string Resolve(TSource source, TDestination destination,
-            string destMember, ResolutionContext context)
+        public string? Resolve(TSource source, TDestination destination,
+            string? destMember, ResolutionContext context)
         {
             if (source == null)
                 return null!;
