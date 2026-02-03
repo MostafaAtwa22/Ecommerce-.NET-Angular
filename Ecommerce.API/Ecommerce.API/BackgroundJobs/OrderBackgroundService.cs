@@ -1,9 +1,6 @@
 using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Entities.Emails;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using Ecommerce.Infrastructure.Services;
 
