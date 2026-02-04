@@ -6,6 +6,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { OrdersParams } from '../../shared/modules/OrdersParams';
 import { CheckoutService } from '../../checkout/checkout-service';
 import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
+import { SweetAlertService } from '../../shared/services/sweet-alert.service';
+import { resolveUserAvatar, getDefaultAvatarByGender } from '../../shared/utils/avatar-utils';
 
 @Component({
   selector: 'app-dashboard-orders',
@@ -60,7 +62,10 @@ export class DashboardOrdersComponent implements OnInit {
   // OrderStatus for template access
   OrderStatus = OrderStatus;
 
-  constructor(private checkoutService: CheckoutService) {}
+  constructor(
+    private checkoutService: CheckoutService,
+    private sweetAlert: SweetAlertService
+  ) {}
 
   ngOnInit(): void {
     this.loadOrders();
@@ -312,43 +317,58 @@ export class DashboardOrdersComponent implements OnInit {
   updateOrderStatus(orderId: number, newStatus: string): void {
     if (!orderId || !newStatus) return;
 
-    // Add confirmation for cancellation
-    if (newStatus === OrderStatus.Cancel.toString()) {
-      if (!confirm('Are you sure you want to cancel this order? This action cannot be undone.')) {
-        return;
-      }
+    const statusNum = this.getOrderStatusNumber(newStatus);
+    let actionLabel = 'update';
+
+    if (statusNum === OrderStatus.Cancel) {
+      actionLabel = 'cancel';
+    } else if (statusNum === OrderStatus.Shipped) {
+      actionLabel = 'mark as shipped';
+    } else if (statusNum === OrderStatus.Complete) {
+      actionLabel = 'mark as complete';
     }
 
-    this.updatingStatus = true;
-    this.updateOrderId = orderId;
-    this.errorMessage = null;
-
-    this.checkoutService.updateOrderStatus(orderId, newStatus).subscribe({
-      next: (updatedOrder: IOrder) => {
-        if (this.selectedOrder && this.selectedOrder.id === orderId) {
-          this.selectedOrder = updatedOrder;
+    this.sweetAlert
+      .confirm({
+        title: 'Are you sure?',
+        text: `Do you want to ${actionLabel} this order? This action may not be reversible.`,
+        icon: 'warning',
+        confirmButtonText: 'Yes, proceed',
+      })
+      .then((result) => {
+        if (!result.isConfirmed) {
+          return;
         }
 
-        // Update the order in the current page
-        const orderIndex = this.orders.findIndex(o => o.id === orderId);
-        if (orderIndex !== -1) {
-          const oldStatus = this.orders[orderIndex].status;
-          this.orders[orderIndex].status = newStatus;
+        this.updatingStatus = true;
+        this.updateOrderId = orderId;
+        this.errorMessage = null;
 
-          // Update statistics based on status change
-          this.updateStatisticsOnStatusChange(oldStatus, newStatus, updatedOrder.total);
-        }
+        this.checkoutService.updateOrderStatus(orderId, newStatus).subscribe({
+          next: (updatedOrder: IOrder) => {
+            if (this.selectedOrder && this.selectedOrder.id === orderId) {
+              this.selectedOrder = updatedOrder;
+            }
 
-        this.updatingStatus = false;
-        this.updateOrderId = null;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.updatingStatus = false;
-        this.updateOrderId = null;
-        console.error('Error updating order status:', err);
-        this.errorMessage = err.error?.message || 'Failed to update order status. Please try again.';
-      }
-    });
+            const orderIndex = this.orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+              const oldStatus = this.orders[orderIndex].status;
+              this.orders[orderIndex].status = newStatus;
+
+              this.updateStatisticsOnStatusChange(oldStatus, newStatus, updatedOrder.total);
+            }
+
+            this.updatingStatus = false;
+            this.updateOrderId = null;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.updatingStatus = false;
+            this.updateOrderId = null;
+            console.error('Error updating order status:', err);
+            this.errorMessage = err.error?.message || 'Failed to update order status. Please try again.';
+          }
+        });
+      });
   }
 
   getStatusLabel(status: string | number): string {
@@ -397,6 +417,11 @@ export class DashboardOrdersComponent implements OnInit {
 
   getInitials(firstName?: string, lastName?: string): string {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
+  }
+
+  getCustomerAvatar(profilePictureUrl?: string | null): string {
+    // Orders API currently sends only profilePictureUrl; use gender-less default when missing
+    return resolveUserAvatar(profilePictureUrl, undefined);
   }
 
   formatDate(dateString: string | Date): string {

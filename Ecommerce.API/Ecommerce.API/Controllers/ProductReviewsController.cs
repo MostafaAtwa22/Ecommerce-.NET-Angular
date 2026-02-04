@@ -45,8 +45,8 @@ namespace Ecommerce.API.Controllers
         [HttpGet("{productId}")]
         public async Task<ActionResult<Pagination<ProductReviewDto>>> Get(int productId, [FromQuery] ProductReviewsSpecParams specParams)
         {
-            var spec = new ProductReviewsWithApplicationUser(productId, specParams, false);
-            var countSpec = new ProductReviewsWithApplicationUser(productId, specParams, true);
+            var spec = ProductReviewSpecifications.BuildListingSpec(productId, specParams);
+            var countSpec = ProductReviewSpecifications.BuildListingCountSpec(productId, specParams);
 
             var totalItems = await _unitOfWork.Repository<ProductReview>()
                 .CountAsync(countSpec);
@@ -195,7 +195,7 @@ namespace Ecommerce.API.Controllers
             review.HelpfulCount++;
             await _unitOfWork.Complete();
 
-            var spec = new ProductReviewsWithApplicationUser(review.Id);
+            var spec = ProductReviewSpecifications.BuildDetailsSpec(review.Id);
             var reviewWithSpec = await _unitOfWork.Repository<ProductReview>()
                 .GetWithSpecAsync(spec);
             return Ok(_mapper.Map<ProductReviewDto>(reviewWithSpec));
@@ -222,7 +222,7 @@ namespace Ecommerce.API.Controllers
             review.NotHelpfulCount++; 
             await _unitOfWork.Complete(); 
 
-            var spec = new ProductReviewsWithApplicationUser(review.Id); 
+            var spec = ProductReviewSpecifications.BuildDetailsSpec(review.Id); 
             var reviewWithSpec = await _unitOfWork.Repository<ProductReview>()
                 .GetWithSpecAsync(spec); 
         

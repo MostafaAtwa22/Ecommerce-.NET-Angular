@@ -250,6 +250,7 @@ export class AccountService {
         lastName: user.lastName,
         userName: user.userName,
         email: user.email,
+        gender: user.gender,
         roles: user.roles,
         permissions,
         profilePicture: user.profilePicture,

@@ -87,14 +87,17 @@ namespace Ecommerce.Infrastructure.Services
 
         public async Task<Order?> GetOrderByIdAsync(int id, string buyerEmail)
         {
-            var orderSpec = new OrderWithOrderItemsAndDeliverySpec(buyerEmail, id);
+            var orderSpec = OrderSpecifications.BuildDetailsSpec(id);
 
             return await _unitOfWork.Repository<Order>().GetWithSpecAsync(orderSpec)!;
         }
 
         public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
         {
-            var orderSpec = new OrderWithOrderItemsAndDeliverySpec(buyerEmail);
+            var orderSpec = new SpecificationBuilder<Order>(o => o.BuyerEmail == buyerEmail)
+                .Include(o => o.DeliveryMethod)
+                .Include(o => o.OrderItems)
+                .OrderByDesc(o => o.OrderDate);
 
             return await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(orderSpec)!;
         }

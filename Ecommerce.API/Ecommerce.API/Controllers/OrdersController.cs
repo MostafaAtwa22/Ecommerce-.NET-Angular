@@ -6,6 +6,7 @@ using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Helpers.Attributes;
+using Ecommerce.API.Helpers;
 using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
@@ -26,10 +27,11 @@ namespace Ecommerce.API.Controllers
     private readonly IMapper _mapper;
     private readonly OrderBackgroundService _backgroundService;
 
-    public OrdersController(IOrderService orderService,
-    IUnitOfWork unitOfWork,
-    OrderBackgroundService backgroundService,
-    IMapper mapper)
+    public OrdersController(
+      IOrderService orderService,
+      IUnitOfWork unitOfWork,
+      OrderBackgroundService backgroundService,
+      IMapper mapper)
     {
       _orderService = orderService;
       _unitOfWork = unitOfWork;
@@ -43,23 +45,16 @@ namespace Ecommerce.API.Controllers
     [AuthorizePermission(Modules.Orders, CRUD.Read)]
     public async Task<ActionResult<Pagination<AllOrdersDto>>> GetAll([FromQuery] OrdersSpecParams specParams)
     {
-      var spec = new OrdersWithUserSpecification(specParams);
-      var countSpec = new OrdersWithUserSpecification(specParams, true);
+      var dataSpec = OrderSpecifications.BuildListingSpec(specParams);
+      var countSpec = OrderSpecifications.BuildListingCountSpec(specParams);
 
-      var totalItems = await _unitOfWork
-          .Repository<Order>()
-          .CountAsync(countSpec);
-
-      var orders = await _unitOfWork
-          .Repository<Order>()
-          .GetAllWithSpecAsync(spec);
-
-      var data = _mapper.Map<IReadOnlyList<Order>, IReadOnlyList<AllOrdersDto>>(orders);
-
-      return Ok(new Pagination<AllOrdersDto>(specParams.PageIndex,
+      return await this.ToPagedResultAsync<Order, AllOrdersDto>(
+          _unitOfWork,
+          dataSpec,
+          countSpec,
+          specParams.PageIndex,
           specParams.PageSize,
-          totalItems,
-          data));
+          _mapper);
     }
 
     [HttpPut("status/{id}")]
@@ -67,10 +62,10 @@ namespace Ecommerce.API.Controllers
     public async Task<ActionResult<OrderResponseDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
     {
       var order = await _unitOfWork.Repository<Order>()
-          .GetWithSpecAsync(new OrderWithItemsSpec(id));
+          .GetWithSpecAsync(OrderSpecifications.BuildOrderWithItemsSpec(id));
 
       if (order is null)
-        return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+        return this.NotFoundResponse();
 
       if (order.Status == OrderStatus.Complete)
         return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Completed orders cannot be modified"));
@@ -116,13 +111,13 @@ namespace Ecommerce.API.Controllers
     [AuthorizePermission(Modules.Orders, CRUD.Read)]
     public async Task<ActionResult<OrderResponseDto>> GetOrderDetailsById([FromRoute] int id)
     {
-      var spec = new OrdersWithUserSpecification(id);
+      var spec = OrderSpecifications.BuildDetailsSpec(id);
       var order = await _unitOfWork
           .Repository<Order>()
           .GetWithSpecAsync(spec);
 
       if (order is null)
-        return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+        return this.NotFoundResponse();
 
       return Ok(_mapper.Map<Order, OrderResponseDto>(order));
     }

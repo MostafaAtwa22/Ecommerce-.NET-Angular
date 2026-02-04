@@ -187,17 +187,11 @@
                   <td>
                     <div class="d-flex align-items-center">
                       <div class="avatar-container me-3">
-                        @if (order.profilePictureUrl) {
-                          <img
-                            [src]="order.profilePictureUrl"
-                            alt="{{ order.firstName }} {{ order.lastName }}"
-                            class="avatar"
-                          />
-                        } @else {
-                          <div class="avatar-placeholder">
-                            {{ getInitials(order.firstName, order.lastName) }}
-                          </div>
-                        }
+                        <img
+                          [src]="getCustomerAvatar(order.profilePictureUrl)"
+                          alt="{{ order.firstName }} {{ order.lastName }}"
+                          class="avatar"
+                        />
                       </div>
                       <div>
                         <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>

@@ -9,6 +9,7 @@ import { UserParams } from '../../../shared/modules/UserParams ';
 import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../account/account-service';
 import { SweetAlertService } from '../../../shared/services/sweet-alert.service';
+import { getDefaultAvatarByGender, resolveUserAvatar } from '../../../shared/utils/avatar-utils';
 
 @Component({
   selector: 'app-main-user-info',
@@ -69,19 +70,7 @@ export class MainUserInfoComponent implements OnInit {
   ) {}
 
   getUserAvatar(user: IProfile): string {
-    if (user.profilePicture) {
-      return user.profilePicture;
-    }
-
-    // Default avatars based on gender
-    if (user.gender?.toLowerCase() === 'male') {
-      return 'default-male.png';
-    } else if (user.gender?.toLowerCase() === 'female') {
-      return 'default-female.png';
-    }
-
-    // Default neutral avatar
-    return 'default-user.png';
+    return resolveUserAvatar(user.profilePicture, user.gender);
   }
 
   handleImageError(event: Event): void {
@@ -90,13 +79,7 @@ export class MainUserInfoComponent implements OnInit {
       .find((u) => `${u.firstName} ${u.lastName}` === imgElement.alt)
       ?.gender?.toLowerCase();
 
-    if (userGender === 'male') {
-      imgElement.src = 'default-male.png';
-    } else if (userGender === 'female') {
-      imgElement.src = 'default-female.png';
-    } else {
-      imgElement.src = 'default-user.png';
-    }
+    imgElement.src = getDefaultAvatarByGender(userGender);
 
     // Add a CSS class for broken images
     imgElement.classList.add('broken-image');

@@ -8,6 +8,7 @@ import { AccountService } from '../../account/account-service';
 import { IAccountUser } from '../../shared/modules/accountUser';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { IWishList } from '../../shared/modules/wishlist';
+import { getDefaultAvatarByGender, resolveUserAvatar } from '../../shared/utils/avatar-utils';
 
 interface RoleInfo {
   displayName: string;
@@ -118,15 +119,16 @@ export class NavBar implements OnInit {
   }
 
   getAvatarUrl(user: IAccountUser | null): string {
-    if (!user) return 'default-avatar.png';
-    if (user.profilePicture) return user.profilePicture;
+    if (!user) {
+      return getDefaultAvatarByGender();
+    }
 
-    return user.gender === 'Male' ? 'default-male.png' : 'default-female.png';
+    return resolveUserAvatar(user.profilePicture, user.gender);
   }
 
   setDefaultAvatar(event: Event, gender?: 'Male' | 'Female') {
     const img = event.target as HTMLImageElement;
-    img.src = gender === 'Male' ? 'default-male.png' : 'default-female.png';
+    img.src = getDefaultAvatarByGender(gender);
   }
 
   // Role check methods

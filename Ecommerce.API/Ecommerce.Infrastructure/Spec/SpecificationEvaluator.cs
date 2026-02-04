@@ -10,6 +10,12 @@ namespace Ecommerce.Infrastructure.Spec
         {
             var query = inputQuery;
 
+            if (specifications.AsNoTracking)
+                query = query.AsNoTracking();
+
+            if (specifications.UseSplitQuery)
+                query = query.AsSplitQuery();
+
             if (specifications.Criteria is not null)
                 query = query.Where(specifications.Criteria);
 

@@ -301,7 +301,6 @@ namespace Ecommerce.API.Controllers
                     FirstName = validGoogleUser.GivenName,
                     LastName = validGoogleUser.FamilyName,
                     GoogleId = validGoogleUser.JwtId,
-                    ProfilePictureUrl = validGoogleUser.Picture,
                 }
             );
 
@@ -309,7 +308,6 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
 
             var response = await CreateUserResponseAsync(user);
-            response.ProfilePicture = validGoogleUser.Picture;
             return Ok(response);
         }
 

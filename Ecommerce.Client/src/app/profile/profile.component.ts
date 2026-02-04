@@ -18,6 +18,8 @@ import { SetPasswordComponent } from './set-password.component/set-password.comp
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../account/account-service';
 import { TwoFaComponent } from './two-fa.component/two-fa.component';
+import { IAccountUser } from '../shared/modules/accountUser';
+import { getDefaultAvatarByGender, resolveUserAvatar } from '../shared/utils/avatar-utils';
 
 type ProfileSection =
   | 'main-info'
@@ -80,19 +82,16 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProfile();
-const userJson = localStorage.getItem('user');
-    if (userJson) {
-      const user = JSON.parse(userJson);
 
-      // Set profile picture or fallback based on gender
-      this.profilePictureUrl = user.profilePicture
-        ? user.profilePicture
-        : user.gender === 'Male'
-          ? 'default-male.png'
-          : 'default-female.png';
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user: IAccountUser = JSON.parse(userJson);
+
+      // Set profile picture or fallback based on gender (from localStorage)
+      this.profilePictureUrl = resolveUserAvatar(user.profilePicture, user.gender);
     } else {
-      // fallback if nothing in local storage
-      this.profilePictureUrl = 'default-male.png';
+      // Fallback if nothing in local storage
+      this.profilePictureUrl = getDefaultAvatarByGender();
     }
   }
 
@@ -166,6 +165,12 @@ const userJson = localStorage.getItem('user');
           this.uploadProgress = 100;
           this.profileSubject.next(updatedProfile);
 
+          // Update header avatar using latest profile data
+          this.profilePictureUrl = resolveUserAvatar(
+            updatedProfile.profilePicture,
+            updatedProfile.gender
+          );
+
           // Update local storage user
           this.accountService.updateLocalUserProfilePicture(updatedProfile.profilePicture);
 
@@ -202,6 +207,9 @@ const userJson = localStorage.getItem('user');
         tap((updatedProfile) => {
           this.profileSubject.next(updatedProfile);
 
+          // Reset header avatar to gender-based default
+          this.profilePictureUrl = getDefaultAvatarByGender(updatedProfile.gender);
+
           // Update local storage user - remove image
           this.accountService.clearLocalUserProfilePicture();
 
@@ -228,6 +236,13 @@ const userJson = localStorage.getItem('user');
         tap((profile) => {
           this.isProfileLoading = false;
           this.profileSubject.next(profile);
+
+          // Sync header avatar with profile data from API
+          this.profilePictureUrl = resolveUserAvatar(
+            profile.profilePicture,
+            profile.gender
+          );
+
           this.cdr.markForCheck();
         }),
         catchError((error) => {
@@ -239,5 +254,11 @@ const userJson = localStorage.getItem('user');
         })
       )
       .subscribe();
+  }
+
+  onAvatarError(gender?: string): void {
+    // Fallback in case the current URL is broken
+    this.profilePictureUrl = getDefaultAvatarByGender(gender);
+    this.cdr.markForCheck();
   }
 }

@@ -12,7 +12,12 @@
           (mouseenter)="showEditOptions = true"
           (mouseleave)="showEditOptions = false"
         >
-          <img class="avatar" [src]="profilePictureUrl" [alt]="profile.firstName" />
+          <img
+            class="avatar"
+            [src]="profilePictureUrl"
+            [alt]="profile.firstName"
+            (error)="onAvatarError(profile.gender)"
+          />
 
           <!-- Loading overlay -->
           <div *ngIf="isUploading" class="avatar-loading-overlay">

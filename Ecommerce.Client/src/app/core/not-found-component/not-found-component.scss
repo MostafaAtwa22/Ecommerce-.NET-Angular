@@ -1,285 +1,77 @@
-/* 🌟 Wishlist Container */
-.wishlist-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-}
+/* 404 - Not Found Page Styles */
 
-/* 🎭 Empty State */
-.empty-wishlist {
+.not-found-container {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+}
+
+.not-found-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 100%;
   text-align: center;
-  padding: 2rem;
-  flex-direction: column;
-  gap: 2rem;
-
-  .empty-img {
-    width: 300px;
-    max-width: 100%;
-    opacity: 0.9;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  .empty-content {
-    .empty-icon {
-      font-size: 3rem;
-      color: #e53e3e;
-      margin-bottom: 1.5rem;
-      opacity: 0.8;
-    }
-
-    h3 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #2d3748;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      color: #718096;
-      margin-bottom: 2rem;
-      font-size: 1.1rem;
-    }
-
-    .btn-shop-now {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none;
-      border-radius: 50px;
-      padding: 1rem 2rem;
-      color: white;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-      }
-    }
-  }
+  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  animation: fadeInUp404 0.6s ease-out both;
 }
 
-/* 🛍️ Full Width Wishlist Items */
-.wishlist-items-full {
-  .wishlist-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 2rem;
-
-    .btn-clear-wishlist {
-      background: linear-gradient(135deg, #e53e3e, #c53030);
-      border: none;
-      border-radius: 50px;
-      padding: 0.75rem 1.5rem;
-      color: white;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
-
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
-      }
-    }
-  }
-
-  .wishlist-items-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .wishlist-item-full {
-    display: grid;
-    grid-template-columns: 120px 1fr auto;
-    gap: 1.5rem;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-
-    &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    .item-image {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      border-radius: 12px;
-      overflow: hidden;
-
-      .product-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-      }
-
-      &:hover .product-img {
-        transform: scale(1.05);
-      }
-
-      .stock-badge {
-        position: absolute;
-        top: 8px;
-        left: 8px;
-        padding: 0.3rem 0.6rem;
-        border-radius: 15px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: white;
-
-        &.in-stock {
-          background: linear-gradient(135deg, #48bb78, #38a169);
-        }
-
-        &.out-of-stock {
-          background: linear-gradient(135deg, #a0aec0, #718096);
-        }
-      }
-    }
-
-    .item-info {
-      .product-brand {
-        font-size: 0.9rem;
-        color: #667eea;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.5rem;
-      }
-
-      .product-title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #2d3748;
-        margin-bottom: 0.5rem;
-        line-height: 1.3;
-      }
-
-      .product-type {
-        font-size: 0.9rem;
-        color: #718096;
-        margin-bottom: 0.5rem;
-      }
-
-      .product-price {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: #2d3748;
-        margin-top: 0.5rem;
-      }
-    }
-
-    .item-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      min-width: 140px;
-
-      .btn-add-to-cart {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        border: none;
-        border-radius: 25px;
-        padding: 0.75rem 1rem;
-        color: white;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-align: center;
-
-        &:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        &:disabled {
-          background: #a0aec0;
-          cursor: not-allowed;
-          transform: none;
-        }
-      }
-
-      .btn-remove-item {
-        background: transparent;
-        border: 2px solid #e53e3e;
-        border-radius: 25px;
-        padding: 0.6rem 1rem;
-        color: #e53e3e;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        cursor: pointer;
-        text-align: center;
-
-        &:hover {
-          background: #e53e3e;
-          color: white;
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(229, 62, 62, 0.3);
-        }
-      }
-    }
-  }
+.not-found-img {
+  width: 260px;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+  animation: float404 3s ease-in-out infinite;
 }
 
-/* 💡 Quick Actions */
-.quick-actions {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(102, 126, 234, 0.2);
-
-  .actions-container {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-
-    .btn-continue-shopping,
-    .btn-view-cart {
-      border: 2px solid #667eea;
-      border-radius: 50px;
-      padding: 0.75rem 1.5rem;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      text-decoration: none;
-      color: #667eea;
-      background: transparent;
-
-      &:hover {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-      }
-    }
-
-    .btn-view-cart {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-color: transparent;
-
-      &:hover {
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-      }
-    }
-  }
+.not-found-card h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
 }
 
-/* 🎬 Animations */
-@keyframes float {
+.not-found-card p {
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.not-found-card .btn {
+  background: linear-gradient(135deg, #111827, #4b5563);
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 2.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.not-found-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.6);
+  background: linear-gradient(135deg, #020617, #1f2937);
+}
+
+.not-found-card .btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.5);
+}
+
+/* Animations */
+
+@keyframes float404 {
   0% {
     transform: translateY(0);
   }
@@ -291,10 +83,10 @@
   }
 }
 
-@keyframes fadeInUp {
+@keyframes fadeInUp404 {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -302,112 +94,22 @@
   }
 }
 
-.wishlist-item-full {
-  animation: fadeInUp 0.6s cubic-bezier(0.215, 0.61, 0.355, 1) both;
-
-  @for $i from 1 through 12 {
-    &:nth-child(#{$i}) {
-      animation-delay: #{$i * 0.1}s;
-    }
-  }
-}
-
-/* 📱 Responsive Design */
-@media (max-width: 768px) {
-  .wishlist-container {
-    padding: 1rem;
-  }
-
-  .empty-wishlist {
-    flex-direction: column;
-    text-align: center;
-    gap: 1.5rem;
-
-    .empty-img {
-      width: 200px;
-    }
-  }
-
-  .wishlist-items-full {
-    .wishlist-item-full {
-      grid-template-columns: 80px 1fr;
-      grid-template-rows: auto auto;
-      gap: 1rem;
-
-      .item-image {
-        width: 80px;
-        height: 80px;
-        grid-column: 1;
-        grid-row: 1;
-      }
-
-      .item-info {
-        grid-column: 2;
-        grid-row: 1;
-      }
-
-      .item-actions {
-        grid-column: 1 / span 2;
-        grid-row: 2;
-        flex-direction: row;
-        justify-content: space-between;
-        min-width: auto;
-
-        .btn-add-to-cart,
-        .btn-remove-item {
-          flex: 1;
-          margin: 0 0.25rem;
-        }
-      }
-    }
-  }
-
-  .quick-actions .actions-container {
-    flex-direction: column;
-
-    button {
-      width: 100%;
-      text-align: center;
-    }
-  }
-}
+/* Responsive tweaks */
 
 @media (max-width: 576px) {
-  .empty-wishlist {
-    padding: 1rem;
-
-    .empty-img {
-      width: 150px;
-    }
-
-    h3 {
-      font-size: 1.4rem;
-    }
+  .not-found-card {
+    padding: 2rem 1.5rem;
   }
 
-  .wishlist-items-full {
-    .wishlist-item-full {
-      padding: 1rem;
+  .not-found-img {
+    width: 210px;
+  }
 
-      .item-info {
-        .product-title {
-          font-size: 1.1rem;
-        }
+  .not-found-card h2 {
+    font-size: 1.6rem;
+  }
 
-        .product-price {
-          font-size: 1.2rem;
-        }
-      }
-
-      .item-actions {
-        flex-direction: column;
-        gap: 0.5rem;
-
-        .btn-add-to-cart,
-        .btn-remove-item {
-          margin: 0;
-        }
-      }
-    }
+  .not-found-card p {
+    font-size: 0.95rem;
   }
 }

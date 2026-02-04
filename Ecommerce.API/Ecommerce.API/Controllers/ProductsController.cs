@@ -5,6 +5,7 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Helpers.Attributes;
+using Ecommerce.API.Helpers;
 using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
@@ -23,7 +24,8 @@ namespace Ecommerce.API.Controllers
         private readonly IFileService _fileService;
         private readonly IMapper _mapper;
 
-        public ProductsController(IUnitOfWork unitOfWork,
+        public ProductsController(
+            IUnitOfWork unitOfWork,
             IFileService fileService,
             IMapper mapper)
         {
@@ -36,36 +38,30 @@ namespace Ecommerce.API.Controllers
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductResponseDto>>> GetAll([FromQuery] ProductSpecParams specParams)
         {
-            var spec = new ProductWithTypeAndBrandSpec(specParams, forCount: false);
-            var countSpec = new ProductWithTypeAndBrandSpec(specParams, forCount: true);
+            var dataSpec = ProductSpecifications.BuildListingSpec(specParams);
+            var countSpec = ProductSpecifications.BuildListingCountSpec(specParams);
 
-            var totalItems = await _unitOfWork.Repository<Product>()
-                .CountAsync(countSpec);
-            var products = await _unitOfWork.Repository<Product>()
-                .GetAllWithSpecAsync(spec);
-
-
-            var data = _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponseDto>>(products);
-
-            return Ok(new Pagination<ProductResponseDto>(specParams.PageIndex,
+            return await this.ToPagedResultAsync<Product, ProductResponseDto>(
+                _unitOfWork,
+                dataSpec,
+                countSpec,
+                specParams.PageIndex,
                 specParams.PageSize,
-                totalItems,
-                data));
+                _mapper);
         }
 
         [Cached(600)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetById([FromRoute] int id)
         {
-            var spec = new ProductWithTypeAndBrandSpec(id);
+            var spec = ProductSpecifications.BuildDetailsSpec(id);
             var product = await _unitOfWork.Repository<Product>()
                 .GetWithSpecAsync(spec);
 
             if (product is null)
-                return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
+                return this.NotFoundResponse();
 
-            var productDto = _mapper.Map<Product, ProductResponseDto>(product);
-            return Ok(productDto);
+            return Ok(_mapper.Map<Product, ProductResponseDto>(product));
         }
 
         [HttpPost]
@@ -81,7 +77,7 @@ namespace Ecommerce.API.Controllers
 
             await _unitOfWork.Complete();
 
-            var spec = new ProductWithTypeAndBrandSpec(product.Id);
+            var spec = ProductSpecifications.BuildDetailsSpec(product.Id);
             var createdProduct = await _unitOfWork.Repository<Product>()
                 .GetWithSpecAsync(spec);
 
@@ -96,7 +92,7 @@ namespace Ecommerce.API.Controllers
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(updateDto.ProductId);
 
             if (product is null)
-                return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
+                return this.NotFoundResponse();
 
             var hasNewImage = updateDto.ImageFile is not null;
             var oldImage = product.PictureUrl;
@@ -126,7 +122,7 @@ namespace Ecommerce.API.Controllers
                 throw;
             }
 
-            var spec = new ProductWithTypeAndBrandSpec(product.Id);
+            var spec = ProductSpecifications.BuildDetailsSpec(product.Id);
             var updatedProduct = await _unitOfWork.Repository<Product>()
                 .GetWithSpecAsync(spec);
 
@@ -141,7 +137,7 @@ namespace Ecommerce.API.Controllers
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
 
             if (product is null)
-                return NotFound(new ApiResponse((int)HttpStatusCode.NotFound));
+                return this.NotFoundResponse();
 
             _unitOfWork.Repository<Product>().Delete(product);
             var effectedRows = await _unitOfWork.Complete();
