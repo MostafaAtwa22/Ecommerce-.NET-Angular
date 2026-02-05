@@ -1,14 +1,13 @@
-using System.Configuration;
 using Ecommerce.API.Extensions;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
 using Ecommerce.Infrastructure.Settings;
-using Hangfire;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 
 namespace Ecommerce.API
 {
@@ -45,7 +44,15 @@ namespace Ecommerce.API
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerervices();
             builder.Services.AddCustomRateLimiting(builder.Configuration);
-
+            builder.Services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            builder.Host.UseSerilog((context, config) =>
+            {
+                config
+                    .ReadFrom.Configuration(context.Configuration)
+                    .WriteTo.Console()
+                    .MinimumLevel.Information();
+            });
             var app = builder.Build();
 
             await app.AutoUpdateDataBaseAsync();
@@ -63,6 +70,9 @@ namespace Ecommerce.API
 
             // Handle 404s
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
+            // allow to log http requests
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
             app.UseRouting();

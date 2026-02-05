@@ -1,4 +1,5 @@
 using Ecommerce.API.BackgroundJobs;
+using Ecommerce.API.Behaviours;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.API.Filters;
@@ -10,6 +11,7 @@ using Ecommerce.Core.Interfaces;
 using Ecommerce.Infrastructure.Repositories;
 using Ecommerce.Infrastructure.Services;
 using Hangfire;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,7 +36,8 @@ namespace Ecommerce.API.Extensions
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandlerFilter>();
             services.AddHangfireServer();
             services.AddScoped<OrderBackgroundService>();
-
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+            
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
