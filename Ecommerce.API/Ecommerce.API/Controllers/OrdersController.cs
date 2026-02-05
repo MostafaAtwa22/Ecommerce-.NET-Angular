@@ -58,6 +58,7 @@ namespace Ecommerce.API.Controllers
     }
 
     [HttpPut("status/{id}")]
+    [Cached(100)]
     [AuthorizePermission(Modules.Orders, CRUD.Update)]
     public async Task<ActionResult<OrderResponseDto>> UpdateOrderStatus(int id, UpdateOrderStatusDto dto)
     {
@@ -86,6 +87,7 @@ namespace Ecommerce.API.Controllers
 
     [HttpPost]
     [AuthorizePermission(Modules.Orders, CRUD.Create)]
+    [InvalidateCache("/api/orders")]
     public async Task<ActionResult<OrderResponseDto>> CreateOrder(OrderDto dto)
     {
       var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -109,6 +111,7 @@ namespace Ecommerce.API.Controllers
     [HttpGet("details/{id}")]
     [DisableRateLimiting]
     [AuthorizePermission(Modules.Orders, CRUD.Read)]
+    [InvalidateCache("/api/orders")]
     public async Task<ActionResult<OrderResponseDto>> GetOrderDetailsById([FromRoute] int id)
     {
       var spec = OrderSpecifications.BuildDetailsSpec(id);
@@ -124,6 +127,7 @@ namespace Ecommerce.API.Controllers
 
     [HttpGet("{id}")]
     [AuthorizePermission(Modules.Orders, CRUD.Read)]
+    [Cached(100)]
     public async Task<ActionResult<OrderResponseDto>> GetOrderById([FromRoute] int id)
     {
       var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();
@@ -137,6 +141,7 @@ namespace Ecommerce.API.Controllers
 
     [HttpGet]
     [AuthorizePermission(Modules.Orders, CRUD.Read)]
+    [Cached(200)]
     public async Task<ActionResult<IReadOnlyList<OrderResponseDto>>> GetOrders()
     {
       var userEmail = HttpContext.User.RetrieveEmailFromPrincipal();

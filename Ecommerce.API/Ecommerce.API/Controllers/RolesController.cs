@@ -34,6 +34,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpGet]
         [AuthorizePermission(Modules.Roles, CRUD.Read)]
+        [Cached(300)]
         public async Task<ActionResult<ICollection<RoleDto>>> GetAllRoles()
         {
             var roles = await _roleManager.Roles.ToListAsync();
@@ -47,6 +48,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpGet("{id}")]
         [AuthorizePermission(Modules.Roles, CRUD.Read)]
+        [Cached(300)]
         public async Task<ActionResult<RoleDto>> GetRoleById(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -61,6 +63,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [AuthorizePermission(Modules.Roles, CRUD.Create)]
+        [InvalidateCache("/api/roles")]
         public async Task<ActionResult<RoleDto>> Create(RoleToCreateDto dto)
         {
             var roleName = dto.Name.Trim();
@@ -80,6 +83,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpDelete("{id}")]
         [AuthorizePermission(Modules.Roles, CRUD.Delete)]
+        [InvalidateCache("/api/roles")]
         public async Task<IActionResult> Delete(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -99,6 +103,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpGet("manage-user-roles/{userId}")]
         [AuthorizePermission(Modules.Roles, CRUD.Read)]
+        [Cached(30)]
         public async Task<ActionResult<UserRolesDto>> GetManageUserRoles(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -120,6 +125,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPut("update-role")]
         [AuthorizePermission(Modules.Roles, CRUD.Update)]
+        [InvalidateCache("/api/roles")]
         public async Task<ActionResult<UserRolesDto>> UpdateRoles(UserRolesDto userRolesDto)
         {
             var user = await _userManager.FindByIdAsync(userRolesDto.UserId);
@@ -150,6 +156,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpGet("manage-permissions/{id}")]
         [AuthorizePermission(Modules.Roles, CRUD.Read)]
+        [Cached(30)]
         public async Task<ActionResult<RolePermissionsDto>> GetManagePermissions(string id)
         {
             var role = await _roleManager.FindByIdAsync(id);
@@ -171,6 +178,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPut("update-permissions/{id}")]
         [AuthorizePermission(Modules.Roles, CRUD.Update)]
+        [InvalidateCache("/api/roles")]
         public async Task<ActionResult<RolePermissionsDto>> UpdatePermissions(string id, List<PermissionCheckboxDto> permissions)
         {
             var role = await _roleManager.FindByIdAsync(id);

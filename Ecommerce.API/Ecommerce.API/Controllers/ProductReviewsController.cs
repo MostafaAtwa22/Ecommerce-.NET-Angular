@@ -41,7 +41,7 @@ namespace Ecommerce.API.Controllers
             _mapper = mapper;
         }
 
-        // [Cached(600)]
+        [Cached(200)]
         [HttpGet("{productId}")]
         public async Task<ActionResult<Pagination<ProductReviewDto>>> Get(int productId, [FromQuery] ProductReviewsSpecParams specParams)
         {
@@ -67,6 +67,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPost]
+        [InvalidateCache("/api/productReviews")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
         public async Task<ActionResult<ProductReviewDto>> Create(ProductReviewFromDto dto)
         {
@@ -107,6 +108,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPut("{id}")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Update)]
+        [InvalidateCache("/api/productReviews")]
         public async Task<ActionResult<ProductReviewDto>> Update(int id, ProductReviewFromDto dto)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -142,6 +144,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpDelete("{id}")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Delete)]
+        [InvalidateCache("/api/productReviews")]
         public async Task<ActionResult<ProductReviewDto>> Delete(int id)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -177,6 +180,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost("{id}/helpful")]
         [Authorize]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
+        [InvalidateCache("/api/productReviews")]
         public async Task<ActionResult> MarkHelpful(int id)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -204,6 +208,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost("{id}/not-helpful")]
         [Authorize] 
         [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
+        [InvalidateCache("/api/productReviews")]
         public async Task<ActionResult> MarkNotHelpful(int id) 
         { 
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id); 

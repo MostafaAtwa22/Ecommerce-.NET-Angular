@@ -78,6 +78,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPatch("profile/json")]
+        [InvalidateCache("/api/profiles")]
         public async Task<ActionResult<ProfileResponseDto>> UpdateProfileJsonPatch(
             [FromBody] JsonPatchDocument<ProfileUpdateDto> patchDoc)
         {
@@ -108,6 +109,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpPatch("profile/image")]
+        [InvalidateCache("/api/profiles")]
         public async Task<ActionResult<ProfileResponseDto>> UpdateProfileImage([FromForm] ProfileImageUpdateDto dto)
         {
             if (dto.ProfileImageFile is null)
@@ -137,6 +139,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpDelete("profile/image")]
+        [InvalidateCache("/api/profiles")]
         public async Task<ActionResult<ProfileResponseDto>> DeleteProfileImage()
         {
             var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User);

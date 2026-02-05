@@ -71,7 +71,7 @@ namespace Ecommerce.UnitTests.AccountControllerTests
                          .ReturnsAsync(appUser);
 
             _mapper.Setup(m => m.Map<UserDto>(appUser))
-                   .Returns(new UserDto { Email = appUser.Email });
+                   .Returns(new UserDto { Email = appUser.Email, ProfilePicture = payload.Picture });
 
             _tokenService.Setup(t => t.CreateToken(appUser))
                          .ReturnsAsync("jwt-token");

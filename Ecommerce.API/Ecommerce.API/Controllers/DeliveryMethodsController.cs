@@ -26,6 +26,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpGet]
         [AuthorizePermission(Modules.DeliveryMethods, CRUD.Read)]
+        [Cached(100)]
         public async Task<ActionResult<IReadOnlyList<DeliveryMethodResponseDto>>> GetDeliveryMethods()
         {
             var deliveryMethods = (await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync())
@@ -36,6 +37,7 @@ namespace Ecommerce.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Cached(100)]
         [AuthorizePermission(Modules.DeliveryMethods, CRUD.Read)]
         public async Task<ActionResult<DeliveryMethodResponseDto>> GetDeliveryMethod(int id)
         {
@@ -50,6 +52,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         [DisableRateLimiting]
         [AuthorizePermission(Modules.DeliveryMethods, CRUD.Create)]
+        [InvalidateCache("/api/deliveryMethods")]
         public async Task<ActionResult<DeliveryMethodResponseDto>> CreateDeliveryMethod(DeliveryMethodDto createDto)
         {
             var deliveryMethod = _mapper.Map<DeliveryMethod>(createDto);
@@ -67,6 +70,7 @@ namespace Ecommerce.API.Controllers
         [HttpPut("{id}")]
         [DisableRateLimiting]
         [AuthorizePermission(Modules.DeliveryMethods, CRUD.Update)]
+        [InvalidateCache("/api/deliveryMethods")]
         public async Task<IActionResult> UpdateDeliveryMethod(int id, DeliveryMethodDto updateDto)
         {
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(id);
@@ -85,6 +89,7 @@ namespace Ecommerce.API.Controllers
         [HttpDelete("{id}")]
         [DisableRateLimiting]
         [AuthorizePermission(Modules.DeliveryMethods, CRUD.Delete)]
+        [InvalidateCache("/api/deliveryMethods")]
         public async Task<IActionResult> DeleteDeliveryMethod(int id)
         {
             var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(id);

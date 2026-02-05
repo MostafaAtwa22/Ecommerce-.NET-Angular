@@ -46,6 +46,7 @@ namespace Ecommerce.API.Controllers
         [HttpPost]
         [DisableRateLimiting]
         [AuthorizePermission(Modules.Products, CRUD.Create)]
+        [InvalidateCache("/api/productbrands")]
         public async Task<ActionResult<ProductBrandAndTypeResponseDto>> Create(ProductBrandAndTypeCreationDto creationDto)
         {
             var brand = _mapper.Map<ProductBrandAndTypeCreationDto, ProductBrand>(creationDto);
@@ -59,6 +60,7 @@ namespace Ecommerce.API.Controllers
         [HttpDelete("{id:int}")]
         [DisableRateLimiting]
         [AuthorizePermission(Modules.Products, CRUD.Delete)]
+        [InvalidateCache("/api/productbrands")]
         public async Task<IActionResult> Delete(int id)
         {
             var brand = await _unitOfWork.Repository<ProductBrand>().GetByIdAsync(id);

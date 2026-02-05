@@ -19,8 +19,8 @@ namespace Ecommerce.API.BackgroundJobs
             _scopeFactory = scopeFactory;
         }
 
-        public void EnqueueSendEmail(Order order) => _sendEmailQueue.Enqueue(order);
-        public void EnqueueCancelOrder(Order order) => _cancelOrderQueue.Enqueue(order);
+        public virtual void EnqueueSendEmail(Order order) => _sendEmailQueue.Enqueue(order);
+        public virtual void EnqueueCancelOrder(Order order) => _cancelOrderQueue.Enqueue(order);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
