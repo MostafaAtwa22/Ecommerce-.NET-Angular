@@ -1,5 +1,6 @@
 using System.Reflection;
 using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.Chat;
 using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Core.Entities.orderAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -26,5 +27,8 @@ namespace Ecommerce.Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ChatParticipant> ChatParticipants { get; set; }
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
     }
 }

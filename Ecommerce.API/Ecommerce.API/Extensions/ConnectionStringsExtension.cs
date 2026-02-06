@@ -1,4 +1,5 @@
 using Ecommerce.Infrastructure.Data;
+using Ecommerce.Infrastructure.Data.Interceptions;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -15,7 +16,8 @@ namespace Ecommerce.API.Extensions
 
             builder.Services.AddDbContext<ApplicationDbContext>(opt =>
             {
-                opt.UseSqlServer(connectionString);
+                opt.UseSqlServer(connectionString)
+                    .AddInterceptors(new SoftDeleteInterceptor());;
             });
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
