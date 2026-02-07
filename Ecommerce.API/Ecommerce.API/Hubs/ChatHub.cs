@@ -17,20 +17,23 @@ using Ecommerce.Core.Params;
 namespace Ecommerce.API.Hubs
 {
     [Authorize(Roles = "Admin,SuperAdmin")]
-    public class ChatHub : Hub<IChatClient>
+    public partial class ChatHub : Hub<IChatClient>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IChatbotService _chatbotService;
         public static readonly ConcurrentDictionary<string, OnlineUserDto> _onlineUsers = new();
         
         public ChatHub(UserManager<ApplicationUser> userManager,
             IUnitOfWork unitOfWork,
-            IMapper mapper)
+            IMapper mapper,
+            IChatbotService chatbotService)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _chatbotService = chatbotService;
         }
 
         public override async Task OnConnectedAsync()
@@ -113,7 +116,7 @@ namespace Ecommerce.API.Hubs
             
             await Clients.Client(connectionId).NotifyTypingToUser(sender.UserName!);
         }
-    
+
         public async Task LoadMessages(MessageSpecParams specParams)
         {
             var currentUser = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);

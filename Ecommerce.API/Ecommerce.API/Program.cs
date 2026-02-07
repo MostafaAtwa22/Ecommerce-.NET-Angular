@@ -54,7 +54,6 @@ namespace Ecommerce.API
             {
                 config
                     .ReadFrom.Configuration(context.Configuration)
-                    .WriteTo.Console()
                     .MinimumLevel.Information();
             });
             var app = builder.Build();

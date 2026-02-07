@@ -37,6 +37,7 @@ namespace Ecommerce.API.Extensions
             services.AddHangfireServer();
             services.AddScoped<OrderBackgroundService>();
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+            services.AddScoped<IChatbotService, GroqChatbotService>();
             
             services.AddSingleton(provider =>
                 new ImageUrlResolver<Product, ProductResponseDto>(
