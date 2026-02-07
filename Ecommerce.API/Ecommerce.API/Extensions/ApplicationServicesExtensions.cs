@@ -47,6 +47,10 @@ namespace Ecommerce.API.Extensions
                     provider.GetRequiredService<IConfiguration>(),
                     "ProfilePictureUrl"));
             services.AddSingleton(provider =>
+                new ImageUrlResolver<ApplicationUser, OnlineUserDto>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    "ProfilePictureUrl"));
+            services.AddSingleton(provider =>
                 new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
                     provider.GetRequiredService<IConfiguration>(),
                     "ProductItemOrdered.PictureUrl"));

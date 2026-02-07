@@ -240,12 +240,21 @@ export class AccountService {
     // Permissions are no longer extracted from JWT, but fetched via PermissionService
     let permissions: string[] = [];
 
+    // Extract userId from JWT (nameid) for downstream features like chat.
+    let userId: string | undefined;
+    try {
+      const decoded = jwtDecode<JwtPayload>(user.token);
+      userId = decoded?.nameid;
+    } catch {
+      userId = undefined;
+    }
 
-    this.userSignal.set({ ...user, permissions });
+    this.userSignal.set({ ...user, id: userId, permissions });
 
     localStorage.setItem(
       'user',
       JSON.stringify({
+        id: userId,
         firstName: user.firstName,
         lastName: user.lastName,
         userName: user.userName,
@@ -266,6 +275,18 @@ export class AccountService {
 
     try {
       const user = JSON.parse(userStr);
+
+      // Backward compatibility: if 'id' isn't stored yet, derive it from JWT.
+      if (!user.id && user.token) {
+        try {
+          const decoded = jwtDecode<JwtPayload>(user.token);
+          user.id = decoded?.nameid;
+          localStorage.setItem('user', JSON.stringify(user));
+        } catch {
+          // ignore
+        }
+      }
+
       this.userSignal.set(user);
 
       if (user.permissions && user.permissions.length > 0) {

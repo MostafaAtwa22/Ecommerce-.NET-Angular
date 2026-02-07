@@ -14,21 +14,6 @@ namespace Ecommerce.Infrastructure.Configurations
                     x => x.ToString(),
                     x => (Gender)Enum.Parse(typeof(Gender), x)
                 );
-
-            builder.HasMany(u => u.InitiatedConversations)
-                .WithOne(c => c.InitiatedByUser)
-                .HasForeignKey(c => c.InitiatedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(u => u.MessagesSent)
-                .WithOne(m => m.Sender)
-                .HasForeignKey(m => m.SenderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasMany(u => u.ChatParticipations)
-                .WithOne(cp => cp.User)
-                .HasForeignKey(cp => cp.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -74,6 +74,13 @@ namespace Ecommerce.Infrastructure.Data
             var logger = loggerFactory.CreateLogger<ApplicationDbContext>();
             try
             {
+                var existingReviewCount = await context.ProductReviews.CountAsync();
+                if (existingReviewCount > 0)
+                {
+                    logger.LogInformation("✅ Product reviews already seeded. Skipping seeding to preserve user-created products.");
+                    return;
+                }
+
                 logger.LogInformation("🔄 Checking for existing product reviews...");
 
                 var customers = await userManager.GetUsersInRoleAsync(Role.Customer.ToString());

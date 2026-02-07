@@ -1,4 +1,5 @@
 using Ecommerce.API.Extensions;
+using Ecommerce.API.Hubs;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
 using Ecommerce.Infrastructure.Settings;
@@ -40,6 +41,9 @@ namespace Ecommerce.API
             });
             builder.Services.AddHttpClient();
             builder.Services.AddIdentityServices(builder.Configuration);
+            
+            builder.Services.AddSignalR();
+            
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddSwaggerervices();
@@ -98,7 +102,9 @@ namespace Ecommerce.API
             app.UseAuthorization();
 
             app.MapControllers();
-
+            
+            app.MapHub<ChatHub>("hubs/chat");
+            
             app.UseHangfireJobs();
 
             app.Run();

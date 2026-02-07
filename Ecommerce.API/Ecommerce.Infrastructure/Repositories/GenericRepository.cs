@@ -55,6 +55,10 @@ namespace Ecommerce.Infrastructure.Repositories
 
         public async Task<int> CountAsync(ISpecifications<T> specifications)
             => await ApplySpecification(specifications).CountAsync();
+
+        public IQueryable<T> GetAllQueryable()
+            => _context.Set<T>().AsQueryable();
+
         private IQueryable<T> ApplySpecification(ISpecifications<T> specifications)
             => SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), specifications);
     }

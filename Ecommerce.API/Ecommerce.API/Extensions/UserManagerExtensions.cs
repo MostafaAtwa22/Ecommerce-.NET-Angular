@@ -11,7 +11,7 @@ namespace Ecommerce.API.Extensions
             this UserManager<ApplicationUser> userManager,
             ClaimsPrincipal user)
         {
-            var email = user?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var email = user.RetrieveEmailFromPrincipal();
 
             return await userManager.Users
                 .Include(u => u.Address)
@@ -22,7 +22,7 @@ namespace Ecommerce.API.Extensions
             this UserManager<ApplicationUser> userManager,
             ClaimsPrincipal user)
         {
-            var email = user?.Claims?.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
+            var email = user.RetrieveEmailFromPrincipal();
 
             return await userManager.Users
                 .FirstOrDefaultAsync(u => u.Email == email);

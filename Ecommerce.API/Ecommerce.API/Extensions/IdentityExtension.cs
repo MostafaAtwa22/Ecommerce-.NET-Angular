@@ -59,6 +59,24 @@ namespace Ecommerce.API.Extensions
                     ),
                     ClockSkew = TimeSpan.Zero
                 };
+
+                // Configure JWT for SignalR
+                options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        
+                        // If the request is for the chat hub, extract the token from query string
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/chat"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             return services;

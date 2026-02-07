@@ -40,6 +40,9 @@ namespace Ecommerce.API.Helpers
             CreateMap<ProfileUpdateDto, ApplicationUser>()
                 .ForMember(dest => dest.Gender, o => o.MapFrom(src => src.Gender))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
+
+            CreateMap<ApplicationUser, OnlineUserDto>()
+                .ForMember(dest => dest.ProfilePictureUrl, o => o.MapFrom<ImageUrlResolver<ApplicationUser, OnlineUserDto>>());
         }
     }
 }

@@ -22,92 +22,6 @@ namespace Ecommerce.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Ecommerce.Core.Entities.Chat.ChatParticipant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTime?>("DateOFDelete")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("JoinedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChatParticipants");
-                });
-
-            modelBuilder.Entity("Ecommerce.Core.Entities.Chat.Conversation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset?>("ClosedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTime?>("DateOFDelete")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("InitiatedByUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTimeOffset>("UpdatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InitiatedByUserId");
-
-                    b.ToTable("Conversations");
-                });
-
             modelBuilder.Entity("Ecommerce.Core.Entities.Chat.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -118,11 +32,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
@@ -136,8 +46,9 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset?>("ReadAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<string>("ReciverId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SenderId")
                         .IsRequired()
@@ -145,7 +56,7 @@ namespace Ecommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConversationId");
+                    b.HasIndex("ReciverId");
 
                     b.HasIndex("SenderId");
 
@@ -660,51 +571,21 @@ namespace Ecommerce.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Ecommerce.Core.Entities.Chat.ChatParticipant", b =>
-                {
-                    b.HasOne("Ecommerce.Core.Entities.Chat.Conversation", "Conversation")
-                        .WithMany("Participants")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "User")
-                        .WithMany("ChatParticipations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Conversation");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Ecommerce.Core.Entities.Chat.Conversation", b =>
-                {
-                    b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "InitiatedByUser")
-                        .WithMany("InitiatedConversations")
-                        .HasForeignKey("InitiatedByUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("InitiatedByUser");
-                });
-
             modelBuilder.Entity("Ecommerce.Core.Entities.Chat.Message", b =>
                 {
-                    b.HasOne("Ecommerce.Core.Entities.Chat.Conversation", "Conversation")
-                        .WithMany("Messages")
-                        .HasForeignKey("ConversationId")
+                    b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "Reciver")
+                        .WithMany()
+                        .HasForeignKey("ReciverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Ecommerce.Core.Entities.Identity.ApplicationUser", "Sender")
-                        .WithMany("MessagesSent")
+                        .WithMany()
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Conversation");
+                    b.Navigation("Reciver");
 
                     b.Navigation("Sender");
                 });
@@ -954,22 +835,9 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Ecommerce.Core.Entities.Chat.Conversation", b =>
-                {
-                    b.Navigation("Messages");
-
-                    b.Navigation("Participants");
-                });
-
             modelBuilder.Entity("Ecommerce.Core.Entities.Identity.ApplicationUser", b =>
                 {
                     b.Navigation("Address");
-
-                    b.Navigation("ChatParticipations");
-
-                    b.Navigation("InitiatedConversations");
-
-                    b.Navigation("MessagesSent");
 
                     b.Navigation("Orders");
 

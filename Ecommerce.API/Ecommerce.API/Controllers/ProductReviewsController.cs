@@ -191,11 +191,6 @@ namespace Ecommerce.API.Controllers
             if (review.ApplicationUserId == user!.Id)
                 return BadRequest(new ApiResponse(400, "You can't make feedback to your self"));
 
-            var vote = await _unitOfWork.Repository<ProductReview>()
-                .FindAsync(v => v.ProductId == review.ProductId && v.ApplicationUserId == user.Id);
-            if (vote is not null)
-                return BadRequest(new ApiResponse(400, "You already gave feedback on this review."));
-
             review.HelpfulCount++;
             await _unitOfWork.Complete();
 
@@ -218,11 +213,6 @@ namespace Ecommerce.API.Controllers
             var user = await _userManager.FindUserByClaimPrinciplesAsync(HttpContext.User); 
             if (review.ApplicationUserId == user!.Id) 
                 return BadRequest(new ApiResponse(400, "You can't make feedback to your self")); 
-
-            var vote = await _unitOfWork.Repository<ProductReview>()
-                .FindAsync(v => v.ProductId == review.ProductId && v.ApplicationUserId == user.Id);
-            if (vote is not null)
-                return BadRequest(new ApiResponse(400, "You already gave feedback on this review."));
     
             review.NotHelpfulCount++; 
             await _unitOfWork.Complete(); 
