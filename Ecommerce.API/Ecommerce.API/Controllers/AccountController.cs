@@ -77,11 +77,22 @@ namespace Ecommerce.API.Controllers
             if (user.TwoFactorEnabled)
             {
                 await TwoFactorAuthReturn(user);
-                return Ok(new LoginResponseDto { RequiresTwoFactor = true, Message = "Check your inbox for a verification code" });
+                return Ok(new LoginResponseDto
+                {
+                    RequiresTwoFactor = true,
+                    Message = "Check your inbox for a verification code",
+                    Email = user.Email
+                });            
             }
 
-            var userDto = await CreateUserResponseAsync(user);
-            return Ok(new LoginResponseDto { RequiresTwoFactor = false, Message = "Login successful", User = userDto });
+            var response = await CreateUserResponseAsync(user);
+            return Ok(new LoginResponseDto
+            {
+                RequiresTwoFactor = false,
+                Message = "Login successful",
+                Email = user.Email,
+                User = response
+            });        
         }
 
         [HttpPost("verify-2fa")]
@@ -286,7 +297,7 @@ namespace Ecommerce.API.Controllers
         
         [HttpPost("google-login")]
         [EnableRateLimiting("customer-browsing")]
-        public async Task<ActionResult<UserDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
+        public async Task<ActionResult<LoginResponseDto>> GoogleLogin([FromBody] GoogleLoginDto dto)
         {
             var validGoogleUser = await _googleService.ValidateGoogleToken(dto.IdToken);
 
@@ -307,8 +318,26 @@ namespace Ecommerce.API.Controllers
             if (user is null)
                 return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
 
+            if (user.TwoFactorEnabled)
+            {
+                await TwoFactorAuthReturn(user);
+                return Ok(new LoginResponseDto
+                {
+                    RequiresTwoFactor = true,
+                    Message = "Check your inbox for a verification code",
+                    Email = user.Email
+                });
+            }
+
             var response = await CreateUserResponseAsync(user);
-            return Ok(response);
+
+            return Ok(new LoginResponseDto
+            {
+                RequiresTwoFactor = false,
+                Message = "Login successful",
+                Email = user.Email,
+                User = response
+            });
         }
 
         [HttpGet("emailexists/{email}")]

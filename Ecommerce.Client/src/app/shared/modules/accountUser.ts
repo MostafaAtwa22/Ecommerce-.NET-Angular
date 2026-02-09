@@ -38,6 +38,7 @@ export interface JwtPayload {
 export interface ILoginResponse {
   requiresTwoFactor: boolean;
   message?: string;
+  email?: string;
   user?: IAccountUser;
 }
 

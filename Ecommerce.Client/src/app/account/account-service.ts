@@ -120,22 +120,21 @@ export class AccountService {
     const idToken = this.oAuth.getIdToken();
 
     return this.http
-      .post<IAccountUser>(
+      .post<ILoginResponse>(
         `${this.baseUrl}/google-login`,
         { idToken },
         { withCredentials: true }
       )
       .pipe(
-        tap(user => {
-          this.setUser(user);
-          this.permissionService.refreshPermissions().subscribe();
+        tap(response => {
+          if (!response.requiresTwoFactor && response.user) {
+            this.setUser(response.user);
+            this.permissionService.refreshPermissions().subscribe();
+          }
         })
       );
   }
 
-  // ==========================
-  // EMAIL & PASSWORD
-  // ==========================
 
   register(registerData: IRegister) {
     return this.http.post(

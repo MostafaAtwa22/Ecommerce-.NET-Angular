@@ -89,7 +89,7 @@
         [class.loading]="saving"
       >
         <span class="btn-content">
-          <i class="fa fa-trash-alt" *ngIf="!saving"></i>
+          <i class="fas fa-trash-alt" *ngIf="!saving"></i>
           {{ saving ? 'Deleting Account...' : 'Delete Account Permanently' }}
         </span>
         <span class="btn-loader" *ngIf="saving">

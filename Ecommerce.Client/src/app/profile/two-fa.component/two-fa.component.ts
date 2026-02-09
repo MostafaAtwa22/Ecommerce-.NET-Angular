@@ -32,34 +32,29 @@ export class TwoFaComponent implements OnInit {
   }
 
   toggle2FA(): void {
+    console.log('is2FAEnabled' + ' ' + this.is2FAEnabled);
     const newStatus = !this.is2FAEnabled;
-    
-    // Immediately update UI
-    this.is2FAEnabled = newStatus;
-
-    // Show toast notification immediately
-    if (newStatus) {
-      this.toastr.success(
-        'Two-factor authentication has been enabled successfully',
-        'Security Enhanced',
-        { timeOut: 4000 }
-      );
-    } else {
-      this.toastr.warning(
-        'Two-factor authentication has been disabled',
-        'Security Warning',
-        { timeOut: 4000 }
-      );
-    }
-
-    // Call API in background
+    console.log('newStatus' + ' ' + newStatus);
     this.profileService.toggle2FA(newStatus).subscribe({
-      next: (message) => {
-        // API call successful, state already updated
+      next: () => {
+        // Re-load from server to ensure UI matches actual DB value
+        this.load2FAStatus();
+
+        if (newStatus) {
+          this.toastr.success(
+            'Two-factor authentication has been enabled successfully',
+            'Security Enhanced',
+            { timeOut: 4000 }
+          );
+        } else {
+          this.toastr.warning(
+            'Two-factor authentication has been disabled',
+            'Security Warning',
+            { timeOut: 4000 }
+          );
+        }
       },
       error: (error) => {
-        this.is2FAEnabled = !newStatus;
-        
         this.toastr.error(
           'Failed to update 2FA settings. Please try again.',
           'Error'

@@ -14,20 +14,33 @@ export class GoogleCallbackComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const result = await this.accountService.processGoogleLogin();
-    console.log("From google");
-    if (result) {
-      result.subscribe({
-        next: () => {
-          this.router.navigate(['/home']);
-        },
-        error: (err) => {
-          console.error('Google login failed:', err);
-          this.router.navigate(['/login']);
-        }
-      });
-    } else {
+    const result$ = await this.accountService.processGoogleLogin();
+
+    if (!result$) {
       this.router.navigate(['/login']);
+      return;
     }
+
+    result$.subscribe({
+      next: (response) => {
+        if (response.requiresTwoFactor) {
+          const email = response.email || response.user?.email;
+
+          if (email) {
+            this.router.navigate(['/verify-2fa'], {
+              queryParams: { email }
+            });
+          } else {
+            this.router.navigate(['/login']);
+          }
+        } else {
+          this.router.navigate(['/home']);
+        }
+      },
+      error: (err) => {
+        console.error('Google login failed:', err);
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }
