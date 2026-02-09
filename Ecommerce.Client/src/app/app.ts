@@ -9,14 +9,14 @@ import { BusyService } from './shared/services/busy-service';
 import { SpinnerComponent } from './shared/components/spinner-component/spinner-component';
 import { BasketService } from './shared/services/basket-service';
 import { AccountService } from './account/account-service';
-import { isTokenExpired } from './shared/utils/token-utils';
 import { WishlistService } from './wishlist/wishlist-service';
+import { ChatbotWidgetComponent } from './shared/components/chatbot-widget/chatbot-widget';
 import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NavBar, HomeModule, CoreModule, ShopModule, RouterOutlet, SpinnerComponent],
+  imports: [NavBar, HomeModule, CoreModule, ShopModule, RouterOutlet, SpinnerComponent, ChatbotWidgetComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.scss']
 })

@@ -1,10 +1,12 @@
 using Ecommerce.API.Dtos.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Ecommerce.API.Hubs
 {
     public partial class ChatHub
     {
+        [AllowAnonymous]
         public async Task AskBot(string message)
         {
             if (string.IsNullOrWhiteSpace(message))

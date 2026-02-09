@@ -1,0 +1,104 @@
+<div class="chatbot-widget">
+  <!-- Floating toggle button -->
+  <button
+    class="chatbot-toggle"
+    type="button"
+    (click)="toggleOpen()"
+    [attr.aria-expanded]="isOpen()"
+    aria-label="Open help assistant"
+  >
+    <!-- fallback SVG icon if Bootstrap Icons is not loading -->
+    <svg *ngIf="false" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="fallback-icon" viewBox="0 0 16 16">
+      <path d="M8 0a8 8 0 1 0 8 8A8 8 0 0 0 8 0Zm4 11.93V14a.5.5 0 0 1-.5.5h-7A.5.5 0 0 1 4 14v-2.07A6 6 0 1 1 8 2a6 6 0 0 1 4 9.93Zm-2-4.93a1 1 0 1 0-2 0 1 1 0 0 0 2 0Zm-3 1a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Zm5 0a.5.5 0 1 1 1 0 .5.5 0 0 1-1 0Z" />
+    </svg>
+    <span class="icon-fallback" aria-hidden="true">&#128172;</span><!-- speech balloon emoji fallback -->
+    <!-- Use Bootstrap icon if available: -->
+    <span class="bi bi-chat-dots" aria-hidden="true"></span>
+  </button>
+
+  <!-- Chat window -->
+  @if (isOpen()) {
+    <div class="chatbot-window">
+      <div class="chatbot-header d-flex justify-content-between align-items-center">
+        <div class="chatbot-title">
+          <span class="label">Need help?</span>
+          <span class="subtitle">Ask about how to use the store</span>
+        </div>
+        <button
+          type="button"
+          class="btn-icon"
+          (click)="toggleOpen()"
+          aria-label="Minimize assistant"
+        >
+          <!-- fallback SVG if icon is missing -->
+          <svg *ngIf="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="fallback-icon" viewBox="0 0 16 16">
+            <path d="M1.646 5.646a.5.5 0 0 1 .708 0L8 11.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+          </svg>
+          <span class="icon-fallback" aria-hidden="true">&#9660;</span><!-- ▼ arrow fallback -->
+          <!-- Use Bootstrap icon if available: -->
+          <span class="bi bi-chevron-down" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="chatbot-quick-questions">
+        @for (q of quickQuestions; track q) {
+          <button type="button" class="quick-question" (click)="sendFromQuick(q)">
+            {{ q }}
+          </button>
+        }
+      </div>
+
+      <div class="chatbot-messages">
+        @if (messages().length === 0) {
+          <div class="chatbot-empty-state">
+            <p>Hi! I’m your assistant for this store.</p>
+            <p>Choose a quick question above or type your own below.</p>
+          </div>
+        } @else {
+          @for (m of messages(); track m.at) {
+            <div class="chat-message" [ngClass]="m.from">
+              <div class="bubble">
+                {{ m.text }}
+              </div>
+            </div>
+          }
+        }
+
+        @if (isLoading()) {
+          <div class="chat-message bot loading">
+            <div class="bubble">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="chatbot-input">
+        <textarea
+          class="form-control"
+          rows="1"
+          placeholder="Ask a question about how to use the site..."
+          [ngModel]="input()"
+          (ngModelChange)="input.set($event)"
+          (keydown)="handleKeydown($event)"
+        ></textarea>
+        <button
+          type="button"
+          class="btn-send"
+          (click)="send()"
+          [disabled]="!input().trim() || isLoading()"
+        >
+          <!-- fallback SVG if send icon missing -->
+          <svg *ngIf="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="fallback-icon" viewBox="0 0 16 16">
+            <path d="M15.854 8.354a.5.5 0 0 0 0-.708l-6.5-6.5A.5.5 0 0 0 8 1.5V7.793a.5.5 0 0 0 .146.354z"/>
+          </svg>
+          <span class="icon-fallback" aria-hidden="true">&#10148;</span><!-- ➤ fallback -->
+          <!-- Use Bootstrap icon if available: -->
+          <span class="bi bi-send-fill" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  }
+</div>

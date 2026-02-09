@@ -1,10 +1,10 @@
-using Ecommerce.API.Dtos;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
 {
+    [AllowAnonymous]
     public class ChatbotController : BaseApiController
     {
         private readonly IChatbotService _chatbotService;
