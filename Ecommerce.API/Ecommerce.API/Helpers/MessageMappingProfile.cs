@@ -11,7 +11,13 @@ namespace Ecommerce.API.Helpers
         public MessageMappingProfile()
         {
             CreateMap<MessageRequestDto, Message>();
-            CreateMap<OnlineUserDto, ApplicationUser>();
+            
+            CreateMap<Message, MessageResponseDto>();
+            
+            CreateMap<ApplicationUser, OnlineUserDto>()
+                .ForMember(dest => dest.ConnectionId, opt => opt.Ignore())
+                .ForMember(dest => dest.IsOnline, opt => opt.Ignore())
+                .ForMember(dest => dest.UnReadCount, opt => opt.Ignore());
         }
     }
 }

@@ -1,0 +1,250 @@
+import { inject, Injectable, signal } from '@angular/core';
+import { Environment } from '../environment';
+import { messageResponse, onlineUsers } from '../shared/modules/chat';
+import { IPagination } from '../shared/modules/pagination';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { IProfile } from '../shared/modules/profile';
+import { AccountService } from '../account/account-service';
+import { functionsName } from './interface-callback-functions-name';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ChatService {
+  private hubUrl = `${Environment.baseUrl}/hubs/chat`;
+  private _authService = inject(AccountService);
+
+  onlineUsers = signal<onlineUsers[]>([]);
+  chatMessages = signal<messageResponse[]>([]);
+  isLoading = signal<boolean>(false);
+  currentOpenChatUser = signal<IProfile | null>(null);
+  autoScrollEnable = signal<boolean>(false);
+
+  // Pagination signals (1-based to match backend)
+  private currentPageIndex = signal<number>(1);
+  private pageSize = signal<number>(20);
+  private totalPages = signal<number>(0);
+  private totalItems = signal<number>(0);
+  private hasMoreMessages = signal<boolean>(true);
+
+  private hubConnection!: HubConnection;
+
+  async startConnection(token: string, otherUserId?: string) {
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(`${this.hubUrl}?otherUserId=${otherUserId || ''}`, {
+        accessTokenFactory: () => token
+      })
+      .build();
+
+    this.hubConnection.on(functionsName.Notify.toString(), (user: IProfile) => {
+      Notification.requestPermission()
+        .then((res) => {
+          if (res === 'granted') {
+            new Notification('Active Now 🟢', {
+              body: `${user.firstName} ${user.lastName} is online now`,
+              icon: user.profilePicture || (user.gender === 'Male' ? 'assets/users/default-male.png' : 'assets/users/default-female.png')
+            })
+          }
+        })
+    })
+
+    // start the connection
+    this.hubConnection.start()
+      .then(() => console.log(`Connection started @ ${Date.now()}`))
+      .catch((err) => console.log(`Failed Connection @ ${Date.now()} ${err}`));
+
+    // online users
+    this.hubConnection.on(functionsName.OnlineUsers.toString(), (users: onlineUsers[]) => {
+      console.log('Online users:', users);
+      this.onlineUsers.update(() =>
+        users.filter(
+          user => user.userName !== this._authService.user()?.userName
+        )
+      );
+    });
+
+    // notify if a user is typing
+    const typingTimers = new Map<string, any>();
+    this.hubConnection.on(functionsName.NotifyTypingToUser.toString(), (senderUserName: string) => {
+      this.onlineUsers.update((users) => {
+        return users.map((user) => {
+          if (user.userName == senderUserName) {
+            user.isTyping = true;
+          }
+          return user;
+        })
+      })
+
+      // Clear previous timeout if exists
+      if (typingTimers.has(senderUserName)) {
+        clearTimeout(typingTimers.get(senderUserName));
+      }
+
+      // Set a new timeout
+      const timer = setTimeout(() => {
+        this.onlineUsers.update((users) =>
+          users.map((user) => {
+            if (user.userName === senderUserName) {
+              user.isTyping = false;
+            }
+            return user;
+          })
+        );
+        typingTimers.delete(senderUserName);
+      }, 2000);
+
+      typingTimers.set(senderUserName, timer);
+    });
+
+    // Handle pagination response
+    this.hubConnection.on(functionsName.ReceiveMessageList.toString(),
+      (pagination: IPagination<messageResponse>) => {
+        this.isLoading.update(_ => true);
+
+        // Store pagination info
+        this.totalPages.set(Math.ceil(pagination.totalData / pagination.pageSize));
+        this.totalItems.set(pagination.totalData);
+        this.currentPageIndex.set(pagination.pageIndex);
+
+        // Check if there are more messages to load
+        this.hasMoreMessages.set(pagination.pageIndex < this.totalPages());
+
+        // Prepend older messages (they come in chronological order)
+        this.chatMessages.update(existing => {
+          return [...pagination.data, ...existing];
+        });
+
+        this.isLoading.set(false);
+      });
+
+    // Receive new message
+    this.hubConnection.on(functionsName.ReceiveNewMessage.toString(), (message: messageResponse) => {
+      const current = this.currentOpenChatUser();
+
+      // Only process if message belongs to current conversation
+      if (current && (message.senderId === current.id || message.reciverId === current.id)) {
+        // Check if message already exists (to avoid duplicates from optimistic update)
+        const messageExists = this.chatMessages().some(m =>
+          m.id === message.id ||
+          (m.id === 0 && m.content === message.content && m.createdAt === message.createdAt)
+        );
+
+        if (!messageExists) {
+          let audio = new Audio('assets/notification/notifications.wav');
+          audio.play();
+          this.chatMessages.update((messages) => [...messages, message]);
+          document.title = '(1) New message';
+        } else if (message.id !== 0) {
+          // Update the optimistic message with the real one from server
+          this.chatMessages.update((messages) =>
+            messages.map(m =>
+              m.id === 0 && m.content === message.content ? message : m
+            )
+          );
+        }
+      } else {
+        console.log('New message for other chat', message);
+      }
+    })
+  }
+
+  disconnectConnection() {
+    if (this.hubConnection?.state === HubConnectionState.Connected) {
+      this.hubConnection.stop()
+        .then(() => console.log('Connection Ended'))
+        .catch((err) => console.log('Disconnect error:', err));
+    }
+  }
+
+  sendMessage(content: string) {
+    const receiverId = this.currentOpenChatUser()?.id;
+    if (!receiverId || !content.trim()) return;
+
+    // Optimistic update
+    const optimisticMessage: messageResponse = {
+      id: 0,
+      content: content,
+      senderId: this._authService.user()?.id || '',
+      reciverId: receiverId,
+      createdAt: new Date(),
+      isRead: false
+    };
+
+    this.chatMessages.update((messages) => [...messages, optimisticMessage]);
+
+    this.hubConnection.invoke(functionsName.SendMessage.toString(), {
+      reciverId: receiverId,
+      content: content
+    })
+      .then(() => console.log('Message sent successfully'))
+      .catch((err) => {
+        console.log(`Send message failed: ${err}`);
+        this.chatMessages.update((messages) =>
+          messages.filter(m => m !== optimisticMessage)
+        );
+      });
+  }
+
+  loadMessages(pageIndex: number = 1, pageSize: number = 20) {
+    const otherUserId = this.currentOpenChatUser()?.id;
+    if (!otherUserId) return;
+
+    this.isLoading.update(_ => true);
+
+    this.hubConnection.invoke(functionsName.LoadMessages.toString(), {
+      senderId: otherUserId,
+      pageIndex: pageIndex,
+      pageSize: pageSize
+    })
+      .then(_ => {
+        console.log(`Loaded messages - page: ${pageIndex}, size: ${pageSize}`);
+      })
+      .catch(err => {
+        console.log(`LoadMessages Error: ${err}`);
+        this.isLoading.update(() => false);
+      });
+  }
+
+  notifyTyping() {
+    const receiverUserName = this.currentOpenChatUser()?.userName;
+    if (!receiverUserName) return;
+
+    this.hubConnection.invoke(functionsName.NotifyTyping.toString(), receiverUserName)
+      .catch(err => console.log(`Typing notification error: ${err}`));
+  }
+
+  loadMoreMessages() {
+    if (!this.hasMoreMessages() || this.isLoading()) {
+      return;
+    }
+
+    const nextPage = this.currentPageIndex() + 1;
+    this.loadMessages(nextPage, this.pageSize());
+  }
+
+  resetPagination() {
+    this.currentPageIndex.set(1);
+    this.pageSize.set(20);
+    this.totalPages.set(0);
+    this.totalItems.set(0);
+    this.hasMoreMessages.set(true);
+    this.chatMessages.set([]);
+  }
+
+  // Getters for pagination state
+  getCurrentPageIndex() {
+    return this.currentPageIndex();
+  }
+
+  getTotalPages() {
+    return this.totalPages();
+  }
+
+  getTotalItems() {
+    return this.totalItems();
+  }
+
+  getHasMoreMessages() {
+    return this.hasMoreMessages();
+  }
+}

@@ -24,7 +24,7 @@ namespace Ecommerce.API.Hubs
         private readonly IMapper _mapper;
         private readonly IChatbotService _chatbotService;
         public static readonly ConcurrentDictionary<string, OnlineUserDto> _onlineUsers = new();
-        
+
         public ChatHub(UserManager<ApplicationUser> userManager,
             IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -38,23 +38,26 @@ namespace Ecommerce.API.Hubs
 
         public override async Task OnConnectedAsync()
         {
-            var httpConext = Context.GetHttpContext();
+            var httpContext = Context.GetHttpContext();
 
-            var receiverId = httpConext?.Request.Query["receiverId"].ToString();
+            var otherUserId = httpContext?.Request.Query["otherUserId"].ToString();
 
             var sender = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);
             if (sender is null)
-                throw new HubException("Sender is not exists");
+                throw new HubException("Sender does not exist");
+
             var connectionId = Context?.ConnectionId;
 
             if (_onlineUsers.ContainsKey(sender.Id))
             {
                 _onlineUsers.AddOrUpdate(sender.Id,
-                    _ => new OnlineUserDto {ConnectionId = connectionId!},
-                    (_, existing) =>  {
+                    _ => new OnlineUserDto { ConnectionId = connectionId! },
+                    (_, existing) =>
+                    {
                         existing.ConnectionId = connectionId!;
                         return existing;
-                        }!
+                    }
+                !
                 );
             }
             else
@@ -67,12 +70,13 @@ namespace Ecommerce.API.Hubs
                 await Clients.AllExcept(connectionId!).Notify(currentUser);
             }
 
-            if (!string.IsNullOrEmpty(receiverId))
-                await LoadMessages(new MessageSpecParams { SenderId = receiverId });
-            
+            // Fixed: Changed variable name to match query parameter
+            if (!string.IsNullOrEmpty(otherUserId))
+                await LoadMessages(new MessageSpecParams { SenderId = otherUserId });
+
             await Clients.All.OnlineUsers(await GetAllUsers());
         }
-        
+
         public async Task SendMessage(MessageRequestDto messageDto)
         {
             // Validate input
@@ -84,21 +88,29 @@ namespace Ecommerce.API.Hubs
 
             var sender = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);
             if (sender is null)
-                throw new HubException("Sender is not exists");
+                throw new HubException("Sender does not exist");
 
             var receiver = await _userManager.FindByIdAsync(messageDto.ReciverId);
             if (receiver is null)
                 throw new HubException($"Receiver with ID '{messageDto.ReciverId}' not found");
 
             var message = _mapper.Map<Message>(messageDto);
+            // Fixed: Set SenderId from authenticated user (security fix)
             message.SenderId = sender.Id;
+            message.CreatedAt = DateTimeOffset.UtcNow;
+            message.IsRead = false;
 
             await _unitOfWork.Repository<Message>()
                 .Create(message);
             await _unitOfWork.Complete();
-            
+
             var response = _mapper.Map<MessageResponseDto>(message);
+
+            // Send to receiver
             await Clients.User(messageDto.ReciverId).ReceiveNewMessage(response);
+
+            // Also send back to sender for confirmation
+            await Clients.Caller.ReceiveNewMessage(response);
         }
 
         public async Task NotifyTyping(string receiverUserName)
@@ -110,10 +122,12 @@ namespace Ecommerce.API.Hubs
             if (sender is null)
                 throw new HubException("Sender not found");
 
-            var connectionId = _onlineUsers.Values.FirstOrDefault(x => x.UserName == receiverUserName)?.ConnectionId;
+            var connectionId = _onlineUsers.Values
+                .FirstOrDefault(x => x.UserName == receiverUserName)?.ConnectionId;
+
             if (connectionId is null)
                 return;
-            
+
             await Clients.Client(connectionId).NotifyTypingToUser(sender.UserName!);
         }
 
@@ -122,14 +136,15 @@ namespace Ecommerce.API.Hubs
             var currentUser = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);
             if (currentUser is null)
                 throw new HubException("Current user not found");
-    
+
             if (string.IsNullOrEmpty(specParams.SenderId))
-                throw new HubException("Received user ID cannot be null or empty");
-            
+                throw new HubException("Other user ID cannot be null or empty");
+
             var otherUser = await _userManager.FindByIdAsync(specParams.SenderId);
             if (otherUser is null)
                 throw new HubException($"User with ID '{specParams.SenderId}' not found");
 
+            // Set the receiver as current user
             specParams.ReceiverId = currentUser.Id;
 
             var spec = MessageSpecifications.BuildChatHistorySpec(specParams);
@@ -138,7 +153,7 @@ namespace Ecommerce.API.Hubs
             var totalItems = await _unitOfWork.Repository<Message>().CountAsync(countSpec);
             var messages = await _unitOfWork.Repository<Message>().GetAllWithSpecAsync(spec);
 
-            // Flip to chronological order for the client
+            // Reverse to chronological order for the client (oldest first)
             var orderedMessages = messages.OrderBy(x => x.CreatedAt).ToList();
 
             // Mark unread messages as read
@@ -153,12 +168,20 @@ namespace Ecommerce.API.Hubs
                     _unitOfWork.Repository<Message>().Update(message);
                 }
                 await _unitOfWork.Complete();
+
+                // Notify all clients to update online users (to refresh unread counts)
+                await Clients.All.OnlineUsers(await GetAllUsers());
             }
 
             var messageDtos = _mapper.Map<IReadOnlyList<MessageResponseDto>>(orderedMessages);
-            
-            var pagination = new Pagination<MessageResponseDto>(specParams.PageIndex, specParams.PageSize, totalItems, messageDtos);
-            
+
+            var pagination = new Pagination<MessageResponseDto>(
+                specParams.PageIndex,
+                specParams.PageSize,
+                totalItems,
+                messageDtos
+            );
+
             await Clients.Caller.ReceiveMessageList(pagination);
         }
 
@@ -170,6 +193,8 @@ namespace Ecommerce.API.Hubs
                 _onlineUsers.TryRemove(currentUser.Id, out _);
                 await Clients.All.OnlineUsers(await GetAllUsers());
             }
+
+            await base.OnDisconnectedAsync(exception);
         }
 
         private async Task<IEnumerable<OnlineUserDto>> GetAllUsers()
@@ -180,8 +205,10 @@ namespace Ecommerce.API.Hubs
 
             var onlineUserIds = _onlineUsers.Keys.ToList();
 
-            // Get all users
-            var allUsers = await _userManager.Users.ToListAsync();
+            // Get all users except current user
+            var allUsers = await _userManager.Users
+                .Where(u => u.Id != currentUser.Id)
+                .ToListAsync();
 
             // Get unread message counts for current user from all senders in a single query
             var unreadCounts = await _unitOfWork.Repository<Message>().GetAllQueryable()
@@ -198,7 +225,9 @@ namespace Ecommerce.API.Hubs
                 dto.IsOnline = onlineUserIds.Contains(u.Id);
                 dto.UnReadCount = unreadCountDict.ContainsKey(u.Id) ? unreadCountDict[u.Id] : 0;
                 return dto;
-            }).OrderByDescending(u => u.IsOnline);
+            })
+            .OrderByDescending(u => u.IsOnline)
+            .ThenByDescending(u => u.UnReadCount);
 
             return users;
         }
