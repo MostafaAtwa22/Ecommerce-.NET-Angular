@@ -32,6 +32,7 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.0",
+    "@ctrl/ngx-emoji-mart": "^9.3.0",
     "@microsoft/signalr": "^10.0.0",
     "@ng-bootstrap/ng-bootstrap": "^19.0.1",
     "@popperjs/core": "^2.11.8",

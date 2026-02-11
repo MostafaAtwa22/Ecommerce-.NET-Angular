@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Ecommerce.Core.Params;
+using Ecommerce.Core.Constants;
 
 namespace Ecommerce.API.Hubs
 {
@@ -57,7 +58,6 @@ namespace Ecommerce.API.Hubs
                         existing.ConnectionId = connectionId!;
                         return existing;
                     }
-                !
                 );
             }
             else
@@ -70,7 +70,6 @@ namespace Ecommerce.API.Hubs
                 await Clients.AllExcept(connectionId!).Notify(currentUser);
             }
 
-            // Fixed: Changed variable name to match query parameter
             if (!string.IsNullOrEmpty(otherUserId))
                 await LoadMessages(new MessageSpecParams { SenderId = otherUserId });
 
@@ -79,7 +78,6 @@ namespace Ecommerce.API.Hubs
 
         public async Task SendMessage(MessageRequestDto messageDto)
         {
-            // Validate input
             if (string.IsNullOrWhiteSpace(messageDto.Content))
                 throw new HubException("Message content cannot be empty");
 
@@ -95,7 +93,6 @@ namespace Ecommerce.API.Hubs
                 throw new HubException($"Receiver with ID '{messageDto.ReciverId}' not found");
 
             var message = _mapper.Map<Message>(messageDto);
-            // Fixed: Set SenderId from authenticated user (security fix)
             message.SenderId = sender.Id;
             message.CreatedAt = DateTimeOffset.UtcNow;
             message.IsRead = false;
@@ -111,6 +108,54 @@ namespace Ecommerce.API.Hubs
 
             // Also send back to sender for confirmation
             await Clients.Caller.ReceiveNewMessage(response);
+        }
+
+        public async Task EditMessage(int messageId, string newContent)
+        {
+            if (string.IsNullOrWhiteSpace(newContent))
+                throw new HubException("Message content cannot be empty");
+
+            var sender = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);
+            if (sender is null) throw new HubException("User not found");
+
+            var message = await _unitOfWork.Repository<Message>().GetByIdAsync(messageId);
+            if (message is null) throw new HubException("Message not found");
+
+            if (message.SenderId != sender.Id)
+                throw new HubException("You are not authorized to edit this message");
+
+            message.Content = newContent;
+            message.IsEdited = true;
+
+            _unitOfWork.Repository<Message>().Update(message);
+            await _unitOfWork.Complete();
+
+            var response = _mapper.Map<MessageResponseDto>(message);
+
+            await Clients.User(message.ReciverId).MessageEdited(response);
+            await Clients.Caller.MessageEdited(response);
+        }
+
+        public async Task DeleteMessage(int messageId)
+        {
+            var sender = await _userManager.FindUserByClaimPrinciplesAsync(Context?.User!);
+            if (sender is null) throw new HubException("User not found");
+
+            var message = await _unitOfWork.Repository<Message>().GetByIdAsync(messageId);
+            if (message is null) throw new HubException("Message not found");
+
+            if (message.SenderId != sender.Id)
+                throw new HubException("You are not authorized to delete this message");
+
+            message.IsDeleted = true;
+            message.DateOFDelete = DateTime.UtcNow;
+
+            _unitOfWork.Repository<Message>().Update(message);
+            await _unitOfWork.Complete();
+
+            // We might want to send the ID or the updated DTO. Sending ID is usually enough for deletion/hiding.
+            await Clients.User(message.ReciverId).MessageDeleted(messageId);
+            await Clients.Caller.MessageDeleted(messageId);
         }
 
         public async Task NotifyTyping(string receiverUserName)
@@ -205,10 +250,15 @@ namespace Ecommerce.API.Hubs
 
             var onlineUserIds = _onlineUsers.Keys.ToList();
 
-            // Get all users except current user
-            var allUsers = await _userManager.Users
+            // Get all Admin and SuperAdmin users
+            var admins = await _userManager.GetUsersInRoleAsync(Role.Admin.ToString());
+            var superAdmins = await _userManager.GetUsersInRoleAsync(Role.SuperAdmin.ToString());
+
+            // Combine and exclude current user
+            var allUsers = admins.Concat(superAdmins)
+                .DistinctBy(x => x.Id)
                 .Where(u => u.Id != currentUser.Id)
-                .ToListAsync();
+                .ToList();
 
             // Get unread message counts for current user from all senders in a single query
             var unreadCounts = await _unitOfWork.Repository<Message>().GetAllQueryable()

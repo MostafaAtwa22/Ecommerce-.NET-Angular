@@ -53,6 +53,10 @@ export const routes: Routes = [
           import('./dashboard/dashboard-orders.component/dashboard-orders.component').then(m => m.DashboardOrdersComponent),
       },
       {
+        path: 'chat', loadComponent: () =>
+          import('./dashboard/dashboard-chat.component/dashboard-chat.component').then(m => m.DashboardChatComponent),
+      },
+      {
         path: 'delivery', loadComponent: () =>
           import('./dashboard/dashboard-delivery-method.component/dashboard-delivery-method.component').then(m => m.DashboardDeliveryMethodComponent),
       },

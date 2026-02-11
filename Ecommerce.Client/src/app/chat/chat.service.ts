@@ -17,7 +17,7 @@ export class ChatService {
   onlineUsers = signal<onlineUsers[]>([]);
   chatMessages = signal<messageResponse[]>([]);
   isLoading = signal<boolean>(false);
-  currentOpenChatUser = signal<IProfile | null>(null);
+  currentOpenChat = signal<onlineUsers | null>(null);
   autoScrollEnable = signal<boolean>(false);
 
   // Pagination signals (1-based to match backend)
@@ -119,33 +119,54 @@ export class ChatService {
 
     // Receive new message
     this.hubConnection.on(functionsName.ReceiveNewMessage.toString(), (message: messageResponse) => {
-      const current = this.currentOpenChatUser();
+      const current = this.currentOpenChat();
 
       // Only process if message belongs to current conversation
       if (current && (message.senderId === current.id || message.reciverId === current.id)) {
-        // Check if message already exists (to avoid duplicates from optimistic update)
-        const messageExists = this.chatMessages().some(m =>
-          m.id === message.id ||
-          (m.id === 0 && m.content === message.content && m.createdAt === message.createdAt)
+        // Find existing optimistic message
+        const existingOptimisticIndex = this.chatMessages().findIndex(m =>
+          m.id === 0 && m.content === message.content
         );
 
-        if (!messageExists) {
+        // Check if message ID already exists
+        const idExists = this.chatMessages().some(m => m.id === message.id);
+
+        if (idExists) {
+          return; // Message already processed
+        }
+
+        if (existingOptimisticIndex !== -1) {
+          // Replace the optimistic message with the real one
+          this.chatMessages.update(messages => {
+            const updated = [...messages];
+            updated[existingOptimisticIndex] = message;
+            return updated;
+          });
+        } else {
+          // New message
           let audio = new Audio('assets/notification/notifications.wav');
-          audio.play();
+          audio.play().catch(e => console.error("Audio play failed", e));
           this.chatMessages.update((messages) => [...messages, message]);
           document.title = '(1) New message';
-        } else if (message.id !== 0) {
-          // Update the optimistic message with the real one from server
-          this.chatMessages.update((messages) =>
-            messages.map(m =>
-              m.id === 0 && m.content === message.content ? message : m
-            )
-          );
         }
       } else {
         console.log('New message for other chat', message);
       }
     })
+
+    // Message Edited Listener
+    this.hubConnection.on(functionsName.MessageEdited, (message: messageResponse) => {
+      this.chatMessages.update(messages =>
+        messages.map(m => m.id === message.id ? message : m)
+      );
+    });
+
+    // Message Deleted Listener
+    this.hubConnection.on(functionsName.MessageDeleted, (messageId: number) => {
+      this.chatMessages.update(messages =>
+        messages.filter(m => m.id !== messageId)
+      );
+    });
   }
 
   disconnectConnection() {
@@ -157,7 +178,7 @@ export class ChatService {
   }
 
   sendMessage(content: string) {
-    const receiverId = this.currentOpenChatUser()?.id;
+    const receiverId = this.currentOpenChat()?.id;
     if (!receiverId || !content.trim()) return;
 
     // Optimistic update
@@ -185,8 +206,36 @@ export class ChatService {
       });
   }
 
+  editMessage(id: number, content: string) {
+    if (!content.trim()) return;
+
+    this.hubConnection.invoke(functionsName.EditMessage.toString(), id, content)
+      .then(() => console.log('Message edited successfully'))
+      .catch(err => console.log(`Edit message failed: ${err}`));
+  }
+
+  deleteMessage(id: number) {
+    this.hubConnection.invoke(functionsName.DeleteMessage.toString(), id)
+      .then(() => console.log('Message deleted successfully'))
+      .catch(err => console.log(`Delete message failed: ${err}`));
+  }
+  status(userName: string): string {
+    const currentChatUser = this.currentOpenChat();
+    if (!currentChatUser)
+      return 'Offline';
+    const onlineUser = this.onlineUsers().find(
+      u => u.userName == userName
+    )
+    return onlineUser?.isTyping ? 'Typing..' : this.isUserOnline();
+  }
+
+  isUserOnline() {
+    let onlineUser = this.onlineUsers().find(u => u.userName === this.currentOpenChat()?.userName);
+    return onlineUser?.isOnline ? 'Online' : this.currentOpenChat()!.userName;
+  }
+
   loadMessages(pageIndex: number = 1, pageSize: number = 20) {
-    const otherUserId = this.currentOpenChatUser()?.id;
+    const otherUserId = this.currentOpenChat()?.id;
     if (!otherUserId) return;
 
     this.isLoading.update(_ => true);
@@ -206,7 +255,7 @@ export class ChatService {
   }
 
   notifyTyping() {
-    const receiverUserName = this.currentOpenChatUser()?.userName;
+    const receiverUserName = this.currentOpenChat()?.userName;
     if (!receiverUserName) return;
 
     this.hubConnection.invoke(functionsName.NotifyTyping.toString(), receiverUserName)

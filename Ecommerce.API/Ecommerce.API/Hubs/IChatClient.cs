@@ -10,5 +10,7 @@ namespace Ecommerce.API.Hubs
         Task Notify(ProfileResponseDto user);
         Task NotifyTypingToUser(string senderUserName);
         Task OnlineUsers(IEnumerable<OnlineUserDto> users);
+        Task MessageEdited(MessageResponseDto message);
+        Task MessageDeleted(int messageId);
     }
 }

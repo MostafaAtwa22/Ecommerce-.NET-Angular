@@ -7,4 +7,8 @@ export const functionsName = {
   NotifyTyping: 'NotifyTyping',
   NotifyTypingToUser: 'NotifyTypingToUser',
   OnlineUsers: 'OnlineUsers',
+  EditMessage: 'EditMessage',
+  DeleteMessage: 'DeleteMessage',
+  MessageEdited: 'MessageEdited',
+  MessageDeleted: 'MessageDeleted'
 };

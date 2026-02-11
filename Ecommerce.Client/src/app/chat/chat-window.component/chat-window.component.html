@@ -1,0 +1,117 @@
+<div class="position-relative d-flex flex-column h-100 w-100 bg-white">
+  @if (isLoading) {
+  <!-- Loading Screen -->
+  <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
+    <div class="spinner-border text-primary mb-3" role="status"></div>
+    <h6 class="text-muted">Loading chat...</h6>
+  </div>
+  }
+  @else if (_chatService.currentOpenChat()) {
+  <!-- Chat Header -->
+  <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom clickable-header"
+    style="height: 64px; background-color: #fff; cursor: pointer;" (click)="toggleRightSidebar()">
+    <div class="d-flex align-items-center gap-3">
+      <!-- Mobile Back Button (Optional) -->
+      <button class="btn btn-sm btn-light d-md-none rounded-circle me-1" (click)="toggleLeftSidebar()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+
+      <div class="position-relative">
+        <img
+          [src]="_chatService.currentOpenChat()?.profilePictureUrl || 'https://randomuser.me/api/portraits/lego/1.jpg'"
+          alt="User" class="rounded-circle" style="width: 42px; height: 42px; object-fit: cover;">
+        @if (_chatService.currentOpenChat()?.isOnline) {
+        <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle"
+          style="width: 10px; height: 10px;"></span>
+        }
+      </div>
+
+      <div>
+        <h6 class="fw-bold text-dark mb-0" style="font-size: 1rem;">
+          {{ (_chatService.currentOpenChat()?.firstName + ' ' + _chatService.currentOpenChat()?.lastName) | titlecase }}
+        </h6>
+        <small class="text-muted" style="font-size: 0.8rem;">
+          {{ _chatService.status(_chatService.currentOpenChat()?.userName!) }}
+        </small>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-light rounded-circle p-2 d-none d-sm-block" title="Search messages">
+        <i class="fas fa-search text-secondary"></i>
+      </button>
+      <button class="btn btn-light rounded-circle p-2" (click)="toggleRightSidebar()" title="Chat Info">
+        <i class="fas fa-columns text-secondary"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Body -->
+  <div #chatContainer class="flex-grow-1 position-relative"
+    style="background-color: #8e8e93; background-image: url('assets/chat-bg.png'); background-size: cover; background-blend-mode: overlay;">
+    <app-chat-box class="h-100 w-100 d-block" (editMessage)="onEditMessage($event)"></app-chat-box>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="px-4 py-3 bg-white border-top position-relative">
+    @if (showEmojiPicker) {
+    <div class="emoji-picker-container shadow-lg">
+      <emoji-mart (emojiSelect)="addEmoji($event)" set="apple" [perLine]="8" [showPreview]="false"></emoji-mart>
+    </div>
+    }
+
+    <!-- Edit Mode Indicator -->
+    @if (editingMessageId) {
+    <div
+      class="d-flex align-items-center justify-content-between mb-2 px-3 py-2 bg-light rounded text-primary border-start border-4 border-primary">
+      <div class="d-flex flex-column">
+        <span class="fw-bold small">Editing Message</span>
+        <span class="text-truncate small text-secondary" style="max-width: 200px;">{{ message }}</span>
+      </div>
+      <button class="btn btn-sm btn-link text-secondary" (click)="cancelEdit()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    }
+
+    <div class="d-flex align-items-end gap-2">
+      <button class="btn btn-link text-secondary p-2" (click)="toggleEmojiPicker()">
+        <i class="far fa-smile" style="font-size: 1.5rem;"></i>
+      </button>
+
+      <button class="btn btn-link text-secondary p-2 d-none d-sm-block">
+        <i class="fas fa-paperclip" style="font-size: 1.5rem;"></i>
+      </button>
+
+      <div class="flex-grow-1 position-relative">
+        <textarea [(ngModel)]="message" (input)="_chatService.notifyTyping()" (input)="autoResize($event)"
+          class="form-control border-0 bg-light chat-textarea" placeholder="Write a message..."
+          style="resize: none; border-radius: 20px; overflow-y: hidden; min-height: 40px; padding: 10px 15px;" rows="1"
+          (keydown)="onKeyDown($event)"></textarea>
+      </div>
+
+      @if (message.trim().length > 0) {
+      <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+        style="width: 48px; height: 48px; min-width: 48px;" (click)="sendMessage()">
+        @if(editingMessageId) {
+        <i class="fas fa-check" style="font-size: 1.2rem;"></i>
+        } @else {
+        <i class="fas fa-paper-plane" style="font-size: 1.2rem;"></i>
+        }
+      </button>
+      } @else {
+      <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+        style="width: 48px; height: 48px; min-width: 48px;" title="Record Voice">
+        <i class="fas fa-microphone" style="font-size: 1.2rem;"></i>
+      </button>
+      }
+    </div>
+  </div>
+  }
+  @else {
+  <!-- Empty Chat State -->
+  <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+    <span class="badge bg-secondary rounded-pill mb-3 px-3 py-2">Select a chat to start messaging</span>
+  </div>
+  }
+</div>

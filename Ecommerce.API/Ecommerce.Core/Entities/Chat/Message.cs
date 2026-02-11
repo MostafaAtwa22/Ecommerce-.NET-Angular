@@ -15,5 +15,6 @@ namespace Ecommerce.Core.Entities.Chat
         public ApplicationUser Reciver { get; set; } = default!;
         public bool IsDeleted { get; set; }
         public DateTime? DateOFDelete { get; set; }
+        public bool IsEdited { get; set; }
     }
 }

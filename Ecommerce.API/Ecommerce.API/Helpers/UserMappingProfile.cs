@@ -42,7 +42,9 @@ namespace Ecommerce.API.Helpers
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
 
             CreateMap<ApplicationUser, OnlineUserDto>()
-                .ForMember(dest => dest.ProfilePictureUrl, o => o.MapFrom<ImageUrlResolver<ApplicationUser, OnlineUserDto>>());
+                .ForMember(dest => dest.ProfilePictureUrl, o => o.MapFrom<ImageUrlResolver<ApplicationUser, OnlineUserDto>>())
+                .ForMember(dest => dest.PhoneNumber, o => o.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Roles, o => o.MapFrom<OnlineUserRolesResolver>());
         }
     }
 }

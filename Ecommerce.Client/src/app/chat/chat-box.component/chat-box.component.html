@@ -1,0 +1,99 @@
+<div class="d-flex chat-box flex-column h-100 py-2 border-0 overflow-auto bg-light" style="z-index: 5555" #chatBox
+  (scroll)="onScroll($event)">
+  <!-- Fake Loading Spinner -->
+  @if (isFakeLoading) {
+  <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center">
+    <div class="custom-spinner"></div>
+    <p class="mt-3 fw-semibold text-secondary">Loading chat messages...</p>
+  </div>
+  } @else {
+  <div class="h-100">
+    <!-- Load More Button -->
+    @if (_chatService.chatMessages().length > 5) {
+    <div class="load-more-container">
+      <button class="load-more-btn" (click)="loadMoreMessages()">
+        @if (_chatService.isLoading()) {
+        <div class="load-more-spinner">
+          <div class="custom-spinner small"></div>
+          <span>Loading...</span>
+        </div>
+        } @else {
+        Load more
+        }
+      </button>
+    </div>
+    }
+
+    <!-- Chat Messages -->
+    @for (item of _chatService.chatMessages(); track item.id) {
+    @if (item.senderId.trim() !== _authService.user()?.id?.toString()?.trim()) {
+    <!-- Received Message -->
+    <div class="d-flex mb-4 align-items-end">
+      <div class="position-relative me-2">
+        <img [src]="
+                  _chatService.currentOpenChat()?.profilePictureUrl ||
+                  'https://randomuser.me/api/portraits/lego/5.jpg'
+                " [alt]="`${_authService.user()?.firstName} ${_authService.user()?.firstName}`"
+          class="rounded-circle border shadow-sm chat-avatar" />
+      </div>
+
+      <div class="chat-bubble received position-relative ms-2">
+        <div class="chat-arrow chat-arrow-left"></div>
+        <span class="small d-block">{{ item.content }}</span>
+        <div class="d-flex justify-content-end align-items-center mt-1">
+          @if(item.isEdited) {
+          <span class="small text-muted fst-italic me-1" style="font-size: 0.7rem;">(edited)</span>
+          }
+          <span class="chat-time">{{ item.createdAt | date: 'shortTime' }}</span>
+        </div>
+      </div>
+    </div>
+    } @else {
+    <!-- Sent Message -->
+    <div class="d-flex justify-content-end mb-4 align-items-end group-hover">
+
+      <!-- Actions Dropdown -->
+      <div class="dropdown me-2">
+        <button class="btn btn-sm btn-link text-muted p-0" type="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <i class="fa fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" role="button" (click)="onEditMessage(item)">Edit</a></li>
+          <li><a class="dropdown-item text-danger" role="button" (click)="onDeleteMessage(item.id)">Delete</a></li>
+        </ul>
+      </div>
+
+      <div class="chat-bubble sent position-relative me-2 ms-2">
+        <div class="chat-arrow chat-arrow-right"></div>
+        <span class="small d-block">{{ item.content }}</span>
+        <div class="d-flex justify-content-end align-items-center mt-1">
+          @if(item.isEdited) {
+          <span class="small text-white-50 fst-italic me-1" style="font-size: 0.7rem;">(edited)</span>
+          }
+          <span class="chat-time text-white-50">{{ item.createdAt| date: 'shortTime' }}</span>
+        </div>
+      </div>
+
+      <div class="position-relative ms-2">
+        <img [src]="
+                  _authService.user()?.profilePicture ||
+                  'https://randomuser.me/api/portraits/lego/5.jpg'
+                " [alt]="`${_authService.user()?.firstName} ${_authService.user()?.firstName}`"
+          class="rounded-circle border shadow-sm chat-avatar" />
+      </div>
+    </div>
+    }
+    } @empty {
+    <!-- No Messages -->
+    <div class="d-flex flex-column align-items-center justify-content-center text-center py-5 text-muted h-100">
+      <i class="custom-icon text-secondary mb-2">💬</i>
+      <h6 class="fw-semibold mb-2 text-dark">No Messages Yet</h6>
+      <p class="small mb-0 text-secondary">
+        Start the conversation by sending a message below 💬
+      </p>
+    </div>
+    }
+  </div>
+  }
+</div>

@@ -1,0 +1,43 @@
+/* Custom Scrollbar for the sidebar content */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Hover effect for list items */
+.hover-bg {
+  transition: all 0.2s ease;
+  cursor: default;
+}
+
+.hover-bg:hover {
+  background-color: #e9ecef !important;
+  transform: translateY(-1px);
+}
+
+/* Profile Image Hover Effect */
+.profile-image-wrapper img {
+  transition: transform 0.3s ease;
+}
+
+.profile-image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+/* Badges */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}

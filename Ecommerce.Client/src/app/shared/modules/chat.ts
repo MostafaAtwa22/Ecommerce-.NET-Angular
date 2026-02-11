@@ -6,6 +6,8 @@ export interface onlineUsers {
   firstName: string,
   lastName: string,
   profilePictureUrl?: string,
+  phoneNumber?: string,
+  roles?: string[],
   isOnline: boolean,
   unReadCount: number,
   isTyping: boolean
@@ -18,6 +20,8 @@ export interface messageResponse {
   senderId: string,
   reciverId: string,
   isRead: boolean,
+  isEdited?: boolean,
+  isDeleted?: boolean,
 }
 
 export interface messageRequest {

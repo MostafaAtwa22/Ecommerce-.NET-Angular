@@ -1,0 +1,23 @@
+.chat-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-left-sidebar {
+  width: 25%;
+  min-width: 280px;
+  max-width: 350px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.chat-main-window {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-right-sidebar {
+  width: 25%;
+  min-width: 280px;
+  max-width: 350px;
+  transition: transform 0.3s ease-in-out;
+}
