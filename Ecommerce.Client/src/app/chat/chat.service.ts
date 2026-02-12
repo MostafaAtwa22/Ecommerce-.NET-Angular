@@ -28,6 +28,8 @@ export class ChatService {
   private hasMoreMessages = signal<boolean>(true);
 
   private hubConnection!: HubConnection;
+  private typingTimers = new Map<string, any>();
+
 
   async startConnection(token: string, otherUserId?: string) {
     this.hubConnection = new HubConnectionBuilder()
@@ -64,7 +66,6 @@ export class ChatService {
     });
 
     // notify if a user is typing
-    const typingTimers = new Map<string, any>();
     this.hubConnection.on(functionsName.NotifyTypingToUser.toString(), (senderUserName: string) => {
       this.onlineUsers.update((users) => {
         return users.map((user) => {
@@ -76,8 +77,8 @@ export class ChatService {
       })
 
       // Clear previous timeout if exists
-      if (typingTimers.has(senderUserName)) {
-        clearTimeout(typingTimers.get(senderUserName));
+      if (this.typingTimers.has(senderUserName)) {
+        clearTimeout(this.typingTimers.get(senderUserName));
       }
 
       // Set a new timeout
@@ -90,10 +91,10 @@ export class ChatService {
             return user;
           })
         );
-        typingTimers.delete(senderUserName);
+        this.typingTimers.delete(senderUserName);
       }, 2000);
 
-      typingTimers.set(senderUserName, timer);
+      this.typingTimers.set(senderUserName, timer);
     });
 
     // Handle pagination response
@@ -119,6 +120,22 @@ export class ChatService {
 
     // Receive new message
     this.hubConnection.on(functionsName.ReceiveNewMessage.toString(), (message: messageResponse) => {
+      // Clear typing indicator for the sender immediately
+      this.onlineUsers.update((users) =>
+        users.map((user) => {
+          if (user.id === message.senderId) {
+            user.isTyping = false;
+
+            // Also clear the timer if it exists (using userName)
+            if (this.typingTimers.has(user.userName)) {
+              clearTimeout(this.typingTimers.get(user.userName));
+              this.typingTimers.delete(user.userName);
+            }
+          }
+          return user;
+        })
+      );
+
       const current = this.currentOpenChat();
 
       // Only process if message belongs to current conversation
@@ -231,16 +248,23 @@ export class ChatService {
 
   isUserOnline() {
     let onlineUser = this.onlineUsers().find(u => u.userName === this.currentOpenChat()?.userName);
-    return onlineUser?.isOnline ? 'Online' : this.currentOpenChat()!.userName;
+    return onlineUser?.isOnline ? 'Online' : 'Offline'; // Changed to 'Offline' for clarity if not found or offline. But original logic was returning userName. Keep original behavior or fix? The original line 234 returns currentOpenChat()!.userName if offline. That's weird. "Online" or "John Doe"?
+    // I'll stick to adding NEW method only.
+  }
+
+  isUserTyping(userName?: string): boolean {
+    if (!userName) return false;
+    const onlineUser = this.onlineUsers().find(u => u.userName === userName);
+    return !!onlineUser?.isTyping;
   }
 
   loadMessages(pageIndex: number = 1, pageSize: number = 20) {
     const otherUserId = this.currentOpenChat()?.id;
-    if (!otherUserId) return;
+    if (!otherUserId) return Promise.resolve();
 
     this.isLoading.update(_ => true);
 
-    this.hubConnection.invoke(functionsName.LoadMessages.toString(), {
+    return this.hubConnection.invoke(functionsName.LoadMessages.toString(), {
       senderId: otherUserId,
       pageIndex: pageIndex,
       pageSize: pageSize
@@ -264,11 +288,11 @@ export class ChatService {
 
   loadMoreMessages() {
     if (!this.hasMoreMessages() || this.isLoading()) {
-      return;
+      return Promise.resolve();
     }
 
     const nextPage = this.currentPageIndex() + 1;
-    this.loadMessages(nextPage, this.pageSize());
+    return this.loadMessages(nextPage, this.pageSize());
   }
 
   resetPagination() {

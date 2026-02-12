@@ -1,14 +1,61 @@
-<div class="chat-container d-flex rounded h-100 justify-content-between bg-light">
+<div class="chat-container d-flex rounded justify-content-between bg-light">
   <!-- Left Sidebar -->
-  <app-chat-sidebar class="chat-left-sidebar bg-white border-end shadow-sm"></app-chat-sidebar>
+  <app-chat-sidebar
+    class="chat-left-sidebar bg-white border-end shadow-sm"
+    [class.active]="isLeftSidebarActive">
+  </app-chat-sidebar>
 
   <!-- Chat Window -->
-  <div class="chat-main-window flex-grow-1 bg-white">
+  <div class="chat-main-window bg-white">
     <app-chat-window></app-chat-window>
   </div>
 
   <!-- Right Sidebar -->
-  <div class="chat-right-sidebar bg-white border-start shadow-sm p-3">
+  <div class="chat-right-sidebar bg-white border-start shadow-sm p-3"
+       [class.active]="isRightSidebarActive">
     <app-chat-right-sidebar></app-chat-right-sidebar>
   </div>
 </div>
+
+<!-- Mobile Backdrop -->
+@if (isLeftSidebarActive || isRightSidebarActive) {
+  <div class="modal-backdrop fade show" (click)="closeSidebars()"></div>
+}
+
+<!-- Mobile Toggle Buttons -->
+@if (!isLeftSidebarActive && !isRightSidebarActive) {
+  <button class="sidebar-toggle"
+          (click)="toggleLeftSidebar()"
+          aria-label="Toggle chat sidebar"
+          title="Open chats">
+    <i class="fas fa-comments"></i>
+  </button>
+}
+
+@if (!isRightSidebarActive && !isLeftSidebarActive) {
+  <button class="sidebar-toggle right"
+          (click)="toggleRightSidebar()"
+          aria-label="Toggle participants sidebar"
+          title="Open participants">
+    <i class="fas fa-users"></i>
+  </button>
+}
+
+<!-- Close buttons when sidebars are open -->
+@if (isLeftSidebarActive) {
+  <button class="sidebar-toggle"
+          (click)="closeSidebars()"
+          aria-label="Close sidebar"
+          title="Close">
+    <i class="fas fa-times"></i>
+  </button>
+}
+
+@if (isRightSidebarActive) {
+  <button class="sidebar-toggle right"
+          (click)="closeSidebars()"
+          aria-label="Close sidebar"
+          title="Close">
+    <i class="fas fa-times"></i>
+  </button>
+}

@@ -1,43 +1,504 @@
-/* Custom Scrollbar for the sidebar content */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+// ============================================
+// CHAT RIGHT SIDEBAR - DASHBOARD PURPLE THEME
+// ============================================
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background: white;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+/* ===============================
+   Main Container
+   =============================== */
+.d-flex.flex-column.h-100.bg-white {
+  height: 100%;
+  width: 100%;
+  border-radius: 0;
+  overflow: hidden;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+/* ===============================
+   Header - Dashboard Style
+   =============================== */
+.border-bottom {
+  border-bottom: 1px solid #d1d7dc !important;
+  background: white;
+  padding: 1rem 1.25rem !important;
+  
+  h6 {
+    color: #0c111d;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    
+    i {
+      color: #5624d0;
+      margin-right: 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+  
+  .btn-light {
+    background: #f7f9fa;
+    border: 1px solid #d1d7dc;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px !important;
+    transition: all 0.2s ease;
+    
+    i {
+      font-size: 0.875rem;
+      color: #6a6f73;
+    }
+    
+    &:hover {
+      background: white;
+      border-color: #5624d0;
+      
+      i {
+        color: #5624d0;
+      }
+    }
+    
+    &:focus-visible {
+      outline: 2px solid #5624d0;
+      outline-offset: 2px;
+    }
+  }
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+/* ===============================
+   Custom Scrollbar - Dashboard Style
+   =============================== */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d7dc #f7f9fa;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: #f7f9fa;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: #d1d7dc;
+    border-radius: 4px;
+    border: 1px solid #f7f9fa;
+    
+    &:hover {
+      background-color: #6a6f73;
+    }
+  }
 }
 
-/* Hover effect for list items */
+/* ===============================
+   Profile Section - Dashboard Style
+   =============================== */
+.text-center {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.position-relative {
+  display: inline-block;
+  
+  img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(86, 36, 208, 0.15);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+      border-color: #5624d0;
+      box-shadow: 0 8px 16px rgba(86, 36, 208, 0.25);
+    }
+  }
+  
+  .bg-success {
+    background: #48bb78 !important;
+    border: 2px solid white;
+    width: 18px !important;
+    height: 18px !important;
+    bottom: 5px !important;
+    right: 5px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+h5.fw-bold {
+  color: #0c111d;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+p.text-muted.small {
+  color: #6a6f73 !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  
+  &::before {
+    content: "●";
+    margin-right: 4px;
+    font-size: 0.75rem;
+    color: #48bb78;
+  }
+}
+
+/* ===============================
+   Info Cards - Dashboard Purple Theme
+   =============================== */
+.d-flex.flex-column.gap-3 {
+  gap: 0.75rem !important;
+}
+
+/* Base Info Card Style */
 .hover-bg {
+  background: #f7f9fa !important;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
-  cursor: default;
+  padding: 0.875rem 1rem !important;
+  border-radius: 8px !important;
+  
+  &:hover {
+    background: white !important;
+    border-color: #5624d0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(86, 36, 208, 0.1);
+  }
+  
+  /* Icon Container */
+  .bg-white.rounded-circle {
+    background: white !important;
+    border: 1px solid #d1d7dc;
+    width: 42px !important;
+    height: 42px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    
+    i {
+      font-size: 1rem;
+    }
+  }
+  
+  &:hover .bg-white.rounded-circle {
+    border-color: #5624d0;
+    transform: scale(1.05);
+    
+    i {
+      color: #5624d0 !important;
+    }
+  }
+  
+  /* Label */
+  small.text-muted {
+    color: #6a6f73 !important;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.25rem;
+  }
+  
+  /* Value */
+  span.fw-medium {
+    color: #0c111d;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+    word-break: break-word;
+  }
 }
 
-.hover-bg:hover {
-  background-color: #e9ecef !important;
-  transform: translateY(-1px);
+/* Icon Colors */
+.text-primary {
+  color: #5624d0 !important;
 }
 
-/* Profile Image Hover Effect */
-.profile-image-wrapper img {
-  transition: transform 0.3s ease;
+.text-success {
+  color: #48bb78 !important;
 }
 
-.profile-image-wrapper:hover img {
-  transform: scale(1.05);
+.text-info {
+  color: #9f7aea !important;
 }
 
-/* Badges */
+.text-warning {
+  color: #ed8936 !important;
+}
+
+/* ===============================
+   Roles Badges - Dashboard Style
+   =============================== */
 .badge {
   font-size: 0.75rem;
-  padding: 0.35em 0.65em;
+  font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  background: white !important;
+  color: #0c111d !important;
+  border: 1px solid #d1d7dc;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #5624d0;
+    color: #5624d0 !important;
+    background: rgba(86, 36, 208, 0.02) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(86, 36, 208, 0.1);
+  }
+}
+
+/* ===============================
+   Empty State - Dashboard Style
+   =============================== */
+.d-flex.flex-column.align-items-center.justify-content-center.h-100 {
+  background: white;
+  padding: 2rem !important;
+  
+  .bg-light.rounded-circle {
+    background: rgba(86, 36, 208, 0.05) !important;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(86, 36, 208, 0.1);
+    transition: all 0.3s ease;
+    
+    i {
+      color: #5624d0;
+      font-size: 3rem;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+    
+    &:hover {
+      background: rgba(86, 36, 208, 0.1) !important;
+      transform: scale(1.05);
+      
+      i {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  h6 {
+    color: #0c111d;
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  
+  p {
+    color: #6a6f73;
+    font-size: 0.875rem;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+}
+
+/* ===============================
+   Responsive Design
+   =============================== */
+@media (max-width: 992px) {
+  .position-relative img {
+    width: 90px !important;
+    height: 90px !important;
+  }
+  
+  .bg-white.rounded-circle {
+    width: 38px !important;
+    height: 38px !important;
+    
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+  
+  h5.fw-bold {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .p-4 {
+    padding: 1.25rem !important;
+  }
+  
+  .position-relative img {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .hover-bg {
+    padding: 0.75rem !important;
+  }
+  
+  span.fw-medium {
+    font-size: 0.875rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .border-bottom {
+    padding: 0.875rem 1rem !important;
+  }
+  
+  .position-relative img {
+    width: 70px !important;
+    height: 70px !important;
+  }
+  
+  .bg-light.rounded-circle {
+    width: 100px !important;
+    height: 100px !important;
+    
+    i {
+      font-size: 2.5rem !important;
+    }
+  }
+}
+
+/* ===============================
+   Animations
+   =============================== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.d-flex.flex-column.h-100.bg-white {
+  animation: slideIn 0.3s ease;
+}
+
+.hover-bg {
+  animation: fadeIn 0.4s ease;
+  
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   Reduced Motion
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+  .position-relative img,
+  .hover-bg,
+  .bg-light.rounded-circle,
+  .btn-light,
+  .badge {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    
+    &:hover {
+      transform: none !important;
+    }
+  }
+}
+
+/* ===============================
+   Loading State (Optional Enhancement)
+   =============================== */
+.skeleton-loader {
+  background: linear-gradient(
+    90deg,
+    #f7f9fa 25%,
+    #e9ecef 50%,
+    #f7f9fa 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ===============================
+   Tooltip Enhancements
+   =============================== */
+[title] {
+  position: relative;
+  cursor: help;
+  
+  &:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0c111d;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 0.5rem;
+    pointer-events: none;
+  }
+}
+
+/* ===============================
+   Focus States for Accessibility
+   =============================== */
+.hover-bg:focus-within {
+  outline: 2px solid #5624d0;
+  outline-offset: 2px;
+}
+
+.btn-light:focus-visible,
+button:focus-visible {
+  outline: 2px solid #5624d0;
+  outline-offset: 2px;
 }

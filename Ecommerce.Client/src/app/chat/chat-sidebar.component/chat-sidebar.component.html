@@ -2,54 +2,92 @@
   <!-- Search Header -->
   <div class="p-3">
     <div class="position-relative">
-      <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
-        class="form-control rounded-pill ps-5 bg-light border-0" placeholder="Search"
-        style="height: 40px; font-size: 0.95rem;">
-      <i class="fas fa-search position-absolute text-muted" style="left: 15px; top: 12px;"></i>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        (input)="filterUsers()"
+        class="form-control rounded-pill ps-5 bg-light border-0" 
+        placeholder="Search conversations..."
+        style="height: 44px; font-size: 0.95rem;"
+        aria-label="Search users">
+      <i class="fas fa-search position-absolute text-muted"></i>
+      @if (searchTerm) {
+        <button 
+          class="btn btn-link position-absolute text-muted p-0" 
+          style="right: 12px; top: 8px;"
+          (click)="searchTerm = ''; filterUsers()"
+          aria-label="Clear search">
+          <i class="fas fa-times-circle"></i>
+        </button>
+      }
     </div>
   </div>
 
   <!-- User List -->
   <div class="flex-grow-1 overflow-auto custom-scrollbar">
-    @for (item of filteredUsers(); track item.userName) {
-    <div class="d-flex align-items-center p-2 px-3 cursor-pointer user-item" (click)="openChatWindow(item)"
-      [class.active]="_chatService.currentOpenChat()?.userName === item.userName">
-
-      <!-- Avatar -->
-      <div class="position-relative me-3">
-        <img [src]="item.profilePictureUrl || 'https://randomuser.me/api/portraits/lego/1.jpg'" alt="User"
-          class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
-        @if (item.isOnline) {
-        <span class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle"
-          style="width: 12px; height: 12px;"></span>
-        }
+    @if (filteredUsers().length === 0) {
+      <div class="no-users-state">
+        <i class="fas fa-comments"></i>
+        <h6>No conversations</h6>
+        <p>Search for users to start chatting</p>
       </div>
+    } @else {
+      @for (item of filteredUsers(); track item.userName) {
+        <div class="d-flex align-items-center user-item" 
+             (click)="openChatWindow(item)"
+             [class.active]="_chatService.currentOpenChat()?.userName === item.userName"
+             role="button"
+             tabindex="0"
+             [attr.aria-label]="'Chat with ' + item.firstName + ' ' + item.lastName">
 
-      <!-- Info -->
-      <div class="flex-grow-1 overflow-hidden border-bottom pb-2" style="border-color: #f0f0f0 !important;">
-        <div class="d-flex justify-content-between align-items-center mb-1">
-          <h6 class="mb-0 text-truncate fw-semibold text-dark" style="font-size: 0.95rem;">
-            {{ (item.firstName + ' ' + item.lastName) | titlecase }}
-          </h6>
-          <!-- Time or Status (Placeholder for now) -->
-          <!-- <small class="text-muted" style="font-size: 0.75rem;">12:30 PM</small> -->
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="mb-0 text-muted text-truncate small" style="max-width: 80%;">
-            @if (item.isTyping) {
-            <span class="text-primary">Typing...</span>
-            } @else {
-            {{ item.userName }}
+          <!-- Avatar -->
+          <div class="position-relative">
+            <img 
+              [src]="getAvatar(item.profilePictureUrl, item.gender)" 
+              (error)="setDefaultAvatar($event, item.gender)"
+              [alt]="item.firstName + ' ' + item.lastName"
+              class="rounded-circle"
+              loading="lazy">
+            @if (item.isOnline) {
+              <span class="position-absolute bg-success border border-white rounded-circle"
+                    style="width: 12px; height: 12px;"
+                    title="Online"></span>
             }
-          </p>
-          @if (item.unReadCount > 0) {
-          <span class="badge rounded-pill bg-primary" style="font-size: 0.7rem; min-width: 20px;">{{ item.unReadCount
-            }}</span>
-          }
+          </div>
+
+          <!-- Info -->
+          <div class="flex-grow-1 overflow-hidden">
+            <div class="border-bottom pb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <h6 class="mb-0 text-truncate fw-semibold text-dark">
+                  {{ (item.firstName + ' ' + item.lastName) | titlecase }}
+                </h6>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="text-truncate" style="max-width: 70%;">
+                  @if (item.isTyping) {
+                    <div class="d-flex align-items-center gap-1">
+                      <span class="small fw-medium text-primary">typing</span>
+                      <app-typing-indicator></app-typing-indicator>
+                    </div>
+                  } @else {
+                    <p class="mb-0 text-muted text-truncate small">
+                        Start a conversation
+                    </p>
+                  }
+                </div>
+                
+                @if (item.unReadCount > 0) {
+                  <span class="badge rounded-pill bg-primary ms-2 flex-shrink-0">
+                    {{ item.unReadCount }}
+                  </span>
+                }
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      }
     }
   </div>
 </div>

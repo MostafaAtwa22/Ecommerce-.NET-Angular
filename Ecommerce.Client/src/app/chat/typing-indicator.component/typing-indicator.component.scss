@@ -1,35 +1,160 @@
-.typing .dots {
+// ============================================
+// TYPING INDICATOR - DASHBOARD PURPLE THEME
+// SINGLE STYLE FOR ENTIRE WEBSITE
+// ============================================
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
+
+/* ===============================
+   DEFAULT TYPING INDICATOR
+   ONE STYLE TO RULE THEM ALL
+   =============================== */
+.typing {
   display: flex;
-  gap: 5px;
-  align-items: flex-end;
-  height: 20px;
+  align-items: center;
+  gap: 6px;
+
+  .dots {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    height: 20px;
+
+    span {
+      width: 8px;
+      height: 8px;
+      background: #5624d0; /* Dashboard primary purple */
+      border-radius: 50%;
+      display: inline-block;
+      animation: typingBounce 1.4s infinite ease-in-out;
+      box-shadow: 0 2px 4px rgba(86, 36, 208, 0.2);
+      transition: all 0.2s ease;
+
+      /* Sequential animation delays */
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+
+  /* Optional text - only shown when explicitly added */
+  .typing-text {
+    font-size: 0.75rem;
+    color: #5624d0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: lowercase;
+    margin-left: 2px;
+  }
 }
 
-.typing .dots span {
-  width: 8px;
-  height: 8px;
-  background-color: #333; /* Dot color */
-  border-radius: 50%;
-  display: inline-block;
-  animation: bounce 1.4s infinite ease-in-out;
-}
-
-/* Delay for each dot to create the sequential effect */
-.typing .dots span:nth-child(1) {
-  animation-delay: 0s;
-}
-.typing .dots span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.typing .dots span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes bounce {
+/* ===============================
+   ANIMATION - PURPLE THEME
+   =============================== */
+@keyframes typingBounce {
   0%, 80%, 100% {
-    transform: scale(0);
+    transform: scale(0.6);
+    opacity: 0.6;
+    background: #5624d0;
   }
   40% {
     transform: scale(1);
+    opacity: 1;
+    background: #7f4cd6; /* Lighter purple at peak */
+    box-shadow: 0 4px 8px rgba(86, 36, 208, 0.3);
+  }
+}
+
+/* ===============================
+   CHAT HEADER VARIANT (WITH TEXT)
+   Use when you need the "typing..." label
+   =============================== */
+.typing.with-text {
+  .typing-text {
+    display: inline-block;
+  }
+}
+
+/* ===============================
+   DARK BACKGROUND VARIANT
+   For use on colored/dark backgrounds
+   =============================== */
+.typing.dark-bg {
+  .dots span {
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  @keyframes typingBounceDark {
+    0%, 80%, 100% {
+      transform: scale(0.6);
+      opacity: 0.7;
+      background: rgba(255, 255, 255, 0.8);
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  .dots span {
+    animation: typingBounceDark 1.4s infinite ease-in-out;
+  }
+}
+
+/* ===============================
+   REDUCED MOTION
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+  .typing .dots span {
+    animation: none;
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+}
+
+/* ===============================
+   RTL SUPPORT
+   =============================== */
+[dir="rtl"] {
+  .typing {
+    .dots {
+      flex-direction: row-reverse;
+    }
+    
+    .typing-text {
+      margin-left: 0;
+      margin-right: 2px;
+    }
+  }
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+@media (max-width: 768px) {
+  .typing .dots span {
+    width: 7px;
+    height: 7px;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing .dots span {
+    width: 6px;
+    height: 6px;
   }
 }

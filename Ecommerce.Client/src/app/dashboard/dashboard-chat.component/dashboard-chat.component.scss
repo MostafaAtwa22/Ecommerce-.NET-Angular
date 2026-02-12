@@ -1,23 +1,345 @@
 .chat-container {
+  display: flex;
+  margin: -2rem;
+  width: calc(100% + 4rem);
+
+  // Height calculation: Viewport - Navbar (80px)
+  height: calc(100vh - 80px) !important;
+
   position: relative;
   overflow: hidden;
+  background-color: #f8f9fa;
+  border-radius: 0;
+
+  gap: 0 !important;
+
+  @media (max-width: 992px) {
+    margin: -1.5rem;
+    width: calc(100% + 3rem);
+  }
+
+  @media (max-width: 768px) {
+    // 768px breakpoint has 1rem padding
+    margin: -1rem;
+    width: calc(100% + 2rem);
+
+    // Mobile header adjustment (70px)
+    height: calc(100vh - 70px);
+  }
+
+  @media (max-width: 480px) {
+    // 480px breakpoint has 0.75rem padding
+    margin: -0.75rem;
+    width: calc(100% + 1.5rem);
+  }
 }
 
+// ============================================
+// LEFT SIDEBAR - FIXED DIMENSIONS
+// ============================================
 .chat-left-sidebar {
-  width: 25%;
+  width: 280px;
   min-width: 280px;
   max-width: 350px;
+  height: 100%;
   transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-right: 1px solid #d1d7dc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0; // Prevent shrinking
+
+  ::ng-deep {
+    app-chat-sidebar {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+  }
+
+  @media (max-width: 992px) {
+    width: 260px;
+    min-width: 260px;
+  }
+
+  @media (max-width: 768px) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1050;
+    transform: translateX(-100%);
+    width: 85%;
+    max-width: 320px;
+    min-width: 260px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 
+// ============================================
+// MAIN CHAT WINDOW - FLEXIBLE CENTER
+// ============================================
 .chat-main-window {
   flex: 1;
   min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  overflow: hidden; // Prevent overflow issues
+
+  ::ng-deep {
+    app-chat-window {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
 
+// ============================================
+// RIGHT SIDEBAR - FIXED DIMENSIONS
+// ============================================
 .chat-right-sidebar {
-  width: 25%;
+  width: 280px;
   min-width: 280px;
   max-width: 350px;
+  height: 100%;
   transition: transform 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-left: 1px solid #d1d7dc;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  padding: 1rem !important;
+  flex-shrink: 0; // Prevent shrinking
+
+  ::ng-deep {
+    app-chat-right-sidebar {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+
+  @media (max-width: 992px) {
+    width: 260px;
+    min-width: 260px;
+  }
+
+  @media (max-width: 768px) {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1050;
+    transform: translateX(100%);
+    width: 85%;
+    max-width: 320px;
+    min-width: 260px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+  }
+}
+
+// ============================================
+// MOBILE TOGGLE BUTTONS - MATCHING DASHBOARD STYLE
+// ============================================
+.sidebar-toggle {
+  display: none;
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 1060;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #5624d0;
+  color: white;
+  border: 1px solid #5624d0;
+  box-shadow: 0 4px 12px rgba(86, 36, 208, 0.25);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  &:hover {
+    background: #401b9c;
+    border-color: #401b9c;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #5624d0;
+    outline-offset: 2px;
+  }
+
+  &.right {
+    right: 1.5rem;
+    bottom: 6rem;
+    background: white;
+    color: #5624d0;
+    border: 1px solid #5624d0;
+
+    &:hover {
+      background: rgba(86, 36, 208, 0.05);
+      color: #401b9c;
+      border-color: #401b9c;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+  }
+
+  @media (max-width: 480px) {
+    bottom: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+
+    &.right {
+      right: 1rem;
+      bottom: 5rem;
+    }
+  }
+}
+
+// ============================================
+// MODAL BACKDROP - MATCHING DASHBOARD
+// ============================================
+:host ::ng-deep {
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    animation: fadeIn 0.2s ease;
+
+    @media (min-width: 769px) {
+      display: none;
+    }
+  }
+}
+
+// ============================================
+// ANIMATIONS - MATCHING DASHBOARD
+// ============================================
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+
+  .chat-left-sidebar,
+  .chat-right-sidebar,
+  .sidebar-toggle,
+  .modal-backdrop {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+// ============================================
+// CONTENT ADJUSTMENTS FOR DASHBOARD INTEGRATION
+// ============================================
+
+// Fix for dashboard content area
+:host-context(.content) {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+// Ensure proper spacing with dashboard header
+.content {
+
+  .dashboard-chat-host,
+  app-dashboard-chat {
+    height: 100%;
+    width: 100%;
+    display: block;
+  }
+}
+
+// Remove any conflicting styles
+::ng-deep {
+  app-dashboard-chat {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+// ============================================
+// SCROLLBAR STYLING - MATCHING DASHBOARD
+// ============================================
+.chat-right-sidebar,
+.chat-left-sidebar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f7f9fa;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d7dc;
+    border-radius: 4px;
+
+    &:hover {
+      background: #6a6f73;
+    }
+  }
 }

@@ -10,7 +10,9 @@ export interface onlineUsers {
   roles?: string[],
   isOnline: boolean,
   unReadCount: number,
-  isTyping: boolean
+  isTyping: boolean,
+  gender?: string,
+  createdAt?: Date
 }
 
 export interface messageResponse {

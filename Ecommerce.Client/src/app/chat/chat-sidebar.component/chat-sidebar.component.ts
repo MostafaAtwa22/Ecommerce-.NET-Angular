@@ -6,10 +6,11 @@ import { TypingIndicatorComponent } from '../typing-indicator.component/typing-i
 import { ChatService } from '../chat.service';
 import { AccountService } from '../../account/account-service';
 import { onlineUsers } from '../../shared/modules/chat';
+import { getDefaultAvatarByGender } from '../../shared/utils/avatar-utils';
 
 @Component({
   selector: 'app-chat-sidebar',
-  imports: [TitleCasePipe, CommonModule, NgIf, NgClass, FormsModule, TypingIndicatorComponent],
+  imports: [TitleCasePipe, CommonModule, FormsModule, TypingIndicatorComponent],
   templateUrl: './chat-sidebar.component.html',
   styleUrl: './chat-sidebar.component.scss',
 })
@@ -53,5 +54,14 @@ export class ChatSidebarComponent {
     this._chatService.chatMessages.set([]);
     this._chatService.isLoading.set(true);
     this._chatService.loadMessages(1);
+  }
+
+  setDefaultAvatar(event: Event, gender?: any) {
+    const img = event.target as HTMLImageElement;
+    img.src = getDefaultAvatarByGender(gender);
+  }
+
+  getAvatar(profilePicture?: string | null, gender?: any): string {
+    return profilePicture || getDefaultAvatarByGender(gender);
   }
 }

@@ -147,10 +147,7 @@ namespace Ecommerce.API.Hubs
             if (message.SenderId != sender.Id)
                 throw new HubException("You are not authorized to delete this message");
 
-            message.IsDeleted = true;
-            message.DateOFDelete = DateTime.UtcNow;
-
-            _unitOfWork.Repository<Message>().Update(message);
+            _unitOfWork.Repository<Message>().Delete(message);
             await _unitOfWork.Complete();
 
             // We might want to send the ID or the updated DTO. Sending ID is usually enough for deletion/hiding.
@@ -214,8 +211,7 @@ namespace Ecommerce.API.Hubs
                 }
                 await _unitOfWork.Complete();
 
-                // Notify all clients to update online users (to refresh unread counts)
-                await Clients.All.OnlineUsers(await GetAllUsers());
+                await Clients.Caller.OnlineUsers(await GetAllUsers());
             }
 
             var messageDtos = _mapper.Map<IReadOnlyList<MessageResponseDto>>(orderedMessages);
@@ -250,17 +246,13 @@ namespace Ecommerce.API.Hubs
 
             var onlineUserIds = _onlineUsers.Keys.ToList();
 
-            // Get all Admin and SuperAdmin users
             var admins = await _userManager.GetUsersInRoleAsync(Role.Admin.ToString());
             var superAdmins = await _userManager.GetUsersInRoleAsync(Role.SuperAdmin.ToString());
 
-            // Combine and exclude current user
             var allUsers = admins.Concat(superAdmins)
                 .DistinctBy(x => x.Id)
-                .Where(u => u.Id != currentUser.Id)
                 .ToList();
 
-            // Get unread message counts for current user from all senders in a single query
             var unreadCounts = await _unitOfWork.Repository<Message>().GetAllQueryable()
                 .Where(x => x.ReciverId == currentUser.Id && !x.IsRead)
                 .GroupBy(x => x.SenderId)

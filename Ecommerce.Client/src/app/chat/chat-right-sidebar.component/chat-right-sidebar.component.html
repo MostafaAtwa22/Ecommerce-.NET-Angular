@@ -2,9 +2,16 @@
 <div class="d-flex flex-column h-100 bg-white">
   <!-- Header / Actions -->
   <div class="p-3 d-flex justify-content-between align-items-center border-bottom">
-    <h6 class="mb-0 fw-semibold">User Info</h6>
-    <button class="btn btn-sm btn-light rounded-circle" type="button" title="Close" (click)="_chatService.currentOpenChat.set(null)">
-      <i class="fas fa-times text-muted"></i>
+    <h6 class="mb-0 fw-semibold">
+      <i class="fas fa-user-circle me-2"></i>User Profile
+    </h6>
+    <button
+      class="btn btn-sm btn-light rounded-circle"
+      type="button"
+      title="Close panel"
+      (click)="_chatService.currentOpenChat.set(null)"
+      aria-label="Close profile panel">
+      <i class="fas fa-times"></i>
     </button>
   </div>
 
@@ -12,80 +19,122 @@
     <!-- Profile Picture & Name -->
     <div class="text-center mb-4">
       <div class="position-relative d-inline-block mb-3">
-        <img [src]="_chatService.currentOpenChat()?.profilePictureUrl || 'https://randomuser.me/api/portraits/lego/1.jpg'"
-          alt="User Profile" class="rounded-circle shadow-sm" style="width: 100px; height: 100px; object-fit: cover;">
-          @if (_chatService.currentOpenChat()?.isOnline) {
-             <div class="position-absolute bottom-0 end-0 bg-success border border-white rounded-circle" style="width: 16px; height: 16px;"></div>
-          }
+        <img
+          [src]="getAvatar(_chatService.currentOpenChat()?.profilePictureUrl, _chatService.currentOpenChat()?.gender)"
+          (error)="setDefaultAvatar($event, _chatService.currentOpenChat()?.gender)"
+          alt="{{ _chatService.currentOpenChat()?.firstName }}'s profile picture"
+          class="rounded-circle shadow-sm"
+          style="width: 100px; height: 100px; object-fit: cover;"
+          loading="lazy">
+
+        @if (_chatService.currentOpenChat()?.isOnline) {
+          <div class="position-absolute bg-success border border-white rounded-circle"
+               style="width: 18px; height: 18px; bottom: 5px; right: 5px;"
+               title="Online"></div>
+        } @else {
+          <div class="position-absolute bg-secondary border border-white rounded-circle"
+               style="width: 18px; height: 18px; bottom: 5px; right: 5px;"
+               title="Offline"></div>
+        }
       </div>
+
       <h5 class="fw-bold text-dark mb-1">
         {{ (_chatService.currentOpenChat()?.firstName || '') + ' ' + (_chatService.currentOpenChat()?.lastName || '') | titlecase }}
       </h5>
-      <p class="text-muted small mb-0">{{ _chatService.isUserOnline() }}</p>
+
+      <p class="text-muted small mb-0">
+        {{ _chatService.currentOpenChat()?.isOnline ? 'Online' : 'Offline' }}
+      </p>
     </div>
 
     <!-- Info List -->
     <div class="d-flex flex-column gap-3">
       <!-- Username -->
-      <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg">
-        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-primary" style="width: 40px; height: 40px;">
+      <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg"
+           tabindex="0" role="region" aria-label="User information">
+        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-primary">
           <i class="fas fa-at"></i>
         </div>
         <div class="overflow-hidden">
           <small class="text-muted d-block">Username</small>
-          <span class="fw-medium text-dark text-truncate d-block">{{ _chatService.currentOpenChat()?.userName }}</span>
+          <span class="fw-medium text-dark text-truncate d-block" title="{{ _chatService.currentOpenChat()?.userName }}">
+            {{ _chatService.currentOpenChat()?.userName }}
+          </span>
         </div>
       </div>
 
-       <!-- Email -->
-       <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg">
-        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-success" style="width: 40px; height: 40px;">
+      <!-- Email -->
+      <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg"
+           tabindex="0" role="region" aria-label="Email address">
+        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-success">
           <i class="fas fa-envelope"></i>
         </div>
         <div class="overflow-hidden">
           <small class="text-muted d-block">Email</small>
-          <span class="fw-medium text-dark text-truncate d-block">{{ _chatService.currentOpenChat()?.email }}</span>
+          <span class="fw-medium text-dark text-truncate d-block" title="{{ _chatService.currentOpenChat()?.email }}">
+            {{ _chatService.currentOpenChat()?.email }}
+          </span>
+          <button class="btn btn-link btn-sm p-0 mt-1"
+                  (click)="copyToClipboard(_chatService.currentOpenChat()?.email)"
+                  title="Copy email">
+            <i class="fas fa-copy text-muted small"></i>
+          </button>
         </div>
       </div>
 
       <!-- Phone -->
       @if (_chatService.currentOpenChat()?.phoneNumber) {
-      <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg">
-        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-info" style="width: 40px; height: 40px;">
-          <i class="fas fa-phone"></i>
+        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg"
+             tabindex="0" role="region" aria-label="Phone number">
+          <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-info">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="overflow-hidden">
+            <small class="text-muted d-block">Phone</small>
+            <span class="fw-medium text-dark text-truncate d-block" title="{{ _chatService.currentOpenChat()?.phoneNumber }}">
+              {{ _chatService.currentOpenChat()?.phoneNumber }}
+            </span>
+            <button class="btn btn-link btn-sm p-0 mt-1"
+                    (click)="copyToClipboard(_chatService.currentOpenChat()?.phoneNumber)"
+                    title="Copy phone number">
+              <i class="fas fa-copy text-muted small"></i>
+            </button>
+          </div>
         </div>
-        <div class="overflow-hidden">
-          <small class="text-muted d-block">Phone</small>
-          <span class="fw-medium text-dark text-truncate d-block">{{ _chatService.currentOpenChat()?.phoneNumber }}</span>
-        </div>
-      </div>
       }
 
-       <!-- Roles -->
-       @if (_chatService.currentOpenChat()?.roles?.length) {
-        <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-light hover-bg">
-          <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-warning" style="width: 40px; height: 40px;">
+      <!-- Roles -->
+      @if (_chatService.currentOpenChat()?.roles?.length) {
+        <div class="d-flex align-items-start gap-3 p-3 rounded-3 bg-light hover-bg"
+             tabindex="0" role="region" aria-label="User roles">
+          <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm text-warning">
             <i class="fas fa-user-tag"></i>
           </div>
           <div class="overflow-hidden w-100">
-            <small class="text-muted d-block mb-1">Roles</small>
-            <div class="d-flex flex-wrap gap-1">
+            <small class="text-muted d-block mb-2">Roles</small>
+            <div class="d-flex flex-wrap gap-2">
               @for(role of _chatService.currentOpenChat()?.roles; track role) {
-                <span class="badge bg-white text-dark border shadow-sm fw-normal">{{ role }}</span>
+                <span class="badge bg-white text-dark border shadow-sm fw-normal"
+                      [class.badge-primary]="role === 'Admin' || role === 'SuperAdmin'">
+                  <i class="fas fa-shield-alt me-1"></i>
+                  {{ role }}
+                </span>
               }
             </div>
           </div>
         </div>
-        }
+      }
     </div>
   </div>
 </div>
 } @else {
 <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center p-4">
   <div class="mb-3 p-4 bg-light rounded-circle shadow-sm">
-      <i class="fas fa-comments text-primary" style="font-size: 3rem; opacity: 0.5;"></i>
+    <i class="fas fa-user-circle text-primary"></i>
   </div>
-  <h6 class="fw-semibold text-dark">Select a Chat</h6>
-  <p class="text-muted small mb-0">Select a user from the list to view their profile and start chatting.</p>
+  <h6 class="fw-semibold text-dark">No User Selected</h6>
+  <p class="text-muted small mb-0">
+    Select a conversation to view user details and profile information.
+  </p>
 </div>
 }
