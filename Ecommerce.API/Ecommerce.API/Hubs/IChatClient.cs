@@ -12,5 +12,10 @@ namespace Ecommerce.API.Hubs
         Task OnlineUsers(IEnumerable<OnlineUserDto> users);
         Task MessageEdited(MessageResponseDto message);
         Task MessageDeleted(int messageId);
+        Task ReceiveMessageRead(int messageId);
+        Task MarkMessagesAsRead(string readerId);
+        Task MarkMessagesAsReceived(string receiverId);
+        Task UpdateUserSidebar(OnlineUserDto user);
+        Task UpdateUserStatus(OnlineUserDto user);
     }
 }

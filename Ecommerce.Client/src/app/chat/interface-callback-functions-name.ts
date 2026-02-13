@@ -10,5 +10,12 @@ export const functionsName = {
   EditMessage: 'EditMessage',
   DeleteMessage: 'DeleteMessage',
   MessageEdited: 'MessageEdited',
-  MessageDeleted: 'MessageDeleted'
+  MessageDeleted: 'MessageDeleted',
+  MarkMessageAsRead: 'MarkMessageAsRead',
+  MarkAllMessagesAsRead: 'MarkAllMessagesAsRead',
+  ReceiveMessageRead: 'ReceiveMessageRead',
+  MarkMessagesAsRead: 'MarkMessagesAsRead',
+  UpdateUserSidebar: 'UpdateUserSidebar',
+  UpdateUserStatus: 'UpdateUserStatus',
+  MarkMessagesAsReceived: 'MarkMessagesAsReceived'
 };

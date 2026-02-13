@@ -1,3 +1,7 @@
+:host ::ng-deep body {
+  overflow: hidden !important;
+}
+
 .chat-container {
   display: flex;
   margin: -2rem;

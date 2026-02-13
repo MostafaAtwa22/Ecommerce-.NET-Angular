@@ -26,5 +26,11 @@ namespace Ecommerce.Core.Spec
             return new SpecificationBuilder<Message>()
                 .Where(m => m.ReciverId == currentUserId && m.SenderId == senderId && !m.IsRead);
         }
+
+        public static ISpecifications<Message> BuildUnreceivedMessagesSpec(string receiverId)
+        {
+            return new SpecificationBuilder<Message>()
+                .Where(m => m.ReciverId == receiverId && !m.IsReceived);
+        }
     }
 }

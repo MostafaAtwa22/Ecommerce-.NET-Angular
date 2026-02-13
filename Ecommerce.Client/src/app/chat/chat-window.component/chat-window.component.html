@@ -51,10 +51,21 @@
 
     <!-- Header Actions -->
     <div class="d-flex align-items-center gap-2 m-5">
+      @if (showMessageSearch) {
+      <div class="position-relative">
+        <input type="text" class="form-control rounded-pill ps-3 pe-5" placeholder="Search..."
+          [(ngModel)]="messageSearchTerm" (input)="onMessageSearch()" autoFocus>
+        <button class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y text-muted me-1"
+          (click)="toggleMessageSearch()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      } @else {
       <button class="btn btn-light rounded-circle p-2 d-none d-sm-flex" title="Search messages"
-        aria-label="Search messages">
+        aria-label="Search messages" (click)="toggleMessageSearch()">
         <i class="fas fa-search"></i>
       </button>
+      }
       <button class="btn btn-light rounded-circle p-2" (click)="toggleRightSidebar(); $event.stopPropagation()"
         title="Chat information" aria-label="Toggle chat information">
         <i class="fas fa-columns"></i>
@@ -72,9 +83,9 @@
   <div class="px-4 py-3 bg-white border-top position-relative">
     <!-- Emoji Picker -->
     @if (showEmojiPicker) {
-    <div class="emoji-picker-container shadow-lg">
-      <emoji-mart (emojiSelect)="addEmoji($event)" set="apple" [perLine]="8" [showPreview]="false"
-        [enableSearch]="false">
+    <div class="emoji-picker-container shadow-lg" (click)="$event.stopPropagation()">
+      <emoji-mart (emojiSelect)="addEmoji($event)" set="apple" [perLine]="8" [showPreview]="false" [enableSearch]="true"
+        searchPlaceholder="Search emojis...">
       </emoji-mart>
     </div>
     }
@@ -99,16 +110,48 @@
 
     <!-- Input Area -->
     <div class="d-flex align-items-end gap-2">
+      @if (isRecording) {
+      <!-- WhatsApp Recording UI -->
+      <div
+        class="flex-grow-1 d-flex align-items-center bg-light rounded-pill px-3 py-2 animate__animated animate__fadeIn whatsapp-recording-bar shadow-sm">
+        <button class="btn btn-link text-muted p-2 me-2" (click)="cancelRecording()" title="Cancel">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+
+        <div class="recording-status d-flex align-items-center flex-grow-1">
+          <div class="recording-dot me-2"></div>
+          <span class="text-dark fw-bold small">{{ formatDuration(recordingDuration) }}</span>
+          <div class="recording-visualizer ms-3 flex-grow-1 d-none d-sm-block">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary rounded-circle shadow-sm" (click)="stopRecording()" title="Send">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+      } @else {
       <!-- Emoji Button -->
-      <button class="btn btn-link text-secondary p-2" (click)="toggleEmojiPicker()" [class.active]="showEmojiPicker"
-        type="button" aria-label="Insert emoji">
+      <button class="btn btn-link text-secondary p-2" (click)="toggleEmojiPicker(); $event.stopPropagation()"
+        [class.active]="showEmojiPicker" type="button" aria-label="Insert emoji">
         <i class="far fa-smile"></i>
       </button>
 
       <!-- Attachment Button (Desktop) -->
-      <button class="btn btn-link text-secondary p-2 d-none d-sm-flex" type="button" aria-label="Attach file">
+      <button class="btn btn-link text-secondary p-2 d-none d-sm-flex" type="button" aria-label="Attach file"
+        (click)="triggerFileInput()" [disabled]="isUploading">
+        @if (isUploading) {
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+        } @else {
         <i class="fas fa-paperclip"></i>
+        }
       </button>
+
+      <!-- Hidden File Input -->
+      <input type="file" id="chat-file-input" class="d-none" (change)="onFileSelected($event)">
 
       <!-- Message Input -->
       <div class="flex-grow-1 position-relative">
@@ -119,7 +162,7 @@
       </div>
 
       <!-- Send/Edit Button -->
-      @if (message.trim().length > 0) {
+      @if (message.trim().length > 0 || editingMessageId) {
       <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
         (click)="sendMessage()" [attr.aria-label]="editingMessageId ? 'Update message' : 'Send message'" type="button">
         @if (editingMessageId) {
@@ -131,9 +174,10 @@
       } @else {
       <!-- Voice Recording Button -->
       <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
-        type="button" aria-label="Record voice message" title="Record voice message">
+        type="button" aria-label="Record voice message" title="Record voice message" (click)="startRecording()">
         <i class="fas fa-microphone"></i>
       </button>
+      }
       }
     </div>
   </div>

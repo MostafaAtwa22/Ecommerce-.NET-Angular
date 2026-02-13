@@ -329,7 +329,30 @@
   }
 
   .emoji-mart-search {
-    display: none !important;
+    padding: 12px 12px 8px !important;
+    background: white !important;
+
+    input {
+      background: #f7f9fa !important;
+      border: 1px solid #d1d7dc !important;
+      border-radius: 999px !important;
+      padding: 10px 40px 10px 16px !important;
+      font-size: 0.95rem !important;
+      color: #0c111d !important;
+      outline: none !important;
+      transition: all 0.2s ease !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236a6f73' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 14px center !important;
+      background-size: 16px !important;
+
+      &:focus {
+        border-color: #5624d0 !important;
+        background-color: white !important;
+        box-shadow: 0 0 0 4px rgba(86, 36, 208, 0.1) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235624d0' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+      }
+    }
   }
 
   .emoji-mart-scroll {
@@ -421,9 +444,17 @@
    Animations
    =============================== */
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.6; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
@@ -431,6 +462,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -438,14 +470,75 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===============================
+   WhatsApp Recording UI
+   =============================== */
+.whatsapp-recording-bar {
+  border: 1px solid #d1d7dc;
+  height: 48px;
+
+  .btn-link:hover {
+    color: #ff4d4d !important;
+    background: rgba(255, 77, 77, 0.1);
+  }
+}
+
+.recording-visualizer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+
+  .bar {
+    width: 3px;
+    height: 8px;
+    background: #5624d0;
+    border-radius: 2px;
+    animation: bar-grow 0.5s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.1s;
+      height: 12px;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.2s;
+      height: 10px;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.15s;
+      height: 14px;
+    }
+  }
+}
+
+@keyframes bar-grow {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.5);
+  }
 }
 
 /* ===============================
    Reduced Motion
    =============================== */
 @media (prefers-reduced-motion: reduce) {
+
   .clickable-header,
   .btn-primary,
   .btn-link,

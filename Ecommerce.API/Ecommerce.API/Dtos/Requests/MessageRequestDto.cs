@@ -10,5 +10,9 @@ namespace Ecommerce.API.Dtos.Requests
 
         [Required]
         public string ReciverId { get; set; } = string.Empty;
+
+        public string? AttachmentUrl { get; set; }
+        public string? AttachmentName { get; set; }
+        public string? AttachmentType { get; set; }
     }
 }

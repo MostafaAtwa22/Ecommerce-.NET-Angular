@@ -7,6 +7,7 @@ namespace Ecommerce.Core.Entities.Chat
     {
         public string Content { get; set; } = string.Empty;
         public bool IsRead { get; set; }
+        public bool IsReceived { get; set; }
 
         public string SenderId { get; set; } = string.Empty;
         public ApplicationUser Sender { get; set; } = default!;
@@ -16,5 +17,9 @@ namespace Ecommerce.Core.Entities.Chat
         public bool IsDeleted { get; set; }
         public DateTime? DateOFDelete { get; set; }
         public bool IsEdited { get; set; }
+
+        public string? AttachmentUrl { get; set; }
+        public string? AttachmentName { get; set; }
+        public string? AttachmentType { get; set; }
     }
 }

@@ -16,6 +16,9 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.Property(m => m.IsRead)
                 .HasDefaultValue(false);
 
+            builder.Property(m => m.IsReceived)
+                .HasDefaultValue(false);
+
             builder.Property(m => m.IsDeleted)
                 .HasDefaultValue(false);
 
@@ -37,6 +40,8 @@ namespace Ecommerce.Infrastructure.Configurations
                 .HasForeignKey(m => m.ReciverId)
                 .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
+
+            builder.HasQueryFilter(x => x.IsDeleted == false);
         }
     }
 }

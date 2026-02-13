@@ -12,7 +12,10 @@ namespace Ecommerce.API.Dtos.Responses
         public bool IsOnline { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;
         public string Gender { get; set; } = string.Empty;
+        public string? CurrentChatUserId { get; set; }
         public IList<string> Roles { get; set; } = new List<string>();
         public int UnReadCount { get; set; }
+        public string? LastMessage { get; set; }
+        public DateTimeOffset? LastMessageTime { get; set; }
     }
 }

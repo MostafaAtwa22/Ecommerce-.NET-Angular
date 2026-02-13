@@ -12,7 +12,9 @@ export interface onlineUsers {
   unReadCount: number,
   isTyping: boolean,
   gender?: string,
-  createdAt?: Date
+  createdAt?: Date,
+  lastMessage?: string,
+  lastMessageTime?: Date
 }
 
 export interface messageResponse {
@@ -22,8 +24,12 @@ export interface messageResponse {
   senderId: string,
   reciverId: string,
   isRead: boolean,
+  isReceived: boolean,
   isEdited?: boolean,
   isDeleted?: boolean,
+  attachmentUrl?: string,
+  attachmentName?: string,
+  attachmentType?: string,
 }
 
 export interface messageRequest {
@@ -31,4 +37,7 @@ export interface messageRequest {
   content: string,
   senderId: string,
   isRead: boolean,
+  attachmentUrl?: string,
+  attachmentName?: string,
+  attachmentType?: string,
 }

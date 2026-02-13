@@ -18,7 +18,7 @@
 
   <!-- Chat Messages -->
   <div class="chat-messages-wrapper">
-    @for (item of _chatService.chatMessages(); track item.id) {
+    @for (item of displayedMessages(); track item.id) {
     <!-- Received Message (Other User) -->
     @if (item.senderId.toString() !== _authService.user()?.id?.toString()) {
     <div class="d-flex mb-4 align-items-end">
@@ -34,7 +34,41 @@
       <!-- Message Bubble -->
       <div class="chat-bubble received position-relative ms-2">
         <div class="chat-arrow-left"></div>
+
+        @if (item.attachmentUrl) {
+        <div class="attachment-container mb-2">
+          @if (isAudio(item.attachmentType, item.attachmentUrl)) {
+          <!-- Received Voice Message (WhatsApp Style) -->
+          <div class="whatsapp-audio-player received">
+            <button class="play-pause-btn" (click)="togglePlay(item)">
+              @if (playingAudioId() === item.id) {
+              <i class="fas fa-pause"></i>
+              } @else {
+              <i class="fas fa-play ps-1"></i>
+              }
+            </button>
+
+            <div class="audio-controls-wrapper">
+              <input type="range" class="audio-seekbar" [value]="audioProgress()[item.id] || 0"
+                (input)="seekAudio(item.id, $event)" step="0.1">
+            </div>
+          </div>
+          } @else if (isImage(item.attachmentType)) {
+          <img [src]="baseUrl + item.attachmentUrl" [alt]="item.attachmentName" class="img-fluid rounded shadow-sm"
+            style="max-width: 250px; cursor: pointer;">
+          } @else {
+          <a [href]="baseUrl + item.attachmentUrl" target="_blank" class="file-attachment shadow-sm">
+            <i class="fas fa-file-alt me-2"></i>
+            <span class="text-truncate">{{ item.attachmentName }}</span>
+          </a>
+          }
+        </div>
+        }
+
+        @if (item.content) {
         <span class="d-block">{{ item.content }}</span>
+        }
+
         <div class="d-flex justify-content-end align-items-center mt-1">
           @if (item.isEdited) {
           <span class="small text-muted fst-italic me-1">(edited)</span>
@@ -69,12 +103,52 @@
       <!-- Message Bubble -->
       <div class="chat-bubble sent position-relative me-2 ms-2">
         <div class="chat-arrow-right"></div>
+
+        @if (item.attachmentUrl) {
+        <div class="attachment-container mb-2 text-end">
+          @if (isAudio(item.attachmentType, item.attachmentUrl)) {
+          <div class="whatsapp-audio-player sent">
+            <button class="play-pause-btn" (click)="togglePlay(item)">
+              @if (playingAudioId() === item.id) {
+              <i class="fas fa-pause"></i>
+              } @else {
+              <i class="fas fa-play ps-1"></i>
+              }
+            </button>
+
+            <div class="audio-controls-wrapper">
+              <input type="range" class="audio-seekbar" [value]="audioProgress()[item.id] || 0"
+                (input)="seekAudio(item.id, $event)" step="0.1">
+            </div>
+          </div>
+          } @else if (isImage(item.attachmentType)) {
+          <img [src]="baseUrl + item.attachmentUrl" [alt]="item.attachmentName" class="img-fluid rounded shadow-sm"
+            style="max-width: 250px; cursor: pointer;">
+          } @else {
+          <a [href]="baseUrl + item.attachmentUrl" target="_blank" class="file-attachment shadow-sm sent-file">
+            <i class="fas fa-file-alt me-2"></i>
+            <span class="text-truncate" style="max-width: 150px;">{{ item.attachmentName }}</span>
+          </a>
+          }
+        </div>
+        }
+
+        @if (item.content) {
         <span class="d-block">{{ item.content }}</span>
+        }
+
         <div class="d-flex justify-content-end align-items-center mt-1">
           @if (item.isEdited) {
           <span class="small text-white-50 fst-italic me-1">(edited)</span>
           }
-          <span class="chat-time">{{ item.createdAt | date: 'shortTime' }}</span>
+          <span class="chat-time me-1">{{ item.createdAt | date: 'shortTime' }}</span>
+          @if (item.isRead) {
+          <i class="fas fa-check-double text-primary small" title="Read"></i>
+          } @else if (item.isReceived) {
+          <i class="fas fa-check-double text-white-50 small" title="Delivered"></i>
+          } @else {
+          <i class="fas fa-check text-white-50 small" title="Sent"></i>
+          }
         </div>
       </div>
 

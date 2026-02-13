@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Environment } from '../environment';
 import { messageResponse, onlineUsers } from '../shared/modules/chat';
 import { IPagination } from '../shared/modules/pagination';
@@ -13,6 +14,7 @@ import { functionsName } from './interface-callback-functions-name';
 export class ChatService {
   private hubUrl = `${Environment.baseUrl}/hubs/chat`;
   private _authService = inject(AccountService);
+  private _http = inject(HttpClient);
 
   onlineUsers = signal<onlineUsers[]>([]);
   chatMessages = signal<messageResponse[]>([]);
@@ -121,20 +123,29 @@ export class ChatService {
     // Receive new message
     this.hubConnection.on(functionsName.ReceiveNewMessage.toString(), (message: messageResponse) => {
       // Clear typing indicator for the sender immediately
-      this.onlineUsers.update((users) =>
-        users.map((user) => {
-          if (user.id === message.senderId) {
-            user.isTyping = false;
+      this.onlineUsers.update((users) => {
+        const updatedUsers = users.map((user) => {
+          if (user.id === message.senderId || user.id === message.reciverId) {
+            user.lastMessage = message.content || (message.attachmentUrl ? "Sent an attachment 📎" : "");
+            user.lastMessageTime = message.createdAt;
 
-            // Also clear the timer if it exists (using userName)
-            if (this.typingTimers.has(user.userName)) {
-              clearTimeout(this.typingTimers.get(user.userName));
-              this.typingTimers.delete(user.userName);
+            if (user.id === message.senderId) {
+              user.isTyping = false;
+              if (this.typingTimers.has(user.userName)) {
+                clearTimeout(this.typingTimers.get(user.userName));
+                this.typingTimers.delete(user.userName);
+              }
             }
           }
           return user;
-        })
-      );
+        });
+
+        return updatedUsers.sort((a, b) => {
+          const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
+          const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
+          return timeB - timeA;
+        });
+      });
 
       const current = this.currentOpenChat();
 
@@ -161,10 +172,15 @@ export class ChatService {
           });
         } else {
           // New message
-          let audio = new Audio('assets/notification/notifications.wav');
+          let audio = new Audio('assets/notification/notifications.mp3');
           audio.play().catch(e => console.error("Audio play failed", e));
           this.chatMessages.update((messages) => [...messages, message]);
           document.title = '(1) New message';
+
+          // If we are currently in this chat, mark all as read immediately
+          if (message.senderId === current.id) {
+            this.markAllMessagesAsRead(current.id);
+          }
         }
       } else {
         console.log('New message for other chat', message);
@@ -184,6 +200,63 @@ export class ChatService {
         messages.filter(m => m.id !== messageId)
       );
     });
+
+    // Message Read Listener (Single message)
+    this.hubConnection.on(functionsName.ReceiveMessageRead, (messageId: number) => {
+      this.chatMessages.update(messages =>
+        messages.map(m => m.id === messageId ? { ...m, isRead: true } : m)
+      );
+    });
+
+    // Bulk Message Read Listener (When other user opens our chat)
+    this.hubConnection.on(functionsName.MarkMessagesAsRead, (readerId: string) => {
+      const currentUserId = this._authService.user()?.id;
+      this.chatMessages.update(messages =>
+        messages.map(m =>
+          m.senderId === currentUserId && m.reciverId === readerId ? { ...m, isRead: true, isReceived: true } : m
+        )
+      );
+    });
+
+    // Bulk Message Received Listener (When other user comes online)
+    this.hubConnection.on(functionsName.MarkMessagesAsReceived, (receiverId: string) => {
+      const currentUserId = this._authService.user()?.id;
+      this.chatMessages.update(messages =>
+        messages.map(m =>
+          m.senderId === currentUserId && m.reciverId === receiverId ? { ...m, isReceived: true } : m
+        )
+      );
+    });
+
+    // Update individual user in sidebar (unread count, last message)
+    this.hubConnection.on(functionsName.UpdateUserSidebar, (updatedUser: onlineUsers) => {
+      this.onlineUsers.update(users => {
+        const index = users.findIndex(u => u.id === updatedUser.id);
+        if (index !== -1) {
+          const newUsers = [...users];
+          newUsers[index] = { ...newUsers[index], ...updatedUser };
+          return newUsers.sort((a, b) => {
+            const timeA = a.lastMessageTime ? new Date(a.lastMessageTime).getTime() : 0;
+            const timeB = b.lastMessageTime ? new Date(b.lastMessageTime).getTime() : 0;
+            return timeB - timeA;
+          });
+        }
+        return users;
+      });
+    });
+
+    // Update individual user status (online/offline)
+    this.hubConnection.on(functionsName.UpdateUserStatus, (u: onlineUsers) => {
+      this.onlineUsers.update(users => {
+        const updated = users.map(user => {
+          if (user.id === u.id) {
+            return { ...user, isOnline: u.isOnline };
+          }
+          return user;
+        });
+        return updated.sort((a, b) => (b.isOnline ? 1 : 0) - (a.isOnline ? 1 : 0));
+      });
+    });
   }
 
   disconnectConnection() {
@@ -194,9 +267,9 @@ export class ChatService {
     }
   }
 
-  sendMessage(content: string) {
+  sendMessage(content: string, attachment?: { url: string, name: string, type: string }) {
     const receiverId = this.currentOpenChat()?.id;
-    if (!receiverId || !content.trim()) return;
+    if (!receiverId || (!content.trim() && !attachment)) return;
 
     // Optimistic update
     const optimisticMessage: messageResponse = {
@@ -205,22 +278,39 @@ export class ChatService {
       senderId: this._authService.user()?.id || '',
       reciverId: receiverId,
       createdAt: new Date(),
-      isRead: false
+      isRead: false,
+      isReceived: false,
+      attachmentUrl: attachment?.url,
+      attachmentName: attachment?.name,
+      attachmentType: attachment?.type
     };
 
     this.chatMessages.update((messages) => [...messages, optimisticMessage]);
 
     this.hubConnection.invoke(functionsName.SendMessage.toString(), {
       reciverId: receiverId,
-      content: content
+      content: content,
+      attachmentUrl: attachment?.url,
+      attachmentName: attachment?.name,
+      attachmentType: attachment?.type
     })
-      .then(() => console.log('Message sent successfully'))
+      .then(() => {
+        console.log('Message sent successfully');
+        // When we send a message, we've surely read all previous incoming messages
+        this.markAllMessagesAsRead(receiverId);
+      })
       .catch((err) => {
         console.log(`Send message failed: ${err}`);
         this.chatMessages.update((messages) =>
           messages.filter(m => m !== optimisticMessage)
         );
       });
+  }
+
+  uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this._http.post<{ url: string, name: string, type: string }>(`${Environment.baseUrl}/api/upload`, formData);
   }
 
   editMessage(id: number, content: string) {
@@ -236,6 +326,21 @@ export class ChatService {
       .then(() => console.log('Message deleted successfully'))
       .catch(err => console.log(`Delete message failed: ${err}`));
   }
+
+  markMessageAsRead(id: number) {
+    if (this.hubConnection?.state === HubConnectionState.Connected) {
+      this.hubConnection.invoke(functionsName.MarkMessageAsRead.toString(), id)
+        .catch(err => console.log(`MarkMessageAsRead error: ${err}`));
+    }
+  }
+
+  markAllMessagesAsRead(otherUserId: string) {
+    if (this.hubConnection?.state === HubConnectionState.Connected) {
+      this.hubConnection.invoke(functionsName.MarkAllMessagesAsRead.toString(), otherUserId)
+        .catch(err => console.log(`MarkAllMessagesAsRead error: ${err}`));
+    }
+  }
+
   status(userName: string): string {
     const currentChatUser = this.currentOpenChat();
     if (!currentChatUser)
