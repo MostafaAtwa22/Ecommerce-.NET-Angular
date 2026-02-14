@@ -417,6 +417,21 @@
 
           <!-- Action Buttons - Only show status change buttons if not Complete or Canceled -->
           <div class="action-buttons">
+            @if (selectedOrder.status === OrderStatus.ReturnRequested.toString()) {
+              <button
+                class="btn-action btn-complete"
+                [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
+                (click)="approveReturn(selectedOrder.id)"
+              >
+                @if (updatingStatus && updateOrderId === selectedOrder.id) {
+                  <div class="btn-spinner"></div>
+                } @else {
+                  <i class="fas fa-undo"></i>
+                }
+                <span>Approve Return</span>
+              </button>
+            }
+
             <!-- Cancel Order Button -->
             @if (
               selectedOrder.status !== OrderStatus.Complete.toString() &&

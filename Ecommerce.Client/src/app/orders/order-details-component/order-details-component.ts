@@ -4,6 +4,7 @@ import { IOrder } from '../../shared/modules/order';
 import { CheckoutService } from '../../checkout/checkout-service';
 import { CommonModule } from '@angular/common';
 import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
+import { SweetAlertService } from '../../shared/services/sweet-alert.service';
 
 @Component({
   selector: 'app-order-details-component',
@@ -54,29 +55,28 @@ export class OrderDetailsComponent implements OnInit {
   estimatedDeliveryDate: string = 'N/A';
   isCancelled: boolean = false;
   isComplete: boolean = false;
+  isReturnRequested: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
-    private checkoutService: CheckoutService
+    private checkoutService: CheckoutService,
+    private sweetAlert: SweetAlertService
   ) {}
 
   ngOnInit(): void {
     this.orderId = +this.route.snapshot.paramMap.get('id')!;
     this.loadOrderDetails();
-  console.log('OrderStatus enum:', this.OrderStatus);
-  console.log('OrderStatus.Cancel value:', this.OrderStatus.Cancel)
   }
 
   loadOrderDetails(): void {
     this.checkoutService.getUserOrderById(this.orderId).subscribe({
       next: (order) => {
-        console.log('Order loaded:', order);
         this.order = order;
         this.updateStepProgress();
         this.calculateEstimatedDeliveryDate();
         this.checkIfCancelled();
-        console.log('isCancelled after check:', this.isCancelled);
         this.checkIfComplete();
+        this.checkIfReturnRequested();
       },
       error: (err) => {
         console.error('Failed to load order details', err);
@@ -89,22 +89,19 @@ export class OrderDetailsComponent implements OnInit {
       this.isCancelled = false;
       return;
     }
+    const statusNum = this.getOrderStatusNumber(this.order.status);
 
-    console.log('Checking if cancelled - status:', this.order.status);
-    console.log('Status string:', this.order.status.toString());
-    console.log('Status lowercased:', this.order.status.toString().toLowerCase());
+    this.isCancelled = statusNum === OrderStatus.Cancel;
+  }
+
+  checkIfReturnRequested(): void {
+    if (!this.order?.status) {
+      this.isReturnRequested = false;
+      return;
+    }
 
     const statusNum = this.getOrderStatusNumber(this.order.status);
-    console.log('Status number from getOrderStatusNumber:', statusNum);
-    console.log('OrderStatus.Cancel value:', this.OrderStatus.Cancel);
-
-    // Check multiple ways
-    this.isCancelled = statusNum === 5 ||
-                      statusNum === this.OrderStatus.Cancel ||
-                      this.order.status.toString().toLowerCase() === 'cancel' ||
-                      this.order.status.toString().toLowerCase() === 'cancelled';
-
-    console.log('Final isCancelled value:', this.isCancelled);
+    this.isReturnRequested = statusNum === OrderStatus.ReturnRequested;
   }
 
   checkIfComplete(): void {
@@ -137,6 +134,11 @@ export class OrderDetailsComponent implements OnInit {
       return;
     }
 
+    // Return/refund states should display the last normal step (complete)
+    if (statusNum === OrderStatus.ReturnRequested || statusNum === OrderStatus.Refunded) {
+      this.currentStepIndex = 3;
+    }
+
     // Find the matching step based on status
     const stepIndex = this.orderSteps.findIndex(step => step.status === statusNum);
 
@@ -145,11 +147,11 @@ export class OrderDetailsComponent implements OnInit {
       this.currentStepIndex = stepIndex;
     } else {
       // Otherwise, determine step based on status value
-      if (statusNum >= OrderStatus.Complete) {
+      if (statusNum === OrderStatus.Complete) {
         this.currentStepIndex = 3; // Complete
-      } else if (statusNum >= OrderStatus.Shipped) {
+      } else if (statusNum === OrderStatus.Shipped) {
         this.currentStepIndex = 2; // Shipped
-      } else if (statusNum >= OrderStatus.PaymentReceived) {
+      } else if (statusNum === OrderStatus.PaymentReceived) {
         this.currentStepIndex = 1; // Payment Received
       } else {
         this.currentStepIndex = 0; // Pending
@@ -206,11 +208,87 @@ export class OrderDetailsComponent implements OnInit {
         return OrderStatus.Shipped;
       case 'complete':
         return OrderStatus.Complete;
+      case 'returnrequested':
+      case 'return requested':
+        return OrderStatus.ReturnRequested;
+      case 'refunded':
+        return OrderStatus.Refunded;
+      case 'cancel':
       case 'cancelled':
         return OrderStatus.Cancel;
       default:
         return OrderStatus.Pending;
     }
+  }
+
+  canCancel(): boolean {
+    if (!this.order?.status) return false;
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+    return statusNum === OrderStatus.Pending || statusNum === OrderStatus.PaymentReceived;
+  }
+
+  canReturn(): boolean {
+    if (!this.order?.status) return false;
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+    return statusNum === OrderStatus.Complete;
+  }
+
+  cancelOrder(): void {
+    if (!this.order) return;
+
+    this.sweetAlert
+      .confirm({
+        title: 'Cancel order?',
+        text: 'You can cancel only before it is shipped. If payment was received, we will refund you.',
+        confirmButtonText: 'Yes, cancel it'
+      })
+      .then(result => {
+        if (!result.isConfirmed) return;
+
+        this.checkoutService.cancelOrder(this.order.id).subscribe({
+          next: (updated) => {
+            this.order = updated;
+            this.checkIfCancelled();
+            this.checkIfComplete();
+            this.checkIfReturnRequested();
+            this.updateStepProgress();
+            this.calculateEstimatedDeliveryDate();
+            this.sweetAlert.success('Order cancelled successfully');
+          },
+          error: (err) => {
+            this.sweetAlert.error(err.error?.message || 'Failed to cancel order');
+          }
+        });
+      });
+  }
+
+  requestReturn(): void {
+    if (!this.order) return;
+
+    this.sweetAlert
+      .confirm({
+        title: 'Request return?',
+        text: 'Return requests must be approved. After approval, your refund will be processed.',
+        confirmButtonText: 'Yes, request return'
+      })
+      .then(result => {
+        if (!result.isConfirmed) return;
+
+        this.checkoutService.requestReturn(this.order.id).subscribe({
+          next: (updated) => {
+            this.order = updated;
+            this.checkIfCancelled();
+            this.checkIfComplete();
+            this.checkIfReturnRequested();
+            this.updateStepProgress();
+            this.calculateEstimatedDeliveryDate();
+            this.sweetAlert.success('Return request submitted');
+          },
+          error: (err) => {
+            this.sweetAlert.error(err.error?.message || 'Failed to request return');
+          }
+        });
+      });
   }
 
   // Helper to check if status is PaymentFailed
@@ -238,6 +316,10 @@ export class OrderDetailsComponent implements OnInit {
       case OrderStatus.Shipped:
         return 'shipped';
       case OrderStatus.Complete:
+        return 'completed';
+      case OrderStatus.ReturnRequested:
+        return 'processing';
+      case OrderStatus.Refunded:
         return 'completed';
       case OrderStatus.Cancel:
         return 'cancelled';
@@ -320,9 +402,13 @@ export class OrderDetailsComponent implements OnInit {
     // Handle different statuses
     if (statusNum === OrderStatus.Cancel) {
       this.estimatedDeliveryDate = 'Order Cancelled';
+    } else if (statusNum === OrderStatus.ReturnRequested) {
+      this.estimatedDeliveryDate = 'Return Requested';
+    } else if (statusNum === OrderStatus.Refunded) {
+      this.estimatedDeliveryDate = 'Refunded';
     } else if (statusNum === OrderStatus.PaymentFailed) {
       this.estimatedDeliveryDate = 'Payment Required';
-    } else if (statusNum >= OrderStatus.Shipped) {
+    } else if (statusNum === OrderStatus.Shipped || statusNum === OrderStatus.Complete) {
       const deliveryDays = 3 + Math.floor(Math.random() * 5);
       orderDate.setDate(orderDate.getDate() + deliveryDays);
       this.estimatedDeliveryDate = orderDate.toLocaleDateString('en-US', {

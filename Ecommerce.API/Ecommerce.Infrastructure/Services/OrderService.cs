@@ -69,7 +69,8 @@ namespace Ecommerce.Infrastructure.Services
             // create order
             var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!)
             {
-                ApplicationUserId = userId
+                ApplicationUserId = userId,
+                PaymentIntenId = basket.PaymentIntentId
             };
 
             // save db

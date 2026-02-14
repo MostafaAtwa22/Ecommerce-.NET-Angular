@@ -93,4 +93,16 @@ export class CheckoutService {
     const dto: IUpdateOrderStatusDto = { status };
     return this.http.put<IOrder>(`${this.baseUrl}/status/${orderId}`, dto);
   }
+
+  cancelOrder(orderId: number): Observable<IOrder> {
+    return this.http.post<IOrder>(`${this.baseUrl}/${orderId}/cancel`, {});
+  }
+
+  requestReturn(orderId: number): Observable<IOrder> {
+    return this.http.post<IOrder>(`${this.baseUrl}/${orderId}/return`, {});
+  }
+
+  approveReturn(orderId: number): Observable<IOrder> {
+    return this.http.post<IOrder>(`${this.baseUrl}/${orderId}/return/approve`, {});
+  }
 }

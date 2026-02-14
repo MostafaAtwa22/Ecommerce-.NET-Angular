@@ -19,6 +19,12 @@ namespace Ecommerce.Core.Entities.orderAggregate
         [EnumMember(Value = "Complete")]
         Complete,
 
+        [EnumMember(Value = "Return Requested")]
+        ReturnRequested,
+
+        [EnumMember(Value = "Refunded")]
+        Refunded,
+
         [EnumMember(Value = "Cancel")]
         Cancel
     }

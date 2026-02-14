@@ -118,5 +118,25 @@ namespace Ecommerce.Infrastructure.Services
 
             return order;
         }
+
+        public async Task RefundPaymentIntentAsync(string paymentIntentId, long? amountInCents, string reason)
+        {
+            StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
+
+            if (string.IsNullOrWhiteSpace(paymentIntentId))
+                throw new ArgumentException("Payment intent id is required", nameof(paymentIntentId));
+
+            var refundOptions = new RefundCreateOptions
+            {
+                PaymentIntent = paymentIntentId,
+                Reason = reason,
+            };
+
+            if (amountInCents.HasValue)
+                refundOptions.Amount = amountInCents.Value;
+
+            var refundService = new RefundService();
+            await refundService.CreateAsync(refundOptions);
+        }
     }
 }

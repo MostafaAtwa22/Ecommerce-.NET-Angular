@@ -14,6 +14,18 @@
       </div>
     </div>
 
+    <div *ngIf="isReturnRequested" class="cancelled-banner">
+      <div class="cancelled-banner-content">
+        <div class="cancelled-icon">
+          <i class="fas fa-undo"></i>
+        </div>
+        <div class="cancelled-info">
+          <h3>Return Requested</h3>
+          <p>Your return request has been submitted. Once approved, a refund for the item subtotal will be processed to your original payment method.</p>
+        </div>
+      </div>
+    </div>
+
     <div class="row g-4">
 
       <!-- Left Column - Order Progress & Items -->
@@ -119,6 +131,24 @@
         <div class="return-button-section w-100">
           <a class="btn-ret" routerLink="/orders"><i class="fa fa-cart-arrow-down me-2" aria-hidden="true"></i>All Orders</a>
         </div>
+
+        <div class="return-button-section w-100 mt-2" *ngIf="canCancel() && !isCancelled">
+          <button class="btn-ret w-100" type="button" (click)="cancelOrder()">
+            Cancel Order
+          </button>
+        </div>
+
+        <div class="return-button-section w-100 mt-2" *ngIf="canReturn() && !isReturnRequested && !isCancelled">
+          <button class="btn-ret w-100" type="button" (click)="requestReturn()">
+            Request Return
+          </button>
+        </div>
+
+        <div class="return-button-section w-100 mt-2" *ngIf="isReturnRequested">
+          <button class="btn-ret w-100" type="button" disabled>
+            Return Requested
+          </button>
+        </div>
         <!-- Order Totals -->
         <div class="order-summary-section">
           <div class="section-header">
@@ -143,6 +173,11 @@
             <div class="total-item" *ngIf="isCancelled">
               <span class="total-label refund">Expected Refund</span>
               <span class="total-value refund">{{ order.total | currency:'USD' }}</span>
+            </div>
+
+            <div class="total-item" *ngIf="isReturnRequested">
+              <span class="total-label refund">Expected Refund (Items Only)</span>
+              <span class="total-value refund">{{ order.subTotal | currency:'USD' }}</span>
             </div>
           </div>
         </div>

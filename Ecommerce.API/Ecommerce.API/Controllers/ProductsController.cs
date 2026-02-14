@@ -1,4 +1,3 @@
-using System.Net;
 using AutoMapper;
 using Ecommerce.API.Dtos;
 using Ecommerce.API.Dtos.Requests;
@@ -10,9 +9,6 @@ using Ecommerce.Core.Entities;
 using Ecommerce.Core.Interfaces;
 using Ecommerce.Core.Params;
 using Ecommerce.Core.Spec;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Authorization;
 using Ecommerce.Infrastructure.Constants;
 
 namespace Ecommerce.API.Controllers

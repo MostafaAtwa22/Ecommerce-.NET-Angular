@@ -56,6 +56,8 @@ export class DashboardOrdersComponent implements OnInit {
     { value: OrderStatus.Pending.toString(), name: 'Pending' },
     { value: OrderStatus.Shipped.toString(), name: 'Shipped' },
     { value: OrderStatus.Complete.toString(), name: 'Complete' },
+    { value: OrderStatus.ReturnRequested.toString(), name: 'Return Requested' },
+    { value: OrderStatus.Refunded.toString(), name: 'Refunded' },
     { value: OrderStatus.Cancel.toString(), name: 'Canceled' }
   ];
 
@@ -284,6 +286,11 @@ export class DashboardOrdersComponent implements OnInit {
         return OrderStatus.Shipped;
       case 'complete':
         return OrderStatus.Complete;
+      case 'returnrequested':
+      case 'return requested':
+        return OrderStatus.ReturnRequested;
+      case 'refunded':
+        return OrderStatus.Refunded;
       case 'cancel':
       case 'canceled':
       case 'cancelled': // Handle both spellings
@@ -296,8 +303,11 @@ export class DashboardOrdersComponent implements OnInit {
   // Helper to check if order can be cancelled
   canCancelOrder(orderStatus: string | number): boolean {
     const statusNum = this.getOrderStatusNumber(orderStatus);
-    // Can cancel if not already cancelled or complete
-    return statusNum !== OrderStatus.Cancel && statusNum !== OrderStatus.Complete;
+    // Admin cancel: allow only if not already terminal and not return-related
+    return statusNum !== OrderStatus.Cancel &&
+           statusNum !== OrderStatus.Complete &&
+           statusNum !== OrderStatus.ReturnRequested &&
+           statusNum !== OrderStatus.Refunded;
   }
 
   // Helper to check if order can be shipped
@@ -371,6 +381,52 @@ export class DashboardOrdersComponent implements OnInit {
       });
   }
 
+  approveReturn(orderId: number): void {
+    if (!orderId) return;
+
+    this.sweetAlert
+      .confirm({
+        title: 'Approve return?',
+        text: 'This will refund the item subtotal (shipping excluded) and mark the order as refunded.',
+        icon: 'warning',
+        confirmButtonText: 'Yes, approve'
+      })
+      .then((result) => {
+        if (!result.isConfirmed) {
+          return;
+        }
+
+        this.updatingStatus = true;
+        this.updateOrderId = orderId;
+        this.errorMessage = null;
+
+        this.checkoutService.approveReturn(orderId).subscribe({
+          next: (updatedOrder: IOrder) => {
+            if (this.selectedOrder && this.selectedOrder.id === orderId) {
+              this.selectedOrder = updatedOrder;
+            }
+
+            const orderIndex = this.orders.findIndex(o => o.id === orderId);
+            if (orderIndex !== -1) {
+              const oldStatus = this.orders[orderIndex].status;
+              this.orders[orderIndex].status = OrderStatus.Refunded.toString();
+
+              this.updateStatisticsOnStatusChange(oldStatus, OrderStatus.Refunded.toString(), updatedOrder.total);
+            }
+
+            this.updatingStatus = false;
+            this.updateOrderId = null;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.updatingStatus = false;
+            this.updateOrderId = null;
+            console.error('Error approving return:', err);
+            this.errorMessage = err.error?.message || 'Failed to approve return. Please try again.';
+          }
+        });
+      });
+  }
+
   getStatusLabel(status: string | number): string {
     return getOrderStatusLabel(status);
   }
@@ -387,6 +443,10 @@ export class DashboardOrdersComponent implements OnInit {
       case OrderStatus.Shipped:
         return 'badge-secondary';
       case OrderStatus.Complete:
+        return 'badge-success';
+      case OrderStatus.ReturnRequested:
+        return 'badge-info';
+      case OrderStatus.Refunded:
         return 'badge-success';
       case OrderStatus.Cancel:
         return 'badge-danger';
@@ -408,6 +468,10 @@ export class DashboardOrdersComponent implements OnInit {
         return 'fa-truck';
       case OrderStatus.Complete:
         return 'fa-check-circle';
+      case OrderStatus.ReturnRequested:
+        return 'fa-undo';
+      case OrderStatus.Refunded:
+        return 'fa-check-circle';
       case OrderStatus.Cancel:
         return 'fa-ban';
       default:
@@ -419,9 +483,12 @@ export class DashboardOrdersComponent implements OnInit {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
 
-  getCustomerAvatar(profilePictureUrl?: string | null): string {
-    // Orders API currently sends only profilePictureUrl; use gender-less default when missing
-    return resolveUserAvatar(profilePictureUrl, undefined);
+  getCustomerAvatar(profilePictureUrl?: string | null, gender?: string): string {
+    // Use gender-neutral default avatar when no profile picture is available
+    if (!profilePictureUrl) {
+      return getDefaultAvatarByGender();
+    }
+    return resolveUserAvatar(profilePictureUrl, gender);
   }
 
   formatDate(dateString: string | Date): string {
