@@ -13,6 +13,7 @@ import { BasketService } from '../shared/services/basket-service';
 import { ProfileService } from '../shared/services/profile-service';
 import { IAddress } from '../shared/modules/address';
 import { ToastrService } from 'ngx-toastr';
+import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-checkout-component',
@@ -24,7 +25,8 @@ import { ToastrService } from 'ngx-toastr';
     CheckoutDelieveryComponent,
     CheckoutReviewComponent,
     CheckoutPaymentComponent,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HasPermissionDirective
   ],
   templateUrl: './checkout-component.html',
   styleUrl: './checkout-component.scss',

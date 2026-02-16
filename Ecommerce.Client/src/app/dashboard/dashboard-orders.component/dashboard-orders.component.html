@@ -215,6 +215,7 @@
                   </td>
                   <td class="text-end">
                     <button
+                      *hasPermission="'Permissions.Orders.Read'"
                       class="btn btn-view-details"
                       title="View Order Details"
                       (click)="viewOrderDetails(order)"
@@ -419,6 +420,7 @@
           <div class="action-buttons">
             @if (selectedOrder.status === OrderStatus.ReturnRequested.toString()) {
               <button
+                *hasPermission="'Permissions.Orders.Update'"
                 class="btn-action btn-complete"
                 [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
                 (click)="approveReturn(selectedOrder.id)"
@@ -439,6 +441,7 @@
             ) {
               @if (canCancelOrder(selectedOrder.status)) {
                 <button
+                  *hasPermission="'Permissions.Orders.Update'"
                   class="btn-action btn-cancel"
                   [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
                   (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Cancel.toString())"
@@ -455,6 +458,7 @@
               <!-- Ship Order Button -->
               @if (canShipOrder(selectedOrder.status)) {
                 <button
+                  *hasPermission="'Permissions.Orders.Update'"
                   class="btn-action btn-ship"
                   [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
                   (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Shipped.toString())"
@@ -471,6 +475,7 @@
               <!-- Mark Complete Button -->
               @if (canCompleteOrder(selectedOrder.status)) {
                 <button
+                  *hasPermission="'Permissions.Orders.Update'"
                   class="btn-action btn-complete"
                   [disabled]="updatingStatus && updateOrderId === selectedOrder.id"
                   (click)="updateOrderStatus(selectedOrder.id, OrderStatus.Complete.toString())"

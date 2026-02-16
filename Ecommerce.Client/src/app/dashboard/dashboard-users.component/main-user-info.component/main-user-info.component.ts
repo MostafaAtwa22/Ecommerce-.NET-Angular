@@ -10,11 +10,12 @@ import { RouterLink } from '@angular/router';
 import { AccountService } from '../../../account/account-service';
 import { SweetAlertService } from '../../../shared/services/sweet-alert.service';
 import { getDefaultAvatarByGender, resolveUserAvatar } from '../../../shared/utils/avatar-utils';
+import { HasPermissionDirective } from '../../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-main-user-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, HasPermissionDirective],
   templateUrl: './main-user-info.component.html',
   styleUrl: './main-user-info.component.scss',
 })

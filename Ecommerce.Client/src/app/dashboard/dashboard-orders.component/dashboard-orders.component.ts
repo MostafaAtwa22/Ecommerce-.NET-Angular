@@ -8,11 +8,12 @@ import { CheckoutService } from '../../checkout/checkout-service';
 import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
 import { SweetAlertService } from '../../shared/services/sweet-alert.service';
 import { resolveUserAvatar, getDefaultAvatarByGender } from '../../shared/utils/avatar-utils';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-dashboard-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe],
+  imports: [CommonModule, FormsModule, DecimalPipe, HasPermissionDirective],
   templateUrl: './dashboard-orders.component.html',
   styleUrls: ['./dashboard-orders.component.scss']
 })

@@ -79,7 +79,7 @@
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <button
-          *ngIf="isSuperAdmin()"
+          *hasPermission="'Permissions.Account.Create'"
           class="btn btn-success d-flex align-items-center"
           routerLink="/register"
         >
@@ -247,6 +247,7 @@
                   <td class="text-end">
                     <div class="btn-group" role="group">
                       <button
+                        *hasPermission="'Permissions.Roles.Update'"
                         [routerLink]="['roles', user.id]"
                         class="btn btn-sm btn-outline-info"
                         title="Manage Roles"
@@ -255,6 +256,7 @@
                       </button>
                       @if (user.isLocked) {
                         <button
+                          *hasPermission="'Permissions.Account.Update'"
                           class="btn btn-sm btn-outline-success"
                           title="Unlock User"
                           [disabled]="user.roles.includes('SuperAdmin')"
@@ -264,6 +266,7 @@
                         </button>
                       } @else {
                         <button
+                          *hasPermission="'Permissions.Account.Update'"
                           class="btn btn-sm btn-outline-warning"
                           title="Lock User"
                           [disabled]="user.roles.includes('SuperAdmin')"

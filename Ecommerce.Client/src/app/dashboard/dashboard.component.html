@@ -12,37 +12,37 @@
         Dashboard
       </a>
     </li>
-    <li>
+    <li *hasPermission="'Permissions.Products.Read'">
       <a routerLink="/dashboard/products" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-box"></i>
         Products
       </a>
     </li>
-    <li>
+    <li *hasPermission="'Permissions.Orders.Read'">
       <a routerLink="/dashboard/orders" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-shopping-cart"></i>
         Orders
       </a>
     </li>
-    <li>
+    <li *hasPermission="'Permissions.DeliveryMethods.Read'">
       <a routerLink="/dashboard/delivery" routerLinkActive="active" style="cursor: pointer">
         <i class="fa fa-truck"></i>
         Delivery
       </a>
     </li>
-    <li>
+    <li *hasPermission="'Permissions.Account.Read'">
       <a routerLink="/dashboard/users" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-users"></i>
         Users
       </a>
     </li>
-    <li>
+    <li *ngIf="isAdminOrSuperAdmin()">
       <a routerLink="/dashboard/chat" routerLinkActive="active" style="cursor: pointer">
         <i class="fa fa-comments"></i>
         Chat
       </a>
     </li>
-    <li *ngIf="isSuperAdmin()">
+    <li *hasPermission="'Permissions.Roles.Read'">
       <a routerLink="/dashboard/roles" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-user-shield"></i>
         Roles

@@ -6,12 +6,13 @@ import { SweetAlertService } from '../../shared/services/sweet-alert.service';
 import { IDeliveryMethod } from '../../shared/modules/deliveryMethod';
 import { DeliveryMethodService } from '../../shared/services/delivery-method-service';
 import { DeliveryMethodFormComponent } from './delivery-method-form.component/delivery-method-form.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 
 @Component({
   selector: 'app-dashboard-delivery-method',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DeliveryMethodFormComponent],
+  imports: [CommonModule, FormsModule, DecimalPipe, DeliveryMethodFormComponent, HasPermissionDirective],
   templateUrl: './dashboard-delivery-method.component.html',
   styleUrls: ['./dashboard-delivery-method.component.scss']
 })

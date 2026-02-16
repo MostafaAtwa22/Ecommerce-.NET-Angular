@@ -6,11 +6,12 @@ import { BasketService } from '../../shared/services/basket-service';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../../account/account-service';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-product-item',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HasPermissionDirective],
   templateUrl: './product-item-component.html',
   styleUrls: ['./product-item-component.scss'],
 })
@@ -76,7 +77,7 @@ export class ProductItemComponent implements OnInit {
       next: () => {
         this._toastr.success('Added to basket');
 
-        // ✅ Remove from wishlist if present
+        // Remove from wishlist if present
         const wishlist = this._wishListService.getCurrentWishListValue();
         if (wishlist && wishlist.items.some((item) => item.id === this.product.id)) {
           this._wishListService.removeItemFromWishList({ id: this.product.id } as any);

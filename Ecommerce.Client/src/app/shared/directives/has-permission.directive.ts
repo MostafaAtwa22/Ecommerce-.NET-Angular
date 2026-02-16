@@ -82,6 +82,7 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
         const shouldShow = this.else ? !hasRequiredPermissions : hasRequiredPermissions;
 
         if (shouldShow) {
+            this.viewContainer.clear();
             this.viewContainer.createEmbeddedView(this.templateRef);
         } else {
             this.viewContainer.clear();

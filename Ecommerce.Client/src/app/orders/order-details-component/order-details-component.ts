@@ -5,10 +5,11 @@ import { CheckoutService } from '../../checkout/checkout-service';
 import { CommonModule } from '@angular/common';
 import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-status';
 import { SweetAlertService } from '../../shared/services/sweet-alert.service';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-order-details-component',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HasPermissionDirective],
   templateUrl: './order-details-component.html',
   styleUrls: ['./order-details-component.scss'],
 })

@@ -14,7 +14,7 @@
       <div class="image-overlay">
         <div class="quick-actions">
           <button class="btn-action wishlist-btn" title="Add to Wishlist" (click)="addItemToWishList()"
-            *ngIf="isCustomer()">
+            *hasPermission="'Permissions.Orders.Create'">
             <i class="fas fa-heart" [ngClass]="{ 'active-heart': isInWishlist(product.id) }">
             </i>
           </button>
@@ -55,7 +55,7 @@
       <!-- Action Buttons -->
       <div class="action-buttons">
         <button class="btn-add-cart" (click)="addItemToBasket()" [disabled]="!canAddToBasket()"
-          [title]="!canAddToBasket() ? 'Maximum quantity in basket' : 'Add to cart'" *ngIf="isCustomer()">
+          [title]="!canAddToBasket() ? 'Maximum quantity in basket' : 'Add to cart'" *hasPermission="'Permissions.Orders.Create'">
           <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
         </button>
         <button class="btn-view-details text-dark" [routerLink]="[`/shop/${product.id}`]">

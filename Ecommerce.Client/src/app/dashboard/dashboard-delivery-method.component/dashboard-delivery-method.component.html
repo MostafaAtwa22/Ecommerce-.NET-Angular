@@ -56,6 +56,7 @@
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <!-- Add Method Button -->
         <button
+          *hasPermission="'Permissions.DeliveryMethods.Create'"
           class="btn btn-primary d-flex align-items-center"
           (click)="openAddMethod()"
         >
@@ -196,6 +197,7 @@
                   <td class="text-end pe-4">
                     <div class="btn-group" role="group">
                       <button
+                        *hasPermission="'Permissions.DeliveryMethods.Update'"
                         class="btn btn-sm btn-outline-primary"
                         title="Edit"
                         (click)="openEditMethod(method)"
@@ -203,6 +205,7 @@
                         <i class="fas fa-edit"></i>
                       </button>
                       <button
+                        *hasPermission="'Permissions.DeliveryMethods.Delete'"
                         class="btn btn-sm btn-outline-danger"
                         title="Delete"
                         (click)="deleteMethod(method)"

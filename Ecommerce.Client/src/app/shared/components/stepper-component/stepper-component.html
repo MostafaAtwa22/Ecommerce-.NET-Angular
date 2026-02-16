@@ -40,18 +40,35 @@
     </button>
 
     <!-- Next/Submit Button -->
-    <button
-      class="btn"
-      [class.btn-primary]="!isLastStep()"
-      [class.btn-success]="isLastStep()"
-      (click)="isLastStep() ? createOrder() : next()"
-      [disabled]="isLastStep() ? false : selectedIndex === steps.length - 1"
-    >
+    <ng-container *ngIf="!((!isLastStep() && continuePermission) || (isLastStep() && submitPermission)); else permissionGatedAction">
+      <button
+        class="btn"
+        [class.btn-primary]="!isLastStep()"
+        [class.btn-success]="isLastStep()"
+        (click)="isLastStep() ? createOrder() : next()"
+        [disabled]="isLastStep() ? false : selectedIndex === steps.length - 1"
+      >
+        <span class="btn-label">
+          {{ isLastStep() ? 'Submit Order' : 'Continue to ' + getNextStepName() }}
+        </span>
+        <i class="fas ms-2" [class.fa-arrow-right]="!isLastStep()" [class.fa-check]="isLastStep()"></i>
+      </button>
+    </ng-container>
 
-      <span class="btn-label">
-        {{ isLastStep() ? 'Submit Order' : 'Continue to ' + getNextStepName() }}
-      </span>
-      <i class="fas ms-2" [class.fa-arrow-right]="!isLastStep()" [class.fa-check]="isLastStep()"></i>
-    </button>
+    <ng-template #permissionGatedAction>
+      <button
+        *hasPermission="isLastStep() ? submitPermission! : continuePermission!"
+        class="btn"
+        [class.btn-primary]="!isLastStep()"
+        [class.btn-success]="isLastStep()"
+        (click)="isLastStep() ? createOrder() : next()"
+        [disabled]="isLastStep() ? false : selectedIndex === steps.length - 1"
+      >
+        <span class="btn-label">
+          {{ isLastStep() ? 'Submit Order' : 'Continue to ' + getNextStepName() }}
+        </span>
+        <i class="fas ms-2" [class.fa-arrow-right]="!isLastStep()" [class.fa-check]="isLastStep()"></i>
+      </button>
+    </ng-template>
   </div>
 </div>

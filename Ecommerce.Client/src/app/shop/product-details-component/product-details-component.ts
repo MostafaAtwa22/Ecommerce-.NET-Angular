@@ -11,6 +11,7 @@ import { WishlistService } from '../../wishlist/wishlist-service';
 import { ToastrService } from 'ngx-toastr';
 import { ProductReviewComponent } from "../../product-reviews/product-review.component";
 import { AccountService } from '../../account/account-service';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-product-details',
@@ -19,7 +20,8 @@ import { AccountService } from '../../account/account-service';
     CommonModule,
     FormsModule,
     RouterLink,
-    ProductReviewComponent  // Make sure this import is correct
+    ProductReviewComponent,
+    HasPermissionDirective
   ],
   templateUrl: './product-details-component.html',
   styleUrls: ['./product-details-component.scss'],

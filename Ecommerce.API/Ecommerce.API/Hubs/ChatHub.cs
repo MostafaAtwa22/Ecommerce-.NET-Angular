@@ -350,7 +350,7 @@ namespace Ecommerce.API.Hubs
                 // Broadcast offline status to others
                 var statusUpdate = _mapper.Map<OnlineUserDto>(currentUser);
                 statusUpdate.IsOnline = false;
-                await Clients.AllExcept(Context.ConnectionId).UpdateUserStatus(statusUpdate);
+                await Clients.AllExcept(Context?.ConnectionId!).UpdateUserStatus(statusUpdate);
             }
 
             await base.OnDisconnectedAsync(exception);

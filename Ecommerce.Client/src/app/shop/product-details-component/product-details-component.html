@@ -124,14 +124,14 @@
             <div class="action-buttons mb-5 mt-auto">
               <div class="primary-actions d-flex flex-column flex-sm-row gap-2 row">
                 <button class="btn-add-cart col-12 text-uppercase" (click)="addToBasket()"
-                  [disabled]="!canAddToBasket()" *ngIf="isCustomer()">
+                  [disabled]="!canAddToBasket()" *hasPermission="'Permissions.Orders.Create'">
                   <i class="fas fa-shopping-cart me-2"></i>
                   {{
                   !isInStock() ? 'Out of Stock' : canAddToBasket() ? 'Add to Cart' : 'Max Added'
                   }}
                 </button>
                 <button class="btn-add-wishlist text-uppercase" (click)="addToWishlist()"
-                  [ngClass]="{ 'active-heart': isInWishlist(product.id) }" *ngIf="isCustomer()">
+                  [ngClass]="{ 'active-heart': isInWishlist(product.id) }" *hasPermission="'Permissions.Orders.Create'">
                   <i class="fas fa-heart me-2"></i> Add To Wishlist
                 </button>
                 <button class="btn-continue text-uppercase" routerLink="/">

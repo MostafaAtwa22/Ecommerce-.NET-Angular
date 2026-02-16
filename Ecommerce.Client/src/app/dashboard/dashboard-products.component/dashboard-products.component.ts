@@ -12,11 +12,12 @@ import { IType } from '../../shared/modules/type';
 import { BrandService } from '../../shared/services/brand-service';
 import { TypeService } from '../../shared/services/type-service';
 import { ProductFormComponent } from './product-form.component/product-form.component';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-dashboard-products',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, ProductFormComponent],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, ProductFormComponent, HasPermissionDirective],
   templateUrl: './dashboard-products.component.html',
   styleUrls: ['./dashboard-products.component.scss'],
 })

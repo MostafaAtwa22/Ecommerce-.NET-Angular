@@ -9,6 +9,7 @@ import { IAccountUser } from '../../shared/modules/accountUser';
 import { WishlistService } from '../../wishlist/wishlist-service';
 import { IWishList } from '../../shared/modules/wishlist';
 import { getDefaultAvatarByGender, resolveUserAvatar } from '../../shared/utils/avatar-utils';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 interface RoleInfo {
   displayName: string;
@@ -20,7 +21,7 @@ interface RoleInfo {
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, AsyncPipe, CommonModule],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe, CommonModule, HasPermissionDirective],
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.scss'],
 })

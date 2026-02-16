@@ -132,17 +132,19 @@
           <a class="btn-ret" routerLink="/orders"><i class="fa fa-cart-arrow-down me-2" aria-hidden="true"></i>All Orders</a>
         </div>
 
-        <div class="return-button-section w-100 mt-2" *ngIf="canCancel() && !isCancelled">
-          <button class="btn-ret w-100" type="button" (click)="cancelOrder()">
-            Cancel Order
-          </button>
-        </div>
+        <ng-container *hasPermission="'Permissions.Orders.Update'">
+          <div class="return-button-section w-100 mt-2" *ngIf="canCancel() && !isCancelled">
+            <button class="btn-ret w-100" type="button" (click)="cancelOrder()">
+              Cancel Order
+            </button>
+          </div>
 
-        <div class="return-button-section w-100 mt-2" *ngIf="canReturn() && !isReturnRequested && !isCancelled">
-          <button class="btn-ret w-100" type="button" (click)="requestReturn()">
-            Request Return
-          </button>
-        </div>
+          <div class="return-button-section w-100 mt-2" *ngIf="canReturn() && !isReturnRequested && !isCancelled">
+            <button class="btn-ret w-100" type="button" (click)="requestReturn()">
+              Request Return
+            </button>
+          </div>
+        </ng-container>
 
         <div class="return-button-section w-100 mt-2" *ngIf="isReturnRequested">
           <button class="btn-ret w-100" type="button" disabled>

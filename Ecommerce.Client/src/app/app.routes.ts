@@ -8,6 +8,8 @@ import { OrderDetailsComponent } from './orders/order-details-component/order-de
 import { OrdersComponent } from './orders/orders-component';
 import { WishlistComponent } from './wishlist/wishlist.component';
 import { guestGuard } from './core/guards/guest-guard';
+import { permissionGuard } from './core/guards/permission.guard';
+import { adminChatGuard } from './core/guards/admin-chat.guard';
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
@@ -47,22 +49,32 @@ export const routes: Routes = [
       {
         path: 'products', loadComponent: () =>
           import('./dashboard/dashboard-products.component/dashboard-products.component').then(m => m.DashboardProductsComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.Products.Read' },
       },
       {
         path: 'orders', loadComponent: () =>
           import('./dashboard/dashboard-orders.component/dashboard-orders.component').then(m => m.DashboardOrdersComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.Orders.Read' },
       },
       {
-        path: 'chat', loadComponent: () =>
+        path: 'chat',
+        canActivate: [adminChatGuard],
+        loadComponent: () =>
           import('./dashboard/dashboard-chat.component/dashboard-chat.component').then(m => m.DashboardChatComponent),
       },
       {
         path: 'delivery', loadComponent: () =>
           import('./dashboard/dashboard-delivery-method.component/dashboard-delivery-method.component').then(m => m.DashboardDeliveryMethodComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.DeliveryMethods.Read' },
       },
       {
         path: 'users', loadComponent: () =>
           import('./dashboard/dashboard-users.component/dashboard-users.component').then(m => m.DashboardUsersComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.Account.Read' },
         children: [
           {
             path: '', loadComponent: () =>
@@ -71,12 +83,16 @@ export const routes: Routes = [
           {
             path: 'roles/:id', loadComponent: () =>
               import('./dashboard/dashboard-users.component/user-roles.component/user-roles.component').then(m => m.UserRolesComponent),
+            canActivate: [permissionGuard],
+            data: { permission: 'Permissions.Roles.Update' },
           }
         ]
       },
       {
         path: 'roles', loadComponent: () =>
           import('./dashboard/dashboard-roles.component/dashboard-roles.component').then(m => m.DashboardRolesComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.Roles.Read' },
         children: [
           {
             path: '', loadComponent: () =>
@@ -85,6 +101,8 @@ export const routes: Routes = [
           {
             path: 'permissions/:id', loadComponent: () =>
               import('./dashboard/dashboard-roles.component/permissions.component/permissions.component').then(m => m.PermissionsComponent),
+            canActivate: [permissionGuard],
+            data: { permission: 'Permissions.Roles.Update' },
           }
         ]
       },
@@ -92,24 +110,32 @@ export const routes: Routes = [
   },
   {
     path: 'basket',
+    canActivate: [permissionGuard],
+    data: { permission: 'Permissions.Orders.Create' },
     loadComponent: () =>
       import('./basket/basket-component')
         .then(s => BasketComponent)
   },
   {
     path: 'wishlist',
+    canActivate: [permissionGuard],
+    data: { permission: 'Permissions.Orders.Create' },
     loadComponent: () =>
       import('./wishlist/wishlist.component')
         .then(s => WishlistComponent)
   },
   {
     path: 'orders',
+    canActivate: [permissionGuard],
+    data: { permission: 'Permissions.Orders.Read' },
     loadComponent: () =>
       import('./orders/orders-component')
         .then(s => OrdersComponent)
   },
   {
     path: 'orders/:id',
+    canActivate: [permissionGuard],
+    data: { permission: 'Permissions.Orders.Read' },
     loadComponent: () =>
       import('./orders/order-details-component/order-details-component')
         .then(s => OrderDetailsComponent)

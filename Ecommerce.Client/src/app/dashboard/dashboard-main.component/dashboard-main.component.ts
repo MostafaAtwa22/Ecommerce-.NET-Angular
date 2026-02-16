@@ -17,11 +17,12 @@ import { BrandService } from '../../shared/services/brand-service';
 import { TypeService } from '../../shared/services/type-service';
 import { RoleService } from '../../shared/services/role.service';
 import { getOrderStatusLabel } from '../../shared/modules/order-status';
+import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-dashboard-main',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Added FormsModule here
+  imports: [CommonModule, FormsModule, HasPermissionDirective], // Added FormsModule here
   templateUrl: './dashboard-main.component.html',
   styleUrls: ['./dashboard-main.component.scss']
 })
@@ -545,15 +546,15 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
     const statusStr = String(status || '').toLowerCase();
     switch (statusStr) {
       case 'pending':
-        return 'badge-warning';
+        return 'bg-warning text-dark';
       case 'shipped':
-        return 'badge-info';
+        return 'bg-info text-dark';
       case 'complete':
-        return 'badge-success';
+        return 'bg-success';
       case 'canceled':
-        return 'badge-danger';
+        return 'bg-danger';
       default:
-        return 'badge-secondary';
+        return 'bg-secondary';
     }
   }
 

@@ -7,10 +7,11 @@ import { AccountService } from '../account/account-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SweetAlertService } from '../shared/services/sweet-alert.service';
+import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-product-review',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HasPermissionDirective],
   templateUrl: './product-review.component.html',
   styleUrl: './product-review.component.scss',
 })

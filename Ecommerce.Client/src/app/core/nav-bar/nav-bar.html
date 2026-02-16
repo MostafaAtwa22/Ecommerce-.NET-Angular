@@ -30,7 +30,7 @@
           <a class="nav-link text-decoration-none" href="#contact" id="contactLink">Contact Us</a>
         </li>
         <!-- Dashboard link for Admin/SuperAdmin -->
-        <li class="nav-item mx-2" *ngIf="isLoggedIn() && hasAdminRole()">
+        <li class="nav-item mx-2" *hasPermission="['Permissions.Roles.Read', 'Permissions.Account.Read']; mode: 'any'">
           <a class="nav-link text-decoration-none" routerLink="/dashboard" routerLinkActive="active">
             <i class="fas fa-chart-line me-1"></i>Dashboard
           </a>
@@ -40,7 +40,7 @@
       <!-- Right Section -->
       <ul class="navbar-nav align-items-center flex-row">
         <!-- Wishlist Icon - Only for customers and users without admin roles -->
-        <li class="nav-item position-relative me-3" *ngIf="!hasAdminRole()">
+        <li class="nav-item position-relative me-3" *hasPermission="'Permissions.Orders.Create'">
           <a class="nav-link wishlist-icon" routerLink="/wishlist">
             <i class="fas fa-heart"></i>
             <span class="wishlist-badge" *ngIf="wishList$ | async as wishList">{{ wishList.items.length }}</span>
@@ -48,7 +48,7 @@
         </li>
 
         <!-- Shopping Cart - Only for customers and users without admin roles -->
-        <li class="nav-item position-relative me-4" *ngIf="!hasAdminRole()">
+        <li class="nav-item position-relative me-4" *hasPermission="'Permissions.Orders.Create'">
           <a class="nav-link cart-icon" routerLink="/basket">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-badge" *ngIf="basket$ | async as basket">{{ basket.items.length }}</span>

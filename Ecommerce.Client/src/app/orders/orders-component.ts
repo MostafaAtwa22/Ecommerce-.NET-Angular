@@ -4,10 +4,11 @@ import { CheckoutService } from '../checkout/checkout-service';
 import { IOrder } from '../shared/modules/order';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { getOrderStatusLabel } from '../shared/modules/order-status';
+import { HasPermissionDirective } from '../shared/directives/has-permission.directive';
 
 @Component({
   selector: 'app-orders-component',
-  imports: [RouterLink, CurrencyPipe, DatePipe],
+  imports: [RouterLink, CurrencyPipe, DatePipe, HasPermissionDirective],
   templateUrl: './orders-component.html',
   styleUrl: './orders-component.scss',
 })

@@ -80,6 +80,7 @@
       <div class="d-flex align-items-center gap-2 flex-wrap">
         <!-- Add Product Button -->
         <button
+          *hasPermission="'Permissions.Products.Create'"
           class="btn btn-primary d-flex align-items-center"
           (click)="openAddProduct()"
         >
@@ -277,6 +278,7 @@
                         <i class="fas fa-eye"></i>
                       </button>
                       <button
+                        *hasPermission="'Permissions.Products.Update'"
                         class="btn btn-sm btn-outline-warning"
                         title="Edit Product"
                         (click)="openEditProduct(product)"
@@ -284,6 +286,7 @@
                         <i class="fas fa-edit"></i>
                       </button>
                       <button
+                        *hasPermission="'Permissions.Products.Delete'"
                         class="btn btn-sm btn-outline-danger"
                         title="Delete Product"
                         (click)="deleteProduct(product.id)"

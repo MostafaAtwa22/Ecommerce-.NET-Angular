@@ -12,13 +12,14 @@ import { NavigationExtras, Router } from '@angular/router';
 import { AccountService } from '../../../account/account-service';
 import { isTokenExpired } from '../../utils/token-utils';
 import { firstValueFrom } from 'rxjs';
+import { HasPermissionDirective } from '../../directives/has-permission.directive';
 
 @Component({
   selector: 'app-stepper-component',
   templateUrl: './stepper-component.html',
   styleUrls: ['./stepper-component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HasPermissionDirective],
   providers: [{ provide: CdkStepper, useExisting: StepperComponent }],
 })
 export class StepperComponent extends CdkStepper implements OnInit {
@@ -26,6 +27,9 @@ export class StepperComponent extends CdkStepper implements OnInit {
   @Input() createPaymentIntent!: () => void;
   @Input() paymentIntentCreated = false;
   @Input() paymentComponent: any;
+
+  @Input() continuePermission?: string | string[];
+  @Input() submitPermission?: string | string[];
 
   // Validation Inputs
   @Input() addressStepValid = false;

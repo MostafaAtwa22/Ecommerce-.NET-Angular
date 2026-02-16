@@ -206,7 +206,7 @@ namespace Ecommerce.API.Controllers
         OrderStatus.Refunded => "Refunded orders cannot be modified",
         OrderStatus.Cancel => "Order already cancelled",
         OrderStatus.ReturnRequested => "Return requested orders cannot be modified from here",
-        _ => null
+        _ => null!
       };
       return error is null;
     }
@@ -219,7 +219,7 @@ namespace Ecommerce.API.Controllers
         OrderStatus.Shipped or OrderStatus.Complete => "Order cannot be cancelled after shipping",
         OrderStatus.Refunded => "Refunded orders cannot be cancelled",
         OrderStatus.ReturnRequested => "Return requested orders cannot be cancelled",
-        _ => null
+        _ => null!
       };
       return error is null;
     }
