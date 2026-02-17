@@ -15,6 +15,7 @@ import { map, switchMap, catchError } from 'rxjs/operators';
 import { IForgetPassword } from '../../shared/modules/accountUser';
 import { AccountService } from '../account-service';
 import { AnimatedOverlayComponent } from "../animated-overlay-component/animated-overlay-component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-forget-password.component',
@@ -26,6 +27,7 @@ export class ForgetPasswordComponent implements OnDestroy {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   forgetForm: FormGroup;
   submitted = false;
@@ -84,6 +86,11 @@ export class ForgetPasswordComponent implements OnDestroy {
 
     if (this.forgetForm.invalid) {
       this.forgetForm.markAllAsTouched();
+      this.toastr.error('Please enter a valid email address.', 'Validation Error', {
+        timeOut: 4000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
       return;
     }
 
@@ -97,6 +104,13 @@ export class ForgetPasswordComponent implements OnDestroy {
       next: (response) => {
         this.loading = false;
 
+        this.toastr.success(`Password reset link sent to ${this.email?.value}`, 'Check Your Inbox', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
+
         // Navigate directly to check-inbox page
         this.router.navigate(['/check-inbox'], {
           queryParams: {
@@ -106,6 +120,11 @@ export class ForgetPasswordComponent implements OnDestroy {
       },
       error: (err) => {
         this.errorMessage = this.getErrorMessage(err);
+        this.toastr.error(this.errorMessage, 'Request Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
         this.loading = false;
       },
     });

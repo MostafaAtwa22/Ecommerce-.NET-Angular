@@ -140,6 +140,11 @@ export class CheckoutComponent implements OnInit {
       },
       error: err => {
         console.log('Failed to load address', err);
+        this.toastr.error('Failed to load your saved address. Please enter it manually.', 'Address Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }

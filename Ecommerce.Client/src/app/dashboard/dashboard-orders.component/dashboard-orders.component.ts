@@ -9,6 +9,7 @@ import { getOrderStatusLabel, OrderStatus } from '../../shared/modules/order-sta
 import { SweetAlertService } from '../../shared/services/sweet-alert.service';
 import { resolveUserAvatar, getDefaultAvatarByGender } from '../../shared/utils/avatar-utils';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dashboard-orders',
@@ -68,7 +69,8 @@ export class DashboardOrdersComponent implements OnInit {
 
   constructor(
     private checkoutService: CheckoutService,
-    private sweetAlert: SweetAlertService
+    private sweetAlert: SweetAlertService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -98,6 +100,12 @@ export class DashboardOrdersComponent implements OnInit {
         } else {
           this.errorMessage = err.error?.message || 'An unexpected error occurred while loading orders.';
         }
+
+        this.toastr.error(this.errorMessage || 'An unexpected error occurred while loading orders.', 'Orders Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }
@@ -117,6 +125,12 @@ export class DashboardOrdersComponent implements OnInit {
         this.loadingStatistics = false;
         // Fallback: calculate from current page if we can't get all orders
         this.calculateStatisticsFromArray(this.orders);
+
+        this.toastr.error('Failed to load order statistics. Showing partial statistics.', 'Statistics Error', {
+          timeOut: 5000,
+          positionClass: 'toast-bottom-right',
+          closeButton: true,
+        });
       }
     });
   }
@@ -263,6 +277,12 @@ export class DashboardOrdersComponent implements OnInit {
         this.loading = false;
         console.error('Error loading order details:', err);
         this.errorMessage = 'Failed to load order details. Please try again.';
+
+        this.toastr.error(this.errorMessage, 'Order Details Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }
@@ -382,12 +402,24 @@ export class DashboardOrdersComponent implements OnInit {
 
             this.updatingStatus = false;
             this.updateOrderId = null;
+
+            this.toastr.success('Order status updated successfully.', 'Success', {
+              timeOut: 3000,
+              positionClass: 'toast-top-right',
+              progressBar: true,
+            });
           },
           error: (err: HttpErrorResponse) => {
             this.updatingStatus = false;
             this.updateOrderId = null;
             console.error('Error updating order status:', err);
             this.errorMessage = err.error?.message || 'Failed to update order status. Please try again.';
+
+            this.toastr.error(this.errorMessage || 'Failed to update order status. Please try again.', 'Update Failed', {
+              timeOut: 6000,
+              positionClass: 'toast-top-center',
+              closeButton: true,
+            });
           }
         });
       });
@@ -428,12 +460,24 @@ export class DashboardOrdersComponent implements OnInit {
 
             this.updatingStatus = false;
             this.updateOrderId = null;
+
+            this.toastr.success('Return approved successfully.', 'Success', {
+              timeOut: 3000,
+              positionClass: 'toast-top-right',
+              progressBar: true,
+            });
           },
           error: (err: HttpErrorResponse) => {
             this.updatingStatus = false;
             this.updateOrderId = null;
             console.error('Error approving return:', err);
             this.errorMessage = err.error?.message || 'Failed to approve return. Please try again.';
+
+            this.toastr.error(this.errorMessage || 'Failed to approve return. Please try again.', 'Approve Failed', {
+              timeOut: 6000,
+              positionClass: 'toast-top-center',
+              closeButton: true,
+            });
           }
         });
       });

@@ -153,36 +153,86 @@ export class CheckInboxComponent implements OnInit, OnDestroy {
         this.toastr.clear(loadingToast.toastId);
         this.isResending = false;
 
-        // Show error toast
-        const errorMessage = this.getResendErrorMessage(err);
-        this.toastr.error(errorMessage, 'Resend Failed', {
-          timeOut: 6000,
-          positionClass: 'toast-top-center',
-          closeButton: true,
-        });
+        const errorMessages = this.getResendErrorMessages(err);
+
+        if (errorMessages.length === 0) {
+          this.toastr.error('Failed to resend email. Please try again.', 'Resend Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+          return;
+        }
+
+        for (const message of errorMessages) {
+          this.toastr.error(message, 'Resend Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+        }
       },
     });
   }
 
   // Error message helper
-  private getResendErrorMessage(err: any): string {
-    if (!err) return 'An unknown error occurred. Please try again.';
+  private getResendErrorMessages(err: any): string[] {
+    if (!err) return ['An unknown error occurred. Please try again.'];
+    if (err.status === 0) return ['Network error. Please check your internet connection.'];
 
-    if (err.status === 0) return 'Network error. Please check your internet connection.';
+    const errorBody = err.error;
 
+    // Common ASP.NET Core validation shape:
+    // { errors: { Email: ["..."] }, title: "..." }
+    if (errorBody && typeof errorBody === 'object') {
+      const errorsObj = (errorBody as any).errors;
+      if (errorsObj && typeof errorsObj === 'object') {
+        const messages: string[] = [];
+        for (const key of Object.keys(errorsObj)) {
+          const value = (errorsObj as any)[key];
+          if (Array.isArray(value)) {
+            for (const msg of value) {
+              if (typeof msg === 'string' && msg.trim()) messages.push(msg);
+            }
+          } else if (typeof value === 'string' && value.trim()) {
+            messages.push(value);
+          }
+        }
+        if (messages.length > 0) return messages;
+      }
+    }
+
+    // If backend returns an array of error messages
+    if (Array.isArray(errorBody)) {
+      const messages = errorBody
+        .filter((x) => typeof x === 'string')
+        .map((x) => x.trim())
+        .filter(Boolean);
+      if (messages.length > 0) return messages;
+    }
+
+    // If backend returns plain text
+    if (typeof errorBody === 'string' && errorBody.trim()) return [errorBody.trim()];
+
+    const fallbackFromBody = errorBody?.message || errorBody?.title;
+    if (typeof fallbackFromBody === 'string' && fallbackFromBody.trim()) return [fallbackFromBody.trim()];
+
+    // Status-based fallback
     switch (err.status) {
       case 400:
-        return err.error?.message || 'Invalid request. Please check your input.';
+        return ['Invalid request. Please check your input.'];
       case 404:
-        return this.isPasswordReset
-          ? 'Email address not found. Please use a different email.'
-          : 'Email address not found or already verified.';
+        return [
+          this.isPasswordReset
+            ? 'Email address not found. Please use a different email.'
+            : 'Email address not found or already verified.',
+        ];
       case 429:
-        return 'Too many resend attempts. Please wait a few minutes.';
+        return ['Too many resend attempts. Please wait a few minutes.'];
       case 500:
-        return err.error?.message || 'Server error. Please try again later.';
+        return ['Server error. Please try again later.'];
       default:
-        return err.error?.message || err.message || 'Failed to resend email. Please try again.';
+        return [err.message || 'Failed to resend email. Please try again.'];
     }
   }
 

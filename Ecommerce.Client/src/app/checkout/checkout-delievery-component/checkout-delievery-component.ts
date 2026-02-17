@@ -4,6 +4,7 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { BasketService } from '../../shared/services/basket-service';
 import { DeliveryMethodService } from '../../shared/services/delivery-method-service';
 import { IDeliveryMethod } from '../../shared/modules/deliveryMethod';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout-delievery-component',
@@ -19,12 +20,20 @@ export class CheckoutDelieveryComponent implements OnInit {
   deliveryMethods: IDeliveryMethod[] = [];
 
   constructor(private deliveryMethodService: DeliveryMethodService,
-              private basketService: BasketService) {}
+              private basketService: BasketService,
+              private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.deliveryMethodService.getAllDeliveryMethods().subscribe({
       next: dm => this.deliveryMethods = dm,
-      error: err => console.log(err)
+      error: err => {
+        console.log(err);
+        this.toastr.error('Failed to load delivery methods. Please refresh the page.', 'Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
+      }
     });
   }
 
@@ -36,5 +45,11 @@ export class CheckoutDelieveryComponent implements OnInit {
     this.checkoutForm.get('deliveryMethod')?.setValue(method.id);
     this.basketService.setShippingPrice(method);
     this.deliverySelected.emit(method);
+
+    this.toastr.success(`Delivery method selected: ${method.shortName}`, 'Delivery Updated', {
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      progressBar: true,
+    });
   }
 }

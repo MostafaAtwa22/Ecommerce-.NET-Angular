@@ -205,14 +205,69 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
           this.errorMessage = this.getErrorMessage(err);
           this.showResendOption = this.shouldShowResendOption(err);
 
-          this.toastr.error(this.errorMessage, 'Reset Failed', {
-            timeOut: 6000,
-            positionClass: 'toast-top-center',
-            closeButton: true,
-          });
+          const messages = this.getResetErrorMessages(err);
+          if (messages.length === 0) {
+            this.toastr.error(this.errorMessage || 'Failed to reset password. Please try again.', 'Reset Failed', {
+              timeOut: 6000,
+              positionClass: 'toast-top-center',
+              closeButton: true,
+            });
+            return;
+          }
+
+          for (const message of messages) {
+            this.toastr.error(message, 'Reset Failed', {
+              timeOut: 6000,
+              positionClass: 'toast-top-center',
+              closeButton: true,
+            });
+          }
         }
       },
     });
+  }
+
+  private getResetErrorMessages(err: any): string[] {
+    if (!err) return ['An unknown error occurred. Please try again.'];
+    if (err.status === 0) return ['Network error. Please check your internet connection.'];
+    if (err.status === 200) return [];
+
+    const errorBody = err.error;
+
+    // ASP.NET Core validation shape: { errors: { Field: ["..."] }, title: "..." }
+    if (errorBody && typeof errorBody === 'object') {
+      const errorsObj = (errorBody as any).errors;
+      if (errorsObj && typeof errorsObj === 'object') {
+        const messages: string[] = [];
+        for (const key of Object.keys(errorsObj)) {
+          const value = (errorsObj as any)[key];
+          if (Array.isArray(value)) {
+            for (const msg of value) {
+              if (typeof msg === 'string' && msg.trim()) messages.push(msg);
+            }
+          } else if (typeof value === 'string' && value.trim()) {
+            messages.push(value);
+          }
+        }
+        if (messages.length > 0) return messages;
+      }
+    }
+
+    if (Array.isArray(errorBody)) {
+      const messages = errorBody
+        .filter((x) => typeof x === 'string')
+        .map((x) => x.trim())
+        .filter(Boolean);
+      if (messages.length > 0) return messages;
+    }
+
+    if (typeof errorBody === 'string' && errorBody.trim()) return [errorBody.trim()];
+
+    const fallbackFromBody = errorBody?.message || errorBody?.title;
+    if (typeof fallbackFromBody === 'string' && fallbackFromBody.trim()) return [fallbackFromBody.trim()];
+
+    if (err.message) return [err.message];
+    return [];
   }
 
   private getErrorMessage(error: any): string {
@@ -297,7 +352,23 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Resend error:', err);
-        this.toastr.error('Failed to resend email. Please try again.', 'Error');
+        const messages = this.getResetErrorMessages(err);
+        if (messages.length === 0) {
+          this.toastr.error('Failed to resend email. Please try again.', 'Error', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+          return;
+        }
+
+        for (const message of messages) {
+          this.toastr.error(message, 'Error', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+        }
       },
     });
   }

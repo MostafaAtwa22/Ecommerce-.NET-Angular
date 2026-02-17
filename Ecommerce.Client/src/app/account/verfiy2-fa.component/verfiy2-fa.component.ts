@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AccountService } from '../account-service';
 import { AnimatedOverlayComponent } from '../animated-overlay-component/animated-overlay-component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verfiy2-fa.component',
@@ -22,6 +23,7 @@ export class Verfiy2FAComponent implements OnInit {
   private accountService = inject(AccountService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private toastr = inject(ToastrService);
 
   email: string = '';
   isLoading = false;
@@ -56,6 +58,11 @@ export class Verfiy2FAComponent implements OnInit {
   onSubmit(): void {
     if (this.verificationForm.invalid) {
       this.verificationForm.markAllAsTouched();
+      this.toastr.error('Please enter the 6-digit verification code.', 'Validation Error', {
+        timeOut: 4000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
       return;
     }
 
@@ -70,6 +77,13 @@ export class Verfiy2FAComponent implements OnInit {
         this.isLoading = false;
         this.successMessage = 'Verification successful! Redirecting...';
 
+        this.toastr.success('Verification successful!', 'Success', {
+          timeOut: 4000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
+
         // Navigate based on role
         setTimeout(() => {
           this.navigateByRole();
@@ -79,6 +93,12 @@ export class Verfiy2FAComponent implements OnInit {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Invalid or expired verification code. Please try again.';
         console.error('2FA verification failed:', err);
+
+        this.toastr.error(this.errorMessage, 'Verification Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }
@@ -95,6 +115,13 @@ export class Verfiy2FAComponent implements OnInit {
         this.isResending = false;
         this.successMessage = 'Verification code resent successfully! Check your inbox.';
 
+        this.toastr.success('Verification code resent successfully! Check your inbox.', 'Code Resent', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
+
         // Clear success message after 5 seconds
         setTimeout(() => {
           this.successMessage = '';
@@ -104,6 +131,13 @@ export class Verfiy2FAComponent implements OnInit {
         this.isResending = false;
         this.errorMessage = 'Failed to resend code. Please try again.';
         console.error('Resend 2FA failed:', err);
+
+        const message = err?.error?.message || this.errorMessage;
+        this.toastr.error(message, 'Resend Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }

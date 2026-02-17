@@ -15,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 import { IRegister } from '../../shared/modules/register';
 import { CommonModule } from '@angular/common';
 import { AnimatedOverlayComponent } from '../animated-overlay-component/animated-overlay-component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register-component',
@@ -27,6 +28,7 @@ export class RegisterComponent {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
+  private toastr = inject(ToastrService);
 
   showPassword = false;
   isLoading = false;
@@ -160,6 +162,11 @@ export class RegisterComponent {
   onSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
+      this.toastr.error('Please fix the highlighted errors and try again.', 'Validation Error', {
+        timeOut: 5000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
       return;
     }
 
@@ -182,6 +189,13 @@ export class RegisterComponent {
       next: (response) => {
         this.isLoading = false;
 
+        this.toastr.success(`Verification email sent to ${v.email!}`, 'Verify Your Email', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
+
         // Navigate to check-inbox with username and email
         // Your check-inbox component looks for 'username' parameter to determine flow
         this.router.navigate(['/check-inbox'], {
@@ -200,8 +214,60 @@ export class RegisterComponent {
       error: (err) => {
         this.isLoading = false;
         console.error('Registration failed:', err);
-        // You might want to show a toast notification here
+
+        const messages = this.getRegisterErrorMessages(err);
+
+        if (messages.length === 0) {
+          this.toastr.error('Registration failed. Please try again.', 'Registration Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+          return;
+        }
+
+        for (const message of messages) {
+          this.toastr.error(message, 'Registration Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+        }
       },
     });
+  }
+
+  private getRegisterErrorMessages(err: any): string[] {
+    if (!err) return ['An unknown error occurred. Please try again.'];
+    if (err.status === 0) return ['Network error. Please check your internet connection.'];
+
+    const errorBody = err.error;
+
+    if (errorBody && typeof errorBody === 'object') {
+      const errorsObj = (errorBody as any).errors;
+      if (errorsObj && typeof errorsObj === 'object') {
+        const messages: string[] = [];
+        for (const key of Object.keys(errorsObj)) {
+          const value = (errorsObj as any)[key];
+          if (Array.isArray(value)) {
+            for (const msg of value) {
+              if (typeof msg === 'string' && msg.trim()) messages.push(msg);
+            }
+          } else if (typeof value === 'string' && value.trim()) {
+            messages.push(value);
+          }
+        }
+        if (messages.length > 0) return messages;
+      }
+    }
+
+    if (typeof errorBody === 'string' && errorBody.trim()) return [errorBody.trim()];
+
+    const fallbackFromBody = errorBody?.message || errorBody?.title;
+    if (typeof fallbackFromBody === 'string' && fallbackFromBody.trim()) return [fallbackFromBody.trim()];
+
+    if (err.status === 409) return ['Email or username already exists. Please use different credentials.'];
+
+    return [err.message || 'Registration failed. Please try again.'];
   }
 }

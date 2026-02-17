@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 declare var Stripe: any;
 
@@ -13,6 +14,8 @@ declare var Stripe: any;
 })
 export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   @Input() paymentForm!: FormGroup;
+
+  constructor(private toastr: ToastrService) {}
 
   @ViewChild('cardNumber') cardNumberElement!: ElementRef;
   @ViewChild('cardExpiry') cardExpiryElement!: ElementRef;
@@ -93,6 +96,11 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     } catch (error) {
       console.error('Error initializing Stripe:', error);
       this.cardErrors = 'Failed to initialize payment system. Please refresh the page.';
+      this.toastr.error(this.cardErrors, 'Payment Error', {
+        timeOut: 6000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
     }
   }
 
@@ -112,6 +120,12 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     if (event.error) {
       this.cardErrors = event.error.message;
       this.paymentForm?.setErrors({ cardInvalid: true });
+
+      this.toastr.error(this.cardErrors ?? 'Invalid card details.', 'Card Error', {
+        timeOut: 4000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
     } else {
       this.cardErrors = null;
       // Only clear errors if all fields are complete

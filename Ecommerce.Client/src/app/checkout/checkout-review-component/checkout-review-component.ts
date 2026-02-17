@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { IBasket, IBasketItem } from '../../shared/modules/basket';
 import { BasketService } from '../../shared/services/basket-service';
 import { AsyncPipe, CurrencyPipe } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-checkout-review-component',
@@ -14,9 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 export class CheckoutReviewComponent implements OnInit {
   basket$!: Observable<IBasket | null>;
 
-  constructor(private basketService: BasketService,
-    private toastr: ToastrService
-  ) {}
+  constructor(private basketService: BasketService) {}
   ngOnInit(): void {
     this.basket$ = this.basketService.basket$;
   }

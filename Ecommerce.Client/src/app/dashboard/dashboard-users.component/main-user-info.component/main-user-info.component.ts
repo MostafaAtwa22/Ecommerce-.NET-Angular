@@ -11,6 +11,7 @@ import { AccountService } from '../../../account/account-service';
 import { SweetAlertService } from '../../../shared/services/sweet-alert.service';
 import { getDefaultAvatarByGender, resolveUserAvatar } from '../../../shared/utils/avatar-utils';
 import { HasPermissionDirective } from '../../../shared/directives/has-permission.directive';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-main-user-info',
@@ -67,7 +68,8 @@ export class MainUserInfoComponent implements OnInit {
   constructor(
     private profileService: ProfileService,
     private accountService: AccountService,
-    private swal: SweetAlertService
+    private swal: SweetAlertService,
+    private toastr: ToastrService
   ) {}
 
   getUserAvatar(user: IProfile): string {
@@ -117,6 +119,12 @@ export class MainUserInfoComponent implements OnInit {
           this.errorMessage =
             err.error?.message || 'An unexpected error occurred while loading users.';
         }
+
+        this.toastr.error(this.errorMessage ?? "Error loading users", 'Users Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       },
     });
   }
@@ -258,10 +266,23 @@ export class MainUserInfoComponent implements OnInit {
             next: (updatedUser) => {
               user.isLocked = updatedUser.isLocked; // تحديث الحالة بعد Lock
               this.swal.success(`User ${user.userName} has been locked!`);
+
+              this.toastr.success(`User ${user.userName} has been locked.`, 'Success', {
+                timeOut: 3000,
+                positionClass: 'toast-top-right',
+                progressBar: true,
+              });
             },
             error: (err) => {
               console.error(err);
               this.swal.error('Failed to lock user.');
+
+              const message = err?.error?.message || 'Failed to lock user.';
+              this.toastr.error(message, 'Action Failed', {
+                timeOut: 6000,
+                positionClass: 'toast-top-center',
+                closeButton: true,
+              });
             },
           });
         }
@@ -283,10 +304,23 @@ export class MainUserInfoComponent implements OnInit {
             next: (updatedUser) => {
               user.isLocked = updatedUser.isLocked; // تحديث الحالة بعد Unlock
               this.swal.success(`User ${user.userName} has been unlocked!`);
+
+              this.toastr.success(`User ${user.userName} has been unlocked.`, 'Success', {
+                timeOut: 3000,
+                positionClass: 'toast-top-right',
+                progressBar: true,
+              });
             },
             error: (err) => {
               console.error(err);
               this.swal.error('Failed to unlock user.');
+
+              const message = err?.error?.message || 'Failed to unlock user.';
+              this.toastr.error(message, 'Action Failed', {
+                timeOut: 6000,
+                positionClass: 'toast-top-center',
+                closeButton: true,
+              });
             },
           });
         }

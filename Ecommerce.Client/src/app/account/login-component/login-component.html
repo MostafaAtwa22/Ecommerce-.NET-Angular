@@ -6,6 +6,13 @@
     <p class="form-subtitle">Sign in to your account to continue</p>
   </div>
 
+  <div class="error-messages" *ngIf="errorMessage">
+    <small class="error-message">
+      <i class="fas fa-exclamation-triangle"></i>
+      {{ errorMessage }}
+    </small>
+  </div>
+
   <!-- Email Field -->
   <div class="form-group">
     <label for="email" class="form-label">
@@ -100,10 +107,6 @@
     <button type="button" class="btn-social btn-google" (click)="loginWithGoogle()">
       <i class="fab fa-google"></i>
       Google
-    </button>
-    <button type="button" class="btn-social btn-facebook">
-      <i class="fab fa-facebook-f"></i>
-      Facebook
     </button>
   </div>
 

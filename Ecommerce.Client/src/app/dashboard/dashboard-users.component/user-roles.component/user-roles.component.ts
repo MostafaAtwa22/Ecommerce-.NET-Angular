@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IUserRoles, ICheckBoxRoleManage } from '../../../shared/modules/roles';
 import { RoleService } from '../../../shared/services/role.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-roles',
@@ -25,7 +26,8 @@ export class UserRolesComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private roleService: RoleService
+    private roleService: RoleService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -59,6 +61,12 @@ export class UserRolesComponent implements OnInit {
         } else {
           this.errorMessage = err.error?.message || 'An unexpected error occurred while loading user roles.';
         }
+
+        this.toastr.error(this.errorMessage ?? "Error to load", 'Load Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }
@@ -86,6 +94,12 @@ export class UserRolesComponent implements OnInit {
         this.successMessage = 'User roles updated successfully!';
         this.saving = false;
         setTimeout(() => this.successMessage = null, 3000);
+
+        this.toastr.success(this.successMessage, 'Success', {
+          timeOut: 3000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+        });
       },
       error: (err: HttpErrorResponse) => {
         this.saving = false;
@@ -96,6 +110,12 @@ export class UserRolesComponent implements OnInit {
         } else {
           this.errorMessage = err.error?.message || 'Failed to update user roles.';
         }
+
+        this.toastr.error(this.errorMessage ?? "Failed to update user roles", 'Save Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }

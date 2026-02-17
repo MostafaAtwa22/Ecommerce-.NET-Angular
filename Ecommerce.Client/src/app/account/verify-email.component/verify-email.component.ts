@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AccountService } from '../account-service';
 import { CommonModule } from '@angular/common';
 import { AnimatedOverlayComponent } from "../animated-overlay-component/animated-overlay-component";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-verify-email',
@@ -25,7 +26,8 @@ export class VerifyEmailComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private accountService: AccountService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.form = this.fb.group({
       email: [{ value: '', disabled: true }],
@@ -38,6 +40,11 @@ export class VerifyEmailComponent implements OnInit {
 
     if (!email) {
       this.error = 'Invalid verification link';
+      this.toastr.error(this.error, 'Error', {
+        timeOut: 6000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
       return;
     }
 
@@ -55,7 +62,15 @@ export class VerifyEmailComponent implements OnInit {
   }
 
   submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toastr.error('Please enter the verification code.', 'Validation Error', {
+        timeOut: 4000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
+      return;
+    }
 
     this.loading = true;
     this.error = undefined;
@@ -67,6 +82,13 @@ export class VerifyEmailComponent implements OnInit {
     this.accountService.verifyEmail({ email, code }).subscribe({
       next: () => {
         this.loading = false;
+
+        this.toastr.success('Email verified successfully!', 'Success', {
+          timeOut: 4000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
         this.navigateByRole();
       },
       error: (err) => {
@@ -75,6 +97,12 @@ export class VerifyEmailComponent implements OnInit {
           this.error = err.error.message;
         }
         this.loading = false;
+
+        this.toastr.error(this.error, 'Verification Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       },
     });
   }
@@ -98,6 +126,13 @@ export class VerifyEmailComponent implements OnInit {
 
   resendCode() {
     if (this.resendCooldown > 0 || this.resendLoading) {
+      if (this.resendCooldown > 0) {
+        this.toastr.warning(`Please wait ${this.resendCooldown} seconds before resending.`, 'Too Soon', {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
+      }
       return;
     }
 
@@ -105,6 +140,11 @@ export class VerifyEmailComponent implements OnInit {
 
     if (!email) {
       this.error = 'Email not found';
+      this.toastr.error(this.error, 'Error', {
+        timeOut: 6000,
+        positionClass: 'toast-top-center',
+        closeButton: true,
+      });
       return;
     }
 
@@ -115,6 +155,13 @@ export class VerifyEmailComponent implements OnInit {
       next: () => {
         this.showResendSuccess = true;
         this.resendLoading = false;
+
+        this.toastr.success('Verification code resent. Check your inbox.', 'Code Resent', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+          closeButton: true,
+        });
 
         this.startResendCooldown(30);
 
@@ -128,6 +175,12 @@ export class VerifyEmailComponent implements OnInit {
           this.error = err.error.message;
         }
         this.resendLoading = false;
+
+        this.toastr.error(this.error, 'Resend Failed', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       }
     });
   }

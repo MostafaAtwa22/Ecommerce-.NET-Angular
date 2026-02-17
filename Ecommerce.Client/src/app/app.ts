@@ -12,6 +12,9 @@ import { AccountService } from './account/account-service';
 import { WishlistService } from './wishlist/wishlist-service';
 import { ChatbotWidgetComponent } from './shared/components/chatbot-widget/chatbot-widget';
 import { take } from 'rxjs';
+import { Router } from '@angular/router';
+import { PermissionService } from './shared/services/permission.service';
+import { Permissions } from './core/constants/Permissions';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +32,9 @@ export class App implements OnInit {
     private appRef: ApplicationRef,
     private basketService: BasketService,
     private wishlistService: WishlistService,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private permissionService: PermissionService,
+    private router: Router
   ) {
     this.loading = toSignal(this.busyService.loading$, { initialValue: true });
   }
@@ -43,6 +48,30 @@ export class App implements OnInit {
 
     // Load current user (refresh handled by interceptor if needed)
     this.accountService.loadCurrentUser();
+
+    const currentUrl = this.router.url;
+    const canAutoRedirect = currentUrl === '/' || currentUrl === '/home' || currentUrl.startsWith('/home?');
+
+    if (canAutoRedirect && this.accountService.isLoggedIn()) {
+      const dashboardPermissions = [
+        Permissions.Account_Read,
+        Permissions.Roles_Read,
+        Permissions.Roles_Update,
+        Permissions.Products_Create,
+        Permissions.Products_Update,
+        Permissions.Products_Delete,
+        Permissions.DeliveryMethods_Create,
+        Permissions.DeliveryMethods_Update,
+        Permissions.DeliveryMethods_Delete
+      ];
+
+      this.permissionService.fetchPermissions().pipe(take(1)).subscribe(perms => {
+        const hasAny = dashboardPermissions.some(p => perms.includes(p));
+        if (hasAny) {
+          this.router.navigateByUrl('/dashboard');
+        }
+      });
+    }
 
     // Initialize basket
     const basketId = localStorage.getItem('basket_id');

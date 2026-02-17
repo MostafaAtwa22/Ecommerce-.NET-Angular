@@ -13,6 +13,7 @@ import { BrandService } from '../../shared/services/brand-service';
 import { TypeService } from '../../shared/services/type-service';
 import { ProductFormComponent } from './product-form.component/product-form.component';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dashboard-products',
@@ -63,7 +64,8 @@ export class DashboardProductsComponent implements OnInit {
     private shopService: ShopService,
     private brandService: BrandService,
     private typeService: TypeService,
-    private sweetAlert: SweetAlertService
+    private sweetAlert: SweetAlertService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -104,6 +106,12 @@ export class DashboardProductsComponent implements OnInit {
           this.errorMessage =
             err.error?.message || 'An unexpected error occurred while loading products.';
         }
+
+        this.toastr.error(this.errorMessage ?? "Error", 'Products Error', {
+          timeOut: 6000,
+          positionClass: 'toast-top-center',
+          closeButton: true,
+        });
       },
     });
   }
@@ -125,6 +133,12 @@ export class DashboardProductsComponent implements OnInit {
         console.error('Failed to load brands:', err);
         this.brands = [];
         this.loadingFilters = false;
+
+        this.toastr.error('Failed to load brands list.', 'Filters Error', {
+          timeOut: 5000,
+          positionClass: 'toast-bottom-right',
+          closeButton: true,
+        });
       },
     });
 
@@ -137,6 +151,12 @@ export class DashboardProductsComponent implements OnInit {
         console.error('Failed to load types:', err);
         this.types = [];
         this.loadingFilters = false;
+
+        this.toastr.error('Failed to load types list.', 'Filters Error', {
+          timeOut: 5000,
+          positionClass: 'toast-bottom-right',
+          closeButton: true,
+        });
       },
     });
   }
@@ -251,10 +271,23 @@ export class DashboardProductsComponent implements OnInit {
       this.shopService.updateProduct(updatePayload).subscribe({
         next: () => {
           this.sweetAlert.success('Product updated successfully');
+          this.toastr.success('Product updated successfully.', 'Success', {
+            timeOut: 3000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+          });
           this.loadProducts();
           this.closeProductForm();
         },
-        error: () => this.sweetAlert.error('Update failed'),
+        error: (err) => {
+          this.sweetAlert.error('Update failed');
+          const message = err?.error?.message || 'Failed to update product.';
+          this.toastr.error(message, 'Update Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+        },
       });
     } else {
       const createPayload: IProductCreate = {
@@ -265,10 +298,23 @@ export class DashboardProductsComponent implements OnInit {
       this.shopService.createProduct(createPayload).subscribe({
         next: () => {
           this.sweetAlert.success('Product created successfully');
+          this.toastr.success('Product created successfully.', 'Success', {
+            timeOut: 3000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+          });
           this.loadProducts();
           this.closeProductForm();
         },
-        error: () => this.sweetAlert.error('Creation failed'),
+        error: (err) => {
+          this.sweetAlert.error('Creation failed');
+          const message = err?.error?.message || 'Failed to create product.';
+          this.toastr.error(message, 'Creation Failed', {
+            timeOut: 6000,
+            positionClass: 'toast-top-center',
+            closeButton: true,
+          });
+        },
       });
     }
   }
@@ -286,10 +332,21 @@ export class DashboardProductsComponent implements OnInit {
           this.shopService.deleteProduct(id).subscribe({
             next: () => {
               this.sweetAlert.success('Product deleted successfully!');
+              this.toastr.success('Product deleted successfully.', 'Success', {
+                timeOut: 3000,
+                positionClass: 'toast-top-right',
+                progressBar: true,
+              });
               this.loadProducts();
             },
             error: (err) => {
               this.sweetAlert.error('Failed to delete product. Please try again.');
+              const message = err?.error?.message || 'Failed to delete product.';
+              this.toastr.error(message, 'Delete Failed', {
+                timeOut: 6000,
+                positionClass: 'toast-top-center',
+                closeButton: true,
+              });
             },
           });
         }
