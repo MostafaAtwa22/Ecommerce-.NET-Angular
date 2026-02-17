@@ -3,6 +3,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './core/interceptors/error-interceptor';
 import { loadingInterceptor } from './core/interceptors/loading-interceptor';
 import { jwtInterceptor } from './core/interceptors/jwt-interceptor';
+import { lockoutInterceptor } from './core/interceptors/lockout-interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideBrowserGlobalErrorListeners } from '@angular/core';
@@ -20,6 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([
         loadingInterceptor,
+        lockoutInterceptor,
         jwtInterceptor,
         errorInterceptor
       ])

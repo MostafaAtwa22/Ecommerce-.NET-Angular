@@ -41,6 +41,14 @@ export const jwtInterceptor: HttpInterceptorFn = (
 
   return next(authRequest).pipe(
     catchError((error: HttpErrorResponse) => {
+      if (error.status === 403 && typeof error.error?.message === 'string') {
+        const msg = error.error.message.toLowerCase();
+        if (msg.includes('locked')) {
+          accountService.logout();
+          return throwError(() => error);
+        }
+      }
+
       // Handle 401 errors (expired/invalid access token)
       if (error.status === 401 && !request.url.includes('/refresh-token') && !isGoogleOAuth) {
         return handle401Error(authRequest, next, accountService);

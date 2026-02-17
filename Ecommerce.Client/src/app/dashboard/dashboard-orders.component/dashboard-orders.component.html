@@ -72,6 +72,18 @@
         </div>
       </div>
     </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-refunded">
+          <i class="fas fa-undo"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ refundedCount | number }}</h3>
+          <p>Refunded Orders</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Search & Filter Toolbar -->
@@ -191,6 +203,7 @@
                           [src]="getCustomerAvatar(order.profilePictureUrl)"
                           alt="{{ order.firstName }} {{ order.lastName }}"
                           class="avatar"
+                          (error)="setDefaultAvatar($event)"
                         />
                       </div>
                       <div>
@@ -418,7 +431,7 @@
 
           <!-- Action Buttons - Only show status change buttons if not Complete or Canceled -->
           <div class="action-buttons">
-            @if (selectedOrder.status === OrderStatus.ReturnRequested.toString()) {
+            @if (getOrderStatusNumber(selectedOrder.status) === OrderStatus.ReturnRequested) {
               <button
                 *hasPermission="'Permissions.Orders.Update'"
                 class="btn-action btn-complete"

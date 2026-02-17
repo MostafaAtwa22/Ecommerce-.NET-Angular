@@ -32,6 +32,7 @@ export class DashboardOrdersComponent implements OnInit {
   shippedCount = 0;
   completeCount = 0;
   canceledCount = 0;
+  refundedCount = 0;
 
   // Filter/Search
   ordersParams = new OrdersParams();
@@ -126,6 +127,7 @@ export class DashboardOrdersComponent implements OnInit {
     this.shippedCount = 0;
     this.completeCount = 0;
     this.canceledCount = 0;
+    this.refundedCount = 0;
 
     ordersArray.forEach(order => {
       // Use helper to get consistent string representation
@@ -147,6 +149,9 @@ export class DashboardOrdersComponent implements OnInit {
         case 'complete':
           this.completeCount++;
           break;
+        case 'refunded':
+          this.refundedCount++;
+          break;
         case 'canceled':
           this.canceledCount++;
           break;
@@ -154,7 +159,7 @@ export class DashboardOrdersComponent implements OnInit {
     });
   }
 
-  updateStatisticsOnStatusChange(oldStatus: string, newStatus: string, orderTotal: number): void {
+  updateStatisticsOnStatusChange(oldStatus: string | number, newStatus: string | number, orderTotal: number): void {
     const oldStatusStr = getOrderStatusLabel(oldStatus).toLowerCase();
     const newStatusStr = getOrderStatusLabel(newStatus).toLowerCase();
 
@@ -172,6 +177,9 @@ export class DashboardOrdersComponent implements OnInit {
       case 'canceled':
         this.canceledCount = Math.max(0, this.canceledCount - 1);
         break;
+      case 'refunded':
+        this.refundedCount = Math.max(0, this.refundedCount - 1);
+        break;
     }
 
     switch(newStatusStr) {
@@ -187,6 +195,9 @@ export class DashboardOrdersComponent implements OnInit {
         break;
       case 'canceled':
         this.canceledCount++;
+        break;
+      case 'refunded':
+        this.refundedCount++;
         break;
     }
   }
@@ -263,7 +274,7 @@ export class DashboardOrdersComponent implements OnInit {
   }
 
   // Helper to convert status to number
-  private getOrderStatusNumber(status: string | number): number {
+  getOrderStatusNumber(status: string | number): number {
     if (typeof status === 'number') {
       return status;
     }
@@ -410,9 +421,9 @@ export class DashboardOrdersComponent implements OnInit {
             const orderIndex = this.orders.findIndex(o => o.id === orderId);
             if (orderIndex !== -1) {
               const oldStatus = this.orders[orderIndex].status;
-              this.orders[orderIndex].status = OrderStatus.Refunded.toString();
+              this.orders[orderIndex].status = updatedOrder.status;
 
-              this.updateStatisticsOnStatusChange(oldStatus, OrderStatus.Refunded.toString(), updatedOrder.total);
+              this.updateStatisticsOnStatusChange(oldStatus, updatedOrder.status, updatedOrder.total);
             }
 
             this.updatingStatus = false;
@@ -484,12 +495,21 @@ export class DashboardOrdersComponent implements OnInit {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
 
-  getCustomerAvatar(profilePictureUrl?: string | null, gender?: string): string {
-    // Use gender-neutral default avatar when no profile picture is available
+  getAvatarUrl(profilePictureUrl?: string | null, gender?: 'Male' | 'Female' | string): string {
     if (!profilePictureUrl) {
       return getDefaultAvatarByGender();
     }
+
     return resolveUserAvatar(profilePictureUrl, gender);
+  }
+
+  setDefaultAvatar(event: Event, gender?: 'Male' | 'Female' | string): void {
+    const img = event.target as HTMLImageElement;
+    img.src = getDefaultAvatarByGender(gender);
+  }
+
+  getCustomerAvatar(profilePictureUrl?: string | null, gender?: string): string {
+    return this.getAvatarUrl(profilePictureUrl, gender);
   }
 
   formatDate(dateString: string | Date): string {

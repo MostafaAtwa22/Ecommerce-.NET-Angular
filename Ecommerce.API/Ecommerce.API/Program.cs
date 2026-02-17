@@ -98,6 +98,7 @@ namespace Ecommerce.API
 
             app.UseAuthentication();
             app.UseRateLimiter();
+            app.UseMiddleware<LockedUserMiddleware>();
             app.UseAuthorization();
 
             app.MapControllers();
