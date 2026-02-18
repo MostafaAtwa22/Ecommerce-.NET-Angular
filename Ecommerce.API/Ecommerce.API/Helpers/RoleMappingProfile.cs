@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.Core.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.API.Helpers
 {

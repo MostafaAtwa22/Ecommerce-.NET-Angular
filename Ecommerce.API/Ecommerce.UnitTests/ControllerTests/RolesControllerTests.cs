@@ -1,17 +1,4 @@
-using AutoMapper;
-using Ecommerce.API.Controllers;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
-using Moq;
-using System.Linq.Expressions;
-using Xunit;
-using Ecommerce.UnitTests.Helpers;
 
 namespace Ecommerce.UnitTests.ControllerTests
 {

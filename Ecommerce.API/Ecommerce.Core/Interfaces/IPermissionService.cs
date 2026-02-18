@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.Core.Interfaces
 {

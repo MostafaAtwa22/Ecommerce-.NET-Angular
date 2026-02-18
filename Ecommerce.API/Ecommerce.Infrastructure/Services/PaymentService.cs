@@ -1,8 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Spec;
-using Microsoft.Extensions.Configuration;
 using Stripe;
 using Product = Ecommerce.Core.Entities.Product;
 using CoreOrder = Ecommerce.Core.Entities.orderAggregate.Order;

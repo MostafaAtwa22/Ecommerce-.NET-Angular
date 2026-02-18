@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Spec;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Spec
 {

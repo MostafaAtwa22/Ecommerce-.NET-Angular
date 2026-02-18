@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.API.Helpers.Attributes
 {

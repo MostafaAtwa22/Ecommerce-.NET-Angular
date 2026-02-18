@@ -1,15 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Errors;
-using Ecommerce.API.Helpers.Attributes;
-using Ecommerce.API.Helpers;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Params;
-using Ecommerce.Core.Spec;
-using Ecommerce.Infrastructure.Constants;
 
 namespace Ecommerce.API.Controllers
 {

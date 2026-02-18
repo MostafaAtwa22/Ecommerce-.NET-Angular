@@ -1,12 +1,3 @@
-﻿using Ecommerce.API.Dtos.Requests;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Enums;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System.Security.Claims;
-using Xunit;
 
 namespace Ecommerce.UnitTests.AccountControllerTests
 {

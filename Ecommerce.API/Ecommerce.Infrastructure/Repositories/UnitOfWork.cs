@@ -1,7 +1,4 @@
 using System.Collections.Concurrent;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ecommerce.Infrastructure.Repositories

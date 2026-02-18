@@ -1,21 +1,3 @@
-using System.Security.Claims;
-using AutoMapper;
-using Ecommerce.API.BackgroundJobs;
-using Ecommerce.API.Controllers;
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Params;
-using Ecommerce.Core.Spec;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Ecommerce.UnitTests.ControllerTests
 {
@@ -23,6 +5,7 @@ namespace Ecommerce.UnitTests.ControllerTests
     {
         private readonly Mock<IOrderService> _orderService;
         private readonly Mock<IUnitOfWork> _unitOfWork;
+        private readonly Mock<IPaymentService> _paymentService;
         private readonly Mock<OrderBackgroundService> _backgroundService;
         private readonly Mock<IMapper> _mapper;
         private readonly Mock<IGenericRepository<Order>> _orderRepo;
@@ -32,6 +15,7 @@ namespace Ecommerce.UnitTests.ControllerTests
         {
             _orderService = new Mock<IOrderService>();
             _unitOfWork = new Mock<IUnitOfWork>();
+            _paymentService = new Mock<IPaymentService>();
             _backgroundService = new Mock<OrderBackgroundService>(
                 new Mock<ILogger<OrderBackgroundService>>().Object,
                 new Mock<IServiceScopeFactory>().Object
@@ -43,6 +27,7 @@ namespace Ecommerce.UnitTests.ControllerTests
 
             _controller = new OrdersController(
                 _orderService.Object,
+                _paymentService.Object,
                 _unitOfWork.Object,
                 _backgroundService.Object,
                 _mapper.Object);
@@ -270,7 +255,7 @@ namespace Ecommerce.UnitTests.ControllerTests
                 It.IsAny<string>(),
                 orderDto.DeliveryMethodId,
                 orderDto.BasketId,
-                orderAddress))
+                orderAddress))!
                 .ReturnsAsync((Order?)null);
 
             // Act

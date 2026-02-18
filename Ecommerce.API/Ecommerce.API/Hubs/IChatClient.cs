@@ -1,5 +1,3 @@
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Dtos.Responses;
 
 namespace Ecommerce.API.Hubs
 {

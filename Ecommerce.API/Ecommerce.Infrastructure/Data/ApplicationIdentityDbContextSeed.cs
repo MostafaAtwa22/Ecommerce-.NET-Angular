@@ -1,10 +1,5 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using Ecommerce.Core.Constants;
-using Ecommerce.Core.Entities.Identity;
 using Ecommerce.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Infrastructure.Data
 {

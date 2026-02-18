@@ -1,5 +1,3 @@
-using System.Text.Json;
-using Ecommerce.Core.Interfaces;
 using StackExchange.Redis;
 
 namespace Ecommerce.Infrastructure.Services

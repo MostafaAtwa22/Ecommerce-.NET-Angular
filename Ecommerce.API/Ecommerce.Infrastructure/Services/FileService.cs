@@ -1,7 +1,4 @@
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Settings;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 
 namespace Ecommerce.Infrastructure.Services
 {

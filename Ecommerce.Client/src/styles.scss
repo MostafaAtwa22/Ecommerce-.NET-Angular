@@ -2,6 +2,12 @@
 
 /* Importing Bootstrap SCSS file. */
 @use 'bootstrap/scss/bootstrap';
+@use "node_modules/bootstrap/dist/css/bootstrap.min.css";
+@use "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
+@use "node_modules/font-awesome/css/font-awesome.min.css";
+@use "node_modules/primeflex/primeflex.css";
+@use "node_modules/ngx-toastr/toastr.css";
+@use "node_modules/primeicons/primeicons.css";
 
 /* Custom SweetAlert2 Styles */
 .swal2-custom-popup {

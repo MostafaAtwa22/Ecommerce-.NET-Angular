@@ -1,10 +1,4 @@
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Helpers.Resolver;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.googleDto;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.API.Helpers
 {

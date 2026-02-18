@@ -1,20 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Errors;
-using Ecommerce.API.Extensions;
-using Ecommerce.API.Helpers.Attributes;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Params;
-using Ecommerce.Core.Spec;
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {

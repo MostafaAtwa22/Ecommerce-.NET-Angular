@@ -1,7 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Spec;
 
 namespace Ecommerce.Infrastructure.Services
 {

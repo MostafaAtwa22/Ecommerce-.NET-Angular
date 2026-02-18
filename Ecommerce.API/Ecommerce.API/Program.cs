@@ -1,12 +1,8 @@
-using Ecommerce.API.Extensions;
 using Ecommerce.API.Hubs;
 using Ecommerce.API.Middlewares;
 using Ecommerce.API.Options;
-using Ecommerce.Infrastructure.Settings;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 

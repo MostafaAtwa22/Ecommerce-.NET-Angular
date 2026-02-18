@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
 
 namespace Ecommerce.Core.Entities.Chat
 {

@@ -1,7 +1,4 @@
-using Ecommerce.Infrastructure.Data;
 using Ecommerce.Infrastructure.Data.Interceptions;
-using Hangfire;
-using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
 namespace Ecommerce.API.Extensions

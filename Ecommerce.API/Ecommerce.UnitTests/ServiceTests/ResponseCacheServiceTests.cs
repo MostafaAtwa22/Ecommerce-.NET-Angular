@@ -1,9 +1,5 @@
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Services;
-using Moq;
 using StackExchange.Redis;
 using System.Text.Json;
-using Xunit;
 
 namespace Ecommerce.UnitTests.ServiceTests
 {

@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Ecommerce.Core.Constants;
-using Ecommerce.Core.Enums;
 
 namespace Ecommerce.API.Dtos.Requests
 {

@@ -1,4 +1,3 @@
-using AutoMapper;
 
 namespace Ecommerce.API.Helpers.Resolver
 {

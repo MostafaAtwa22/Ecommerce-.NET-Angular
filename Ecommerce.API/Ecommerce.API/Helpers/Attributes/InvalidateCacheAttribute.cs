@@ -1,5 +1,3 @@
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Ecommerce.API.Helpers.Attributes

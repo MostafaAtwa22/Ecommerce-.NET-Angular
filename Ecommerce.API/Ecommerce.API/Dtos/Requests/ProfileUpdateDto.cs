@@ -1,4 +1,3 @@
-using Ecommerce.Core.Enums;
 
 namespace Ecommerce.API.Dtos.Requests
 {

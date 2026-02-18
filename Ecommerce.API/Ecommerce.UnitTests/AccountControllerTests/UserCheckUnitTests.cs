@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
-using Xunit;
-using Moq;
 
 namespace Ecommerce.UnitTests.AccountControllerTests
 {

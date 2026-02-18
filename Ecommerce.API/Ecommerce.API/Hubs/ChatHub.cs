@@ -1,19 +1,5 @@
 using System.Collections.Concurrent;
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Extensions;
-using Ecommerce.Core.Entities.Chat;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.API.Dtos;
-using Microsoft.AspNetCore.Authorization;
-using Ecommerce.Core.Spec;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Ecommerce.Core.Params;
-using Ecommerce.Core.Constants;
 
 namespace Ecommerce.API.Hubs
 {

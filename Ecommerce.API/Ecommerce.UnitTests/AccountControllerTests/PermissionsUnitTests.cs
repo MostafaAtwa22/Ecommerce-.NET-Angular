@@ -1,9 +1,3 @@
-using System.Security.Claims;
-using Ecommerce.API.Errors;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
 
 namespace Ecommerce.UnitTests.AccountControllerTests
 {

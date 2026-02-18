@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Infrastructure.Services
 {

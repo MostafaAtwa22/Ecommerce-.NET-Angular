@@ -1,11 +1,3 @@
-using System.Security.Claims;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Constants;
-using Ecommerce.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
-using Moq;
-using Xunit;
 
 namespace Ecommerce.UnitTests.ServiceTests
 {

@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.orderAggregate;
 
 namespace Ecommerce.Core.Interfaces
 {

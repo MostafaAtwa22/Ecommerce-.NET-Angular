@@ -1,5 +1,3 @@
-using System.Linq.Expressions;
-using Ecommerce.Core.Entities;
 
 namespace Ecommerce.Core.Spec
 {

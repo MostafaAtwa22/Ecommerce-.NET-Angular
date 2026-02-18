@@ -1,6 +1,4 @@
-using System.Net;
 using System.Text.Json;
-using Ecommerce.API.Errors;
 
 namespace Ecommerce.API.Middlewares
 {

@@ -1,18 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using Ecommerce.Core.Constants;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Ecommerce.Core.googleDto;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Services
 {

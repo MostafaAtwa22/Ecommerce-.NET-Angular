@@ -1,12 +1,3 @@
-using System.Text.Json;
-using Ecommerce.Core.Constants;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Ecommerce.Infrastructure.Data
 {

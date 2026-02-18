@@ -1,4 +1,3 @@
-using Ecommerce.Core.Entities.Emails;
 
 namespace Ecommerce.Core.Interfaces
 {

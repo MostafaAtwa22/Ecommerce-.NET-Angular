@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Ecommerce.Core.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.API.Middlewares
 {

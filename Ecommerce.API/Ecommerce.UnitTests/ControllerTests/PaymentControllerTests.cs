@@ -1,14 +1,4 @@
-using Ecommerce.API.Controllers;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using Moq;
 using Stripe;
-using Xunit;
 
 namespace Ecommerce.UnitTests.ControllerTests
 {

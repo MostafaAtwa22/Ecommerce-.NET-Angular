@@ -1,7 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Entities.orderAggregate;
 
 namespace Ecommerce.API.Helpers
 {

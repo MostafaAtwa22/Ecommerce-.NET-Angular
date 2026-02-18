@@ -1,5 +1,3 @@
-using Ecommerce.API.Errors;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Controllers
 {

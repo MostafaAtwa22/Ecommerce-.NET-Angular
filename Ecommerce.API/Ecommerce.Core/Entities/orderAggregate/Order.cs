@@ -1,4 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
 
 namespace Ecommerce.Core.Entities.orderAggregate
 {

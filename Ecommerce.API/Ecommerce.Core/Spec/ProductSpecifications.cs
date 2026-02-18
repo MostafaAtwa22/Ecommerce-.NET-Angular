@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Params;
 
 namespace Ecommerce.Core.Spec
 {

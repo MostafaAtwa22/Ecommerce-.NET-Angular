@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Core.Entities.Identity
 {

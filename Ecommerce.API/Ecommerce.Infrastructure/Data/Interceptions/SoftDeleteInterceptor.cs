@@ -1,6 +1,3 @@
-using Ecommerce.Core.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Ecommerce.Infrastructure.Data.Interceptions
 {

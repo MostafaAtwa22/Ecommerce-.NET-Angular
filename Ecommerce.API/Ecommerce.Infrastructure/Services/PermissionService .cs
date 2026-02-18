@@ -1,8 +1,3 @@
-using System.Security.Claims;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.Infrastructure.Services
 {

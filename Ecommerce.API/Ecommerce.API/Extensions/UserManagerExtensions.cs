@@ -1,7 +1,3 @@
-using System.Security.Claims;
-using Ecommerce.Core.Entities.Identity;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Extensions
 {

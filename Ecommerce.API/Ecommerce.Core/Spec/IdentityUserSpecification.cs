@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Params;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.Core.Spec
 {

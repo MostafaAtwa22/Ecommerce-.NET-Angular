@@ -1,9 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {

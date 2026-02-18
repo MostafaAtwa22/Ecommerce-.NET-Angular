@@ -1,4 +1,3 @@
-using Ecommerce.Core.Entities;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ecommerce.Core.Interfaces

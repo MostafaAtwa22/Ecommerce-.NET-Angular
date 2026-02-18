@@ -1,7 +1,3 @@
-using Ecommerce.Core.Constants;
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace Ecommerce.Infrastructure.Extensions
 {

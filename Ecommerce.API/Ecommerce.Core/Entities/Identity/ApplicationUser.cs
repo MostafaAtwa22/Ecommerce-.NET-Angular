@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Enums;
-using Microsoft.AspNetCore.Identity;
 
 namespace Ecommerce.Core.Entities.Identity
 {

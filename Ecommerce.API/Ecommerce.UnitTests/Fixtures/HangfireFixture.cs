@@ -1,6 +1,5 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
-using Xunit;
 
 namespace Ecommerce.UnitTests.Fixtures
 {

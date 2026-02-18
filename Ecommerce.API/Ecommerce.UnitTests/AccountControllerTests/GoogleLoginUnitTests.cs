@@ -1,12 +1,3 @@
-using Ecommerce.API.Controllers;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.googleDto;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using Xunit;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Ecommerce.UnitTests.AccountControllerTests

@@ -1,7 +1,3 @@
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Authorization;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.API.Extensions;
 
 namespace Ecommerce.API.Filters
 {

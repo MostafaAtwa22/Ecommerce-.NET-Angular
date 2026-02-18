@@ -1,11 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Helpers.Attributes;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Constants;
-using Microsoft.AspNetCore.Mvc;
-
 namespace Ecommerce.API.Controllers
 {
     public abstract class RedisEntityController<TDto, TEntity> : BaseApiController

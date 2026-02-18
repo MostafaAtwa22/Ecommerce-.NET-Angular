@@ -1,13 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Controllers;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using Xunit;
 
 namespace Ecommerce.UnitTests.AccountControllerTests
 {

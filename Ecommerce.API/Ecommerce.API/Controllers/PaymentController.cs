@@ -1,9 +1,3 @@
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 using Stripe;
 
 namespace Ecommerce.API.Controllers

@@ -1,9 +1,5 @@
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.CodeAnalysis.Options;
 
 namespace Ecommerce.API.Extensions

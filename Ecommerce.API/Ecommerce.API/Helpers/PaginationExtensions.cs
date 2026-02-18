@@ -1,10 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Spec;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.API.Helpers;
 

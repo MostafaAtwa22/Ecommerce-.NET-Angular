@@ -1,10 +1,4 @@
-using System.Linq.Expressions;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Spec;
-using Ecommerce.Infrastructure.Data;
 using Ecommerce.Infrastructure.Spec;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Repositories
 {

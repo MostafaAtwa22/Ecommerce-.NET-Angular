@@ -1,6 +1,5 @@
 using System.Threading.RateLimiting;
 using Ecommerce.API.Options;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Extensions
 {

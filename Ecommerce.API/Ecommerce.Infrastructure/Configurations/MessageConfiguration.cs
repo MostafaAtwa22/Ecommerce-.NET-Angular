@@ -1,6 +1,3 @@
-using Ecommerce.Core.Entities.Chat;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ecommerce.Infrastructure.Configurations
 {

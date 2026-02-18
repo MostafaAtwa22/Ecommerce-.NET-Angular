@@ -1,4 +1,3 @@
-using Ecommerce.API.Dtos.Requests;
 
 namespace Ecommerce.API.Dtos.Responses
 {

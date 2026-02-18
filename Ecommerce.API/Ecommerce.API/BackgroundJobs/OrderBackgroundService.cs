@@ -1,8 +1,4 @@
-using Ecommerce.Core.Entities.orderAggregate;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Core.Entities.Emails;
 using System.Collections.Concurrent;
-using Ecommerce.Infrastructure.Services;
 
 namespace Ecommerce.API.BackgroundJobs
 {

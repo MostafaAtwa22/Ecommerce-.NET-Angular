@@ -1,6 +1,3 @@
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.Core.Entities;
 
 namespace Ecommerce.API.Helpers
 {

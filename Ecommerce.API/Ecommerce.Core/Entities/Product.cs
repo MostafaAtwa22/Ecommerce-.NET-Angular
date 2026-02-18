@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Ecommerce.Core.Entities.Identity;
 
 namespace Ecommerce.Core.Entities
 {

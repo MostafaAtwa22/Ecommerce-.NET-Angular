@@ -1,5 +1,3 @@
-using Ecommerce.Core.Interfaces;
-using Microsoft.Extensions.Configuration;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Ecommerce.Infrastructure.Services

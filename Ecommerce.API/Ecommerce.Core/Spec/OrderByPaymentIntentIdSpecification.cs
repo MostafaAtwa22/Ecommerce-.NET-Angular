@@ -1,4 +1,3 @@
-using Ecommerce.Core.Entities.orderAggregate;
 
 namespace Ecommerce.Core.Spec
 {

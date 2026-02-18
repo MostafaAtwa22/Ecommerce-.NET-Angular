@@ -1,6 +1,3 @@
-using System.Linq.Expressions;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Spec;
 
 namespace Ecommerce.Core.Interfaces
 {

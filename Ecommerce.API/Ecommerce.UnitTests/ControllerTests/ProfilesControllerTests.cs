@@ -1,26 +1,4 @@
-using System.Security.Claims;
-using AutoMapper;
-using Ecommerce.API.Controllers;
-using Ecommerce.API.Dtos;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Ecommerce.API.Extensions;
-using Moq;
-using Xunit;
-using Microsoft.Extensions.Logging;
-using Ecommerce.API.Extensions;
-using Moq;
-using Xunit;
 using Microsoft.EntityFrameworkCore.Query;
-using System.Linq.Expressions;
-using Ecommerce.UnitTests.Helpers;
 
 namespace Ecommerce.UnitTests.ControllerTests
 {

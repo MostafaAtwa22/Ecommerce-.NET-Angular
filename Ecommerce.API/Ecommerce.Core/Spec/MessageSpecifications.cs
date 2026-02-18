@@ -1,5 +1,3 @@
-using Ecommerce.Core.Entities.Chat;
-using Ecommerce.Core.Params;
 
 namespace Ecommerce.Core.Spec
 {

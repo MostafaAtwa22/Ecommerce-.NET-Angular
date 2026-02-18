@@ -1,7 +1,4 @@
 using System.Net.Http.Json;
-using System.Text.Json;
-using Ecommerce.Core.Interfaces;
-using Microsoft.Extensions.Configuration;
 
 namespace Ecommerce.Infrastructure.Services
 {

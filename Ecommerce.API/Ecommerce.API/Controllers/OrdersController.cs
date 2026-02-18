@@ -1,6 +1,3 @@
-using Ecommerce.API.BackgroundJobs;
-using Ecommerce.Core.Entities.orderAggregate;
-using Microsoft.AspNetCore.RateLimiting;
 
 namespace Ecommerce.API.Controllers
 {

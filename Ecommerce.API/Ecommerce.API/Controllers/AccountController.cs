@@ -1,20 +1,3 @@
-using System.Net;
-using AutoMapper;
-using Ecommerce.API.Dtos.Requests;
-using Ecommerce.API.Dtos.Responses;
-using Ecommerce.API.Errors;
-using Ecommerce.Core.Constants;
-using Ecommerce.Core.Entities.Emails;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.googleDto;
-using Ecommerce.Core.Interfaces;
-using Ecommerce.Infrastructure.Services;
-using Hangfire;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.API.Controllers
 {

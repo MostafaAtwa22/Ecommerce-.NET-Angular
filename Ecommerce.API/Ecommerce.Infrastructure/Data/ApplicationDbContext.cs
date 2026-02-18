@@ -1,10 +1,3 @@
-using System.Reflection;
-using Ecommerce.Core.Entities;
-using Ecommerce.Core.Entities.Chat;
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Entities.orderAggregate;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Data
 {

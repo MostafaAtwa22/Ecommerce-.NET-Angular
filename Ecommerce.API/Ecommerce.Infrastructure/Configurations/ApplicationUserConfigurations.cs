@@ -1,7 +1,3 @@
-using Ecommerce.Core.Entities.Identity;
-using Ecommerce.Core.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Ecommerce.Infrastructure.Configurations
 {
