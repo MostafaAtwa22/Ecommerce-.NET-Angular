@@ -1,0 +1,341 @@
+:host {
+  display: block;
+}
+
+.section-card {
+  background: white;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.section-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #d1d7dc;
+
+  .header-content {
+    h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #0c111d;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      i {
+        color: #5624d0;
+      }
+    }
+
+    .eyebrow {
+      margin: 0 0 0.25rem 0;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: #5624d0;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 0.875rem;
+      color: #6a6f73;
+      line-height: 1.5;
+    }
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-section {
+  background: #f7f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #d1d7dc;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f1f3f5;
+    border-color: #cbd3dc;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #d1d7dc;
+
+    i {
+      color: #5624d0;
+      font-size: 0.875rem;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0c111d;
+
+    i {
+      color: #5624d0;
+      font-size: 0.875rem;
+      width: 16px;
+    }
+  }
+
+  .field-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+
+    &.editing {
+      .input-wrapper {
+        input, select {
+          border-color: #5624d0;
+          background: white;
+          box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+        }
+      }
+    }
+
+    .input-wrapper {
+      flex: 1;
+
+      input, select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d7dc;
+        border-radius: 4px;
+        background: white;
+        font-size: 0.875rem;
+        color: #0c111d;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #5624d0;
+          box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+        }
+
+        &:disabled {
+          background: #f7f9fa;
+          color: #6a6f73;
+          cursor: not-allowed;
+        }
+
+        &.error {
+          border-color: #ef4444;
+
+          &:focus {
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+          }
+        }
+      }
+
+      select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236a6f73' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+        padding-right: 2.5rem;
+        cursor: pointer;
+      }
+    }
+
+    .field-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      button {
+        border: none;
+        border-radius: 4px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.875rem;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.btn-edit {
+          background: rgba(86, 36, 208, 0.1);
+          color: #5624d0;
+          border: 1px solid rgba(86, 36, 208, 0.3);
+
+          &:hover:not(:disabled) {
+            background: rgba(86, 36, 208, 0.2);
+          }
+        }
+
+        &.btn-save {
+          background: #10b981;
+          color: white;
+          border: 1px solid #10b981;
+
+          &:hover:not(:disabled) {
+            background: #059669;
+          }
+        }
+
+        &.btn-cancel {
+          background: white;
+          color: #ef4444;
+          border: 1px solid #ef4444;
+
+          &:hover:not(:disabled) {
+            background: #fee;
+          }
+        }
+      }
+
+      .loading-state {
+        color: #5624d0;
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        i {
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+
+  .field-hint {
+    font-size: 0.75rem;
+    color: #6a6f73;
+    line-height: 1.4;
+    margin-top: 0.25rem;
+  }
+
+  .field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #dc2626;
+    font-weight: 500;
+
+    i {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+.field-group {
+  .field-container {
+    .input-wrapper {
+      input.pending, select.pending {
+        border-color: #f59e0b;
+        background: white;
+
+        &:focus {
+          box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.1);
+        }
+      }
+    }
+  }
+
+  .validation-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: #f59e0b;
+    margin-top: 0.25rem;
+    animation: fadeIn 0.2s ease;
+
+    i {
+      font-size: 0.75rem;
+    }
+
+    span {
+      font-weight: 500;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .section-card {
+    padding: 1.5rem;
+  }
+
+  .form-section {
+    padding: 1.25rem;
+  }
+
+  .field-container {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+
+    .input-wrapper {
+      width: 100%;
+    }
+
+    .field-actions {
+      justify-content: flex-end;
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,118 @@
+<section class="section-card">
+  <div class="section-header">
+    <div class="header-content">
+      <div class="warning-icon">
+        <i class="fa fa-exclamation-triangle"></i>
+      </div>
+      <div class="header-text">
+        <p class="eyebrow">Danger Zone</p>
+        <h3>Delete Account Permanently</h3>
+        <p class="hint">This action cannot be undone. All your data including purchase history and wishlist will be permanently erased.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-banner">
+    <div class="warning-header">
+      <i class="fa fa-radiation-alt"></i>
+      <strong>Irreversible Action</strong>
+    </div>
+    <p>Once you delete your account, there is no going back. Please be certain.</p>
+    <ul class="warning-list">
+      <li><i class="fa fa-times-circle"></i> All personal data removed</li>
+      <li><i class="fa fa-times-circle"></i> Purchase history deleted</li>
+      <li><i class="fa fa-times-circle"></i> Wishlist items cleared</li>
+      <li><i class="fa fa-times-circle"></i> Account access revoked</li>
+    </ul>
+  </div>
+
+  <form class="form" [formGroup]="deleteForm" (ngSubmit)="submit()">
+    <div class="form-grid">
+      <label class="form-field">
+        <span class="field-label">
+          <i class="fa fa-lock"></i>
+          Confirm Password
+        </span>
+        <div class="input-container">
+          <input
+            type="password"
+            placeholder="Enter your current password"
+            formControlName="password"
+            class="password-input"
+          />
+          <i class="fa fa-key input-icon"></i>
+        </div>
+        <small *ngIf="controls.password.touched && controls.password.invalid" class="error-text">
+          <i class="fa fa-exclamation-circle"></i>
+          Your password is required to confirm this action
+        </small>
+      </label>
+
+      <label class="form-field">
+        <span class="field-label">
+          <i class="fa fa-shield-alt"></i>
+          Final Confirmation
+        </span>
+        <div class="input-container">
+          <input
+            type="text"
+            placeholder="TYPE DELETE TO CONFIRM"
+            formControlName="confirmation"
+            class="confirmation-input"
+            [class.shake]="controls.confirmation.touched && !isConfirmed"
+          />
+          <i class="fa fa-typo3 input-icon"></i>
+        </div>
+        <small *ngIf="controls.confirmation.touched && !isConfirmed" class="error-text">
+          <i class="fa fa-exclamation-circle"></i>
+          Please type DELETE in uppercase to proceed
+        </small>
+      </label>
+    </div>
+
+    <div class="form-footer">
+      <div class="messages">
+        <div *ngIf="successMessage" class="success-message">
+          <i class="fa fa-check-circle"></i>
+          {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          <i class="fa fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </div>
+      </div>
+
+      <button
+        class="danger-btn"
+        type="submit"
+        [disabled]="deleteForm.invalid || !isConfirmed || saving"
+        [class.loading]="saving"
+      >
+        <span class="btn-content">
+          <i class="fas fa-trash-alt" *ngIf="!saving"></i>
+          {{ saving ? 'Deleting Account...' : 'Delete Account Permanently' }}
+        </span>
+        <span class="btn-loader" *ngIf="saving">
+          <i class="fa fa-spinner fa-spin"></i>
+        </span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Final Confirmation Modal -->
+  <div *ngIf="showFinalConfirm" class="confirmation-overlay">
+    <div class="confirmation-modal">
+      <div class="modal-header">
+        <i class="fa fa-radiation-alt"></i>
+        <h4>Final Confirmation Required</h4>
+      </div>
+      <div class="modal-body">
+        <p>Are you absolutely sure you want to delete your account? This action cannot be undone.</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-confirm" (click)="confirmDelete()">Yes, Delete My Account</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

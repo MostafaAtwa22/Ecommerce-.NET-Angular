@@ -1,0 +1,627 @@
+// ============================================
+// CHAT WINDOW - DASHBOARD PURPLE THEME
+// ============================================
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* ===============================
+   Main Container
+   =============================== */
+.position-relative.d-flex.flex-column.h-100.w-100.bg-white {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===============================
+   Loading Screen - Dashboard Style
+   =============================== */
+.spinner-border.text-primary {
+  color: #5624d0 !important;
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25rem;
+}
+
+/* ===============================
+   Chat Header - Purple Theme
+   =============================== */
+.clickable-header {
+  height: 64px;
+  background: white;
+  border-bottom: 1px solid #d1d7dc;
+  transition: all 0.2s ease;
+  padding: 0 1.5rem !important;
+
+  &:hover {
+    background: #f7f9fa !important;
+  }
+
+  /* Avatar Container */
+  .position-relative {
+    img {
+      width: 42px;
+      height: 42px;
+      border: 2px solid white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #5624d0;
+        transform: scale(1.05);
+      }
+    }
+
+    .bg-success {
+      background: #48bb78 !important;
+      border: 2px solid white;
+      width: 12px !important;
+      height: 12px !important;
+      bottom: 2px !important;
+      right: 2px !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  /* User Info */
+  h6.fw-bold {
+    color: #0c111d;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .text-success.fw-bold {
+    color: #48bb78 !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    &::before {
+      content: "●";
+      margin-right: 4px;
+      animation: pulse 1.5s infinite;
+    }
+  }
+
+  .text-muted {
+    color: #6a6f73 !important;
+    font-size: 0.8rem;
+  }
+
+  /* Header Buttons */
+  .btn-light {
+    background: #f7f9fa;
+    border: 1px solid #d1d7dc;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px !important;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 1rem;
+      color: #6a6f73;
+    }
+
+    &:hover {
+      background: white;
+      border-color: #5624d0;
+
+      i {
+        color: #5624d0;
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #5624d0;
+      outline-offset: 2px;
+    }
+  }
+
+  /* Mobile Back Button */
+  .d-md-none.btn-light {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ===============================
+   Chat Body - Custom Background
+   =============================== */
+.flex-grow-1.position-relative.overflow-hidden {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background-size: cover;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.05);
+    pointer-events: none;
+  }
+
+  app-chat-box {
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+/* ===============================
+   Chat Input Area - Dashboard Style
+   =============================== */
+.px-4.py-3.bg-white.border-top {
+  border-top: 1px solid #d1d7dc !important;
+  background: white;
+  position: relative;
+  padding: 1rem 1.5rem !important;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.02);
+}
+
+/* Edit Mode Indicator */
+.border-start.border-4.border-primary {
+  border-left-color: #5624d0 !important;
+  border-radius: 0 8px 8px 0;
+  background: rgba(86, 36, 208, 0.05) !important;
+
+  .fw-bold.small {
+    color: #5624d0;
+  }
+
+  .btn-link {
+    color: #6a6f73;
+
+    &:hover {
+      color: #5624d0;
+      background: rgba(86, 36, 208, 0.1);
+      border-radius: 4px;
+    }
+  }
+}
+
+/* Chat Textarea */
+.chat-textarea {
+  background: #f7f9fa !important;
+  border: 1px solid transparent !important;
+  border-radius: 24px !important;
+  padding: 0.625rem 1rem !important;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: #0c111d;
+  transition: all 0.2s ease;
+  max-height: 120px;
+  width: 100%;
+  resize: none;
+
+  &:focus {
+    background: white !important;
+    border-color: #5624d0 !important;
+    box-shadow: 0 2px 8px rgba(86, 36, 208, 0.15) !important;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #6a6f73;
+    font-size: 0.9375rem;
+  }
+}
+
+/* Action Buttons */
+.btn-link {
+  color: #6a6f73;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.5rem;
+    transition: all 0.2s ease;
+  }
+
+  &:hover {
+    background: rgba(86, 36, 208, 0.1);
+    color: #5624d0;
+    transform: scale(1.1);
+
+    i {
+      color: #5624d0;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Send/Record Button - Purple Theme */
+.btn-primary {
+  background: #5624d0 !important;
+  border: 1px solid #5624d0 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  border-radius: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(86, 36, 208, 0.25) !important;
+
+  i {
+    font-size: 1.2rem;
+    color: white;
+    transition: all 0.2s ease;
+  }
+
+  &:hover {
+    background: #401b9c !important;
+    border-color: #401b9c !important;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(86, 36, 208, 0.35) !important;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+/* ===============================
+   Emoji Picker - Custom Purple Theme
+   =============================== */
+.emoji-picker-container {
+  position: absolute;
+  bottom: 90px;
+  left: 20px;
+  z-index: 1000;
+  width: 350px;
+  height: 400px;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid #d1d7dc;
+  box-shadow: 0 8px 24px rgba(86, 36, 208, 0.15);
+  overflow: hidden;
+  animation: slideUp 0.2s ease;
+
+  @media (max-width: 768px) {
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: 70px;
+    border-radius: 12px 12px 0 0;
+  }
+}
+
+::ng-deep {
+  .emoji-mart {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    font-family: inherit !important;
+  }
+
+  .emoji-mart-search {
+    padding: 12px 12px 8px !important;
+    background: white !important;
+
+    input {
+      background: #f7f9fa !important;
+      border: 1px solid #d1d7dc !important;
+      border-radius: 999px !important;
+      padding: 10px 40px 10px 16px !important;
+      font-size: 0.95rem !important;
+      color: #0c111d !important;
+      outline: none !important;
+      transition: all 0.2s ease !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236a6f73' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 14px center !important;
+      background-size: 16px !important;
+
+      &:focus {
+        border-color: #5624d0 !important;
+        background-color: white !important;
+        box-shadow: 0 0 0 4px rgba(86, 36, 208, 0.1) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235624d0' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") !important;
+      }
+    }
+  }
+
+  .emoji-mart-scroll {
+    height: 100% !important;
+    padding: 0 8px;
+    overflow-y: auto !important;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f7f9fa;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #d1d7dc;
+      border-radius: 4px;
+
+      &:hover {
+        background: #6a6f73;
+      }
+    }
+  }
+
+  .emoji-mart-category-label span {
+    font-weight: 600;
+    color: #0c111d;
+    font-size: 0.85rem;
+    background: rgba(255, 255, 255, 0.98) !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  .emoji-mart-bar {
+    display: none !important;
+  }
+
+  .emoji-mart-anchor {
+    color: #d1d7dc !important;
+
+    &-selected {
+      color: #5624d0 !important;
+
+      .emoji-mart-anchor-bar {
+        background-color: #5624d0 !important;
+      }
+    }
+
+    &-icon {
+      color: inherit !important;
+    }
+
+    &-bar {
+      background-color: #5624d0 !important;
+    }
+  }
+
+  .emoji-mart-emoji {
+    transition: transform 0.1s ease;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+
+    span {
+      cursor: pointer;
+    }
+  }
+}
+
+/* ===============================
+   Empty Chat State - Dashboard Style
+   =============================== */
+.bg-light {
+  background: #f7f9fa !important;
+
+  .badge.bg-secondary {
+    background: #6a6f73 !important;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    border-radius: 30px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    animation: fadeIn 0.5s ease;
+  }
+}
+
+/* ===============================
+   Animations
+   =============================== */
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ===============================
+   WhatsApp Recording UI
+   =============================== */
+.whatsapp-recording-bar {
+  border: 1px solid #d1d7dc;
+  height: 48px;
+
+  .btn-link:hover {
+    color: #ff4d4d !important;
+    background: rgba(255, 77, 77, 0.1);
+  }
+}
+
+.recording-visualizer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+
+  .bar {
+    width: 3px;
+    height: 8px;
+    background: #5624d0;
+    border-radius: 2px;
+    animation: bar-grow 0.5s infinite ease-in-out;
+
+    &:nth-child(2) {
+      animation-delay: 0.1s;
+      height: 12px;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.2s;
+      height: 10px;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.15s;
+      height: 14px;
+    }
+  }
+}
+
+@keyframes bar-grow {
+
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+
+  50% {
+    transform: scaleY(1.5);
+  }
+}
+
+/* ===============================
+   Reduced Motion
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+
+  .clickable-header,
+  .btn-primary,
+  .btn-link,
+  .emoji-picker-container,
+  .position-relative img {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+
+    &:hover {
+      transform: none !important;
+    }
+  }
+}
+
+/* ===============================
+   Responsive Design
+   =============================== */
+@media (max-width: 992px) {
+  .clickable-header {
+    padding: 0 1rem !important;
+  }
+
+  .btn-primary {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .clickable-header {
+    padding: 0 0.75rem !important;
+
+    .position-relative img {
+      width: 38px;
+      height: 38px;
+    }
+
+    h6.fw-bold {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .px-4.py-3 {
+    padding: 0.75rem !important;
+  }
+
+  .chat-textarea {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.875rem !important;
+  }
+
+  .btn-link {
+    width: 36px;
+    height: 36px;
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-link {
+    display: none;
+  }
+
+  .btn-primary {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+
+    i {
+      font-size: 1rem;
+    }
+  }
+
+  .emoji-picker-container {
+    height: 350px;
+  }
+}

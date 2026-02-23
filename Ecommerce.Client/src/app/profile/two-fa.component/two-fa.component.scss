@@ -1,0 +1,267 @@
+// Core variables matching profile.component.scss
+$primary-color: #5624d0;
+$primary-bg: rgba(86, 36, 208, 0.1);
+$text-main: #0c111d;
+$text-secondary: #6a6f73;
+$border-color: #d1d7dc;
+$bg-white: #ffffff;
+$danger-color: #c91a1a;
+$danger-bg: rgba(201, 26, 26, 0.1);
+$success-color: #11998e;
+$success-bg: rgba(17, 153, 142, 0.1);
+
+:host {
+    display: block;
+}
+
+.two-fa-container {
+    width: 100%;
+}
+
+.two-fa-card {
+    background: $bg-white;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    @media (max-width: 768px) {
+        padding: 1.5rem;
+    }
+}
+
+// Header Section matching .section-header
+.header-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid $border-color;
+    text-align: left;
+
+    h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: $text-main;
+        margin: 0 0 0.5rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+
+        i {
+            color: $primary-color;
+            font-size: 1.5rem;
+        }
+    }
+
+    .subtitle {
+        color: $text-secondary;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin: 0;
+    }
+}
+
+// Status Section
+.status-section {
+    margin-bottom: 2rem;
+
+    .status-card {
+        background: #f8f9fa;
+        border: 1px solid $border-color;
+        border-radius: 6px;
+        padding: 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+
+        &.active {
+            background: $success-bg;
+            border-color: rgba($success-color, 0.3);
+        }
+
+        .status-content {
+            flex: 1;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            background: $danger-bg;
+            color: $danger-color;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+
+            &.enabled {
+                background: rgba($success-color, 0.2);
+                color: darken($success-color, 10%);
+            }
+
+            i {
+                font-size: 0.875rem;
+            }
+        }
+
+        .status-message {
+            color: $text-main;
+            margin: 0.5rem 0 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+    }
+}
+
+// Action Section
+.action-section {
+    margin-bottom: 2.5rem;
+
+    .toggle-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+
+        &.btn-enable {
+            background: $primary-color;
+            color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+            &:hover {
+                background: darken($primary-color, 5%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px rgba(86, 36, 208, 0.2);
+            }
+        }
+
+        &.btn-disable {
+            background: white;
+            border: 1px solid $danger-color;
+            color: $danger-color;
+
+            &:hover {
+                background: $danger-bg;
+            }
+        }
+
+        &:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        i {
+            font-size: 1rem;
+        }
+    }
+}
+
+// Benefits Section
+.benefits-section {
+    margin-bottom: 2rem;
+
+    h3 {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: $text-main;
+        margin-bottom: 1.5rem;
+
+        i {
+            color: $primary-color;
+            font-size: 1.25rem;
+        }
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .benefit-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background: white;
+        border: 1px solid $border-color;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: $primary-color;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .benefit-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: $primary-bg;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            i {
+                color: $primary-color;
+                font-size: 1.125rem;
+            }
+        }
+
+        .benefit-content {
+            flex: 1;
+
+            h4 {
+                font-size: 0.95rem;
+                font-weight: 600;
+                color: $text-main;
+                margin: 0 0 0.25rem;
+            }
+
+            p {
+                font-size: 0.85rem;
+                color: $text-secondary;
+                margin: 0;
+                line-height: 1.5;
+            }
+        }
+    }
+}
+
+// Info Banner
+.info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: #fff8e1; // Light amber/warning
+    border: 1px solid #ffe58f;
+    border-radius: 6px;
+    color: #876800;
+
+    i {
+        font-size: 1.1rem;
+        margin-top: 0.1rem;
+        flex-shrink: 0;
+    }
+
+    p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+}

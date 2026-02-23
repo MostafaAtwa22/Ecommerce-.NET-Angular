@@ -1,0 +1,160 @@
+<div class="auth-container">
+  <app-animated-overlay-component></app-animated-overlay-component>
+  <div class="check-inbox-container" style="margin-top: 150px">
+
+    <!-- Success Header -->
+    <div class="success-header">
+      <div class="success-icon" [class.reset]="isPasswordReset" [class.verify]="!isPasswordReset">
+        <i class="fas" [class.fa-key]="isPasswordReset" [class.fa-envelope-open-text]="!isPasswordReset"></i>
+      </div>
+      <h2 class="success-title">
+        {{ isPasswordReset ? 'Check Your Inbox!' : 'Verify Your Email!' }}
+      </h2>
+      <p class="success-subtitle">
+        {{ isPasswordReset ? 'We\'ve sent you a password reset link' : 'We\'ve sent you a verification code' }}
+      </p>
+
+      <!-- Welcome message for registration -->
+      <div class="user-welcome" *ngIf="username && !isPasswordReset">
+        <p class="welcome-text">
+          Welcome, <span class="username-highlight">{{ username }}</span>!
+          Please verify your email to continue.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-card">
+      <div class="email-icon">
+        <i class="fas" [class.fa-paper-plane]="isPasswordReset" [class.fa-envelope]="!isPasswordReset"></i>
+      </div>
+
+      <p class="instruction-text">
+        {{
+          isPasswordReset
+            ? 'We\'ve sent a password reset link to:'
+            : 'We\'ve sent a verification code to:'
+        }}
+        <strong class="user-email">{{ email || 'your email address' }}</strong>
+      </p>
+
+      <p class="hint-text" [class.reset-hint]="isPasswordReset" [class.verify-hint]="!isPasswordReset">
+        <i class="fas" [class.fa-clock]="isPasswordReset" [class.fa-check-circle]="!isPasswordReset"></i>
+        {{
+          isPasswordReset
+            ? 'Click the link in the email to reset your password. The link will expire in 1 hour.'
+            : 'Enter the 6-digit code in the verification page. The code will expire in 1 hour.'
+        }}
+      </p>
+
+      <!-- Email Provider Buttons -->
+      <div class="email-providers" *ngIf="isPasswordReset">
+        <h3 class="providers-title">
+          <i class="fas fa-external-link-alt"></i>
+          Open Your Email Provider
+        </h3>
+
+        <!-- Gmail -->
+        <a
+          href="https://mail.google.com"
+          target="_blank"
+          class="provider-btn gmail-btn"
+          (click)="simulateEmailOpen('Gmail')"
+        >
+          <div class="provider-icon">
+            <i class="fab fa-google"></i>
+          </div>
+          <div class="provider-info">
+            <div class="provider-name">Gmail</div>
+            <div class="provider-action">Open Gmail</div>
+          </div>
+          <i class="fas fa-external-link-alt provider-arrow"></i>
+        </a>
+      </div>
+
+      <!-- Verification Code Display (for email verification) -->
+      <div class="verification-section" *ngIf="!isPasswordReset && verificationCode">
+        <h3 class="verification-title">
+          <i class="fas fa-key"></i>
+          Your Verification Code
+        </h3>
+        <div class="verification-code-display">
+          <div class="code-digits">
+            <span *ngFor="let digit of getCodeDigits()" class="code-digit">{{ digit }}</span>
+          </div>
+          <p class="code-instruction">
+            Enter this code on the verification page to complete your registration
+          </p>
+        </div>
+      </div>
+
+      <!-- Tips Section -->
+      <div class="tips-section">
+        <h3 class="tips-title">
+          <i class="fas fa-lightbulb"></i>
+          {{ isPasswordReset ? 'Didn\'t receive the email?' : 'Didn\'t receive the code?' }}
+        </h3>
+        <ul class="tips-list">
+          <li class="tip-item">
+            <i class="fas fa-search"></i>
+            Check your <strong>spam</strong> or <strong>junk</strong> folder
+          </li>
+          <li class="tip-item">
+            <i class="fas fa-user-check"></i>
+            Make sure you entered the correct email address
+          </li>
+          <li class="tip-item">
+            <i class="fas fa-sync-alt"></i>
+            Wait a few minutes and refresh your inbox
+          </li>
+          <li class="tip-item" *ngIf="!isPasswordReset">
+            <i class="fas fa-code"></i>
+            Enter the code on the <a [routerLink]="'/verify-email'" [queryParams]="{email: email}">verification page</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button
+          class="btn-resend"
+          (click)="resendEmail()"
+          [disabled]="isResending || resendCooldown > 0"
+        >
+          <span class="btn-content">
+            <i class="fas fa-redo-alt" *ngIf="!isResending && resendCooldown === 0"></i>
+            <i class="fas fa-spinner fa-spin" *ngIf="isResending"></i>
+            {{
+              isResending ? 'Sending...' :
+              resendCooldown > 0 ? `Resend in ${resendCooldown}s` :
+              (isPasswordReset ? 'Resend Reset Link' : 'Resend Code')
+            }}
+          </span>
+        </button>
+
+        <!-- Different actions based on flow -->
+        <ng-container *ngIf="isPasswordReset; else verifyActions">
+          <button
+            class="btn-change-email"
+            (click)="changeEmail()"
+          >
+            <i class="fas fa-edit"></i>
+            Use Different Email
+          </button>
+        </ng-container>
+        <ng-template #verifyActions>
+          <!-- Direct link to Gmail -->
+          <a
+            href="https://mail.google.com/mail/u/0/#inbox"
+            target="_blank"
+            class="btn-verify btn-gmail-open"
+            (click)="simulateEmailOpen('Gmail')"
+          >
+            <i class="fab fa-google"></i>
+            Open Gmail
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

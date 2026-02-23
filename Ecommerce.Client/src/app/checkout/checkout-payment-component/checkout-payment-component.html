@@ -1,0 +1,60 @@
+<div class="payment-container">
+  <form class="payment-form" [formGroup]="paymentForm">
+    <!-- Cardholder Name -->
+    <div class="form-group" [class.has-error]="paymentForm.get('nameOnCard')?.invalid && paymentForm.get('nameOnCard')?.touched">
+      <label for="nameOnCard">Cardholder Name</label>
+      <input
+        type="text"
+        id="nameOnCard"
+        formControlName="nameOnCard"
+        placeholder="Enter full name as shown on card"
+        autocomplete="cc-name"
+      />
+      @if (paymentForm.get('nameOnCard')?.invalid && paymentForm.get('nameOnCard')?.touched) {
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          Please enter the name on your card
+        </div>
+      }
+    </div>
+
+    <!-- Card Details Row -->
+    <div class="card-fields-row">
+      <!-- Card Number -->
+      <div class="form-group" [class.has-error]="cardErrors">
+        <label>Card Number</label>
+        <div
+          #cardNumber
+          class="stripe-input-container"
+          [class.StripeElement--invalid]="cardErrors"
+        ></div>
+        @if (cardErrors) {
+          <div class="error-message">
+            <i class="fas fa-exclamation-circle"></i>
+            {{ cardErrors }}
+          </div>
+        }
+      </div>
+
+      <!-- Expiry Date -->
+      <div class="form-group">
+        <label>Expiry Date</label>
+        <div #cardExpiry class="stripe-input-container"></div>
+      </div>
+
+      <!-- CVC -->
+      <div class="form-group">
+        <label>CVC</label>
+        <div #cardCvc class="stripe-input-container"></div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Security Notice -->
+  <div class="payment-security">
+    <i class="fas fa-shield-alt security-icon"></i>
+    <span class="security-text">
+      Your payment information is secured with 256-bit SSL encryption
+    </span>
+  </div>
+</div>

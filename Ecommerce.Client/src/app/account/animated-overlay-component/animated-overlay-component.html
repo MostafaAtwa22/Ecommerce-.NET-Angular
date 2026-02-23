@@ -1,0 +1,25 @@
+<div class="animated-background">
+  <!-- Animated Background Elements -->
+  <div class="floating-shapes">
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
+    <div class="shape shape-4"></div>
+    <div class="shape shape-5"></div>
+  </div>
+
+  <!-- Logo Background -->
+  <div class="logo-background">
+    <div class="logo-container">
+      <i class="fas fa-shopping-bag logo-icon"></i>
+      <span class="logo-text">Tasaqolli</span>
+    </div>
+  </div>
+
+  <!-- Animated Particles -->
+  <div class="particles">
+    <div class="particle" *ngFor="let particle of particles; let i = index"
+         [style.animation-delay]="getParticleDelay(i)"
+         [style.animation-duration]="getParticleDuration(i)"></div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="order-totals-container order-totals-enhanced">
+  <h2>Order Summary</h2>
+  <p>Shipping costs will be added depending on choices made during checkout.</p>
+
+  @if (basketTotals$ | async; as totals) {
+    @if (totals.subTotal === 0) {
+      <!-- 🛒 Empty Basket Message -->
+      <div class="empty-message text-center mt-4">
+        <img
+          src="assets/empty-cart.png"
+          alt="Empty Basket"
+          class="empty-basket-img mb-3"
+        />
+        <h4 class="empty-title">Your Basket is Empty</h4>
+        <p class="empty-text mb-4">
+          Looks like you haven't added any items yet. <br />
+          Start shopping and fill your basket!
+        </p>
+        <button class="btn-continue-shopping" routerLink="/shop">
+          <i class="fas fa-arrow-left me-2"></i>
+          Continue Shopping
+        </button>
+      </div>
+    } @else {
+      <!-- 🧾 Basket Summary -->
+      <ul class="totals-list">
+        <li>
+          <span class="label">Subtotal</span>
+          <span class="value">{{ totals.subTotal | currency:'USD' }}</span>
+        </li>
+        <li>
+          <span class="label">Shipping</span>
+          <span class="value">{{ totals.shipping | currency:'USD' }}</span>
+        </li>
+        <li>
+          <span class="label">Total</span>
+          <span class="value">{{ totals.total | currency:'USD' }}</span>
+        </li>
+      </ul>
+
+      <!-- 🚚 Shipping Progress -->
+      @if (!hasFreeShipping(totals) && totals.subTotal > 0) {
+        <div class="shipping-progress">
+          <div class="progress-label">
+            <span>Free Shipping Progress</span>
+            <span>{{ getFreeShippingAmount(totals) | currency:'USD' }} to go</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="getShippingProgress(totals)"></div>
+          </div>
+        </div>
+      }
+    }
+  } @else {
+    <!-- 🛒 Fallback for No Basket at All -->
+    <div class="empty-message text-center mt-4">
+      <img
+        src="assets/empty-cart.png"
+        alt="Empty Basket"
+        class="empty-basket-img mb-3 img-fluid"
+      />
+      <h4 class="empty-title">Your Basket is Empty</h4>
+      <p class="empty-text mb-4">
+        Looks like you haven't added any items yet. <br />
+        Start shopping and fill your basket!
+      </p>
+      <button class="btn-continue-shopping" routerLink="/">
+        <i class="fas fa-arrow-left me-2"></i>
+        Continue Shopping
+      </button>
+    </div>
+  }
+</div>

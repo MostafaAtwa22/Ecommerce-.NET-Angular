@@ -1,0 +1,74 @@
+<div class="stepper-container">
+  <div class="stepper-header">
+    <div class="stepper-steps">
+      <div
+        *ngFor="let step of steps; let i = index"
+        class="step"
+        [class.active]="selectedIndex === i"
+        [class.completed]="getStepState(i) === 'completed'"
+        [class.error]="getStepState(i) === 'error'"
+        [class.pending]="getStepState(i) === 'pending'"
+        (click)="onClick(i)"
+      >
+        <div class="step-circle">
+          <span class="step-content">{{ getStepDisplay(i) }}</span>
+        </div>
+
+        <div class="step-label">
+          {{ step.stepLabel || step.label }}
+        </div>
+
+        <div
+          class="step-connector"
+          *ngIf="i !== steps.length - 1"
+          [class.completed]="getStepState(i) === 'completed' && getStepState(i + 1) === 'completed'"
+          [class.error]="getStepState(i) === 'error'"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stepper-content">
+    <ng-container [ngTemplateOutlet]="selected?.content"></ng-container>
+  </div>
+
+  <div class="stepper-actions w-100 justify-content-between" *ngIf="steps.length > 0">
+    <!-- Previous Button -->
+    <button class="btn btn-secondary" (click)="previous()" [disabled]="selectedIndex === 0">
+      <i class="fas fa-arrow-left me-2"></i>
+      <span class="btn-label">Back to {{ getPreviousStepName() }}</span>
+    </button>
+
+    <!-- Next/Submit Button -->
+    <ng-container *ngIf="!((!isLastStep() && continuePermission) || (isLastStep() && submitPermission)); else permissionGatedAction">
+      <button
+        class="btn"
+        [class.btn-primary]="!isLastStep()"
+        [class.btn-success]="isLastStep()"
+        (click)="isLastStep() ? createOrder() : next()"
+        [disabled]="isLastStep() ? false : selectedIndex === steps.length - 1"
+      >
+        <span class="btn-label">
+          {{ isLastStep() ? 'Submit Order' : 'Continue to ' + getNextStepName() }}
+        </span>
+        <i class="fas ms-2" [class.fa-arrow-right]="!isLastStep()" [class.fa-check]="isLastStep()"></i>
+      </button>
+    </ng-container>
+
+    <ng-template #permissionGatedAction>
+      <button
+        *hasPermission="isLastStep() ? submitPermission! : continuePermission!"
+        class="btn"
+        [class.btn-primary]="!isLastStep()"
+        [class.btn-success]="isLastStep()"
+        (click)="isLastStep() ? createOrder() : next()"
+        [disabled]="isLastStep() ? false : selectedIndex === steps.length - 1"
+      >
+        <span class="btn-label">
+          {{ isLastStep() ? 'Submit Order' : 'Continue to ' + getNextStepName() }}
+        </span>
+        <i class="fas ms-2" [class.fa-arrow-right]="!isLastStep()" [class.fa-check]="isLastStep()"></i>
+      </button>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="typing" [class.with-text]="showText" [class.dark-bg]="darkBg">
+  <div class="dots">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  @if (showText) {
+    <span class="typing-text">typing...</span>
+  }
+</div>

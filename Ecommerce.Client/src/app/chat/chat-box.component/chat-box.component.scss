@@ -1,0 +1,686 @@
+// ============================================
+// CHAT BOX - DASHBOARD PURPLE THEME
+// ============================================
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #f7f9fa;
+}
+
+/* ===============================
+   Main Chat Box Container
+   =============================== */
+.chat-box {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem;
+  scroll-behavior: smooth;
+  background: #f7f9fa;
+  position: relative;
+
+  /* Custom Scrollbar - Matching Dashboard */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f7f9fa;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d1d7dc;
+    border-radius: 4px;
+
+    &:hover {
+      background: #6a6f73;
+    }
+  }
+}
+
+/* ===============================
+   Loading States
+   =============================== */
+.custom-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(86, 36, 208, 0.1);
+  border-top: 3px solid #5624d0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  &.small {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    margin-right: 0.5rem;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===============================
+   Load More Button - Dashboard Style
+   =============================== */
+.load-more-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+.load-more-btn {
+  background: white;
+  color: #5624d0;
+  border: 1px solid #5624d0;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(86, 36, 208, 0.1);
+
+  &:hover {
+    background: #5624d0;
+    color: white;
+    border-color: #401b9c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(86, 36, 208, 0.2);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #5624d0;
+    outline-offset: 2px;
+  }
+
+  .load-more-spinner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* ===============================
+   Chat Messages Container
+   =============================== */
+.chat-messages-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+/* ===============================
+   Chat Bubbles - Redesigned with Dashboard Theme
+   =============================== */
+
+/* Base Bubble Styles */
+.chat-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  max-width: 70%;
+  position: relative;
+  word-wrap: break-word;
+  line-height: 1.5;
+  font-size: 0.9375rem;
+  transition: all 0.2s ease;
+
+  @media (max-width: 768px) {
+    max-width: 85%;
+    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+  }
+}
+
+/* Sent Messages - Purple Theme */
+.chat-bubble.sent {
+  background: #5624d0;
+  color: white;
+  border-bottom-right-radius: 0px;
+  margin-left: auto;
+
+  .chat-time {
+    color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Received Messages - Light Gray with Purple Accent */
+.chat-bubble.received {
+  background: white;
+  color: #0c111d;
+  border: 1px solid #d1d7dc;
+  border-bottom-left-radius: 0px;
+
+  .chat-time {
+    color: #6a6f73;
+  }
+}
+
+/* Message Time */
+.chat-time {
+  font-size: 0.7rem;
+  margin-left: 0.5rem;
+  display: inline-block;
+  font-weight: 400;
+}
+
+/* Edited Indicator */
+.text-white-50 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.text-muted.fst-italic {
+  color: #6a6f73 !important;
+  font-size: 0.7rem;
+}
+
+/* ===============================
+   Avatars - Dashboard Style
+   =============================== */
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: #5624d0;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ===============================
+   Message Actions Dropdown - Dashboard Style
+   =============================== */
+.dropdown {
+  .btn-link {
+    color: #6a6f73 !important;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+      background: rgba(86, 36, 208, 0.05);
+      color: #5624d0 !important;
+    }
+
+    i {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.dropdown-menu {
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+  min-width: 120px;
+
+  .dropdown-item {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    color: #0c111d;
+    transition: all 0.2s ease;
+
+    i {
+      margin-right: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    &:hover {
+      background: rgba(86, 36, 208, 0.05);
+      color: #5624d0;
+    }
+
+    &.text-danger {
+      color: #c91a1a !important;
+
+      &:hover {
+        background: rgba(201, 26, 26, 0.05);
+        color: #a51515 !important;
+      }
+    }
+  }
+}
+
+/* ===============================
+   Group Hover Effects
+   =============================== */
+.group-hover {
+  .dropdown {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &:hover {
+    .dropdown {
+      opacity: 1;
+    }
+
+    .chat-bubble.sent {
+      box-shadow: 0 4px 8px rgba(86, 36, 208, 0.2);
+    }
+
+    .chat-bubble.received {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+/* ===============================
+   Empty State - Dashboard Style
+   =============================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+  text-align: center;
+
+  .custom-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #6a6f73;
+    background: rgba(86, 36, 208, 0.05);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+
+  h6 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: #6a6f73;
+    max-width: 300px;
+  }
+}
+
+/* ===============================
+   Typing Indicator Container
+   =============================== */
+.typing-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ===============================
+   Message Groups - Better Spacing
+   =============================== */
+.d-flex.mb-4 {
+  margin-bottom: 1rem !important;
+
+  &:last-child {
+    margin-bottom: 0 !important;
+  }
+}
+
+/* ===============================
+   Responsive Adjustments
+   =============================== */
+@media (max-width: 768px) {
+  .chat-box {
+    padding: 1rem;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+  }
+
+  .load-more-btn {
+    padding: 0.375rem 1rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-box {
+    padding: 0.75rem;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+  }
+
+  .chat-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .custom-spinner {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ===============================
+   Reduced Motion
+   =============================== */
+@media (prefers-reduced-motion: reduce) {
+
+  .chat-box,
+  .chat-bubble,
+  .chat-avatar,
+  .load-more-btn,
+  .dropdown .btn-link,
+  .custom-spinner {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===============================
+   Message Animations
+   =============================== */
+@keyframes fadeInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.d-flex.mb-4 {
+  animation: fadeInMessage 0.3s ease;
+}
+
+/* ===============================
+   Scroll Position Indicator (Optional)
+   =============================== */
+.scroll-indicator {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  span {
+    background: #5624d0;
+    color: white;
+    padding: 0.25rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(86, 36, 208, 0.2);
+  }
+}
+
+.attachment-container {
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+  }
+}
+
+.file-attachment {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #5624d0;
+  border: 1px solid #dee2e6;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  span {
+    font-weight: 500;
+  }
+
+  &:hover {
+    background: #e9ecef;
+    border-color: #5624d0;
+  }
+
+  &.sent-file {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+/* ===============================
+   WhatsApp Voice Message Styles
+   =============================== */
+.whatsapp-audio-player {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 12px;
+  min-width: 250px;
+  gap: 12px;
+  position: relative;
+
+  &.received {
+    background: white;
+
+    .play-pause-btn {
+      background: #5624d0;
+      color: white;
+    }
+
+    .audio-seekbar {
+      &::-webkit-slider-runnable-track {
+        background: #d1d7dc;
+      }
+
+      &::-webkit-slider-thumb {
+        background: #5624d0;
+      }
+    }
+
+    .text-muted-custom {
+      color: #6a6f73;
+    }
+  }
+
+  &.sent {
+    background: rgba(255, 255, 255, 0.1);
+
+    .play-pause-btn {
+      background: white;
+      color: #5624d0;
+    }
+
+    .audio-seekbar {
+      &::-webkit-slider-runnable-track {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      &::-webkit-slider-thumb {
+        background: white;
+      }
+    }
+  }
+
+  .play-pause-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .audio-controls-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .audio-seekbar {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+    cursor: pointer;
+
+    &::-webkit-slider-runnable-track {
+      height: 4px;
+      border-radius: 2px;
+    }
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+      margin-top: -4px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .audio-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .delete-attachment-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 20px;
+    height: 20px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    &:hover {
+      transform: scale(1.2);
+      background: #e60000;
+    }
+  }
+
+  &:hover .delete-attachment-btn {
+    opacity: 1;
+  }
+}
+
+.delete-attachment-overlay-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  z-index: 10;
+  cursor: pointer;
+
+  &:hover {
+    background: #ff4d4d;
+  }
+}
+
+.position-relative:hover .delete-attachment-overlay-btn {
+  opacity: 1;
+}
+
+@media (max-width: 480px) {
+  .whatsapp-audio-player {
+    min-width: 180px;
+    padding: 6px 10px;
+  }
+}
+
+/* ===============================
+   Animations
+   =============================== */

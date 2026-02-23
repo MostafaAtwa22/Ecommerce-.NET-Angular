@@ -1,0 +1,146 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <div class="permissions-header card-shadow mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="fw-bold mb-0">
+          <i class="fas fa-gears me-2"></i>Manage Permissions
+        </h4>
+        <p class="text-muted mb-0 mt-2">Role: <strong>{{ roleName }}</strong></p>
+      </div>
+      <button
+        class="btn btn-outline-secondary"
+        (click)="goBack()"
+        [disabled]="saving"
+      >
+        <i class="fas fa-arrow-left me-2"></i>Back to Roles
+      </button>
+    </div>
+  </div>
+
+  <!-- Success/Error Messages -->
+  @if (successMessage) {
+    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+      <i class="fas fa-check-circle me-2"></i>
+      {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = null"></button>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+      <i class="fas fa-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+      <button type="button" class="btn-close" (click)="errorMessage = null"></button>
+    </div>
+  }
+
+  <!-- Permissions Table -->
+  <div class="permissions-table-container card-shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-list-alt me-2"></i>Role Permissions
+      </h4>
+      <button
+        class="btn btn-primary"
+        (click)="savePermissions()"
+        [disabled]="saving || loading"
+      >
+        @if (saving) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Saving...
+        } @else {
+          <i class="fas fa-save me-2"></i>Save Permissions
+        }
+      </button>
+    </div>
+
+    <div class="table-responsive">
+      @if (loading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading permissions...</p>
+        </div>
+      } @else {
+        <table class="table table-hover table-striped mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-bold">Module</th>
+              <th scope="col" class="fw-bold text-center">Read</th>
+              <th scope="col" class="fw-bold text-center">Create</th>
+              <th scope="col" class="fw-bold text-center">Update</th>
+              <th scope="col" class="fw-bold text-center">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (modulePermissions.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-4 empty-state">
+                  <i class="fas fa-inbox fa-2x mb-3 text-muted"></i>
+                  <h5>No Permissions Found</h5>
+                  <p class="text-muted">No permissions available for this role.</p>
+                </td>
+              </tr>
+            } @else {
+              @for (modulePerm of modulePermissions; track modulePerm.module) {
+                <tr class="fade-item">
+                  <td class="module-name">
+                    <strong>{{ modulePerm.module }}</strong>
+                  </td>
+                  <td class="text-center">
+                    <div class="form-check d-flex justify-content-center">
+                      <input
+                        class="form-check-input permission-checkbox"
+                        type="checkbox"
+                        [checked]="modulePerm.read?.isSelected || false"
+                        [disabled]="!modulePerm.read || saving"
+                        (change)="togglePermission(modulePerm.read)"
+                        [id]="'read-' + modulePerm.module"
+                      />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="form-check d-flex justify-content-center">
+                      <input
+                        class="form-check-input permission-checkbox"
+                        type="checkbox"
+                        [checked]="modulePerm.create?.isSelected || false"
+                        [disabled]="!modulePerm.create || saving"
+                        (change)="togglePermission(modulePerm.create)"
+                        [id]="'create-' + modulePerm.module"
+                      />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="form-check d-flex justify-content-center">
+                      <input
+                        class="form-check-input permission-checkbox"
+                        type="checkbox"
+                        [checked]="modulePerm.update?.isSelected || false"
+                        [disabled]="!modulePerm.update || saving"
+                        (change)="togglePermission(modulePerm.update)"
+                        [id]="'update-' + modulePerm.module"
+                      />
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <div class="form-check d-flex justify-content-center">
+                      <input
+                        class="form-check-input permission-checkbox"
+                        type="checkbox"
+                        [checked]="modulePerm.delete?.isSelected || false"
+                        [disabled]="!modulePerm.delete || saving"
+                        (change)="togglePermission(modulePerm.delete)"
+                        [id]="'delete-' + modulePerm.module"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>

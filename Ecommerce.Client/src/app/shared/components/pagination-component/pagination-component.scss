@@ -1,0 +1,142 @@
+.pagination-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: white;
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.page-item {
+  margin: 0;
+
+  &:not(:last-child) {
+    border-right: 1px solid #d1d7dc;
+  }
+
+  .page-link {
+    border: none;
+    background: white;
+    padding: 0.625rem 0.875rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #6a6f73;
+    transition: all 0.2s ease;
+    min-width: 44px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    &:hover:not(.disabled) {
+      background: #f7f9fa;
+      color: #5624d0;
+    }
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+    }
+  }
+
+  &.active .page-link {
+    background: #5624d0;
+    color: white;
+
+    &:hover {
+      background: #401b9c;
+      color: white;
+    }
+  }
+
+  &.disabled .page-link {
+    color: #d1d7dc;
+    cursor: not-allowed;
+    opacity: 0.6;
+
+    &:hover {
+      background: white;
+      color: #d1d7dc;
+    }
+  }
+
+  /* Navigation buttons (Previous/Next) */
+  &:first-child,
+  &:last-child {
+    .page-link {
+      padding: 0.625rem 1rem;
+      font-weight: 600;
+
+      &:hover:not(.disabled) {
+        background: #5624d0;
+        color: white;
+      }
+    }
+  }
+
+  &:first-child {
+    border-radius: 4px 0 0 4px;
+  }
+
+  &:last-child {
+    border-radius: 0 4px 4px 0;
+    border-right: none;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .pagination-nav {
+    margin-top: 1.5rem;
+  }
+
+  .page-item .page-link {
+    padding: 0.5rem 0.75rem;
+    min-width: 40px;
+    font-size: 0.875rem;
+  }
+
+  .page-item:first-child .page-link,
+  .page-item:last-child .page-link {
+    padding: 0.5rem 0.875rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    border-radius: 4px;
+  }
+
+  .page-item {
+    border-right: 1px solid #d1d7dc;
+    border-bottom: 1px solid #d1d7dc;
+
+    &:nth-child(3n) {
+      border-right: none;
+    }
+
+    &:nth-last-child(-n+3) {
+      border-bottom: none;
+    }
+
+    &:first-child,
+    &:last-child {
+      .page-link {
+        padding: 0.5rem 0.75rem;
+      }
+    }
+  }
+}

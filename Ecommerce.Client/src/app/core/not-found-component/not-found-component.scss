@@ -1,0 +1,115 @@
+/* 404 - Not Found Page Styles */
+
+.not-found-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+}
+
+.not-found-card {
+  background: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  animation: fadeInUp404 0.6s ease-out both;
+}
+
+.not-found-img {
+  width: 260px;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+  animation: float404 3s ease-in-out infinite;
+}
+
+.not-found-card h2 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.not-found-card p {
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.not-found-card .btn {
+  background: linear-gradient(135deg, #111827, #4b5563);
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 2.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.not-found-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.6);
+  background: linear-gradient(135deg, #020617, #1f2937);
+}
+
+.not-found-card .btn:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.5);
+}
+
+/* Animations */
+
+@keyframes float404 {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp404 {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive tweaks */
+
+@media (max-width: 576px) {
+  .not-found-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .not-found-img {
+    width: 210px;
+  }
+
+  .not-found-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .not-found-card p {
+    font-size: 0.95rem;
+  }
+}

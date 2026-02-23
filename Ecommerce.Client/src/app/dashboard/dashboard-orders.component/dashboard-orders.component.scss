@@ -1,0 +1,918 @@
+/* Statistics Cards - Match dashboard insight cards */
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+  height: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    border-color: #5624d0;
+    box-shadow: 0 2px 12px rgba(86, 36, 208, 0.1);
+  }
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.25rem;
+  font-size: 1.25rem;
+  color: #ffffff;
+  box-shadow: none;
+
+  &.stat-total {
+    background: #5624d0;
+  }
+
+  &.stat-revenue {
+    background: #48bb78;
+  }
+
+  &.stat-pending {
+    background: #ed8936;
+  }
+
+  &.stat-shipped {
+    background: #9f7aea;
+  }
+
+  &.stat-complete {
+    background: #48bb78;
+  }
+
+  &.stat-canceled {
+    background: #c91a1a;
+  }
+
+  &.stat-refunded {
+    background: #3182ce;
+  }
+}
+
+.stat-content {
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin-bottom: 0.25rem;
+    line-height: 1;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: #6a6f73;
+    margin: 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Toolbar - Match website toolbar */
+.toolbar {
+  background: #ffffff;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  .search-bar {
+    max-width: 400px;
+    min-width: 250px;
+
+    input.form-control {
+      border: 1px solid #d1d7dc;
+      border-radius: 4px;
+      padding: 0.625rem 0.875rem;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #5624d0;
+        box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+      }
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      border: 1px solid #d1d7dc;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+
+      &.btn-dark {
+        background: #0c111d;
+        color: #ffffff;
+        border-color: #0c111d;
+
+        &:hover {
+          background: lighten(#0c111d, 5%);
+        }
+      }
+
+      &.btn-outline-secondary {
+        background: #ffffff;
+        color: #6a6f73;
+
+        &:hover {
+          background: #f7f9fa;
+        }
+      }
+    }
+  }
+}
+
+/* Orders Table Container - Match website tables */
+.orders-table-container {
+  background: #ffffff;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  .card-header {
+    padding: 1.25rem 1.5rem;
+    background: #ffffff;
+    border-bottom: 1px solid #d1d7dc;
+
+    .table-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+  }
+
+  .card-footer {
+    padding: 1rem 1.5rem;
+    background: #ffffff;
+    border-top: 1px solid #d1d7dc;
+  }
+}
+
+/* Table Styles - Modern look */
+.table {
+  margin-bottom: 0;
+
+  thead {
+    th {
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6a6f73;
+      background: #ffffff;
+      border-bottom: 1px solid #d1d7dc;
+    }
+  }
+
+  tbody {
+    tr {
+      transition: all 0.2s ease;
+      border-bottom: 1px solid #d1d7dc;
+
+      &:hover {
+        background: rgba(86, 36, 208, 0.02);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: 1rem 1.5rem;
+        vertical-align: middle;
+        color: #0c111d;
+        font-size: 0.875rem;
+        font-weight: 500;
+
+        &:last-child {
+          text-align: right;
+        }
+
+        strong {
+          font-weight: 600;
+          color: #0c111d;
+        }
+      }
+    }
+  }
+}
+
+/* Status Badges - Match website badge style */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid;
+
+  i {
+    font-size: 0.875rem;
+  }
+
+  &.badge-warning {
+    background: rgba(237, 137, 54, 0.1);
+    color: #ed8936;
+    border-color: rgba(237, 137, 54, 0.3);
+
+    i {
+      color: #ed8936;
+    }
+  }
+
+  &.badge-info {
+    background: rgba(159, 122, 234, 0.1);
+    color: #9f7aea;
+    border-color: rgba(159, 122, 234, 0.3);
+
+    i {
+      color: #9f7aea;
+    }
+  }
+
+  &.badge-success {
+    background: rgba(72, 187, 120, 0.1);
+    color: #48bb78;
+    border-color: rgba(72, 187, 120, 0.3);
+
+    i {
+      color: #48bb78;
+    }
+  }
+
+  &.badge-danger {
+    background: rgba(201, 26, 26, 0.1);
+    color: #c91a1a;
+    border-color: rgba(201, 26, 26, 0.3);
+
+    i {
+      color: #c91a1a;
+    }
+  }
+
+  &.badge-secondary {
+    background: rgba(106, 111, 115, 0.1);
+    color: #6a6f73;
+    border-color: rgba(106, 111, 115, 0.2);
+
+    i {
+      color: #6a6f73;
+    }
+  }
+}
+
+/* Avatar - Match product-card */
+.avatar-container {
+  width: 40px;
+  height: 40px;
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #d1d7dc;
+  }
+
+  .avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #5624d0;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 1px solid #d1d7dc;
+  }
+}
+
+/* Empty State */
+.empty-state {
+  padding: 3rem 1.5rem;
+  text-align: center;
+
+  i {
+    font-size: 3rem;
+    color: #d1d7dc;
+    margin-bottom: 1rem;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #6a6f73;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+
+    &.btn-outline-dark {
+      border: 1px solid #0c111d;
+      color: #0c111d;
+      background: #ffffff;
+
+      &:hover {
+        background: #0c111d;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* View Details Button - Match product-card buttons */
+.btn-view-details {
+  background: #ffffff;
+  border: 1px solid #d1d7dc;
+  color: #0c111d;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: #5624d0;
+    color: #ffffff;
+    border-color: #5624d0;
+  }
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+/* Modal Styles - Match website modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border: 1px solid #d1d7dc;
+}
+
+.modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #d1d7dc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border-radius: 8px 8px 0 0;
+
+  .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    i {
+      font-size: 1.25rem;
+      color: #5624d0;
+    }
+  }
+
+  .btn-close {
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #6a6f73;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+
+    &:hover {
+      color: #0c111d;
+      background: rgba(106, 111, 115, 0.1);
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+
+  h6 {
+    color: #0c111d;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    i {
+      color: #5624d0;
+    }
+  }
+
+  p {
+    margin-bottom: 0.75rem;
+    color: #0c111d;
+    font-size: 0.875rem;
+
+    strong {
+      color: #0c111d;
+      min-width: 120px;
+      display: inline-block;
+      font-weight: 600;
+    }
+  }
+}
+
+/* Order Items Table in Modal */
+.table.table-hover {
+  thead.table-light th {
+    background: #f7f9fa;
+    color: #6a6f73;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 1px solid #d1d7dc;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    color: #0c111d;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #d1d7dc;
+
+    &:last-child {
+      font-weight: 600;
+    }
+  }
+}
+
+/* Modal Footer - FIXED: No buttons for Complete/Canceled orders */
+.modal-footer {
+  padding: 1.5rem;
+  border-top: 1px solid #d1d7dc;
+  background: #ffffff;
+  border-radius: 0 0 8px 8px;
+}
+
+.footer-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Current Status Display */
+.current-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .status-label {
+    font-weight: 600;
+    color: #6a6f73;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-value {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid;
+
+    &.badge-warning {
+      background: rgba(237, 137, 54, 0.1);
+      color: #ed8936;
+      border-color: rgba(237, 137, 54, 0.3);
+    }
+
+    &.badge-info {
+      background: rgba(159, 122, 234, 0.1);
+      color: #9f7aea;
+      border-color: rgba(159, 122, 234, 0.3);
+    }
+
+    &.badge-success {
+      background: rgba(72, 187, 120, 0.1);
+      color: #48bb78;
+      border-color: rgba(72, 187, 120, 0.3);
+    }
+
+    &.badge-danger {
+      background: rgba(201, 26, 26, 0.1);
+      color: #c91a1a;
+      border-color: rgba(201, 26, 26, 0.3);
+    }
+
+    &.badge-secondary {
+      background: rgba(106, 111, 115, 0.1);
+      color: #6a6f73;
+      border-color: rgba(106, 111, 115, 0.2);
+    }
+  }
+}
+
+/* Action Buttons - FIXED: Only show when not Complete/Canceled */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 140px;
+  justify-content: center;
+  color: #ffffff;
+
+  i {
+    font-size: 1rem;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+/* Specific Action Button Styles */
+.btn-cancel {
+  background: #c91a1a;
+
+  i {
+    color: #ffffff;
+  }
+
+  &:hover:not(:disabled) {
+    background: darken(#c91a1a, 10%);
+  }
+}
+
+.btn-ship {
+  background: #9f7aea;
+
+  i {
+    color: #ffffff;
+  }
+
+  &:hover:not(:disabled) {
+    background: darken(#9f7aea, 10%);
+  }
+}
+
+.btn-complete {
+  background: #48bb78;
+
+  i {
+    color: #ffffff;
+  }
+
+  &:hover:not(:disabled) {
+    background: darken(#48bb78, 10%);
+  }
+}
+
+.btn-close-modal {
+  background: #6a6f73;
+  min-width: 100px;
+
+  i {
+    color: #ffffff;
+  }
+
+  &:hover:not(:disabled) {
+    background: darken(#6a6f73, 10%);
+  }
+}
+
+/* Button Spinner */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.8s linear infinite;
+  position: absolute;
+  left: 1rem;
+}
+
+/* Loading States */
+.loading-wrapper {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border-radius: 8px;
+  min-height: 300px;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(86, 36, 208, 0.1);
+    border-top: 3px solid #5624d0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .loading-text {
+    margin-top: 1rem;
+    color: #6a6f73;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+.loading-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(86, 36, 208, 0.05);
+  border-radius: 8px;
+  margin: 1rem 0;
+  color: #5624d0;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: 1px solid rgba(86, 36, 208, 0.1);
+}
+
+.loading-spinner-small {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(86, 36, 208, 0.2);
+  border-radius: 50%;
+  border-top-color: #5624d0;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Error Message */
+.error-message {
+  background: rgba(201, 26, 26, 0.05);
+  border-left: 4px solid #c91a1a;
+  padding: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #c91a1a;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin: 1rem 0;
+
+  .btn-close-error {
+    background: none;
+    border: none;
+    color: #c91a1a;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(201, 26, 26, 0.1);
+    }
+  }
+}
+
+/* Pagination */
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: 1px solid #d1d7dc;
+    color: #0c111d;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: #ffffff;
+
+    &:hover:not(:disabled) {
+      background: #5624d0;
+      color: #ffffff;
+      border-color: #5624d0;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.fade-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.125rem;
+    margin-right: 1rem;
+  }
+
+  .stat-content {
+    h3 {
+      font-size: 1.25rem;
+    }
+
+    p {
+      font-size: 0.7rem;
+    }
+  }
+
+  .toolbar {
+    padding: 1rem;
+
+    .search-bar {
+      max-width: 100%;
+      min-width: 0;
+    }
+  }
+
+  .table {
+    thead th {
+      padding: 0.75rem 1rem;
+    }
+
+    tbody tr td {
+      padding: 0.75rem 1rem;
+    }
+  }
+
+  .modal-container {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .btn-action {
+    min-width: auto;
+    padding: 0.75rem;
+
+    span {
+      display: none;
+    }
+
+    i {
+      margin: 0;
+      font-size: 1.125rem;
+    }
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .current-status {
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .table {
+    thead th {
+      font-size: 0.75rem;
+    }
+
+    tbody tr td {
+      font-size: 0.8rem;
+    }
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 1rem;
+  }
+}

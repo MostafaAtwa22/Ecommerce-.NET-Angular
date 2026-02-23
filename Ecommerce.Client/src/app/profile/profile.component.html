@@ -1,0 +1,142 @@
+<div class="profile-page">
+  <section *ngIf="isProfileLoading" class="state state--loading state--overlay">
+    <div class="spinner"></div>
+    <p>Loading your profile...</p>
+  </section>
+
+  <ng-container *ngIf="profile$ | async as profile; else fallbackState">
+    <header class="profile-header">
+      <div class="avatar-wrapper">
+        <div
+          class="avatar-container"
+          (mouseenter)="showEditOptions = true"
+          (mouseleave)="showEditOptions = false"
+        >
+          <img
+            class="avatar"
+            [src]="profilePictureUrl"
+            [alt]="profile.firstName"
+            (error)="onAvatarError(profile.gender)"
+          />
+
+          <!-- Loading overlay -->
+          <div *ngIf="isUploading" class="avatar-loading-overlay">
+            <div class="spinner small"></div>
+          </div>
+
+          <!-- Edit Button Overlay (Only shows on hover) -->
+          <div class="avatar-overlay" [class.active]="showEditOptions && !isUploading">
+            <button
+              class="edit-button"
+              (click)="triggerFileInput(); $event.stopPropagation()"
+              title="Change profile picture"
+            >
+              <i class="fa fa-camera"></i>
+            </button>
+          </div>
+
+          <!-- Hidden File Input -->
+          <input
+            #fileInput
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            style="display: none"
+          />
+        </div>
+
+        <!-- Delete Button (Always visible below image if profile has picture) -->
+        <div class="avatar-actions" *ngIf="profile.profilePicture && !isUploading">
+          <button
+            class="delete-button"
+            (click)="removeProfileImage()"
+            title="Remove profile picture"
+          >
+            <i class="fa fa-trash"></i>
+            Remove Photo
+          </button>
+        </div>
+
+        <!-- Modern Upload Progress -->
+        <div *ngIf="isUploading" class="upload-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+          </div>
+          <span class="progress-text"
+            >Uploading{{ uploadProgress === 100 ? ' Complete!' : '' }}</span
+          >
+        </div>
+      </div>
+
+      <div class="user-info">
+        <div class="user-meta">
+          <h1>{{ profile.firstName }} {{ profile.lastName }}</h1>
+          <span class="handle">@{{ profile.userName }}</span>
+        </div>
+        <div class="user-tags">
+          <span>{{ profile.email }}</span>
+          <span *ngIf="profile.phoneNumber">{{ profile.phoneNumber }}</span>
+        </div>
+        <ul class="quick-stats">
+          <li>
+            <p class="stat-label">Profile ID</p>
+            <p class="stat-value">{{ profile.id }}</p>
+          </li>
+          <li>
+            <p class="stat-label">Gender</p>
+            <p class="stat-value">{{ profile.gender || 'Not provided' }}</p>
+          </li>
+          <li>
+            <p class="stat-label">Member Since</p>
+            <p class="stat-value">Ecommerce</p>
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <div class="profile-shell">
+      <aside class="profile-sidebar" style="height: fit-content; width: 300px">
+        <h3>Account Center</h3>
+        <ul>
+          <li *ngFor="let section of sections">
+            <button
+              type="button"
+              (click)="select(section.id)"
+              [class.active]="selected === section.id"
+            >
+              <p class="label">{{ section.label }}</p>
+              <p class="caption">{{ section.caption }}</p>
+            </button>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="profile-content">
+        <app-main-info *ngIf="selected === 'main-info'" [profile]="profile"></app-main-info>
+        <app-address *ngIf="selected === 'address'"></app-address>
+        <app-change-password *ngIf="selected === 'change-password'"></app-change-password>
+        <app-set-password *ngIf="selected === 'set-password'"></app-set-password>
+        <app-delete-profile *ngIf="selected === 'delete-profile'"></app-delete-profile>
+        <app-two-fa *ngIf="selected === 'two-fa'"></app-two-fa>
+      </main>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #fallbackState>
+  <section
+    class="state"
+    [class.state--loading]="isProfileLoading"
+    [class.state--error]="!isProfileLoading"
+  >
+    <ng-container *ngIf="isProfileLoading; else errorState">
+      <div class="spinner"></div>
+      <p>Loading your profile...</p>
+    </ng-container>
+    <ng-template #errorState>
+      <h3>We couldn't load your profile</h3>
+      <p>{{ profileError }}</p>
+      <button class="ghost-btn" type="button" (click)="retry()">Try again</button>
+    </ng-template>
+  </section>
+</ng-template>

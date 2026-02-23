@@ -1,0 +1,123 @@
+@let basket = (basket$ | async);
+<div class="basket-container">
+
+  <!-- 🛒 EMPTY BASKET -->
+  @if (!basket || !basket.items || basket.items.length === 0) {
+    <div class="empty-basket text-center">
+      <div class="empty-basket-content">
+        <!-- Animated Image -->
+        <div class="empty-image-animation">
+          <img
+            src="assets/empty/empty-cart.png"
+            alt="Empty Basket"
+            class="empty-basket-img"
+          />
+        </div>
+
+        <!-- Content -->
+        <h2 class="empty-title">Your Shopping Cart is Empty ):</h2>
+        <p class="empty-text">
+          Discover amazing products and fill your cart with items you'll love
+        </p>
+
+        <!-- Action Button -->
+        <button class="btn-start-shopping" routerLink="/home">
+          <i class="fas fa-store me-2"></i>
+          Continue Shopping Now
+        </button>
+      </div>
+    </div>
+  }@else {
+    <!-- 🧺 BASKET CONTENT -->
+    <div class="basket-content">
+
+      <!-- Header -->
+      <div class="basket-header d-flex justify-content-between align-items-center mb-4">
+        <h1 class="basket-title m-0">
+          <i class="fas fa-shopping-cart me-3"></i>
+          Shopping Cart
+        </h1>
+        <div class="basket-actions d-flex align-items-center gap-3">
+          <div class="basket-summary">
+            <span class="item-count">{{ basket.items.length }} items</span>
+          </div>
+          <button class="btn-clear-basket" (click)="clearBasket()" title="Clear entire basket">
+            <i class="fas fa-trash-alt me-2"></i>
+            Clear Basket
+          </button>
+        </div>
+      </div>
+
+      <!-- Basket Items -->
+      <div class="basket-items">
+        @for (item of basket.items; track item.id) {
+          <div class="basket-item d-flex align-items-center justify-content-between py-3 border-bottom">
+
+            <!-- Item Image -->
+            <div class="item-image">
+              <img [src]="item.pictureUrl" [alt]="item.productName" class="product-img rounded" />
+            </div>
+
+            <!-- Item Details -->
+            <div class="item-details flex-grow-1 ms-3">
+              <h4 class="product-name mb-1">{{ item.productName }}</h4>
+              <div class="product-category text-muted mb-2">
+                <span class="brand">{{ item.brand }}</span>
+                <span class="category-divider mx-1">•</span>
+                <span class="type">{{ item.type }}</span>
+              </div>
+              <div class="item-actions">
+                <button class="btn-remove me-2" (click)="removeItem(item)" title="Remove item">
+                  <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn-wishlist" title="Move to wishlist" (click)="moveItemToWishlist(item)">
+                  <i class="fas fa-heart"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quantity Controls -->
+            <div class="item-quantity d-flex align-items-center">
+              <div class="quantity-controls d-flex align-items-center">
+                <button class="btn-quantity" style="cursor: pointer;" (click)="decreaseQuantity(item)" [disabled]="item.quantity <= 1">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <span class="quantity-value mx-2">{{ item.quantity }}</span>
+                <button class="btn-quantity" style="cursor: pointer;" (click)="increaseQuantity(item)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Item Price -->
+            <div class="item-price text-end">
+              <div class="price-amount fw-bold">{{ (item.price * item.quantity) | currency:'USD' }}</div>
+              <div class="price-unit text-muted small">{{ item.price | currency:'USD' }} each</div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary mt-4">
+        <app-order-totals-component></app-order-totals-component>
+
+        <div class="checkout-actions mt-4 d-flex flex-wrap gap-3">
+          <button class="btn-checkout" routerLink="/checkout">
+            <i class="fas fa-lock me-2"></i>
+            Proceed to Checkout
+          </button>
+          <button class="btn-continue" routerLink="/home">
+            <i class="fas fa-shopping-bag me-2"></i>
+            Continue Shopping
+          </button>
+        </div>
+
+        <div class="security-notice mt-3 text-muted small">
+          <i class="fas fa-shield-alt text-success me-2"></i>
+          Secure checkout • 256-bit SSL encryption
+        </div>
+      </div>
+    </div>
+  }
+</div>

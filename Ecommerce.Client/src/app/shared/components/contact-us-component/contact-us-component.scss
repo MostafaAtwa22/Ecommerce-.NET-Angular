@@ -1,0 +1,249 @@
+.contact-section {
+  background: white;
+  padding: 3rem 0;
+
+  .text-center {
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #0c111d;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    p {
+      font-size: 0.875rem;
+      color: #6a6f73;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+}
+
+.contact-info-card {
+  background: white;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #f7f9fa;
+
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .info-icon {
+      width: 40px;
+      height: 40px;
+      background: #f7f9fa;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5624d0;
+      font-size: 1rem;
+      flex-shrink: 0;
+      border: 1px solid rgba(86, 36, 208, 0.1);
+    }
+
+    .info-content {
+      h5 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #0c111d;
+        margin-bottom: 0.25rem;
+      }
+
+      p {
+        font-size: 0.875rem;
+        color: #6a6f73;
+        line-height: 1.4;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.contact-form-card {
+  background: white;
+  border: 1px solid #d1d7dc;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+
+  .form-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0c111d;
+    margin-bottom: 0.375rem;
+    display: block;
+  }
+
+  .form-control {
+    border: 1px solid #d1d7dc;
+    border-radius: 4px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    color: #0c111d;
+    background: white;
+    transition: all 0.2s ease;
+    width: 100%;
+
+    &:focus {
+      outline: none;
+      border-color: #5624d0;
+      box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+    }
+
+    &::placeholder {
+      color: #6a6f73;
+    }
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 120px;
+  }
+}
+
+.btn-primary {
+  background: #5624d0;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover:not(:disabled) {
+    background: #401b9c;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .fa-spinner {
+    margin-right: 0.5rem;
+  }
+}
+
+.alert-success {
+  background: #f7f9fa;
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1rem;
+
+  .fa-circle-check {
+    color: #1e6055;
+    margin-right: 0.5rem;
+  }
+
+  strong {
+    color: #0c111d;
+    font-weight: 600;
+  }
+
+  p {
+    color: #6a6f73;
+    font-size: 0.875rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .btn-close {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 2rem 0;
+
+    .text-center {
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  }
+
+  .contact-info-card,
+  .contact-form-card {
+    padding: 1.25rem;
+  }
+
+  .row.g-5 {
+    gap: 1.5rem !important;
+  }
+
+  .info-item {
+    flex-direction: row;
+    text-align: left;
+
+    .info-icon {
+      align-self: flex-start;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-section {
+    padding: 1.5rem 0;
+
+    .text-center {
+      h1 {
+        font-size: 1.25rem;
+      }
+    }
+  }
+
+  .contact-info-card,
+  .contact-form-card {
+    padding: 1rem;
+  }
+
+  .info-item {
+    gap: 0.75rem;
+
+    .info-icon {
+      width: 36px;
+      height: 36px;
+      font-size: 0.875rem;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .btn-primary {
+    padding: 0.625rem 1rem;
+  }
+}

@@ -1,0 +1,338 @@
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Account.Read'">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-users">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalUsers | number }}</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Roles.Read'">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-roles">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalRoles | number }}</h3>
+          <p>Total Roles</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Orders.Read'">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-orders">
+          <i class="fas fa-shopping-bag"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalOrders | number }}</h3>
+          <p>Total Orders</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Products.Read'">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-products">
+          <i class="fas fa-box-open"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalProducts | number }}</h3>
+          <p>Total Products</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="row g-4 mb-5">
+    <!-- Orders Chart -->
+    <div class="col-12" *hasPermission="'Permissions.Orders.Read'">
+      <div class="chart-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-chart-line me-2"></i>Orders Overview
+          </h5>
+          <div class="chart-period">
+            <select class="form-select modern-select" [(ngModel)]="selectedPeriod" (change)="updateOrdersChart()">
+              <option value="7">Last 7 Days</option>
+              <option value="30">Last 30 Days</option>
+              <option value="90">Last 90 Days</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas #ordersChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Distribution Chart -->
+    <div class="col-12" *hasPermission="'Permissions.Products.Read'">
+      <div class="chart-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-chart-pie me-2"></i>Products Distribution
+          </h5>
+          <div class="chart-type">
+            <select class="form-select modern-select" [(ngModel)]="chartType" (change)="updateDistributionChart()">
+              <option value="brand">By Brand</option>
+              <option value="type">By Type</option>
+            </select>
+          </div>
+        </div>
+        <div class="chart-wrapper">
+          <canvas #distributionChart></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tables Row -->
+  <div class="row g-4">
+    <!-- Recent Products Table -->
+    <div class="col-12" *hasPermission="'Permissions.Products.Read'">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-boxes me-2"></i>Recent Products
+          </h5>
+          <span class="badge bg-primary">{{ recentProducts.length }} products</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingProducts) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading products...</p>
+          </div>
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Product</th>
+                <th scope="col" class="fw-bold">Brand</th>
+                <th scope="col" class="fw-bold">Type</th>
+                <th scope="col" class="fw-bold">Price</th>
+                <th scope="col" class="fw-bold">Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (recentProducts.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-5 empty-state">
+                  <i class="fas fa-box-open fa-2x mb-3 text-muted"></i>
+                  <h6>No Products Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (product of recentProducts; track product.id) {
+              <tr class="fade-item">
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (product.pictureUrl) {
+                    <img [src]="product.pictureUrl" alt="{{ product.name }}" class="product-thumb me-3">
+                    }
+                    <div>
+                      <h6 class="mb-0">{{ product.name }}</h6>
+                      <small class="text-muted">Added {{ formatDate(product.createdAt) }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-info text-dark">
+                    {{ product.productBrandName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-secondary text-dark">
+                    {{ product.productTypeName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <strong>${{ product.price | number:'1.2-2' }}</strong>
+                </td>
+                <td>
+                  <div class="stock-indicator">
+                    @if (product.quantity > 10) {
+                    <span class="badge badge-success">{{ product.quantity }} in stock</span>
+                    } @else if (product.quantity > 0) {
+                    <span class="badge badge-warning">Low stock: {{ product.quantity }}</span>
+                    } @else {
+                    <span class="badge badge-danger">Out of stock</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Bought Products Table -->
+    <div class="col-12" *hasPermission="'Permissions.Products.Read'">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-star me-2"></i>Top 5 Bought Products
+          </h5>
+          <span class="badge bg-primary">{{ topBoughtProducts.length }} products</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingTopBought) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading top products...</p>
+          </div>
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Product</th>
+                <th scope="col" class="fw-bold">Brand</th>
+                <th scope="col" class="fw-bold">Type</th>
+                <th scope="col" class="fw-bold">Bought Quantity</th>
+                <th scope="col" class="fw-bold">Total Quantity</th>
+                <th scope="col" class="fw-bold">Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (topBoughtProducts.length === 0) {
+              <tr>
+                <td colspan="6" class="text-center py-5 empty-state">
+                  <i class="fas fa-star fa-2x mb-3 text-muted"></i>
+                  <h6>No Products Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (product of topBoughtProducts; track product.id) {
+              <tr class="fade-item">
+                <td>
+                  <div class="d-flex align-items-center">
+                    @if (product.pictureUrl) {
+                    <img [src]="product.pictureUrl" alt="{{ product.name }}" class="product-thumb me-3">
+                    }
+                    <div>
+                      <h6 class="mb-0">{{ product.name }}</h6>
+                      <small class="text-muted">${{ product.price | number:'1.2-2' }}</small>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge badge-info text-dark">
+                    {{ product.productBrandName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge badge-secondary text-dark">
+                    {{ product.productTypeName || 'N/A' }}
+                  </span>
+                </td>
+                <td>
+                  <strong class="text-primary">{{ product.boughtQuantity | number }}</strong>
+                </td>
+                <td>
+                  <span class="text-muted">{{ product.quantity | number }}</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="progress me-2" style="width: 100px; height: 20px;">
+                      <div class="progress-bar" [ngClass]="{
+                                 'bg-success': getBoughtPercentage(product) >= 70,
+                                 'bg-warning': getBoughtPercentage(product) >= 40 && getBoughtPercentage(product) < 70,
+                                 'bg-danger': getBoughtPercentage(product) < 40
+                               }" [style.width.%]="getBoughtPercentage(product)" role="progressbar">
+                      </div>
+                    </div>
+                    <span class="fw-bold">{{ getBoughtPercentage(product) | number:'1.1-1' }}%</span>
+                  </div>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
+      </div>
+    </div>
+    <!-- Recent Orders Table -->
+    <div class="col-12" *hasPermission="'Permissions.Orders.Read'">
+      <div class="table-container card-shadow p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h5 class="fw-bold mb-0">
+            <i class="fas fa-shopping-bag me-2"></i>Recent Orders
+          </h5>
+          <span class="badge bg-primary">{{ recentOrders.length }} orders</span>
+        </div>
+
+        <div class="table-responsive">
+          @if (loadingOrders) {
+          <div class="loading-wrapper">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading orders...</p>
+          </div>
+          } @else {
+          <table class="table table-hover mb-0">
+            <thead>
+              <tr>
+                <th scope="col" class="fw-bold">Order ID</th>
+                <th scope="col" class="fw-bold">Customer</th>
+                <th scope="col" class="fw-bold">Date</th>
+                <th scope="col" class="fw-bold">Amount</th>
+                <th scope="col" class="fw-bold">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (recentOrders.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-5 empty-state">
+                  <i class="fas fa-shopping-bag fa-2x mb-3 text-muted"></i>
+                  <h6>No Orders Found</h6>
+                </td>
+              </tr>
+              } @else {
+              @for (order of recentOrders; track order.id) {
+              <tr class="fade-item">
+                <td>
+                  <strong>#{{ order.id }}</strong>
+                </td>
+                <td>
+                  <h6 class="mb-0">{{ order.firstName }} {{ order.lastName }}</h6>
+                </td>
+                <td>
+                  <div class="text-muted">
+                    {{ formatDate(order.orderDate) }}
+                  </div>
+                </td>
+                <td>
+                  <strong>${{ order.total | number:'1.2-2' }}</strong>
+                </td>
+                <td>
+                  <span class="badge {{ getStatusBadgeClass(order.status) }}">
+                    <i class="fas {{ getStatusIcon(order.status) }} me-1"></i>
+                    {{ getStatusLabel(order.status) }}
+                  </span>
+                </td>
+              </tr>
+              }
+              }
+            </tbody>
+          </table>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

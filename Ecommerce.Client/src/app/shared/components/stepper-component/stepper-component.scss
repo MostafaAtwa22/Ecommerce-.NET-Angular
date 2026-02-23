@@ -1,0 +1,258 @@
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.stepper-header {
+  margin-bottom: 2rem;
+}
+
+.stepper-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  cursor: pointer;
+}
+
+.step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #d1d7dc;
+  color: #6a6f73;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.step-content {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.step-label {
+  font-size: 0.75rem;
+  color: #6a6f73;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.step-connector {
+  position: absolute;
+  top: 16px;
+  left: calc(50% + 16px);
+  right: -50%;
+  height: 1px;
+  background: #d1d7dc;
+  z-index: 0;
+  transition: background-color 0.2s ease;
+}
+
+/* Active step styling */
+.step.active .step-circle {
+  background: #5624d0;
+  border-color: #5624d0;
+  color: white;
+}
+
+.step.active .step-label {
+  color: #0c111d;
+  font-weight: 600;
+}
+
+/* Completed step styling */
+.step.completed .step-circle {
+  background: #1e6055;
+  border-color: #1e6055;
+  color: white;
+}
+
+.step.completed .step-label {
+  color: #1e6055;
+  font-weight: 500;
+}
+
+.step.completed .step-connector {
+  background: #1e6055;
+}
+
+/* Error step styling */
+.step.error .step-circle {
+  background: #c91a1a;
+  border-color: #c91a1a;
+  color: white;
+}
+
+.step.error .step-label {
+  color: #c91a1a;
+  font-weight: 600;
+}
+
+.step.error .step-connector {
+  background: #c91a1a;
+}
+
+/* Pending step styling */
+.step.pending .step-circle {
+  background: white;
+  border-color: #d1d7dc;
+  color: #6a6f73;
+}
+
+.step.pending .step-label {
+  color: #6a6f73;
+}
+
+/* Stepper Content */
+.stepper-content {
+  width: 100%;
+  margin: 1.5rem 0;
+  min-height: 200px;
+}
+
+/* Stepper Actions */
+.stepper-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.btn {
+  border: 1px solid #d1d7dc;
+  border-radius: 4px;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  i {
+    font-size: 0.875rem;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-secondary {
+  background: white;
+  color: #6a6f73;
+
+  &:hover:not(:disabled) {
+    background: #f7f9fa;
+    color: #0c111d;
+  }
+}
+
+.btn-primary {
+  background: #5624d0;
+  color: white;
+  border-color: #5624d0;
+
+  &:hover:not(:disabled) {
+    background: #401b9c;
+  }
+}
+
+.btn-success {
+  background: #1e6055;
+  color: white;
+  border-color: #1e6055;
+
+  &:hover:not(:disabled) {
+    background: #164c44;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stepper-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .step {
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .step-connector {
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    right: auto;
+    width: 1px;
+    height: 1.5rem;
+    transform: translateX(-50%);
+  }
+
+  .step-circle {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .step-label {
+    text-align: left;
+    margin: 0;
+  }
+
+  .stepper-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .stepper-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .stepper-content {
+    margin: 1rem 0;
+    min-height: 150px;
+  }
+
+  .step-label {
+    font-size: 0.6875rem;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+
+    .step-content {
+      font-size: 0.6875rem;
+    }
+  }
+}

@@ -1,0 +1,201 @@
+<div class="position-relative d-flex flex-column h-100 w-100 bg-white">
+  @if (isLoading) {
+  <!-- Loading Screen - Purple Theme -->
+  <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
+    <div class="spinner-border text-primary mb-3" role="status"></div>
+    <h6 class="text-muted">Loading conversation...</h6>
+  </div>
+  }
+  @else if (_chatService.currentOpenChat()) {
+  <!-- Chat Header -->
+  <div class="d-flex justify-content-between align-items-center px-4 py-2 border-bottom clickable-header"
+    style="height: 64px;" (click)="toggleRightSidebar()" role="button" tabindex="0"
+    aria-label="Toggle user information">
+
+    <div class="d-flex align-items-center gap-3">
+      <!-- Mobile Back Button -->
+      <button class="btn btn-sm btn-light d-md-none rounded-circle me-1"
+        (click)="toggleLeftSidebar(); $event.stopPropagation()" aria-label="Back to chats">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+
+      <!-- User Avatar with Online Status -->
+      <div class="position-relative">
+        <img
+          [src]="getAvatar(_chatService.currentOpenChat()?.profilePictureUrl, _chatService.currentOpenChat()?.gender)"
+          (error)="setDefaultAvatar($event, _chatService.currentOpenChat()?.gender)"
+          [alt]="`${_chatService.currentOpenChat()?.firstName} ${_chatService.currentOpenChat()?.lastName}`"
+          class="rounded-circle" loading="eager">
+
+        @if (_chatService.currentOpenChat()?.isOnline) {
+        <span class="position-absolute bg-success border border-white rounded-circle"
+          style="width: 12px; height: 12px; bottom: 2px; right: 2px;" title="Online"></span>
+        }
+      </div>
+
+      <!-- User Info -->
+      <div>
+        <h6 class="fw-bold text-dark mb-0">
+          {{ (_chatService.currentOpenChat()?.firstName + ' ' + _chatService.currentOpenChat()?.lastName) | titlecase }}
+        </h6>
+
+        @if (_chatService.isUserTyping(_chatService.currentOpenChat()?.userName)) {
+        <small class="text-success fw-bold">typing...</small>
+        } @else {
+        <small class="text-muted">
+          {{ _chatService.status(_chatService.currentOpenChat()?.userName!) }}
+        </small>
+        }
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="d-flex align-items-center gap-2 m-5">
+      @if (showMessageSearch) {
+      <div class="position-relative">
+        <input type="text" class="form-control rounded-pill ps-3 pe-5" placeholder="Search..."
+          [(ngModel)]="messageSearchTerm" (input)="onMessageSearch()" autoFocus>
+        <button class="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y text-muted me-1"
+          (click)="toggleMessageSearch()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      } @else {
+      <button class="btn btn-light rounded-circle p-2 d-none d-sm-flex" title="Search messages"
+        aria-label="Search messages" (click)="toggleMessageSearch()">
+        <i class="fas fa-search"></i>
+      </button>
+      }
+      <button class="btn btn-light rounded-circle p-2" (click)="toggleRightSidebar(); $event.stopPropagation()"
+        title="Chat information" aria-label="Toggle chat information">
+        <i class="fas fa-columns"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Body - ALWAYS SCROLL TO BOTTOM ON LOAD -->
+  <div #chatContainer class="flex-grow-1 position-relative overflow-hidden">
+    <app-chat-box class="h-100 w-100 d-block" (editMessage)="onEditMessage($event)">
+    </app-chat-box>
+  </div>
+
+  <!-- Chat Input -->
+  <div class="px-4 py-3 bg-white border-top position-relative">
+    <!-- Emoji Picker -->
+    @if (showEmojiPicker) {
+    <div class="emoji-picker-container shadow-lg" (click)="$event.stopPropagation()">
+      <emoji-mart (emojiSelect)="addEmoji($event)" set="apple" [perLine]="8" [showPreview]="false" [enableSearch]="true"
+        searchPlaceholder="Search emojis...">
+      </emoji-mart>
+    </div>
+    }
+
+    <!-- Edit Mode Indicator -->
+    @if (editingMessageId) {
+    <div
+      class="d-flex align-items-center justify-content-between mb-2 px-3 py-2 bg-light rounded text-primary border-start border-4 border-primary">
+      <div class="d-flex flex-column">
+        <span class="fw-bold small">
+          <i class="fas fa-pen me-1"></i>Editing Message
+        </span>
+        <span class="text-truncate small text-secondary" style="max-width: 250px;">
+          {{ message }}
+        </span>
+      </div>
+      <button class="btn btn-sm btn-link text-secondary p-1" (click)="cancelEdit()" aria-label="Cancel editing">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    }
+
+    <!-- Input Area -->
+    <div class="d-flex align-items-end gap-2">
+      @if (isRecording) {
+      <!-- WhatsApp Recording UI -->
+      <div
+        class="flex-grow-1 d-flex align-items-center bg-light rounded-pill px-3 py-2 animate__animated animate__fadeIn whatsapp-recording-bar shadow-sm">
+        <button class="btn btn-link text-muted p-2 me-2" (click)="cancelRecording()" title="Cancel">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+
+        <div class="recording-status d-flex align-items-center flex-grow-1">
+          <div class="recording-dot me-2"></div>
+          <span class="text-dark fw-bold small">{{ formatDuration(recordingDuration) }}</span>
+          <div class="recording-visualizer ms-3 flex-grow-1 d-none d-sm-block">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary rounded-circle shadow-sm" (click)="stopRecording()" title="Send">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+      } @else {
+      <!-- Emoji Button -->
+      <button class="btn btn-link text-secondary p-2" (click)="toggleEmojiPicker(); $event.stopPropagation()"
+        [class.active]="showEmojiPicker" type="button" aria-label="Insert emoji">
+        <i class="far fa-smile"></i>
+      </button>
+
+      <!-- Attachment Button (Desktop) -->
+      <button class="btn btn-link text-secondary p-2 d-none d-sm-flex" type="button" aria-label="Attach file"
+        (click)="triggerFileInput()" [disabled]="isUploading">
+        @if (isUploading) {
+        <span class="spinner-border spinner-border-sm" role="status"></span>
+        } @else {
+        <i class="fas fa-paperclip"></i>
+        }
+      </button>
+
+      <!-- Hidden File Input -->
+      <input type="file" id="chat-file-input" class="d-none" (change)="onFileSelected($event)">
+
+      <!-- Message Input -->
+      <div class="flex-grow-1 position-relative">
+        <textarea [(ngModel)]="message" (input)="onTyping(); autoResize($event)"
+          class="form-control border-0 bg-light chat-textarea" placeholder="Write a message..." rows="1"
+          (keydown)="onKeyDown($event)" aria-label="Message input">
+          </textarea>
+      </div>
+
+      <!-- Send/Edit Button -->
+      @if (message.trim().length > 0 || editingMessageId) {
+      <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+        (click)="sendMessage()" [attr.aria-label]="editingMessageId ? 'Update message' : 'Send message'" type="button">
+        @if (editingMessageId) {
+        <i class="fas fa-check"></i>
+        } @else {
+        <i class="fas fa-paper-plane"></i>
+        }
+      </button>
+      } @else {
+      <!-- Voice Recording Button -->
+      <button class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+        type="button" aria-label="Record voice message" title="Record voice message" (click)="startRecording()">
+        <i class="fas fa-microphone"></i>
+      </button>
+      }
+      }
+    </div>
+  </div>
+  }
+  @else {
+  <!-- Empty Chat State -->
+  <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+    <div class="text-center p-4">
+      <div class="mb-4">
+        <span class="badge bg-secondary rounded-pill px-4 py-2">
+          <i class="fas fa-comments me-2"></i>
+          Select a chat to start messaging
+        </span>
+      </div>
+      <p class="text-muted small mb-0">
+        Choose a conversation from the sidebar to view messages
+      </p>
+    </div>
+  </div>
+  }
+</div>

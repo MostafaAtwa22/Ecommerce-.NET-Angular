@@ -1,0 +1,43 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-lg-8 col-12">
+      <app-stepper-component
+        [linearModeSelected]="false"
+        #appStepper
+        [addressStepValid]="addressStepValid"
+        [deliveryStepValid]="deliveryStepValid"
+        [paymentStepValid]="paymentStepValid"
+        [addressStepAttempted]="addressStepAttempted"
+        [deliveryStepAttempted]="deliveryStepAttempted"
+        [paymentStepAttempted]="paymentStepAttempted"
+        [addressForm]="addressForm"
+        [deliveryForm]="deliveryForm"
+        [paymentIntentCreated]="paymentIntentCreated"
+        [paymentComponent]="paymentComponentRef"
+        [continuePermission]="'Permissions.Orders.Create'"
+        [submitPermission]="'Permissions.Orders.Create'"
+        (stepChange)="onStepChange()"
+        [createPaymentIntent]="createPaymentIntent.bind(this)"
+      >
+        <cdk-step [label]="'Address'">
+          <app-checkout-address-component [addressForm]="addressForm">
+          </app-checkout-address-component>
+        </cdk-step>
+        <cdk-step [label]="'Delivery'">
+          <app-checkout-delievery-component [checkoutForm]="deliveryForm">
+          </app-checkout-delievery-component>
+        </cdk-step>
+        <cdk-step [label]="'Review'">
+          <app-checkout-review-component></app-checkout-review-component>
+        </cdk-step>
+        <cdk-step [label]="'Payment'">
+          <app-checkout-payment-component #paymentComponentRef [paymentForm]="paymentForm">
+          </app-checkout-payment-component>
+        </cdk-step>
+      </app-stepper-component>
+    </div>
+    <div class="col-lg-4 col-12 mt-lg-0 mt-5">
+      <app-order-totals-component></app-order-totals-component>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<app-animated-overlay-component></app-animated-overlay-component>
+<form [formGroup]="form" (ngSubmit)="submit()" class="verify-form" style="margin-top: 150px !important;">
+  <div class="form-header">
+    <img src="assets/navbar/logo.png" alt="App Logo" class="form-logo">
+    <h2 class="form-title">Verify Your Email</h2>
+    <p class="form-subtitle">Enter the verification code sent to your email</p>
+  </div>
+
+  <!-- Email Field (Read-only) -->
+  <div class="form-group">
+    <label for="email" class="form-label">
+      <i class="fas fa-envelope"></i>
+      Email Address
+    </label>
+    <div class="input-container">
+      <input
+        type="email"
+        id="email"
+        formControlName="email"
+        class="form-control"
+        readonly
+        [class.valid]="true"
+      />
+      <div class="input-icons">
+        <i class="fas fa-check-circle valid-icon"></i>
+      </div>
+    </div>
+    <p class="field-hint">
+      <i class="fas fa-info-circle"></i>
+      This is the email address you used for registration
+    </p>
+  </div>
+
+  <!-- Verification Code Field -->
+  <div class="form-group">
+    <label for="code" class="form-label">
+      <i class="fas fa-key"></i>
+      Verification Code
+    </label>
+    <div class="input-container">
+      <input
+        type="text"
+        id="code"
+        formControlName="code"
+        placeholder="Enter 6-digit verification code"
+        class="form-control"
+        autofocus
+        [class.valid]="code?.valid && code?.touched"
+        [class.invalid]="code?.invalid && code?.touched"
+      />
+      <div class="input-icons">
+        <i class="fas fa-check-circle valid-icon" *ngIf="code?.valid && code?.touched"></i>
+        <i class="fas fa-exclamation-circle invalid-icon" *ngIf="code?.invalid && code?.touched"></i>
+      </div>
+    </div>
+    <div class="error-messages" *ngIf="code?.touched && code?.invalid">
+      <small class="error-message" *ngIf="code?.errors?.['required']">
+        <i class="fas fa-exclamation-triangle"></i>
+        Verification code is required
+      </small>
+    </div>
+  </div>
+
+  <!-- Code Format Hint -->
+  <div class="code-hint">
+    <div class="hint-icon">
+      <i class="fas fa-lightbulb"></i>
+    </div>
+    <div class="hint-content">
+      <p class="hint-title">Where to find your code?</p>
+      <p class="hint-text">Check your email inbox (and spam folder) for a 6-digit verification code</p>
+    </div>
+  </div>
+
+  <!-- Error Display -->
+  <div class="alert alert-error" *ngIf="error">
+    <i class="fas fa-exclamation-circle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="btn-verify"
+    [disabled]="form.invalid || loading"
+    [class.loading]="loading"
+  >
+    <span class="btn-content">
+      <i class="fas fa-check-circle" *ngIf="!loading"></i>
+      <i class="fas fa-spinner fa-spin" *ngIf="loading"></i>
+      {{ loading ? 'Verifying...' : 'Verify Email' }}
+    </span>
+  </button>
+
+  <!-- Resend Code Option -->
+  <div class="resend-section">
+    <p class="resend-text">Didn't receive the code?</p>
+    <button type="button" class="btn-resend" (click)="resendCode()">
+      <i class="fas fa-redo"></i>
+      Resend Verification Code
+    </button>
+  </div>
+
+  <!-- Back to Login -->
+  <div class="back-link">
+    <a routerLink="/login" class="back-text">
+      <i class="fas fa-arrow-left"></i>
+      Back to Login
+    </a>
+  </div>
+</form>

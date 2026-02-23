@@ -1,0 +1,173 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="delivery-form">
+  <!-- Method Name Field -->
+  <div class="mb-3">
+    <label for="shortName" class="form-label fw-semibold">Method Name</label>
+    <input
+      type="text"
+      id="shortName"
+      class="form-control"
+      formControlName="shortName"
+      [class.is-invalid]="shortName?.invalid && shortName?.touched"
+      placeholder="e.g., Standard Shipping, Express Delivery"
+      maxlength="{{ MAX_NAME_LENGTH }}"
+    >
+    @if (shortName?.invalid && shortName?.touched) {
+      <div class="invalid-feedback">
+        @if (shortName?.errors?.['required']) {
+          <span>Method name is required</span>
+        }
+        @if (shortName?.errors?.['minlength']) {
+          <span>Method name must be at least 3 characters</span>
+        }
+        @if (shortName?.errors?.['maxlength']) {
+          <span>Method name cannot exceed {{ MAX_NAME_LENGTH }} characters</span>
+        }
+        @if (shortName?.errors?.['pattern']) {
+          <span>Only letters, numbers, spaces, and hyphens are allowed</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Description Field -->
+  <div class="mb-3">
+    <label for="description" class="form-label fw-semibold">Description</label>
+    <textarea
+      id="description"
+      class="form-control"
+      rows="4"
+      formControlName="description"
+      [class.is-invalid]="description?.invalid && description?.touched"
+      placeholder="Describe this delivery method..."
+      maxlength="{{ MAX_DESC_LENGTH }}"
+    ></textarea>
+    @if (description?.invalid && description?.touched) {
+      <div class="invalid-feedback">
+        @if (description?.errors?.['required']) {
+          <span>Description is required</span>
+        }
+        @if (description?.errors?.['minlength']) {
+          <span>Description must be at least 10 characters</span>
+        }
+        @if (description?.errors?.['maxlength']) {
+          <span>Description cannot exceed {{ MAX_DESC_LENGTH }} characters</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Delivery Time & Price Row -->
+  <div class="row g-3 mb-3">
+    <!-- Delivery Time -->
+    <div class="col-md-6">
+      <label for="deliveryTime" class="form-label fw-semibold">Delivery Time (Days)</label>
+      <input
+        type="number"
+        id="deliveryTime"
+        class="form-control"
+        formControlName="deliveryTime"
+        [class.is-invalid]="deliveryTime?.invalid && deliveryTime?.touched"
+        min="{{ MIN_DELIVERY_TIME }}"
+        max="{{ MAX_DELIVERY_TIME }}"
+        step="1"
+      >
+      @if (deliveryTime?.invalid && deliveryTime?.touched) {
+        <div class="invalid-feedback">
+          @if (deliveryTime?.errors?.['required']) {
+            <span>Delivery time is required</span>
+          }
+          @if (deliveryTime?.errors?.['min']) {
+            <span>Delivery time must be at least {{ MIN_DELIVERY_TIME }} day</span>
+          }
+          @if (deliveryTime?.errors?.['max']) {
+            <span>Delivery time cannot exceed {{ MAX_DELIVERY_TIME }} days</span>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Price -->
+    <div class="col-md-6">
+      <label for="price" class="form-label fw-semibold">Price ($)</label>
+      <input
+        type="number"
+        id="price"
+        class="form-control"
+        formControlName="price"
+        [class.is-invalid]="price?.invalid && price?.touched"
+        min="{{ MIN_PRICE }}"
+        max="{{ MAX_PRICE }}"
+        step="0.5"
+      >
+      @if (price?.invalid && price?.touched) {
+        <div class="invalid-feedback">
+          @if (price?.errors?.['required']) {
+            <span>Price is required</span>
+          }
+          @if (price?.errors?.['min']) {
+            <span>Price must be at least ${{ MIN_PRICE }}</span>
+          }
+          @if (price?.errors?.['max']) {
+            <span>Price cannot exceed ${{ MAX_PRICE }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Summary Card (Optional - Only show if you want the preview) -->
+  @if (form.valid) {
+    <div class="card border-light mb-3">
+      <div class="card-header bg-light">
+        <h6 class="mb-0">Preview</h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <small class="text-muted">Method Name</small>
+            <p class="fw-bold mb-2">{{ shortName?.value }}</p>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted">Cost</small>
+            <p class="fw-bold mb-2 {{ price?.value === 0 ? 'text-success' : '' }}">
+              @if (price?.value === 0) {
+                FREE
+              } @else {
+                ${{ price?.value | number:'1.2-2' }}
+              }
+            </p>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted">Delivery Time</small>
+            <p class="fw-bold mb-2">{{ deliveryTime?.value }} days</p>
+          </div>
+        </div>
+        <hr class="my-2">
+        <small class="text-muted">Description</small>
+        <p class="mb-0">{{ description?.value }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- Form Actions -->
+  <div class="modal-footer mt-4 pt-3 border-top">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="form.invalid"
+    >
+      @if (isEditing) {
+        <i class="fas fa-save me-2"></i>Update Delivery Method
+      } @else {
+        <i class="fas fa-plus-circle me-2"></i>Create Delivery Method
+      }
+    </button>
+  </div>
+</form>

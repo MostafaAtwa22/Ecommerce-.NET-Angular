@@ -1,0 +1,268 @@
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-3 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-total">
+          <i class="fas fa-truck"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ totalMethods | number }}</h3>
+          <p>Total Methods</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-price">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stat-content">
+          <h3>${{ averagePrice | number:'1.2-2' }}</h3>
+          <p>Avg. Price</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-time">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ averageDeliveryTime | number:'1.0-0' }} days</h3>
+          <p>Avg. Delivery Time</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stat-card card-shadow">
+        <div class="stat-icon stat-free">
+          <i class="fas fa-gift"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ freeShippingCount | number }}</h3>
+          <p>Free Shipping</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar card-shadow mb-4">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <!-- Add Method Button -->
+        <button
+          *hasPermission="'Permissions.DeliveryMethods.Create'"
+          class="btn btn-primary d-flex align-items-center"
+          (click)="openAddMethod()"
+        >
+          <i class="fas fa-plus-circle me-2"></i>
+          Add Delivery Method
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-bar d-flex flex-grow-1">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name or description..."
+          [(ngModel)]="searchQuery"
+          (keyup.enter)="onSearch()"
+        />
+        <button class="btn btn-dark ms-2" (click)="onSearch()">
+          <i class="fa fa-search"></i>
+        </button>
+        @if (searchQuery) {
+          <button class="btn btn-outline-secondary ms-2" (click)="searchQuery = ''; onSearch()">
+            <i class="fa fa-times"></i>
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Methods Table -->
+  <div class="delivery-table-container card-shadow">
+    <div class="card-header d-flex justify-content-between align-items-center p-3">
+      <h4 class="fw-bold mb-0">
+        <i class="fas fa-shipping-fast me-2"></i>Delivery Methods
+      </h4>
+      <div class="table-info">
+        <span class="badge bg-primary">{{ totalMethods }} methods</span>
+        @if (fastestDeliveryTime > 0) {
+          <span class="badge bg-success ms-2">Fastest: {{ fastestDeliveryTime }} days</span>
+        }
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      @if (loading) {
+        <div class="loading-wrapper">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Loading delivery methods...</p>
+        </div>
+      } @else if (errorMessage) {
+        <div class="text-center py-5 empty-state">
+          <i class="fas fa-exclamation-triangle fa-2x mb-3 text-danger"></i>
+          <h5 class="text-danger">Error Loading Data</h5>
+          <p class="text-muted mb-3">{{ errorMessage }}</p>
+          <button class="btn btn-outline-dark px-4" (click)="loadDeliveryMethods()">
+            <i class="fas fa-redo me-2"></i>Retry
+          </button>
+        </div>
+      } @else {
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th scope="col" class="fw-bold ps-4">
+                <a href="javascript:void(0)" class="text-decoration-none text-dark" (click)="onSort('shortName')">
+                  Method
+                  <i class="fas {{ getSortIcon('shortName') }} ms-1"></i>
+                </a>
+              </th>
+              <th scope="col" class="fw-bold">
+                <a href="javascript:void(0)" class="text-decoration-none text-dark" (click)="onSort('price')">
+                  Price
+                  <i class="fas {{ getSortIcon('price') }} ms-1"></i>
+                </a>
+              </th>
+              <th scope="col" class="fw-bold">
+                <a href="javascript:void(0)" class="text-decoration-none text-dark" (click)="onSort('deliveryTime')">
+                  Delivery Time
+                  <i class="fas {{ getSortIcon('deliveryTime') }} ms-1"></i>
+                </a>
+              </th>
+              <th scope="col" class="fw-bold">Description</th>
+              <th scope="col" class="fw-bold text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (filteredMethods.length === 0) {
+              <tr>
+                <td colspan="5" class="text-center py-5 empty-state">
+                  <i class="fas fa-truck fa-2x mb-3 text-muted"></i>
+                  @if (searchQuery) {
+                    <h5>No Matching Methods Found</h5>
+                    <p class="text-muted mb-3">Try a different search term</p>
+                    <button class="btn btn-outline-dark px-4" (click)="searchQuery = ''; onSearch()">
+                      <i class="fas fa-redo me-2"></i>Clear Search
+                    </button>
+                  } @else {
+                    <h5>No Delivery Methods</h5>
+                    <p class="text-muted mb-3">Get started by adding your first delivery method</p>
+                    <button class="btn btn-outline-dark px-4" (click)="openAddMethod()">
+                      <i class="fas fa-plus me-2"></i>Add Delivery Method
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @else {
+              @for (method of filteredMethods; track method.id) {
+                <tr class="fade-item">
+                  <td class="ps-4">
+                    <div class="d-flex flex-column">
+                      <h6 class="mb-0">
+                        {{ method.shortName }}
+                        @if (method.price === 0) {
+                          <span class="badge bg-success ms-2">FREE</span>
+                        }
+                      </h6>
+                    </div>
+                  </td>
+                  <td>
+                    <strong [class]="getPriceColor(method.price)">
+                      @if (method.price === 0) {
+                        FREE
+                      } @else {
+                        ${{ method.price | number:'1.2-2' }}
+                      }
+                    </strong>
+                  </td>
+                  <td>
+                    <span class="text-muted {{ getDeliveryTimeClass(method.deliveryTime) }}">
+                      <i class="fas fa-clock me-1"></i>
+                      {{ getDeliveryTimeText(method.deliveryTime) }}
+                    </span>
+                  </td>
+                  <td>
+                    <small class="text-muted">
+                      {{ (method.description.length > 80) ? (method.description | slice:0:80) + '...' : method.description }}
+                    </small>
+                  </td>
+                  <td class="text-end pe-4">
+                    <div class="btn-group" role="group">
+                      <button
+                        *hasPermission="'Permissions.DeliveryMethods.Update'"
+                        class="btn btn-sm btn-outline-primary"
+                        title="Edit"
+                        (click)="openEditMethod(method)"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button
+                        *hasPermission="'Permissions.DeliveryMethods.Delete'"
+                        class="btn btn-sm btn-outline-danger"
+                        title="Delete"
+                        (click)="deleteMethod(method)"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <!-- Results Count -->
+    @if (!loading && filteredMethods.length > 0) {
+      <div class="card-footer border-top p-3">
+        <div class="text-muted">
+          Showing {{ filteredMethods.length }} of {{ totalMethods }} delivery methods
+          @if (searchQuery) {
+            <span class="ms-2">
+              <i class="fas fa-search me-1"></i>Filtered by: "{{ searchQuery }}"
+            </span>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Form Modal -->
+  @if (showFormModal) {
+    <div class="modal-backdrop fade show" (click)="closeFormModal()"></div>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              @if (isEditing) {
+                <i class="fas fa-edit me-2"></i>Edit Delivery Method
+              } @else {
+                <i class="fas fa-plus-circle me-2"></i>Add New Delivery Method
+              }
+            </h5>
+            <button type="button" class="btn-close" (click)="closeFormModal()" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-3">
+            <app-delivery-method-form
+              [method]="selectedMethod"
+              [isEditing]="isEditing"
+              (submitForm)="onMethodSubmit($event)"
+              (cancel)="closeFormModal()">
+            </app-delivery-method-form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

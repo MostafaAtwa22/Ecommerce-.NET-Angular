@@ -1,0 +1,418 @@
+<section class="section-card">
+  <div class="section-header">
+    <div class="header-content">
+      <p class="eyebrow">Profile Overview</p>
+      <h3>Account Essentials</h3>
+      <p class="subtitle">Click edit next to any field to update your information</p>
+    </div>
+  </div>
+
+  <form [formGroup]="profileForm" class="profile-form">
+    <!-- Personal Information Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-user me-2"></i>
+        Personal Information
+      </div>
+
+      <div class="fields-grid">
+        <!-- First Name -->
+        <div class="field-group" *ngIf="getFieldConfig('firstName') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <input
+                [formControlName]="config.key"
+                [placeholder]="'Enter your ' + config.label.toLowerCase()"
+                [type]="config.type"
+                [class.error]="hasError(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              />
+            </div>
+
+            <div class="field-actions">
+              <!-- Edit Button -->
+              <button
+                *ngIf="!isEditing(config.key) && !isLoading(config.key)"
+                type="button"
+                class="btn-edit"
+                (click)="startEdit(config.key)"
+                title="Edit {{ config.label }}"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <!-- Save and Cancel Buttons -->
+              <ng-container *ngIf="isEditing(config.key) && !isLoading(config.key)">
+                <button
+                  type="button"
+                  class="btn-save"
+                  (click)="saveField(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
+                  title="Save changes"
+                >
+                  <i class="fa fa-check"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel"
+                  (click)="cancelEdit(config.key)"
+                  title="Cancel editing"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </ng-container>
+
+              <!-- Loading State -->
+              <div *ngIf="isLoading(config.key)" class="loading-state">
+                <i class="fa fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+
+        <!-- Last Name -->
+        <div class="field-group" *ngIf="getFieldConfig('lastName') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <input
+                [formControlName]="config.key"
+                [placeholder]="'Enter your ' + config.label.toLowerCase()"
+                [type]="config.type"
+                [class.error]="hasError(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              />
+            </div>
+
+            <div class="field-actions">
+              <button
+                *ngIf="!isEditing(config.key) && !isLoading(config.key)"
+                type="button"
+                class="btn-edit"
+                (click)="startEdit(config.key)"
+                title="Edit {{ config.label }}"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <ng-container *ngIf="isEditing(config.key) && !isLoading(config.key)">
+                <button
+                  type="button"
+                  class="btn-save"
+                  (click)="saveField(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
+                  title="Save changes"
+                >
+                  <i class="fa fa-check"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel"
+                  (click)="cancelEdit(config.key)"
+                  title="Cancel editing"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </ng-container>
+
+              <div *ngIf="isLoading(config.key)" class="loading-state">
+                <i class="fa fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account Details Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-id-card me-2"></i>
+        Account Details
+      </div>
+
+      <div class="fields-grid">
+        <!-- Username -->
+        <div class="field-group full-width" *ngIf="getFieldConfig('userName') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <input
+                [formControlName]="config.key"
+                [placeholder]="'Choose a username'"
+                [type]="config.type"
+                [class.error]="hasError(config.key)"
+                [class.pending]="isFieldPending(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              />
+            </div>
+
+            <div class="field-actions">
+              <button
+                *ngIf="!isEditing(config.key) && !isLoading(config.key)"
+                type="button"
+                class="btn-edit"
+                (click)="startEdit(config.key)"
+                title="Edit {{ config.label }}"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <ng-container *ngIf="isEditing(config.key) && !isLoading(config.key)">
+                <button
+                  type="button"
+                  class="btn-save"
+                  (click)="saveField(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
+                  title="Save changes"
+                >
+                  <i class="fa fa-check"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel"
+                  (click)="cancelEdit(config.key)"
+                  title="Cancel editing"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </ng-container>
+
+              <div *ngIf="isLoading(config.key)" class="loading-state">
+                <i class="fa fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking username availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="field-group full-width" *ngIf="getFieldConfig('email') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <input
+                [formControlName]="config.key"
+                [placeholder]="'your.email@example.com'"
+                [type]="config.type"
+                [class.error]="hasError(config.key)"
+                [class.pending]="isFieldPending(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              />
+            </div>
+
+            <div class="field-actions">
+              <button
+                type="button"
+                class="btn-edit"
+                disabled
+              >
+                <i class="fa fa-mail-reply-all"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Validation Spinner -->
+          <div *ngIf="isFieldPending(config.key)" class="validation-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            <span>Checking email availability...</span>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <div class="form-section">
+      <div class="section-label">
+        <i class="fa fa-phone me-2"></i>
+        Contact Information
+      </div>
+
+      <div class="fields-grid">
+        <!-- Phone Number -->
+        <div class="field-group full-width" *ngIf="getFieldConfig('phoneNumber') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <input
+                [formControlName]="config.key"
+                [placeholder]="'+0201234567890'"
+                [type]="config.type"
+                [class.error]="hasError(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              />
+            </div>
+
+            <div class="field-actions">
+              <button
+                *ngIf="!isEditing(config.key) && !isLoading(config.key)"
+                type="button"
+                class="btn-edit"
+                (click)="startEdit(config.key)"
+                title="Edit {{ config.label }}"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <ng-container *ngIf="isEditing(config.key) && !isLoading(config.key)">
+                <button
+                  type="button"
+                  class="btn-save"
+                  (click)="saveField(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
+                  title="Save changes"
+                >
+                  <i class="fa fa-check"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel"
+                  (click)="cancelEdit(config.key)"
+                  title="Cancel editing"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </ng-container>
+
+              <div *ngIf="isLoading(config.key)" class="loading-state">
+                <i class="fa fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+
+        <!-- Gender -->
+        <div class="field-group full-width" *ngIf="getFieldConfig('gender') as config">
+          <label class="field-label">
+            <i class="fa {{ config.icon }}"></i>
+            {{ config.label }}
+          </label>
+          <div class="field-container" [class.editing]="isEditing(config.key)">
+            <div class="input-wrapper">
+              <select
+                [formControlName]="config.key"
+                [class.error]="hasError(config.key)"
+                [attr.disabled]="!isEditing(config.key) ? '' : null"
+              >
+                <option *ngFor="let option of config.options" [value]="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="field-actions">
+              <button
+                *ngIf="!isEditing(config.key) && !isLoading(config.key)"
+                type="button"
+                class="btn-edit"
+                (click)="startEdit(config.key)"
+                title="Edit {{ config.label }}"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+
+              <ng-container *ngIf="isEditing(config.key) && !isLoading(config.key)">
+                <button
+                  type="button"
+                  class="btn-save"
+                  (click)="saveField(config.key)"
+                  [disabled]="hasError(config.key) || isFieldPending(config.key)"
+                  title="Save changes"
+                >
+                  <i class="fa fa-check"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn-cancel"
+                  (click)="cancelEdit(config.key)"
+                  title="Cancel editing"
+                >
+                  <i class="fa fa-times"></i>
+                </button>
+              </ng-container>
+
+              <div *ngIf="isLoading(config.key)" class="loading-state">
+                <i class="fa fa-spinner fa-spin"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-hint" *ngIf="!hasError(config.key) && !isEditing(config.key) && !isFieldPending(config.key)">
+            {{ config.hint }}
+          </div>
+          <div class="field-error" *ngIf="hasError(config.key)">
+            <i class="fa fa-exclamation-circle"></i>
+            {{ getErrorMessage(config.key) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

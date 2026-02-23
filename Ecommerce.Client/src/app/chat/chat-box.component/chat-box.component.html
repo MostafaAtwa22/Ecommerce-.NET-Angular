@@ -1,0 +1,193 @@
+<div class="chat-box" #chatBox (scroll)="onScroll($event)">
+  <!-- Fake Loading Spinner -->
+  <!-- Load More Button -->
+  @if (_chatService.chatMessages().length > 5 && _chatService.getHasMoreMessages()) {
+  <div class="load-more-container">
+    <button class="load-more-btn" (click)="loadMoreMessages()" [disabled]="_chatService.isLoading()">
+      @if (_chatService.isLoading()) {
+      <div class="load-more-spinner">
+        <div class="custom-spinner small"></div>
+        <span>Loading messages...</span>
+      </div>
+      } @else {
+      <span>Load previous messages</span>
+      }
+    </button>
+  </div>
+  }
+
+  <!-- Chat Messages -->
+  <div class="chat-messages-wrapper">
+    @for (item of displayedMessages(); track item.id) {
+    <!-- Received Message (Other User) -->
+    @if (item.senderId.toString() !== _authService.user()?.id?.toString()) {
+    <div class="d-flex mb-4 align-items-end">
+      <!-- Avatar -->
+      <div class="position-relative me-2">
+        <img
+          [src]="getAvatar(_chatService.currentOpenChat()?.profilePictureUrl, _chatService.currentOpenChat()?.gender)"
+          (error)="setDefaultAvatar($event, _chatService.currentOpenChat()?.gender)"
+          [alt]="`${_chatService.currentOpenChat()?.firstName || 'User'} ${_chatService.currentOpenChat()?.lastName || ''}`"
+          class="rounded-circle border shadow-sm chat-avatar" loading="lazy" />
+      </div>
+
+      <!-- Message Bubble -->
+      <div class="chat-bubble received position-relative ms-2">
+        <div class="chat-arrow-left"></div>
+
+        @if (item.attachmentUrl) {
+        <div class="attachment-container mb-2">
+          @if (isAudio(item.attachmentType, item.attachmentUrl)) {
+          <!-- Received Voice Message (WhatsApp Style) -->
+          <div class="whatsapp-audio-player received">
+            <button class="play-pause-btn" (click)="togglePlay(item)">
+              @if (playingAudioId() === item.id) {
+              <i class="fas fa-pause"></i>
+              } @else {
+              <i class="fas fa-play ps-1"></i>
+              }
+            </button>
+
+            <div class="audio-controls-wrapper">
+              <input type="range" class="audio-seekbar" [value]="audioProgress()[item.id] || 0"
+                (input)="seekAudio(item.id, $event)" step="0.1">
+            </div>
+          </div>
+          } @else if (isImage(item.attachmentType)) {
+          <img [src]="baseUrl + item.attachmentUrl" [alt]="item.attachmentName" class="img-fluid rounded shadow-sm"
+            style="max-width: 250px; cursor: pointer;">
+          } @else {
+          <a [href]="baseUrl + item.attachmentUrl" target="_blank" class="file-attachment shadow-sm">
+            <i class="fas fa-file-alt me-2"></i>
+            <span class="text-truncate">{{ item.attachmentName }}</span>
+          </a>
+          }
+        </div>
+        }
+
+        @if (item.content) {
+        <span class="d-block">{{ item.content }}</span>
+        }
+
+        <div class="d-flex justify-content-end align-items-center mt-1">
+          @if (item.isEdited) {
+          <span class="small text-muted fst-italic me-1">(edited)</span>
+          }
+          <span class="chat-time">{{ item.createdAt | date: 'shortTime' }}</span>
+        </div>
+      </div>
+    </div>
+    } @else {
+    <!-- Sent Message (Current User) -->
+    <div class="d-flex justify-content-end mb-4 align-items-end group-hover">
+      <!-- Actions Dropdown -->
+      <div class="dropdown me-2">
+        <button class="btn btn-sm btn-link text-muted p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false"
+          title="Message actions">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li>
+            <a class="dropdown-item" role="button" (click)="onEditMessage(item)">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item text-danger" role="button" (click)="onDeleteMessage(item.id)">
+              <i class="fas fa-trash"></i> Delete
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Message Bubble -->
+      <div class="chat-bubble sent position-relative me-2 ms-2">
+        <div class="chat-arrow-right"></div>
+
+        @if (item.attachmentUrl) {
+        <div class="attachment-container mb-2 text-end">
+          @if (isAudio(item.attachmentType, item.attachmentUrl)) {
+          <div class="whatsapp-audio-player sent">
+            <button class="play-pause-btn" (click)="togglePlay(item)">
+              @if (playingAudioId() === item.id) {
+              <i class="fas fa-pause"></i>
+              } @else {
+              <i class="fas fa-play ps-1"></i>
+              }
+            </button>
+
+            <div class="audio-controls-wrapper">
+              <input type="range" class="audio-seekbar" [value]="audioProgress()[item.id] || 0"
+                (input)="seekAudio(item.id, $event)" step="0.1">
+            </div>
+          </div>
+          } @else if (isImage(item.attachmentType)) {
+          <img [src]="baseUrl + item.attachmentUrl" [alt]="item.attachmentName" class="img-fluid rounded shadow-sm"
+            style="max-width: 250px; cursor: pointer;">
+          } @else {
+          <a [href]="baseUrl + item.attachmentUrl" target="_blank" class="file-attachment shadow-sm sent-file">
+            <i class="fas fa-file-alt me-2"></i>
+            <span class="text-truncate" style="max-width: 150px;">{{ item.attachmentName }}</span>
+          </a>
+          }
+        </div>
+        }
+
+        @if (item.content) {
+        <span class="d-block">{{ item.content }}</span>
+        }
+
+        <div class="d-flex justify-content-end align-items-center mt-1">
+          @if (item.isEdited) {
+          <span class="small text-white-50 fst-italic me-1">(edited)</span>
+          }
+          <span class="chat-time me-1">{{ item.createdAt | date: 'shortTime' }}</span>
+          @if (item.isRead) {
+          <i class="fas fa-check-double text-primary small" title="Read"></i>
+          } @else if (item.isReceived) {
+          <i class="fas fa-check-double text-white-50 small" title="Delivered"></i>
+          } @else {
+          <i class="fas fa-check text-white-50 small" title="Sent"></i>
+          }
+        </div>
+      </div>
+
+      <!-- Avatar -->
+      <div class="position-relative ms-2">
+        <img [src]="getAvatar(_authService.user()?.profilePicture, _authService.user()?.gender)"
+          (error)="setDefaultAvatar($event, _authService.user()?.gender)"
+          [alt]="`${_authService.user()?.firstName} ${_authService.user()?.lastName || ''}`"
+          class="rounded-circle border shadow-sm chat-avatar" loading="lazy" />
+      </div>
+    </div>
+    }
+    } @empty {
+    <!-- No Messages -->
+    <div class="empty-state">
+      <div class="custom-icon">
+        <i class="fas fa-comments"></i>
+      </div>
+      <h6>No Messages Yet</h6>
+      <p class="small">
+        Start the conversation by sending a message below 💬
+      </p>
+    </div>
+    }
+
+    <!-- Typing Indicator -->
+    @if (_chatService.isUserTyping(_chatService.currentOpenChat()?.userName)) {
+    <div class="d-flex mb-4 align-items-end">
+      <div class="position-relative me-2">
+        <img
+          [src]="getAvatar(_chatService.currentOpenChat()?.profilePictureUrl, _chatService.currentOpenChat()?.gender)"
+          (error)="setDefaultAvatar($event, _chatService.currentOpenChat()?.gender)"
+          class="rounded-circle border shadow-sm chat-avatar" alt="Typing..." loading="lazy" />
+      </div>
+      <div class="chat-bubble received position-relative ms-2">
+        <div class="chat-arrow-left"></div>
+        <app-typing-indicator></app-typing-indicator>
+      </div>
+    </div>
+    }
+  </div>
+</div>

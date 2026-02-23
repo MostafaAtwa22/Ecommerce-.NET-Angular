@@ -1,0 +1,19 @@
+
+namespace Ecommerce.API.Hubs
+{
+    public interface IChatClient
+    {
+        Task ReceiveNewMessage(MessageResponseDto messageResponseDto);
+        Task ReceiveMessageList(Pagination<MessageResponseDto> messages);
+        Task Notify(ProfileResponseDto user);
+        Task NotifyTypingToUser(string senderUserName);
+        Task OnlineUsers(IEnumerable<OnlineUserDto> users);
+        Task MessageEdited(MessageResponseDto message);
+        Task MessageDeleted(int messageId);
+        Task ReceiveMessageRead(int messageId);
+        Task MarkMessagesAsRead(string readerId);
+        Task MarkMessagesAsReceived(string receiverId);
+        Task UpdateUserSidebar(OnlineUserDto user);
+        Task UpdateUserStatus(OnlineUserDto user);
+    }
+}

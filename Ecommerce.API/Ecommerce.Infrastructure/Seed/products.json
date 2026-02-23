@@ -1,0 +1,272 @@
+[
+  {
+    "Name": "IPhone 15 Pro",
+    "Description": "The iPhone 15 Pro represents Apple's pinnacle of smartphone technology, featuring a groundbreaking A17 Pro chip built on 3nm architecture for unprecedented performance. The aerospace-grade titanium design offers exceptional durability while reducing weight. The advanced camera system includes a 48MP main sensor with tetra-pixel technology, a 12MP ultra-wide lens, and a 12MP telephoto lens with 5x optical zoom. ProMotion technology delivers a smooth 120Hz refresh rate, while the Dynamic Island provides interactive notifications. USB-C connectivity enables high-speed data transfers, and the Action button offers customizable shortcuts. With improved battery life and enhanced thermal management, this device redefines flagship smartphones.",
+    "PictureUrl": "images/products/iphone15-pro.jpg",
+    "Price": 1199.99,
+    "Quantity": 150,
+    "BoughtQuantity": 150,
+    "ProductBrandId": 1,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "iPhone 15",
+    "Description": "The iPhone 15 brings cutting-edge technology to the mainstream with its Dynamic Island feature that seamlessly integrates notifications and live activities. Powered by the powerful A16 Bionic chip, it delivers exceptional performance for gaming, photography, and productivity. The 48MP main camera captures stunning detail with advanced computational photography, while the Super Retina XDR display offers brilliant colors and true blacks. Ceramic Shield front provides superior durability, and the aluminum design comes in five attractive finishes. With emergency SOS via satellite and crash detection, the iPhone 15 prioritizes safety while delivering an exceptional user experience with iOS 17's innovative features.",
+    "PictureUrl": "images/products/iphone15.jfif",
+    "Price": 899.99,
+    "Quantity": 200,
+    "BoughtQuantity": 195,
+    "ProductBrandId": 1,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "iPhone SE (2024)",
+    "Description": "The iPhone SE (2024) combines the beloved compact form factor with modern Apple technology, featuring the powerful A15 Bionic chip that also powers the iPhone 13 series. This processor enables advanced computational photography, smooth performance, and excellent battery efficiency. The classic design incorporates a durable glass and aluminum build with Touch ID for secure authentication. The 4.7-inch Retina HD display delivers crisp visuals, while the single 12MP camera leverages the A15's Neural Engine for impressive computational photography. Supporting 5G connectivity, wireless charging, and running the latest iOS, the iPhone SE offers premium performance in an accessible package, perfect for users seeking Apple quality at an affordable price point.",
+    "PictureUrl": "images/products/iphone-se.jpg",
+    "Price": 499.99,
+    "Quantity": 180,
+    "BoughtQuantity": 180,
+    "ProductBrandId": 1,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "MacBook Pro 16-inch M3 Max",
+    "Description": "Engineered for professionals who demand maximum performance, the MacBook Pro 16-inch with M3 Max chip represents Apple's most powerful laptop ever. The revolutionary M3 Max features up to 16 high-performance cores and 40 GPU cores, delivering breathtaking speed for 3D rendering, video editing, and machine learning tasks. The 16.2-inch Liquid Retina XDR display achieves 1000 nits sustained brightness and 1600 nits peak brightness with ProMotion technology up to 120Hz. With up to 128GB unified memory and 8TB SSD storage, this workstation handles massive projects effortlessly. Advanced thermal architecture maintains peak performance, while up to 22 hours of battery life ensures productivity anywhere. Six-speaker sound system with spatial audio and a comprehensive connectivity suite complete this professional powerhouse.",
+    "PictureUrl": "images/products/macbook-pro-16.jpg",
+    "Price": 3499.99,
+    "Quantity": 120,
+    "BoughtQuantity": 120,
+    "ProductBrandId": 1,
+    "ProductTypeId": 2
+  },
+  {
+    "Name": "MacBook Air 15-inch M2",
+    "Description": "The MacBook Air 15-inch redefines thin and light computing with its expansive 15.3-inch Liquid Retina display in an impossibly slim aluminum enclosure. Powered by the energy-efficient M2 chip, it delivers exceptional performance with up to 18 hours of battery life. The brilliant display features 500 nits brightness, P3 wide color, and True Tone technology. The silent, fanless design ensures quiet operation, while the MagSafe charging port provides secure magnetic attachment. With up to 24GB unified memory and 2TB storage, it handles demanding workflows effortlessly. The advanced camera and microphone array enable crystal-clear video calls, while the backlit Magic Keyboard and Force Touch trackpad offer premium input experiences. Available in four stunning finishes.",
+    "PictureUrl": "images/products/macbook-air-15.webp",
+    "Price": 1299.99,
+    "Quantity": 200,
+    "BoughtQuantity": 195,
+    "ProductBrandId": 1,
+    "ProductTypeId": 2
+  },
+  {
+    "Name": "MacBook Pro 14-inch M3 Pro",
+    "Description": "The compact powerhouse MacBook Pro 14-inch with M3 Pro chip delivers professional performance in a portable form factor. Featuring up to 12 CPU cores and 18 GPU cores, the M3 Pro chip accelerates demanding workflows like 4K video editing and 3D modeling. The 14.2-inch Liquid Retina XDR display with ProMotion offers incredible color accuracy and contrast ratio for creative professionals. Advanced thermal system with larger heat sinks and optimized airflow sustains high performance. With up to 36GB unified memory and 4TB SSD storage, it handles complex projects with ease. Comprehensive connectivity includes three Thunderbolt 4 ports, HDMI, SDXC card slot, and MagSafe 3. Six-speaker sound system with force-cancelling woofers delivers immersive audio for both work and entertainment.",
+    "PictureUrl": "images/products/macbook-pro-14.jfif",
+    "Price": 1999.99,
+    "Quantity": 150,
+    "BoughtQuantity": 150,
+    "ProductBrandId": 1,
+    "ProductTypeId": 2
+  },
+  {
+    "Name": "IPad Pro 12.9-inch M2",
+    "Description": "The iPad Pro 12.9-inch with M2 chip transforms what's possible on a tablet, delivering desktop-class performance in a stunningly thin design. The breakthrough Liquid Retina XDR display features 1000 nits full-screen brightness and 1600 nits peak brightness with mini-LED technology across 2596 full-array local dimming zones. The M2 chip's 8-core CPU and 10-core GPU accelerate the most demanding workflows, while the 16-core Neural Engine powers advanced machine learning tasks. ProMotion technology with adaptive refresh rates up to 120Hz ensures fluid scrolling and responsive Apple Pencil experience. Thunderbolt connectivity enables high-speed data transfer and external display support up to 6K. With five studio-quality microphones and four speaker audio, it's the ultimate creative and productivity tool.",
+    "PictureUrl": "images/products/ipad-pro-12.9.jfif",
+    "Price": 1099.99,
+    "Quantity": 180,
+    "BoughtQuantity": 175,
+    "ProductBrandId": 1,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "IPad Air M1",
+    "Description": "The iPad Air with M1 chip brings pro-level performance to Apple's most versatile tablet, featuring the same powerful processor found in MacBook Air. The 10.9-inch Liquid Retina display with True Tone and P3 wide color delivers vibrant visuals for creative work and entertainment. The M1 chip's 8-core CPU and 8-core GPU handle demanding apps and multitasking effortlessly, while the 16-core Neural Engine accelerates machine learning tasks. Compatible with Apple Pencil (2nd generation) and Magic Keyboard, it transforms into a powerful creative studio or productivity workstation. 5G connectivity ensures fast downloads and streaming, while the landscape stereo speakers provide immersive audio. Available in five colors with all-screen design and Touch ID integrated into the top button.",
+    "PictureUrl": "images/products/ipad-air.jpg",
+    "Price": 749.99,
+    "Quantity": 220,
+    "BoughtQuantity": 220,
+    "ProductBrandId": 1,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "IPad 10th Gen",
+    "Description": "Completely redesigned, the 10th generation iPad features a beautiful 10.9-inch Liquid Retina display with True Tone technology, offering 500 nits brightness and excellent color accuracy. The powerful A14 Bionic chip enables smooth performance for everyday tasks, creative projects, and gaming. The front-facing Ultra Wide 12MP camera is positioned on the landscape edge for better video calls, while the rear 12MP camera captures sharp photos and 4K video. USB-C connectivity provides faster data transfer and charging, while support for Magic Keyboard Folio and Apple Pencil (1st generation) enhances productivity. Available in four vibrant colors with a durable aluminum enclosure, this versatile tablet combines modern features with approachable pricing for students, families, and professionals.",
+    "PictureUrl": "images/products/ipad-10.jpg",
+    "Price": 449.99,
+    "Quantity": 250,
+    "BoughtQuantity": 245,
+    "ProductBrandId": 1,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "MacBook Air M3",
+    "Description": "The MacBook Air with M3 chip represents the perfect balance of performance, efficiency, and portability in Apple's thinnest and lightest laptop. The 13.6-inch Liquid Retina display with 500 nits brightness and P3 wide color delivers stunning visuals for work and entertainment. The M3 chip's 8-core CPU and up to 10-core GPU provide remarkable speed for everyday tasks and creative projects, while the 16-core Neural Engine accelerates machine learning. Fanless design ensures silent operation, and up to 18 hours of battery life keeps you productive all day. MagSafe charging, two Thunderbolt ports, and a 3.5mm headphone jack offer versatile connectivity. With a 1080p FaceTime HD camera, three-microphone array, and four-speaker sound system, it excels in remote work and multimedia consumption.",
+    "PictureUrl": "images/products/macbook-air-m3.webp",
+    "Price": 1099.99,
+    "Quantity": 200,
+    "BoughtQuantity": 200,
+    "ProductBrandId": 1,
+    "ProductTypeId": 5
+  },
+  {
+    "Name": "Samsung Galaxy S24 Ultra",
+    "Description": "The Samsung Galaxy S24 Ultra represents the pinnacle of Android smartphone technology, featuring a revolutionary titanium frame that combines premium aesthetics with exceptional durability. The Qualcomm Snapdragon 8 Gen 3 processor delivers unparalleled performance for gaming and multitasking. The advanced camera system includes a 200MP main sensor with enhanced pixel-binning technology, a 50MP periscope telephoto lens with 5x optical zoom, and a 12MP ultra-wide sensor. The embedded S Pen transforms the device into a productivity powerhouse with precise note-taking and remote control capabilities. The 6.8-inch Dynamic AMOLED 2X display features a 120Hz adaptive refresh rate and peak brightness of 2600 nits for exceptional outdoor visibility. AI-powered features enhance photography, translation, and productivity workflows.",
+    "PictureUrl": "images/products/galaxy-s24-ultra.jpeg",
+    "Price": 1299.99,
+    "Quantity": 200,
+    "BoughtQuantity": 200,
+    "ProductBrandId": 2,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "Samsung Galaxy Z Fold5",
+    "Description": "The Galaxy Z Fold5 redefines mobile productivity with its innovative foldable design that transforms from a compact smartphone into a 7.6-inch tablet. The refined hinge mechanism now lays completely flat, enhancing the multitasking experience. The powerful Snapdragon 8 Gen 2 processor handles demanding applications with ease, while the dual battery system ensures all-day usage. The under-display camera technology provides an uninterrupted viewing experience on the main display, while the cover screen functions as a full-featured smartphone. Enhanced S Pen support enables precise input for note-taking and creative work. With improved durability featuring Armor Aluminum frames and Gorilla Glass Victus 2, the Z Fold5 represents the future of foldable technology with enhanced software optimized for large-screen experiences.",
+    "PictureUrl": "images/products/galaxy-z-fold5.webp",
+    "Price": 1799.99,
+    "Quantity": 100,
+    "BoughtQuantity": 95,
+    "ProductBrandId": 2,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "Samsung Galaxy A54",
+    "Description": "The Galaxy A54 delivers premium features at an accessible price point, featuring a 6.4-inch Super AMOLED display with 120Hz refresh rate for smooth scrolling and responsive touch. The Exynos 1380 processor provides reliable performance for everyday tasks and gaming, supported by 8GB RAM and up to 256GB storage. The versatile triple camera system includes a 50MP main sensor with OIS, a 12MP ultra-wide lens, and a 5MP macro camera for creative photography. IP67 water and dust resistance offers protection against the elements, while the 5000mAh battery with 25W fast charging ensures extended usage. One UI 5.1 based on Android 13 delivers a clean software experience with guaranteed updates. Available in multiple color options with a sleek design featuring minimal bezels.",
+    "PictureUrl": "images/products/galaxy-a54.jpg",
+    "Price": 449.99,
+    "Quantity": 300,
+    "BoughtQuantity": 300,
+    "ProductBrandId": 2,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "Samsung Galaxy Book3 Pro",
+    "Description": "The Galaxy Book3 Pro combines premium design with powerful performance in an ultra-thin aluminum chassis. Featuring a stunning 16-inch Dynamic AMOLED 2X display with 3K resolution, 120Hz refresh rate, and 500 nits brightness, it delivers exceptional visual clarity for creative work and entertainment. The 13th Gen Intel Core i7 processor and Intel Iris Xe graphics handle productivity tasks and light creative work efficiently. With up to 32GB LPDDR5 RAM and 1TB PCIe 4.0 SSD, it offers smooth multitasking and fast storage performance. The 76Wh battery provides all-day usage, while Thunderbolt 4 ports enable high-speed connectivity. Seamless integration with Samsung Galaxy ecosystem devices enhances productivity through features like Second Screen and Quick Share.",
+    "PictureUrl": "images/products/galaxy-book3-pro.jpg",
+    "Price": 1499.99,
+    "Quantity": 150,
+    "BoughtQuantity": 145,
+    "ProductBrandId": 2,
+    "ProductTypeId": 2
+  },
+  {
+    "Name": "Samsung Galaxy Tab S9 Ultra",
+    "Description": "The Galaxy Tab S9 Ultra represents the ultimate Android tablet experience with its massive 14.6-inch Dynamic AMOLED 2X display featuring 2960x1848 resolution and 120Hz refresh rate. The powerful Snapdragon 8 Gen 2 processor delivers desktop-class performance for demanding applications and gaming. The included S Pen with 2.8ms latency offers natural writing and drawing experience with enhanced pressure sensitivity. IP68 water and dust resistance make it durable for various environments. Quad speakers tuned by AKG with Dolby Atmos provide immersive audio, while the 11200mAh battery ensures extended usage. With optional keyboard attachment, it transforms into a productivity workstation, supporting Samsung DeX for desktop-like interface. Perfect for creative professionals, students, and entertainment enthusiasts.",
+    "PictureUrl": "images/products/galaxy-tab-s9-ultra.jpg",
+    "Price": 1199.99,
+    "Quantity": 120,
+    "BoughtQuantity": 120,
+    "ProductBrandId": 2,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "Samsung Galaxy Book3 360",
+    "Description": "The Galaxy Book3 360 redefines versatility with its 360-degree hinge that transforms between laptop, tablet, tent, and stand modes. The 15.6-inch Full HD Super AMOLED touchscreen delivers vibrant colors and deep blacks with 500 nits brightness. Powered by the 13th Gen Intel Core i7 processor with Intel Iris Xe graphics, it handles productivity tasks efficiently while maintaining energy efficiency. The included S Pen offers precise input for note-taking and creative work with 4096 pressure levels. Military-grade durability ensures reliability in various conditions, while the backlit keyboard provides comfortable typing. Enhanced security features include fingerprint reader and facial recognition. Seamless connectivity with Samsung Galaxy devices through Quick Share and Second Screen features creates an integrated ecosystem experience.",
+    "PictureUrl": "images/products/galaxy-book3-360.jpg",
+    "Price": 1399.99,
+    "Quantity": 22,
+    "BoughtQuantity": 18,
+    "ProductBrandId": 2,
+    "ProductTypeId": 6
+  },
+  {
+    "Name": "Dell XPS 13 Plus",
+    "Description": "The Dell XPS 13 Plus redefines the modern laptop with its futuristic design and powerful performance. Featuring a seamless glass touchpad, zero-lattice keyboard, and capacitive touch function row, it offers a clean, minimalist aesthetic. Powered by 13th Gen Intel Core processors and Intel Iris Xe graphics, it handles demanding tasks with ease. The 13.4-inch OLED display delivers stunning visuals with true blacks and vibrant colors. With Thunderbolt 4 ports, fast charging, and premium craftsmanship, it's the ultimate ultrabook for professionals.",
+    "PictureUrl": "images/products/dell-xps13-plus.jpg",
+    "Price": 1399.99,
+    "Quantity": 100,
+    "BoughtQuantity": 10,
+    "ProductBrandId": 3,
+    "ProductTypeId": 5
+  },
+  {
+    "Name": "Dell Alienware m16",
+    "Description": "Dominate the competition with the Alienware m16 gaming laptop. Equipped with the latest Intel Core i9 processor and NVIDIA GeForce RTX 40 series graphics, it delivers desktop-level gaming performance. The 16-inch QHD+ display with 240Hz refresh rate ensures smooth gameplay and crisp visuals. Advanced Cryo-tech cooling keeps the system running at peak performance during intense gaming sessions. With customizable AlienFX lighting and a robust mechanical keyboard, it's a gamer's dream machine.",
+    "PictureUrl": "images/products/alienware-m16.jpg",
+    "Price": 2199.99,
+    "Quantity": 50,
+    "BoughtQuantity": 5,
+    "ProductBrandId": 3,
+    "ProductTypeId": 4
+  },
+  {
+    "Name": "Lenovo ThinkPad X1 Carbon Gen 11",
+    "Description": "The ThinkPad X1 Carbon Gen 11 enables you to fly through your day. This ultralight laptop is a productivity powerhouse. Powered by Intel® Core™ vPro® processors, the X1 Carbon Gen 11 takes multitasking to the next level. The communications bar houses a highly functional camera, providing excellent video quality for hybrid work. legendary keyboard and robust security features make it the preferred choice for business professionals.",
+    "PictureUrl": "images/products/thinkpad-x1-carbon.jpg",
+    "Price": 1699.99,
+    "Quantity": 150,
+    "BoughtQuantity": 20,
+    "ProductBrandId": 4,
+    "ProductTypeId": 5
+  },
+  {
+    "Name": "Lenovo Legion Pro 7i",
+    "Description": "The world's most powerful AI-tuned gaming laptops. Powered by the latest Intel® Core™ processors and NVIDIA® GeForce RTX™ 40 Series graphics, the Legion Pro 7i is a beast of a machine. The Lenovo AI Engine+ with LA2-Q AI chip optimizes performance for max FPS. The PureSight Gaming Display offers high refresh rates and color accuracy. Coldfront 5.0 thermal technology keeps the system cool. It's built for those who refuse to compromise.",
+    "PictureUrl": "images/products/lenovo-legion-pro7i.jpg",
+    "Price": 2499.99,
+    "Quantity": 80,
+    "BoughtQuantity": 12,
+    "ProductBrandId": 4,
+    "ProductTypeId": 4
+  },
+  {
+    "Name": "Microsoft Surface Pro 9",
+    "Description": "Surface Pro 9 gives you the tablet flexibility you want and the laptop performance and battery life you need to move through your day — all in one ultra-portable device. Now with powerful new processors and optional high-speed 5G connectivity. The 13-inch PixelSense flow display is stunning, and the adjustable kickstand allows you to work, play, or create from any angle. Validated as an Intel® Evo™ platform device.",
+    "PictureUrl": "images/products/surface-pro-9.webp",
+    "Price": 999.99,
+    "Quantity": 200,
+    "BoughtQuantity": 45,
+    "ProductBrandId": 5,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "Microsoft Surface Laptop Studio",
+    "Description": "The Surface Laptop Studio is the most powerful Surface yet. It transitions seamlessly from a high-performance laptop to a creative studio to a portable tablet. Powered by 13th Gen Intel Core processors and NVIDIA GeForce RTX graphics, it handles complex workflows with ease. The 14.4-inch PixelSense Flow display with 120Hz refresh rate supports Surface Slim Pen 2 for natural inking. It's designed for developers, designers, and creators.",
+    "PictureUrl": "images/products/surface-laptop-studio.jpg",
+    "Price": 2399.99,
+    "Quantity": 60,
+    "BoughtQuantity": 8,
+    "ProductBrandId": 5,
+    "ProductTypeId": 6
+  },
+  {
+    "Name": "Google Pixel 8 Pro",
+    "Description": "Meet Pixel 8 Pro, the all-pro phone engineered by Google. It's completely redesigned with a polished aluminum frame and matte back glass. The Google Tensor G3 chip is built with Google AI for cutting-edge photo and video features and smarter ways to help throughout the day. It has the best Pixel Camera yet, with pro-level lens and editing capabilities. And the battery lasts over 24 hours.",
+    "PictureUrl": "images/products/pixel-8-pro.jpg",
+    "Price": 999.99,
+    "Quantity": 300,
+    "BoughtQuantity": 50,
+    "ProductBrandId": 6,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "Google Pixel Tablet",
+    "Description": "The Pixel Tablet is the first tablet with the Google Tensor G2 chip built in. It features Google AI for smooth streaming, high-quality video calls, and accurate voice typing. The unique Charging Speaker Dock keeps it charged and ready 24/7 and doubles as a great-sounding speaker. When docked, it transforms into a smart home hub. It's the tablet that's helpful in your hand and in your home.",
+    "PictureUrl": "images/products/pixel-tablet.jpg",
+    "Price": 499.99,
+    "Quantity": 150,
+    "BoughtQuantity": 30,
+    "ProductBrandId": 6,
+    "ProductTypeId": 3
+  },
+  {
+    "Name": "OnePlus 12",
+    "Description": "Smooth beyond belief. The OnePlus 12 is powered by the Snapdragon 8 Gen 3 for extreme performance. The 4th Gen Hasselblad Camera System for Mobile captures lively, true-to-life colors. The 2K 120Hz ProXDR display delivers brighter, clearer visuals. With a massive 5400 mAh battery and 100W SUPERVOOC charging, you're always ready to go. It defines the flagship experience with uncompromising perfromance.",
+    "PictureUrl": "images/products/oneplus-12.jpg",
+    "Price": 799.99,
+    "Quantity": 250,
+    "BoughtQuantity": 40,
+    "ProductBrandId": 7,
+    "ProductTypeId": 1
+  },
+  {
+    "Name": "ASUS ROG Zephyrus G14",
+    "Description": "The ROG Zephyrus G14 is the world's most powerful 14-inch gaming laptop. Now featuring the latest AMD Ryzen 9 processors and NVIDIA GeForce RTX 40 Series Laptop GPUs. The AniMe Matrix™ display allows for deep personalization. The ROG Nebula HDR Display utilizes Mini LED technology for incredible contrast and brightness. It packs incredible gaming power into a chassis that's light and portable.",
+    "PictureUrl": "images/products/asus-rog-zephyrus.jfif",
+    "Price": 1599.99,
+    "Quantity": 100,
+    "BoughtQuantity": 25,
+    "ProductBrandId": 8,
+    "ProductTypeId": 4
+  },
+  {
+    "Name": "ASUS Zenbook 14 OLED",
+    "Description": "The Zenbook 14 OLED is an elegant, lightweight, and compact laptop that's ready for anything. It features a stunning 16:10 2.8K OLED HDR NanoEdge screen that delivers cinema-grade visuals. Powered by the latest Intel Core Ultra processors and Intel Arc graphics, it offers superior performance. The long-lasting battery and full set of I/O ports make it perfect for on-the-go productivity.",
+    "PictureUrl": "images/products/asus-zenbook-pro14.jpg",
+    "Price": 1049.99,
+    "Quantity": 180,
+    "BoughtQuantity": 15,
+    "ProductBrandId": 8,
+    "ProductTypeId": 5
+  }
+]

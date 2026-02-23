@@ -1,0 +1,173 @@
+/* animated-overlay-component.component.css */
+.animated-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.background-shapes {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Floating shapes with subtle animations */
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.08;
+  background: #5624d0;
+  animation: float 15s infinite ease-in-out;
+}
+
+.shape-1 {
+  width: 150px;
+  height: 150px;
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+  background: linear-gradient(135deg, #5624d0, #401b9c);
+}
+
+.shape-2 {
+  width: 100px;
+  height: 100px;
+  top: 20%;
+  right: 10%;
+  animation-delay: -2s;
+  animation-duration: 18s;
+  background: linear-gradient(135deg, #48bb78, #38a169);
+}
+
+.shape-3 {
+  width: 120px;
+  height: 120px;
+  bottom: 15%;
+  left: 8%;
+  animation-delay: -4s;
+  animation-duration: 20s;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.shape-4 {
+  width: 80px;
+  height: 80px;
+  top: 40%;
+  left: 15%;
+  animation-delay: -1s;
+  animation-duration: 16s;
+  background: linear-gradient(135deg, #ed8936, #dd6b20);
+}
+
+.shape-5 {
+  width: 60px;
+  height: 60px;
+  bottom: 25%;
+  right: 15%;
+  animation-delay: -3s;
+  animation-duration: 14s;
+  background: linear-gradient(135deg, #9f7aea, #805ad5);
+}
+
+.shape-6 {
+  width: 90px;
+  height: 90px;
+  top: 60%;
+  right: 5%;
+  animation-delay: -5s;
+  animation-duration: 22s;
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+/* Subtle grid pattern */
+.grid-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(86, 36, 208, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(86, 36, 208, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.3;
+}
+
+/* Light gradient overlay */
+.gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(248, 250, 252, 0.7) 0%,
+    rgba(241, 245, 249, 0.7) 50%,
+    rgba(248, 250, 252, 0.7) 100%
+  );
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(20px) rotate(-5deg);
+  }
+}
+
+/* Subtle pulse animation for some shapes */
+.shape-1, .shape-3, .shape-5 {
+  animation: float 15s infinite ease-in-out, pulse 10s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .shape {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .shape-1 {
+    width: 100px !important;
+    height: 100px !important;
+  }
+
+  .grid-pattern {
+    background-size: 30px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shape {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .shape-1 {
+    width: 80px !important;
+    height: 80px !important;
+  }
+}

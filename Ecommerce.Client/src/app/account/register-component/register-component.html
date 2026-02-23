@@ -1,0 +1,362 @@
+<div class="auth-container">
+  <app-animated-overlay-component></app-animated-overlay-component>
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form" style="margin-top: 150px">
+    <!-- Form Header -->
+    <div class="form-header">
+      <img src="assets/navbar/logo.png" alt="App Logo" class="form-logo">
+      <h2 class="form-title">Create Account</h2>
+      <p class="form-subtitle">Join us today and get started</p>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-envelope"></i>
+        Email Address
+      </label>
+      <div class="input-container">
+        <input
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+          class="form-control"
+          [class.valid]="email?.valid && email?.touched"
+          [class.invalid]="email?.invalid && email?.touched"
+        />
+        <div class="input-icons">
+          <div class="spinner-container" *ngIf="email?.pending">
+            <div class="spinner"></div>
+          </div>
+          <i class="fas fa-check-circle valid-icon" *ngIf="email?.valid && email?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="email?.invalid && email?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="email?.invalid && email?.touched">
+        <small class="error-message" *ngIf="email?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Email is required
+        </small>
+        <small class="error-message" *ngIf="email?.errors?.['email']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Please enter a valid email
+        </small>
+        <small class="error-message" *ngIf="email?.errors?.['emailExists']">
+          <i class="fas fa-exclamation-triangle"></i>
+          This email is already taken
+        </small>
+      </div>
+    </div>
+
+    <!-- Username Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-user"></i>
+        Username
+      </label>
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="userName"
+          placeholder="Enter your username"
+          class="form-control"
+          [class.valid]="userName?.valid && userName?.touched"
+          [class.invalid]="userName?.invalid && userName?.touched"
+        />
+        <div class="input-icons">
+          <div class="spinner-container" *ngIf="userName?.pending">
+            <div class="spinner"></div>
+          </div>
+          <i class="fas fa-check-circle valid-icon" *ngIf="userName?.valid && userName?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="userName?.invalid && userName?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="userName?.invalid && userName?.touched">
+        <small class="error-message" *ngIf="userName?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Username is required
+        </small>
+        <small class="error-message" *ngIf="userName?.errors?.['pattern']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Only letters, numbers, and underscores allowed
+        </small>
+        <small class="error-message" *ngIf="userName?.errors?.['usernameExists']">
+          This username is already taken
+        </small>
+      </div>
+    </div>
+
+    <!-- First Name Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-id-card"></i>
+        First Name
+      </label>
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="firstName"
+          placeholder="Enter your first name"
+          class="form-control"
+          [class.valid]="firstName?.valid && firstName?.touched"
+          [class.invalid]="firstName?.invalid && firstName?.touched"
+        />
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="firstName?.valid && firstName?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="firstName?.invalid && firstName?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="firstName?.invalid && firstName?.touched">
+        <small class="error-message" *ngIf="firstName?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          First name is required
+        </small>
+        <small class="error-message" *ngIf="firstName?.errors?.['pattern']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Only letters allowed
+        </small>
+      </div>
+    </div>
+
+    <!-- Last Name Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-id-card"></i>
+        Last Name
+      </label>
+      <div class="input-container">
+        <input
+          type="text"
+          formControlName="lastName"
+          placeholder="Enter your last name"
+          class="form-control"
+          [class.valid]="lastName?.valid && lastName?.touched"
+          [class.invalid]="lastName?.invalid && lastName?.touched"
+        />
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="lastName?.valid && lastName?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="lastName?.invalid && lastName?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="lastName?.invalid && lastName?.touched">
+        <small class="error-message" *ngIf="lastName?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Last name is required
+        </small>
+        <small class="error-message" *ngIf="lastName?.errors?.['pattern']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Only letters allowed
+        </small>
+      </div>
+    </div>
+
+    <!-- Gender Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-venus-mars"></i>
+        Gender
+      </label>
+      <div class="input-container">
+        <select
+          formControlName="gender"
+          class="form-control"
+          [class.valid]="gender?.valid && gender?.touched"
+          [class.invalid]="gender?.invalid && gender?.touched"
+        >
+          <option value="" disabled selected>Select your gender</option>
+          <option value="0">Male</option>
+          <option value="1">Female</option>
+        </select>
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="gender?.valid && gender?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="gender?.invalid && gender?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="gender?.invalid && gender?.touched">
+        <small class="error-message" *ngIf="gender?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Gender is required
+        </small>
+      </div>
+    </div>
+
+    <!-- Phone Number Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-phone"></i>
+        Phone Number
+      </label>
+      <div class="input-container">
+        <input
+          type="tel"
+          formControlName="phoneNumber"
+          placeholder="Enter your phone number"
+          class="form-control"
+          [class.valid]="phoneNumber?.valid && phoneNumber?.touched"
+          [class.invalid]="phoneNumber?.invalid && phoneNumber?.touched"
+        />
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="phoneNumber?.valid && phoneNumber?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="phoneNumber?.invalid && phoneNumber?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="phoneNumber?.invalid && phoneNumber?.touched">
+        <small class="error-message" *ngIf="phoneNumber?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Phone number is required
+        </small>
+        <small class="error-message" *ngIf="phoneNumber?.errors?.['pattern']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Please enter a valid phone number
+        </small>
+      </div>
+    </div>
+
+    <!-- Role Field (Conditional) -->
+    <div class="form-group" *ngIf="isSuperAdmin">
+      <label class="form-label">
+        <i class="fas fa-user-tag"></i>
+        Role
+      </label>
+      <div class="input-container">
+        <select
+          formControlName="roleName"
+          class="form-control"
+          [class.valid]="roleName?.valid && roleName?.touched"
+          [class.invalid]="roleName?.invalid && roleName?.touched"
+        >
+          <option value="Customer">Customer</option>
+          <option value="Admin">Admin</option>
+          <option value="SuperAdmin">Super Admin</option>
+        </select>
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="roleName?.valid && roleName?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="roleName?.invalid && roleName?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="roleName?.invalid && roleName?.touched">
+        <small class="error-message" *ngIf="roleName?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Role is required
+        </small>
+      </div>
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-lock"></i>
+        Password
+      </label>
+      <div class="input-container">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+          class="form-control"
+          [class.valid]="password?.valid && password?.touched"
+          [class.invalid]="password?.invalid && password?.touched"
+        />
+        <div class="input-icons">
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+            <i [class]="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+          </button>
+          <i class="fas fa-check-circle valid-icon" *ngIf="password?.valid && password?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="password?.invalid && password?.touched"></i>
+        </div>
+      </div>
+
+      <!-- Password Requirements -->
+      <div class="password-requirements">
+        <div class="requirements-grid">
+          <div class="requirement" [class.valid]="passwordIsLength6()">
+            <span class="requirement-icon">{{ passwordIsLength6() ? '✓' : '○' }}</span>
+            <span class="requirement-text">At least 6 characters</span>
+          </div>
+          <div class="requirement" [class.valid]="passwordContainsCapitalLetter()">
+            <span class="requirement-icon">{{ passwordContainsCapitalLetter() ? '✓' : '○' }}</span>
+            <span class="requirement-text">Contains capital letter</span>
+          </div>
+          <div class="requirement" [class.valid]="passwordContainsSmallLetter()">
+            <span class="requirement-icon">{{ passwordContainsSmallLetter() ? '✓' : '○' }}</span>
+            <span class="requirement-text">Contains small letter</span>
+          </div>
+          <div class="requirement" [class.valid]="passwordContainsSpecialChar()">
+            <span class="requirement-icon">{{ passwordContainsSpecialChar() ? '✓' : '○' }}</span>
+            <span class="requirement-text">Contains special character</span>
+          </div>
+          <div class="requirement" [class.valid]="passwordContainsNumber()">
+            <span class="requirement-icon">{{ passwordContainsNumber() ? '✓' : '○' }}</span>
+            <span class="requirement-text">Contains a number</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-messages" *ngIf="password?.invalid && password?.touched">
+        <small class="error-message" *ngIf="password?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Password is required
+        </small>
+        <small class="error-message" *ngIf="password?.errors?.['minlength']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Password must be at least 6 characters
+        </small>
+        <small class="error-message" *ngIf="password?.errors?.['pattern']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Password must contain uppercase, lowercase, number, and special character
+        </small>
+      </div>
+    </div>
+
+    <!-- Confirm Password Field -->
+    <div class="form-group">
+      <label class="form-label">
+        <i class="fas fa-lock"></i>
+        Confirm Password
+      </label>
+      <div class="input-container">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="confirmPassword"
+          placeholder="Confirm your password"
+          class="form-control"
+          [class.valid]="confirmPassword?.valid && confirmPassword?.touched"
+          [class.invalid]="confirmPassword?.invalid && confirmPassword?.touched"
+        />
+        <div class="input-icons">
+          <i class="fas fa-check-circle valid-icon" *ngIf="confirmPassword?.valid && confirmPassword?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="confirmPassword?.invalid && confirmPassword?.touched"></i>
+        </div>
+      </div>
+      <div class="error-messages" *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+        <small class="error-message" *ngIf="confirmPassword?.errors?.['required']">
+          <i class="fas fa-exclamation-triangle"></i>
+          Please confirm your password
+        </small>
+        <small class="error-message" *ngIf="confirmPassword?.errors?.['passwordMismatch'] && confirmPassword?.touched">
+          <i class="fas fa-exclamation-triangle"></i>
+          Passwords do not match
+        </small>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="btn-register"
+      [disabled]="registerForm.invalid || isLoading"
+      [class.loading]="isLoading"
+    >
+      <span class="btn-content">
+        <i class="fas fa-user-plus" *ngIf="!isLoading"></i>
+        <i class="fas fa-spinner fa-spin" *ngIf="isLoading"></i>
+        {{ isLoading ? 'Creating Account...' : 'Create Account' }}
+      </span>
+    </button>
+
+    <!-- Login Link -->
+    <div class="login-link">
+      Already have an account?
+      <a routerLink="/login" class="login-text">Sign in now</a>
+    </div>
+  </form>
+</div>
