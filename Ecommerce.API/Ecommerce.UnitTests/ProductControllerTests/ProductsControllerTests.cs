@@ -200,5 +200,107 @@ namespace Ecommerce.UnitTests.ProductControllerTests
              var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
             Assert.IsType<ApiResponse>(notFoundResult.Value);
         }
+
+        [Fact]
+        public async Task GetSuggestions_EmptyTerm_ReturnsEmptyList()
+        {
+            // Act
+            var result = await _controller.GetSuggestions("   ", null, null, 8);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var suggestions = Assert.IsAssignableFrom<IReadOnlyList<ProductSuggestionDto>>(okResult.Value);
+            Assert.Empty(suggestions);
+            _productsRepo.Verify(r => r.GetAllWithSpecAsync(It.IsAny<ISpecifications<Product>>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetSuggestions_ValidTerm_ReturnsMappedSuggestions()
+        {
+            // Arrange
+            var products = new List<Product>
+            {
+                new Product { Id = 1, Name = "Laptop" }
+            };
+            var suggestionDtos = new List<ProductSuggestionDto>
+            {
+                new ProductSuggestionDto { Id = 1, Name = "Laptop", ProductBrandName = "Dell", ProductTypeName = "Computers" }
+            };
+
+            _productsRepo.Setup(r => r.GetAllWithSpecAsync(It.IsAny<ISpecifications<Product>>()))
+                .ReturnsAsync(products);
+            _mapper.Setup(m => m.Map<IReadOnlyList<ProductSuggestionDto>>(products))
+                .Returns(suggestionDtos);
+
+            // Act
+            var result = await _controller.GetSuggestions("lap", null, null, 8);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var suggestions = Assert.IsAssignableFrom<IReadOnlyList<ProductSuggestionDto>>(okResult.Value);
+            Assert.Single(suggestions);
+            Assert.Equal("Laptop", suggestions[0].Name);
+        }
+
+        [Fact]
+        public async Task GetSuggestions_WithBrandTypeFilters_RespectsFilters()
+        {
+            // Arrange
+            _productsRepo.Setup(r => r.GetAllWithSpecAsync(It.Is<ISpecifications<Product>>(s =>
+                    s.Criteria != null &&
+                    s.Criteria.Compile()(new Product { Name = "Laptop", ProductBrandId = 1, ProductTypeId = 2 }) &&
+                    !s.Criteria.Compile()(new Product { Name = "Laptop", ProductBrandId = 9, ProductTypeId = 2 }) &&
+                    !s.Criteria.Compile()(new Product { Name = "Laptop", ProductBrandId = 1, ProductTypeId = 7 }) &&
+                    !s.Criteria.Compile()(new Product { Name = "Phone", ProductBrandId = 1, ProductTypeId = 2 })
+                )))
+                .ReturnsAsync(new List<Product>());
+            _mapper.Setup(m => m.Map<IReadOnlyList<ProductSuggestionDto>>(It.IsAny<IReadOnlyList<Product>>()))
+                .Returns(Array.Empty<ProductSuggestionDto>());
+
+            // Act
+            var result = await _controller.GetSuggestions("lap", 1, 2, 8);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var suggestions = Assert.IsAssignableFrom<IReadOnlyList<ProductSuggestionDto>>(okResult.Value);
+            Assert.Empty(suggestions);
+            _productsRepo.Verify(r => r.GetAllWithSpecAsync(It.IsAny<ISpecifications<Product>>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetSuggestions_LimitExceedsMax_ClampsToMax()
+        {
+            // Arrange
+            _productsRepo.Setup(r => r.GetAllWithSpecAsync(It.Is<ISpecifications<Product>>(s => s.Take == 10)))
+                .ReturnsAsync(new List<Product>());
+            _mapper.Setup(m => m.Map<IReadOnlyList<ProductSuggestionDto>>(It.IsAny<IReadOnlyList<Product>>()))
+                .Returns(Array.Empty<ProductSuggestionDto>());
+
+            // Act
+            var result = await _controller.GetSuggestions("lap", null, null, 99);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var suggestions = Assert.IsAssignableFrom<IReadOnlyList<ProductSuggestionDto>>(okResult.Value);
+            Assert.Empty(suggestions);
+        }
+
+        [Fact]
+        public async Task GetSuggestions_NoMatches_ReturnsEmptyList()
+        {
+            // Arrange
+            _productsRepo.Setup(r => r.GetAllWithSpecAsync(It.IsAny<ISpecifications<Product>>()))
+                .ReturnsAsync(new List<Product>());
+            _mapper.Setup(m => m.Map<IReadOnlyList<ProductSuggestionDto>>(It.IsAny<IReadOnlyList<Product>>()))
+                .Returns(Array.Empty<ProductSuggestionDto>());
+
+            // Act
+            var result = await _controller.GetSuggestions("nomatch", null, null, 8);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var suggestions = Assert.IsAssignableFrom<IReadOnlyList<ProductSuggestionDto>>(okResult.Value);
+            Assert.Empty(suggestions);
+        }
     }
 }

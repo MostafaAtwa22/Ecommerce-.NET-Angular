@@ -2,12 +2,11 @@
 
 /* Importing Bootstrap SCSS file. */
 @use 'bootstrap/scss/bootstrap';
-@use "node_modules/bootstrap/dist/css/bootstrap.min.css";
-@use "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css";
-@use "node_modules/font-awesome/css/font-awesome.min.css";
-@use "node_modules/primeflex/primeflex.css";
-@use "node_modules/ngx-toastr/toastr.css";
-@use "node_modules/primeicons/primeicons.css";
+@use "ngx-bootstrap/datepicker/bs-datepicker.css";
+@use "font-awesome/css/font-awesome.min.css";
+@use "primeflex/primeflex.css";
+@use "ngx-toastr/toastr.css";
+@use "primeicons/primeicons.css";
 
 /* Custom SweetAlert2 Styles */
 .swal2-custom-popup {
@@ -121,25 +120,25 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   padding: 1rem 1.25rem !important;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-  
+
   .toast-title {
     font-weight: 600 !important;
     font-size: 0.9375rem !important;
     margin-bottom: 0.25rem !important;
   }
-  
+
   .toast-message {
     font-size: 0.875rem !important;
     opacity: 0.95 !important;
     line-height: 1.5 !important;
   }
-  
+
   .toast-close-button {
     font-size: 1.25rem !important;
     font-weight: 300 !important;
     opacity: 0.7 !important;
     transition: opacity 0.2s ease !important;
-    
+
     &:hover {
       opacity: 1 !important;
     }
@@ -150,16 +149,16 @@
 .toast-container .toast-success {
   background-color: #5624d0 !important;
   background-image: none !important;
-  
+
   .toast-title,
   .toast-message {
     color: #ffffff !important;
   }
-  
+
   .toast-close-button {
     color: #ffffff !important;
   }
-  
+
   &::before {
     content: '✓';
     position: absolute;
@@ -170,11 +169,11 @@
     font-weight: bold;
     color: #ffffff;
   }
-  
+
   .toast-title {
     margin-left: 1.75rem !important;
   }
-  
+
   .toast-message {
     margin-left: 1.75rem !important;
   }
@@ -184,16 +183,16 @@
 .toast-container .toast-error {
   background-color: #ef4444 !important;
   background-image: none !important;
-  
+
   .toast-title,
   .toast-message {
     color: #ffffff !important;
   }
-  
+
   .toast-close-button {
     color: #ffffff !important;
   }
-  
+
   &::before {
     content: '✕';
     position: absolute;
@@ -204,11 +203,11 @@
     font-weight: bold;
     color: #ffffff;
   }
-  
+
   .toast-title {
     margin-left: 1.75rem !important;
   }
-  
+
   .toast-message {
     margin-left: 1.75rem !important;
   }
@@ -218,16 +217,16 @@
 .toast-container .toast-info {
   background-color: #3b82f6 !important;
   background-image: none !important;
-  
+
   .toast-title,
   .toast-message {
     color: #ffffff !important;
   }
-  
+
   .toast-close-button {
     color: #ffffff !important;
   }
-  
+
   &::before {
     content: 'ℹ';
     position: absolute;
@@ -238,11 +237,11 @@
     font-weight: bold;
     color: #ffffff;
   }
-  
+
   .toast-title {
     margin-left: 1.75rem !important;
   }
-  
+
   .toast-message {
     margin-left: 1.75rem !important;
   }
@@ -252,16 +251,16 @@
 .toast-container .toast-warning {
   background-color: #f59e0b !important;
   background-image: none !important;
-  
+
   .toast-title,
   .toast-message {
     color: #ffffff !important;
   }
-  
+
   .toast-close-button {
     color: #ffffff !important;
   }
-  
+
   &::before {
     content: '⚠';
     position: absolute;
@@ -272,11 +271,11 @@
     font-weight: bold;
     color: #ffffff;
   }
-  
+
   .toast-title {
     margin-left: 1.75rem !important;
   }
-  
+
   .toast-message {
     margin-left: 1.75rem !important;
   }
@@ -292,6 +291,7 @@
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;

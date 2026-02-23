@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 import { Environment } from '../environment';
 import { IPagination, Pagination } from '../shared/modules/pagination';
-import { IProduct, IProductCreate, IProductUpdate } from '../shared/modules/product';
+import { IProduct, IProductCreate, IProductSuggestion, IProductUpdate } from '../shared/modules/product';
 import { ShopParams } from '../shared/modules/ShopParams';
 
 @Injectable({
@@ -69,6 +69,30 @@ export class ShopService {
           });
         })
       );
+  }
+
+  getProductSuggestions(
+    term: string,
+    brandId?: number,
+    typeId?: number,
+    limit: number = 8
+  ): Observable<IProductSuggestion[]> {
+    let params = new HttpParams()
+      .set('term', term)
+      .set('limit', limit.toString());
+
+    if (brandId != null) {
+      params = params.set('brandId', brandId.toString());
+    }
+
+    if (typeId != null) {
+      params = params.set('typeId', typeId.toString());
+    }
+
+    return this.http.get<IProductSuggestion[]>(`${this.baseUrl}/products/suggestions`, {
+      params,
+      withCredentials: true
+    });
   }
 
   // FIXED: Generate unique cache key based on all params

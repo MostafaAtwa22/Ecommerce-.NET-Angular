@@ -34,6 +34,27 @@ namespace Ecommerce.API.Controllers
                 _mapper);
         }
 
+        [Cached(60)]
+        [HttpGet("suggestions")]
+        public async Task<ActionResult<IReadOnlyList<ProductSuggestionDto>>> GetSuggestions(
+            [FromQuery] string? term,
+            [FromQuery] int? brandId,
+            [FromQuery] int? typeId,
+            [FromQuery] int limit = 8)
+        {
+            var normalizedTerm = term?.Trim();
+            if (string.IsNullOrWhiteSpace(normalizedTerm))
+            {
+                return Ok(Array.Empty<ProductSuggestionDto>());
+            }
+
+            var normalizedLimit = Math.Clamp(limit, 1, 10);
+            var spec = ProductSpecifications.BuildSuggestionsSpec(normalizedTerm, brandId, typeId, normalizedLimit);
+            var products = await _unitOfWork.Repository<Product>().GetAllWithSpecAsync(spec);
+
+            return Ok(_mapper.Map<IReadOnlyList<ProductSuggestionDto>>(products));
+        }
+
         [Cached(600)]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductResponseDto>> GetById([FromRoute] int id)

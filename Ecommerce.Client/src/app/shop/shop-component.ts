@@ -1,5 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { IProduct } from '../shared/modules/product';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { IProduct, IProductSuggestion } from '../shared/modules/product';
 import { IPagination } from '../shared/modules/pagination';
 import { ShopService } from './shop-service';
 import { ProductItemComponent } from "./product-item-component/product-item-component";
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ShopParams } from '../shared/modules/ShopParams';
 import { PaginationComponent } from '../shared/components/pagination-component/pagination-component';
+import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap, takeUntil } from 'rxjs';
 
 declare var bootstrap: any;
 
@@ -20,7 +21,7 @@ declare var bootstrap: any;
   templateUrl: './shop-component.html',
   styleUrl: './shop-component.scss',
 })
-export class ShopComponent implements OnInit, AfterViewInit {
+export class ShopComponent implements OnInit, AfterViewInit, OnDestroy {
   products: IProduct[] = [];
   brands: IBrand[] = [];
   types: IType[] = [];
@@ -28,6 +29,13 @@ export class ShopComponent implements OnInit, AfterViewInit {
   showFilters = false;
   isLoading = true;
   shopParams!: ShopParams;
+  searchSuggestions: IProductSuggestion[] = [];
+  showSuggestions = false;
+  activeSuggestionIndex = -1;
+
+  private destroy$ = new Subject<void>();
+  private searchInput$ = new Subject<string>();
+  private blurTimeout: ReturnType<typeof setTimeout> | null = null;
 
   sortOptions = [
     { name: 'Alphabetical', value: 'name' },
@@ -44,9 +52,19 @@ export class ShopComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.setupSearchSuggestions();
     this.getAllBrands();
     this.getAllTypes();
     this.getAllProducts(true);
+  }
+
+  ngOnDestroy(): void {
+    if (this.blurTimeout) {
+      clearTimeout(this.blurTimeout);
+    }
+
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   ngAfterViewInit(): void {
@@ -97,6 +115,7 @@ export class ShopComponent implements OnInit, AfterViewInit {
     params.pageIndex = 1;
 
     this._shopService.setShopParams(params);
+    this.refreshSuggestionsForCurrentSearch();
     this.getAllProducts();
   }
 
@@ -107,6 +126,7 @@ export class ShopComponent implements OnInit, AfterViewInit {
     params.pageIndex = 1;
 
     this._shopService.setShopParams(params);
+    this.refreshSuggestionsForCurrentSearch();
     this.getAllProducts();
   }
 
@@ -121,6 +141,8 @@ export class ShopComponent implements OnInit, AfterViewInit {
   }
 
   onSearch() {
+    this.hideSuggestions();
+
     const params = this._shopService.getShopParams();
     params.pageIndex = 1;
 
@@ -129,6 +151,9 @@ export class ShopComponent implements OnInit, AfterViewInit {
   }
 
   resetSearch() {
+    this.clearSuggestions();
+    this.searchInput$.next('');
+
     const params = this._shopService.getShopParams();
     params.search = '';
     params.pageIndex = 1;
@@ -139,6 +164,8 @@ export class ShopComponent implements OnInit, AfterViewInit {
 
   resetFilters() {
     this.shopParams = new ShopParams();
+    this.clearSuggestions();
+    this.searchInput$.next('');
     this._shopService.setShopParams(this.shopParams);
     this.getAllProducts();
   }
@@ -149,6 +176,64 @@ export class ShopComponent implements OnInit, AfterViewInit {
 
     this._shopService.setShopParams(params);
     this.getAllProducts(true);
+  }
+
+  onSearchInput(): void {
+    this.searchInput$.next(this.shopParams.search || '');
+  }
+
+  onSearchFocus(): void {
+    if (this.searchSuggestions.length > 0) {
+      this.showSuggestions = true;
+    }
+  }
+
+  onSearchBlur(): void {
+    if (this.blurTimeout) {
+      clearTimeout(this.blurTimeout);
+    }
+
+    this.blurTimeout = setTimeout(() => {
+      this.hideSuggestions();
+    }, 120);
+  }
+
+  onSearchKeyDown(event: KeyboardEvent): void {
+    const hasSuggestions = this.showSuggestions && this.searchSuggestions.length > 0;
+
+    if (event.key === 'Escape') {
+      this.hideSuggestions();
+      return;
+    }
+
+    if (event.key === 'ArrowDown' && hasSuggestions) {
+      event.preventDefault();
+      this.activeSuggestionIndex = (this.activeSuggestionIndex + 1) % this.searchSuggestions.length;
+      return;
+    }
+
+    if (event.key === 'ArrowUp' && hasSuggestions) {
+      event.preventDefault();
+      this.activeSuggestionIndex =
+        this.activeSuggestionIndex <= 0 ? this.searchSuggestions.length - 1 : this.activeSuggestionIndex - 1;
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      if (hasSuggestions && this.activeSuggestionIndex >= 0) {
+        this.selectSuggestion(this.searchSuggestions[this.activeSuggestionIndex]);
+        return;
+      }
+
+      this.onSearch();
+    }
+  }
+
+  selectSuggestion(suggestion: IProductSuggestion): void {
+    this.shopParams.search = suggestion.name;
+    this.onSearch();
   }
 
   private observeProductItems() {
@@ -173,5 +258,49 @@ export class ShopComponent implements OnInit, AfterViewInit {
       const productItems = document.querySelectorAll('.fade-item');
       productItems.forEach(item => observer.observe(item));
     }, 50);
+  }
+
+  private setupSearchSuggestions(): void {
+    this.searchInput$
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((value) => {
+          const term = value.trim();
+
+          if (term.length < 2) {
+            return of([] as IProductSuggestion[]);
+          }
+
+          const params = this._shopService.getShopParams();
+          return this._shopService
+            .getProductSuggestions(term, params.brandId, params.typeId, 8)
+            .pipe(catchError(() => of([] as IProductSuggestion[])));
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((suggestions) => {
+        this.searchSuggestions = suggestions;
+        this.activeSuggestionIndex = -1;
+        this.showSuggestions = suggestions.length > 0;
+      });
+  }
+
+  private hideSuggestions(): void {
+    this.showSuggestions = false;
+    this.activeSuggestionIndex = -1;
+  }
+
+  private clearSuggestions(): void {
+    this.searchSuggestions = [];
+    this.hideSuggestions();
+  }
+
+  private refreshSuggestionsForCurrentSearch(): void {
+    if ((this.shopParams.search || '').trim().length >= 2) {
+      this.searchInput$.next(this.shopParams.search || '');
+    } else {
+      this.clearSuggestions();
+    }
   }
 }

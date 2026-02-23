@@ -84,6 +84,35 @@ namespace Ecommerce.Core.Spec
             return builder;
         }
 
+        public static ISpecifications<Product> BuildSuggestionsSpec(
+            string term,
+            int? brandId,
+            int? typeId,
+            int limit)
+        {
+            var builder = new SpecificationBuilder<Product>();
+
+            builder.Where(p => p.Name.ToLower().Contains(term.ToLower()));
+
+            if (brandId.HasValue)
+            {
+                builder.And(p => p.ProductBrandId == brandId);
+            }
+
+            if (typeId.HasValue)
+            {
+                builder.And(p => p.ProductTypeId == typeId);
+            }
+
+            builder
+                .Include(p => p.ProductType)
+                .Include(p => p.ProductBrand)
+                .OrderByAsc(p => p.Name)
+                .Paginate(1, limit);
+
+            return builder;
+        }
+
         public static ISpecifications<Product> BuildDetailsSpec(int id)
         {
             return new SpecificationBuilder<Product>()

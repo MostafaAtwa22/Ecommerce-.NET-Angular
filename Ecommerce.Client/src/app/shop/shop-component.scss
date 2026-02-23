@@ -60,6 +60,61 @@
     box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
   }
 
+  .search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .suggestions-dropdown {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d7dc;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    z-index: 1200;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .suggestion-item {
+    width: 100%;
+    border: none;
+    background: white;
+    padding: 0.75rem 0.9rem;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    cursor: pointer;
+    border-bottom: 1px solid #eef1f4;
+    transition: background-color 0.15s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover,
+    &.active {
+      background: #f7f9fa;
+    }
+  }
+
+  .suggestion-primary {
+    font-size: 0.9rem;
+    color: #0c111d;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .suggestion-secondary {
+    font-size: 0.75rem;
+    color: #6a6f73;
+    line-height: 1.2;
+  }
   input {
     flex: 1;
     border: none;
@@ -386,6 +441,38 @@
 }
 
 /* Product Grid */
+.products-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.product-grid-item {
+  min-width: 0;
+}
+
+.empty-state-full {
+  grid-column: 1 / -1;
+}
+
 .fade-container {
   animation: fadeInUp 0.3s ease;
 }
@@ -466,10 +553,6 @@
     margin: 0;
   }
 
-  .row {
-    margin-left: 0;
-    margin-right: 0;
-  }
 }
 
 @media (max-width: 576px) {
@@ -480,7 +563,9 @@
 
   .search-bar {
     padding: 0.5rem;
-
+    .suggestion-item {
+      padding: 0.7rem 0.75rem;
+    }
     input {
       font-size: 0.875rem;
     }

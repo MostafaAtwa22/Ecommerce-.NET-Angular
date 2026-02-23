@@ -15,6 +15,13 @@ export interface IProduct {
   createdAt: Date
 }
 
+export interface IProductSuggestion {
+  id: number;
+  name: string;
+  productBrandName: string;
+  productTypeName: string;
+}
+
 interface IProductForm {
   name: string;
   description: string;

@@ -14,6 +14,10 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.PictureUrl,
                     o => o.MapFrom<ImageUrlResolver<Product, ProductResponseDto>>());
 
+            CreateMap<Product, ProductSuggestionDto>()
+                .ForMember(dest => dest.ProductBrandName, o => o.MapFrom(src => src.ProductBrand.Name))
+                .ForMember(dest => dest.ProductTypeName, o => o.MapFrom(src => src.ProductType.Name));
+
             CreateMap<ProductCreationDto, Product>();
             CreateMap<ProductUpdateDto, Product>();
 
