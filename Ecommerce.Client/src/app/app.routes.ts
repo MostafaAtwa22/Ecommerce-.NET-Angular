@@ -205,5 +205,11 @@ export const routes: Routes = [
       import('./profile/profile.component')
         .then(p => p.ProfileComponent)
   },
+  {
+    path: 'unauthorized',
+    loadComponent: () =>
+      import('./core/unauthorized-component/unauthorized-component')
+        .then(s => s.UnauthorizedComponent)
+  },
   { path: '**', component: NotFoundComponent }
 ];

@@ -20,6 +20,7 @@
   @media (max-width: 992px) {
     margin: -1.5rem;
     width: calc(100% + 3rem);
+    height: calc(100vh - 80px) !important;
   }
 
   @media (max-width: 768px) {
@@ -27,8 +28,8 @@
     margin: -1rem;
     width: calc(100% + 2rem);
 
-    // Mobile header adjustment (70px)
-    height: calc(100vh - 70px);
+    // Mobile header adjustment (70px) - Assuming Dashboard also adjusts
+    height: calc(100vh - 70px) !important;
   }
 
   @media (max-width: 480px) {
@@ -103,7 +104,8 @@
   display: flex;
   flex-direction: column;
   background-color: white;
-  overflow: hidden; // Prevent overflow issues
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
 
   ::ng-deep {
     app-chat-window {
@@ -124,18 +126,29 @@
 // RIGHT SIDEBAR - FIXED DIMENSIONS
 // ============================================
 .chat-right-sidebar {
-  width: 280px;
-  min-width: 280px;
+  width: 0;
+  min-width: 0;
   max-width: 350px;
   height: 100%;
-  transition: transform 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
   background-color: white;
-  border-left: 1px solid #d1d7dc;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-  padding: 1rem !important;
-  flex-shrink: 0; // Prevent shrinking
+  border-left: 0 solid transparent;
+  box-shadow: none;
+  padding: 0 !important;
+  flex-shrink: 0;
+  opacity: 0;
+  overflow: hidden;
+
+  &.active {
+    width: 280px;
+    min-width: 280px;
+    border-left: 1px solid #d1d7dc;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1rem !important;
+    opacity: 1;
+  }
 
   ::ng-deep {
     app-chat-right-sidebar {
@@ -149,8 +162,10 @@
   }
 
   @media (max-width: 992px) {
-    width: 260px;
-    min-width: 260px;
+    &.active {
+      width: 260px;
+      min-width: 260px;
+    }
   }
 
   @media (max-width: 768px) {
@@ -164,16 +179,23 @@
     max-width: 320px;
     min-width: 260px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    overflow: visible;
 
     &.active {
       transform: translateX(0);
+      width: 85%;
+      padding: 1rem !important;
+      border-left: 1px solid #d1d7dc;
     }
   }
 
   @media (max-width: 480px) {
-    width: 100%;
-    max-width: 100%;
-    min-width: 100%;
+    &.active {
+      width: 100%;
+      max-width: 100%;
+      min-width: 100%;
+    }
   }
 }
 

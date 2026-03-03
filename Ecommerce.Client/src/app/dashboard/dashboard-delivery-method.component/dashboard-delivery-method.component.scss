@@ -1,25 +1,91 @@
 @import '../dashboard-products.component/dashboard-products.component.scss';
 
-/* Custom Delivery Method Styles */
+/* Statistics Cards - Match main dashboard premium style */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.stats-grid-item {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 992px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.stat-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  height: 100%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+  }
+}
+
 .stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+
   &.stat-total {
     background: rgba(86, 36, 208, 0.1);
     color: #5624d0;
   }
 
   &.stat-price {
-    background: rgba(76, 175, 80, 0.1);
-    color: #4caf50;
+    background: rgba(72, 187, 120, 0.1);
+    color: #48bb78;
   }
 
   &.stat-time {
     background: rgba(255, 152, 0, 0.1);
-    color: #ff9800;
+    color: #ed8936;
   }
 
   &.stat-free {
     background: rgba(156, 39, 176, 0.1);
     color: #9c27b0;
+  }
+}
+
+.stat-content {
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #1e293b;
+    line-height: 1.2;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 0;
+    font-weight: 500;
   }
 }
 
@@ -66,14 +132,29 @@
 .delivery-table-container {
   background: white;
   border: 1px solid #d1d7dc;
+  /* Explicit border */
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Stronger shadow for "broader" feel */
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   .card-header {
     padding: 1.25rem 1.5rem;
-    background: #f8f9fa;
+    background: #ffffff;
     border-bottom: 1px solid #d1d7dc;
+
+    h4 {
+      color: #0c111d;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+
+      i {
+        color: #5624d0;
+      }
+    }
 
     .table-info {
       display: flex;
@@ -82,26 +163,48 @@
     }
   }
 
+  /* Improved Horizontal Scroll Behavior */
+  .table-responsive {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid #f1f1f1;
+
+    &::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #d1d7dc;
+      border-radius: 10px;
+    }
+  }
+
   .card-footer {
     padding: 1rem 1.5rem;
-    background: #f8f9fa;
+    background: #ffffff;
     border-top: 1px solid #d1d7dc;
   }
 }
 
 /* Table Styles */
 .table {
+  width: 100%;
   margin-bottom: 0;
+  min-width: 800px;
+  /* Ensure table is broad enough to trigger overflow on mobile */
 
   thead {
     th {
-      padding: 1rem 1.5rem;
+      padding: 1.25rem 1.5rem;
       font-weight: 600;
       font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #6a6f73;
-      background: #f8f9fa;
+      background: #f7f9fa;
       border-bottom: 2px solid #d1d7dc;
 
       a {
@@ -121,10 +224,19 @@
   }
 
   tbody {
+    tr {
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(86, 36, 208, 0.02);
+      }
+    }
+
     td {
-      padding: 1rem 1.5rem;
+      padding: 1.25rem 1.5rem;
       vertical-align: middle;
-      border-bottom: 1px solid #e9ecef;
+      border-bottom: 1px solid #f1f1f1;
+      color: #0c111d;
 
       &:last-child {
         text-align: right;
@@ -385,8 +497,13 @@
 
 /* Animations */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
@@ -394,6 +511,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -401,9 +519,35 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .delivery-table-container {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (max-width: 992px) {
+  .delivery-table-container {
+    margin-bottom: 2rem;
+  }
+}
+
 @media (max-width: 768px) {
   .dashboard-container {
     padding: 1rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .stat-content h3 {
+    font-size: 1.25rem;
   }
 
   .toolbar {
@@ -430,13 +574,11 @@
   }
 
   .table {
+    min-width: 700px;
+
     thead th,
     tbody td {
       padding: 0.75rem 1rem;
-    }
-
-    thead th a .btn-text {
-      display: none;
     }
   }
 
@@ -448,53 +590,11 @@
       margin: 0;
     }
   }
-
-  .modal-dialog {
-    margin: 0.5rem;
-
-    .modal-content {
-      .modal-header,
-      .modal-body {
-        padding: 1rem;
-      }
-    }
-  }
 }
 
 @media (max-width: 576px) {
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-
-    .stat-icon {
-      margin-right: 0;
-      margin-bottom: 1rem;
-    }
-  }
-
   .row.g-4 {
     margin-bottom: 1rem;
-  }
-
-  .col-lg-3, .col-md-6 {
-    margin-bottom: 1rem;
-  }
-
-  .table-responsive {
-    margin: 0 -1rem;
-
-    .table {
-      font-size: 0.875rem;
-
-      thead th {
-        padding: 0.75rem;
-        font-size: 0.75rem;
-      }
-
-      tbody td {
-        padding: 0.75rem;
-      }
-    }
   }
 
   .btn {
@@ -513,6 +613,7 @@
 
 /* Print Styles */
 @media print {
+
   .toolbar,
   .btn-group,
   .modal-backdrop,
@@ -528,7 +629,8 @@
   .table {
     border: 1px solid #000;
 
-    th, td {
+    th,
+    td {
       border: 1px solid #000;
     }
   }

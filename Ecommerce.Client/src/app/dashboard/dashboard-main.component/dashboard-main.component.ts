@@ -148,14 +148,29 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
       }
     });
 
-    // Load orders count
+    // Save current orders params
+    const originalOrdersPageIndex = this.checkoutService.ordersParams.pageIndex;
+    const originalOrdersPageSize = this.checkoutService.ordersParams.pageSize;
+    const originalOrdersSort = this.checkoutService.ordersParams.sort;
+
+    // Load ALL orders for accurate dashboard chart/count
+    this.checkoutService.ordersParams.pageIndex = 1;
+    this.checkoutService.ordersParams.pageSize = 10000;
+    this.checkoutService.ordersParams.sort = 'orderDateDesc';
+
     const ordersSub = this.checkoutService.getAllOrders(false).subscribe({
       next: (response) => {
         this.totalOrders = response.totalData;
         this.ordersData = response.data;
+        setTimeout(() => this.updateOrdersChart(), 100);
       },
       error: (error) => console.error('Error loading orders:', error)
     });
+
+    // Restore original orders params
+    this.checkoutService.ordersParams.pageIndex = originalOrdersPageIndex;
+    this.checkoutService.ordersParams.pageSize = originalOrdersPageSize;
+    this.checkoutService.ordersParams.sort = originalOrdersSort;
 
     // Load users count
     const usersSub = this.profileService.getAllUsers(false).subscribe({
@@ -314,9 +329,9 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
     const ctx = this.ordersChartRef.nativeElement.getContext('2d');
     const period = parseInt(this.selectedPeriod);
 
-    // Generate sample data for orders over time
+    // Build real data from orders in database
     const labels = this.generateDateLabels(period);
-    const data = this.generateOrdersData(period);
+    const data = this.getOrdersChartData(period);
 
     this.ordersChart = new Chart(ctx, {
       type: 'line',
@@ -419,13 +434,15 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'right',
+            position: 'bottom',
             labels: {
               color: '#6a6f73',
               font: {
                 size: 11
               },
-              padding: 20
+              padding: 15,
+              usePointStyle: true,
+              pointStyle: 'circle'
             }
           },
           tooltip: {
@@ -436,7 +453,7 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
             cornerRadius: 4
           }
         },
-        cutout: '60%'
+        cutout: '70%'
       }
     });
   }
@@ -469,17 +486,47 @@ export class DashboardMainComponent implements OnInit, AfterViewInit, OnDestroy 
     return labels;
   }
 
-  generateOrdersData(days: number): number[] {
-    const data: number[] = [];
+  getOrdersChartData(days: number): number[] {
+    const keys = this.generateDateKeys(days);
+    const dailyCounts = new Map<string, number>();
 
-    // Generate realistic order data (replace with real data)
-    for (let i = 0; i < days; i++) {
-      const base = 10 + Math.floor(Math.random() * 20);
-      const variation = Math.floor(Math.random() * 15);
-      data.push(base + variation);
+    for (const key of keys) {
+      dailyCounts.set(key, 0);
     }
 
-    return data;
+    for (const order of this.ordersData) {
+      const dateValue = order.orderDate || order.createdAt;
+      const orderDate = new Date(dateValue);
+      if (Number.isNaN(orderDate.getTime())) continue;
+
+      const key = this.toDateKey(orderDate);
+      if (dailyCounts.has(key)) {
+        dailyCounts.set(key, (dailyCounts.get(key) || 0) + 1);
+      }
+    }
+
+    return keys.map(key => dailyCounts.get(key) || 0);
+  }
+
+  generateDateKeys(days: number): string[] {
+    const keys: string[] = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      keys.push(this.toDateKey(date));
+    }
+
+    return keys;
+  }
+
+  toDateKey(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   getProductsByBrand(): number[] {

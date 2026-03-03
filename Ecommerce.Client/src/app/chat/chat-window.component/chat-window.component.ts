@@ -352,27 +352,11 @@ export class ChatWindowComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   toggleLeftSidebar() {
-    const sidebar = document.querySelector('.chat-left-sidebar');
-    const overlay = document.querySelector('.modal-backdrop');
-
-    if (sidebar) {
-      sidebar.classList.toggle('active');
-    }
-    if (overlay) {
-      overlay.classList.toggle('show');
-    }
+    this._chatService.toggleLeftSidebar();
   }
 
   toggleRightSidebar() {
-    const sidebar = document.querySelector('.chat-right-sidebar');
-    const overlay = document.querySelector('.modal-backdrop');
-
-    if (sidebar) {
-      sidebar.classList.toggle('active');
-    }
-    if (overlay) {
-      overlay.classList.toggle('show');
-    }
+    this._chatService.toggleRightSidebar();
   }
 
   toggleMessageSearch() {

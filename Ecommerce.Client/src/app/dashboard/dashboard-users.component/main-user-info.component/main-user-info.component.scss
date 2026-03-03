@@ -5,6 +5,20 @@
 }
 
 /* Statistics Cards */
+.stats-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .stat-card {
   background: white;
   border: 1px solid #d1d7dc;
@@ -14,10 +28,11 @@
   align-items: center;
   transition: all 0.2s ease;
   height: 100%;
-  
+
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(86, 36, 208, 0.12);
+    border-color: #5624d0;
   }
 }
 
@@ -37,32 +52,32 @@
   justify-content: center;
   margin-right: 1rem;
   font-size: 1.25rem;
-  
+
   &.stat-total {
     background: rgba(86, 36, 208, 0.1);
     color: #5624d0;
   }
-  
+
   &.stat-male {
     background: rgba(33, 150, 243, 0.1);
     color: #2196f3;
   }
-  
+
   &.stat-female {
     background: rgba(244, 67, 54, 0.1);
     color: #f44336;
   }
-  
+
   &.stat-customer {
     background: rgba(76, 175, 80, 0.1);
     color: #4caf50;
   }
-  
+
   &.stat-admin {
     background: rgba(255, 152, 0, 0.1);
     color: #ff9800;
   }
-  
+
   &.stat-superadmin {
     background: rgba(156, 39, 176, 0.1);
     color: #9c27b0;
@@ -77,7 +92,7 @@
     margin-bottom: 0.25rem;
     line-height: 1;
   }
-  
+
   p {
     font-size: 0.75rem;
     color: #6a6f73;
@@ -218,25 +233,25 @@
     background: white;
     border-bottom: 1px solid #d1d7dc;
     padding: 1.25rem 1.5rem;
-    
+
     h4 {
       font-size: 1.125rem;
       color: #0c111d;
       display: flex;
       align-items: center;
-      
+
       i {
         color: #5624d0;
       }
     }
-    
+
     .badge {
       font-size: 0.75rem;
       padding: 0.375rem 0.75rem;
       border-radius: 20px;
     }
   }
-  
+
   .table-responsive {
     overflow-y: auto;
     max-height: 500px;
@@ -246,13 +261,13 @@
 /* Table Styles */
 .table {
   margin-bottom: 0;
-  
+
   thead {
     position: sticky;
     top: 0;
     z-index: 10;
     background: #f8f9fa;
-    
+
     th {
       border-bottom: 2px solid #d1d7dc;
       padding: 1rem 1.5rem;
@@ -262,15 +277,15 @@
       vertical-align: middle;
     }
   }
-  
+
   tbody {
     tr {
       transition: all 0.2s ease;
-      
+
       &:hover {
         background-color: #f7f9fa;
       }
-      
+
       td {
         padding: 1rem 1.5rem;
         vertical-align: middle;
@@ -289,7 +304,7 @@
     object-fit: cover;
     border: 2px solid #d1d7dc;
   }
-  
+
   .avatar-placeholder {
     width: 40px;
     height: 40px;
@@ -333,25 +348,25 @@
   border-radius: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  
+
   &.badge-superadmin {
     background: rgba(156, 39, 176, 0.1);
     color: #9c27b0;
     border: 1px solid rgba(156, 39, 176, 0.2);
   }
-  
+
   &.badge-admin {
     background: rgba(255, 152, 0, 0.1);
     color: #ff9800;
     border: 1px solid rgba(255, 152, 0, 0.2);
   }
-  
+
   &.badge-customer {
     background: rgba(76, 175, 80, 0.1);
     color: #4caf50;
     border: 1px solid rgba(76, 175, 80, 0.2);
   }
-  
+
   &.badge-default {
     background: rgba(106, 111, 115, 0.1);
     color: #6a6f73;
@@ -366,46 +381,46 @@
     font-size: 0.75rem;
     border-radius: 4px;
     margin-left: 0.25rem;
-    
+
     &:first-child {
       margin-left: 0;
     }
   }
-  
+
   .btn-outline-info {
     border-color: #17a2b8;
     color: #17a2b8;
-    
+
     &:hover {
       background: #17a2b8;
       color: white;
     }
   }
-  
+
   .btn-outline-primary {
     border-color: #5624d0;
     color: #5624d0;
-    
+
     &:hover {
       background: #5624d0;
       color: white;
     }
   }
-  
+
   .btn-outline-warning {
     border-color: #ff9800;
     color: #ff9800;
-    
+
     &:hover {
       background: #ff9800;
       color: white;
     }
   }
-  
+
   .btn-outline-danger {
     border-color: #f44336;
     color: #f44336;
-    
+
     &:hover {
       background: #f44336;
       color: white;
@@ -429,13 +444,13 @@
     font-size: 0.875rem;
     color: #0c111d;
     transition: all 0.2s ease;
-    
+
     &:hover:not(:disabled) {
       background: #5624d0;
       color: white;
       border-color: #5624d0;
     }
-    
+
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -446,22 +461,22 @@
 /* Empty State */
 .empty-state {
   padding: 3rem 1rem;
-  
+
   i {
     opacity: 0.5;
   }
-  
+
   h5 {
     font-size: 1rem;
     font-weight: 600;
     color: #0c111d;
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     font-size: 0.875rem;
   }
-  
+
   .btn-outline-dark {
     background: white;
     border: 1px solid #d1d7dc;
@@ -471,7 +486,7 @@
     font-weight: 600;
     color: #0c111d;
     transition: all 0.2s ease;
-    
+
     &:hover {
       background: #f7f9fa;
       border-color: #0c111d;
@@ -487,7 +502,7 @@
   justify-content: center;
   min-height: 200px;
   padding: 2rem;
-  
+
   .loading-spinner {
     width: 40px;
     height: 40px;
@@ -497,7 +512,7 @@
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
   }
-  
+
   .loading-text {
     font-size: 0.875rem;
     color: #6a6f73;
@@ -515,6 +530,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -532,14 +548,14 @@
   .stat-card {
     padding: 1rem;
   }
-  
+
   .stat-icon {
     width: 40px;
     height: 40px;
     font-size: 1rem;
     margin-right: 0.75rem;
   }
-  
+
   .stat-content h3 {
     font-size: 1.25rem;
   }
@@ -549,22 +565,22 @@
   .dashboard-container {
     padding: 1rem;
   }
-  
+
   .toolbar {
     padding: 1rem;
   }
-  
+
   .search-bar {
     max-width: 100%;
     margin-top: 1rem;
   }
-  
+
   .btn-outline-success,
   .sort-dropdown,
   .role-filter {
     width: 100%;
   }
-  
+
   .users-table-container {
     .card-header {
       flex-direction: column;
@@ -572,29 +588,30 @@
       gap: 0.5rem;
       padding: 1rem;
     }
-    
+
     .table-info {
       align-self: flex-start;
     }
   }
-  
+
   .table-responsive {
     max-height: 400px;
   }
-  
+
   .table {
+
     thead th,
     tbody td {
       padding: 0.75rem;
       font-size: 0.8125rem;
     }
   }
-  
+
   .card-footer {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    
+
     .pagination-controls {
       align-self: stretch;
       display: flex;
@@ -608,25 +625,25 @@
     flex-direction: column;
     text-align: center;
   }
-  
+
   .stat-icon {
     margin-right: 0;
     margin-bottom: 0.75rem;
   }
-  
+
   .btn-group {
     flex-wrap: wrap;
     gap: 0.25rem;
-    
+
     .btn {
       margin-left: 0;
     }
   }
-  
+
   .pagination-controls {
     flex-direction: column;
     gap: 0.5rem;
-    
+
     button {
       width: 100%;
     }

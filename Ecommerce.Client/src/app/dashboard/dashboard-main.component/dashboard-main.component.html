@@ -1,7 +1,7 @@
 <div class="dashboard-container">
   <!-- Statistics Cards -->
-  <div class="row g-4 mb-5">
-    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Account.Read'">
+  <div class="stats-grid mb-5">
+    <div class="stats-grid-item" *hasPermission="'Permissions.Account.Read'">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-users">
           <i class="fas fa-users"></i>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Roles.Read'">
+    <div class="stats-grid-item" *hasPermission="'Permissions.Roles.Read'">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-roles">
           <i class="fas fa-user-shield"></i>
@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Orders.Read'">
+    <div class="stats-grid-item" *hasPermission="'Permissions.Orders.Read'">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-orders">
           <i class="fas fa-shopping-bag"></i>
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <div class="col-lg-3 col-md-6 col-12" *hasPermission="'Permissions.Products.Read'">
+    <div class="stats-grid-item" *hasPermission="'Permissions.Products.Read'">
       <div class="stat-card card-shadow">
         <div class="stat-icon stat-products">
           <i class="fas fa-box-open"></i>

@@ -9,50 +9,50 @@
     <li>
       <a routerLink="./" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" style="cursor: pointer">
         <i class="fa-solid fa-gauge"></i>
-        Dashboard
+        <span>Dashboard</span>
       </a>
     </li>
     <li *hasPermission="'Permissions.Products.Read'">
       <a routerLink="/dashboard/products" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-box"></i>
-        Products
+        <span>Products</span>
       </a>
     </li>
     <li *hasPermission="'Permissions.Orders.Read'">
       <a routerLink="/dashboard/orders" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-shopping-cart"></i>
-        Orders
+        <span>Orders</span>
       </a>
     </li>
     <li *hasPermission="'Permissions.DeliveryMethods.Read'">
       <a routerLink="/dashboard/delivery" routerLinkActive="active" style="cursor: pointer">
         <i class="fa fa-truck"></i>
-        Delivery
+        <span>Delivery</span>
       </a>
     </li>
     <li *hasPermission="'Permissions.Account.Read'">
       <a routerLink="/dashboard/users" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-users"></i>
-        Users
+        <span>Users</span>
       </a>
     </li>
     <li *ngIf="isAdminOrSuperAdmin()">
       <a routerLink="/dashboard/chat" routerLinkActive="active" style="cursor: pointer">
         <i class="fa fa-comments"></i>
-        Chat
+        <span>Chat</span>
       </a>
     </li>
     <li *hasPermission="'Permissions.Roles.Read'">
       <a routerLink="/dashboard/roles" routerLinkActive="active" style="cursor: pointer">
         <i class="fa-solid fa-user-shield"></i>
-        Roles
+        <span>Roles</span>
       </a>
     </li>
 
     <li class="logout" (click)="logout()" style="cursor: pointer;">
       <a>
         <i class="fa-solid fa-arrow-right-from-bracket"></i>
-        Logout
+        <span>Logout</span>
       </a>
     </li>
   </ul>

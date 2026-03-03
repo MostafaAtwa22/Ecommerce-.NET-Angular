@@ -22,6 +22,10 @@ export class ChatService {
   currentOpenChat = signal<onlineUsers | null>(null);
   autoScrollEnable = signal<boolean>(false);
 
+  // Sidebar states for responsiveness
+  isLeftSidebarActive = signal<boolean>(false);
+  isRightSidebarActive = signal<boolean>(false);
+
   // Pagination signals (1-based to match backend)
   private currentPageIndex = signal<number>(1);
   private pageSize = signal<number>(20);
@@ -424,5 +428,25 @@ export class ChatService {
 
   getHasMoreMessages() {
     return this.hasMoreMessages();
+  }
+
+  // Sidebar controls
+  toggleLeftSidebar() {
+    this.isLeftSidebarActive.update(v => !v);
+    if (this.isLeftSidebarActive()) {
+      this.isRightSidebarActive.set(false);
+    }
+  }
+
+  toggleRightSidebar() {
+    this.isRightSidebarActive.update(v => !v);
+    if (this.isRightSidebarActive()) {
+      this.isLeftSidebarActive.set(false);
+    }
+  }
+
+  closeSidebars() {
+    this.isLeftSidebarActive.set(false);
+    this.isRightSidebarActive.set(false);
   }
 }
