@@ -81,6 +81,12 @@ export const routes: Routes = [
               import('./dashboard/dashboard-users.component/main-user-info.component/main-user-info.component').then(m => m.MainUserInfoComponent),
           },
           {
+            path: 'create', loadComponent: () =>
+              import('./dashboard/dashboard-users.component/create-user.component/create-user.component').then(m => m.CreateUserComponent),
+            canActivate: [permissionGuard],
+            data: { permission: 'Permissions.Admins.Create' },
+          },
+          {
             path: 'roles/:id', loadComponent: () =>
               import('./dashboard/dashboard-users.component/user-roles.component/user-roles.component').then(m => m.UserRolesComponent),
             canActivate: [permissionGuard],

@@ -60,8 +60,7 @@
           placeholder="Enter your username"
           class="form-control"
           [class.valid]="userName?.valid && userName?.touched"
-          [class.invalid]="userName?.invalid && userName?.touched"
-        />
+          [class.invalid]="userName?.invalid && userName?.touched" />
         <div class="input-icons">
           <div class="spinner-container" *ngIf="userName?.pending">
             <div class="spinner"></div>
@@ -98,8 +97,7 @@
           placeholder="Enter your first name"
           class="form-control"
           [class.valid]="firstName?.valid && firstName?.touched"
-          [class.invalid]="firstName?.invalid && firstName?.touched"
-        />
+          [class.invalid]="firstName?.invalid && firstName?.touched" />
         <div class="input-icons">
           <i class="fas fa-check-circle valid-icon" *ngIf="firstName?.valid && firstName?.touched"></i>
           <i class="fas fa-exclamation-circle invalid-icon" *ngIf="firstName?.invalid && firstName?.touched"></i>
@@ -130,8 +128,7 @@
           placeholder="Enter your last name"
           class="form-control"
           [class.valid]="lastName?.valid && lastName?.touched"
-          [class.invalid]="lastName?.invalid && lastName?.touched"
-        />
+          [class.invalid]="lastName?.invalid && lastName?.touched" />
         <div class="input-icons">
           <i class="fas fa-check-circle valid-icon" *ngIf="lastName?.valid && lastName?.touched"></i>
           <i class="fas fa-exclamation-circle invalid-icon" *ngIf="lastName?.invalid && lastName?.touched"></i>
@@ -192,8 +189,7 @@
           placeholder="Enter your phone number"
           class="form-control"
           [class.valid]="phoneNumber?.valid && phoneNumber?.touched"
-          [class.invalid]="phoneNumber?.invalid && phoneNumber?.touched"
-        />
+          [class.invalid]="phoneNumber?.invalid && phoneNumber?.touched" />
         <div class="input-icons">
           <i class="fas fa-check-circle valid-icon" *ngIf="phoneNumber?.valid && phoneNumber?.touched"></i>
           <i class="fas fa-exclamation-circle invalid-icon" *ngIf="phoneNumber?.invalid && phoneNumber?.touched"></i>
@@ -207,36 +203,6 @@
         <small class="error-message" *ngIf="phoneNumber?.errors?.['pattern']">
           <i class="fas fa-exclamation-triangle"></i>
           Please enter a valid phone number
-        </small>
-      </div>
-    </div>
-
-    <!-- Role Field (Conditional) -->
-    <div class="form-group" *ngIf="isSuperAdmin">
-      <label class="form-label">
-        <i class="fas fa-user-tag"></i>
-        Role
-      </label>
-      <div class="input-container">
-        <select
-          formControlName="roleName"
-          class="form-control"
-          [class.valid]="roleName?.valid && roleName?.touched"
-          [class.invalid]="roleName?.invalid && roleName?.touched"
-        >
-          <option value="Customer">Customer</option>
-          <option value="Admin">Admin</option>
-          <option value="SuperAdmin">Super Admin</option>
-        </select>
-        <div class="input-icons">
-          <i class="fas fa-check-circle valid-icon" *ngIf="roleName?.valid && roleName?.touched"></i>
-          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="roleName?.invalid && roleName?.touched"></i>
-        </div>
-      </div>
-      <div class="error-messages" *ngIf="roleName?.invalid && roleName?.touched">
-        <small class="error-message" *ngIf="roleName?.errors?.['required']">
-          <i class="fas fa-exclamation-triangle"></i>
-          Role is required
         </small>
       </div>
     </div>
@@ -324,7 +290,8 @@
         />
         <div class="input-icons">
           <i class="fas fa-check-circle valid-icon" *ngIf="confirmPassword?.valid && confirmPassword?.touched"></i>
-          <i class="fas fa-exclamation-circle invalid-icon" *ngIf="confirmPassword?.invalid && confirmPassword?.touched"></i>
+          <i class="fas fa-exclamation-circle invalid-icon"
+            *ngIf="confirmPassword?.invalid && confirmPassword?.touched"></i>
         </div>
       </div>
       <div class="error-messages" *ngIf="confirmPassword?.invalid && confirmPassword?.touched">

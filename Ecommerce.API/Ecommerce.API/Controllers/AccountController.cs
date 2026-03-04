@@ -126,20 +126,13 @@ namespace Ecommerce.API.Controllers
             if (await CheckEmailExistsAsync(dto.Email))
                 return BadRequest(new ApiResponse(400, "Email already in use"));
 
-            if (!Enum.TryParse(dto.RoleName, true, out Role role))
-                return BadRequest(new ApiResponse(400, "Invalid role specified"));
-
-            var roleAuthResult = ValidateRoleAuthorization(role);
-            if (roleAuthResult != null)
-                return roleAuthResult;
-
             var user = _mapper.Map<ApplicationUser>(dto);
 
             var createResult = await _userManager.CreateAsync(user, dto.Password);
             if (!createResult.Succeeded)
                 return BadRequest(new ApiResponse(400, BuildErrors(createResult.Errors)));
 
-            var roleResult = await _userManager.AddToRoleAsync(user, role.ToString());
+            var roleResult = await _userManager.AddToRoleAsync(user, Role.Customer.ToString());
             if (!roleResult.Succeeded)
                 return BadRequest(new ApiResponse(400, BuildErrors(roleResult.Errors)));
 
@@ -460,22 +453,6 @@ namespace Ecommerce.API.Controllers
 
         private static string BuildErrors(IEnumerable<IdentityError> errors)
             => string.Join(", ", errors.Select(e => e.Description));
-
-        private ActionResult<string>? ValidateRoleAuthorization(Role role)
-        {
-            if (role == Role.Customer)
-                return null;
-
-            if (!User.Identity?.IsAuthenticated ?? true)
-                return new UnauthorizedObjectResult(
-                    new ApiResponse(StatusCodes.Status401Unauthorized,
-                        "You must be logged in as SuperAdmin to assign Admin or SuperAdmin roles."));
-
-            if (!User.IsInRole(Role.SuperAdmin.ToString()))
-                return new ForbidResult();
-
-            return null;
-        }
 
         private async Task SendEmailVerificationAsync(ApplicationUser user)
         {

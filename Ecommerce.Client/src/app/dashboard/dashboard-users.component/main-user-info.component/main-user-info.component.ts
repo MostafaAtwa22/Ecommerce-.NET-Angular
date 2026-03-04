@@ -12,11 +12,12 @@ import { SweetAlertService } from '../../../shared/services/sweet-alert.service'
 import { getDefaultAvatarByGender, resolveUserAvatar } from '../../../shared/utils/avatar-utils';
 import { HasPermissionDirective } from '../../../shared/directives/has-permission.directive';
 import { ToastrService } from 'ngx-toastr';
+import { CreateUserComponent } from '../create-user.component/create-user.component';
 
 @Component({
   selector: 'app-main-user-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, HasPermissionDirective],
+  imports: [CommonModule, FormsModule, DecimalPipe, RouterLink, HasPermissionDirective, CreateUserComponent],
   templateUrl: './main-user-info.component.html',
   styleUrl: './main-user-info.component.scss',
 })
@@ -36,6 +37,7 @@ export class MainUserInfoComponent implements OnInit {
   // Filter/Search
   userParams = new UserParams();
   showFilters = false;
+  showCreateUserForm = false;
 
   // Pagination
   pagination: IPagination<IProfile> = {
@@ -70,7 +72,7 @@ export class MainUserInfoComponent implements OnInit {
     private accountService: AccountService,
     private swal: SweetAlertService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   getUserAvatar(user: IProfile): string {
     return resolveUserAvatar(user.profilePicture, user.gender);
@@ -215,6 +217,18 @@ export class MainUserInfoComponent implements OnInit {
     this.showFilters = false;
   }
 
+  openCreateUserForm(): void {
+    this.showCreateUserForm = true;
+  }
+
+  closeCreateUserForm(): void {
+    this.showCreateUserForm = false;
+  }
+
+  onUserCreated(): void {
+    this.loadUsers();
+  }
+
   getInitials(firstName: string, lastName: string): string {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   }
@@ -231,16 +245,16 @@ export class MainUserInfoComponent implements OnInit {
     return gender?.toLowerCase() === 'male'
       ? 'fa-mars'
       : gender?.toLowerCase() === 'female'
-      ? 'fa-venus'
-      : 'fa-genderless';
+        ? 'fa-venus'
+        : 'fa-genderless';
   }
 
   getGenderColor(gender: string): string {
     return gender?.toLowerCase() === 'male'
       ? 'text-primary'
       : gender?.toLowerCase() === 'female'
-      ? 'text-pink'
-      : 'text-muted';
+        ? 'text-pink'
+        : 'text-muted';
   }
 
   isSuperAdmin(): boolean {

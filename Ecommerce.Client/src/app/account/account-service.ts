@@ -135,6 +135,16 @@ export class AccountService {
       );
   }
 
+  createAdmin(adminData: any) {
+    return this.http.post(
+      `${Environment.baseUrl}/api/admins`,
+      adminData,
+      {
+        withCredentials: true,
+        responseType: 'text',
+      }
+    );
+  }
 
   register(registerData: IRegister) {
     return this.http.post(

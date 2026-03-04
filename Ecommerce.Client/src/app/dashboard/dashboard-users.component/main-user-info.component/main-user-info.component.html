@@ -66,8 +66,8 @@
   <div class="toolbar card-shadow mb-4">
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
       <div class="d-flex align-items-center gap-2 flex-wrap">
-        <button *hasPermission="'Permissions.Profiles.Create'" class="btn btn-success d-flex align-items-center"
-          routerLink="/register">
+        <button *hasPermission="'Permissions.Admins.Create'" class="btn btn-success d-flex align-items-center"
+          (click)="openCreateUserForm()">
           <i class="fas fa-user-plus me-2"></i>
           Add User
         </button>
@@ -258,4 +258,25 @@
     </div>
     }
   </div>
+
+  <!-- Create User Modal -->
+  @if (showCreateUserForm) {
+  <div class="modal-backdrop fade show" (click)="closeCreateUserForm()"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content card-shadow">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">
+            <i class="fas fa-user-plus me-2 text-primary"></i>Create New User
+          </h5>
+          <button type="button" class="btn-close" (click)="closeCreateUserForm()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <app-create-user (cancel)="closeCreateUserForm()" (userCreated)="onUserCreated()">
+          </app-create-user>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
 </div>

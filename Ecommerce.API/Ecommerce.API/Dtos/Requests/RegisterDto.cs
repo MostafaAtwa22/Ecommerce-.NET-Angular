@@ -40,8 +40,5 @@ namespace Ecommerce.API.Dtos.Requests
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
-
-        [Required]
-        public string RoleName { get; set; } = Role.Customer.ToString();
     }
 }

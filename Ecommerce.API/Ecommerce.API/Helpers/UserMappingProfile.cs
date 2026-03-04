@@ -8,6 +8,8 @@ namespace Ecommerce.API.Helpers
         {
             CreateMap<RegisterDto, ApplicationUser>();
 
+            CreateMap<AdminCreateDto, ApplicationUser>();
+            
             CreateMap<GoogleUserDto, ApplicationUser>()
                 .ForMember(dest => dest.UserName, o => o.MapFrom(src => src.Email))
                 .ForMember(dest => dest.NormalizedUserName, o => o.MapFrom(src => src.Email.ToUpper()))

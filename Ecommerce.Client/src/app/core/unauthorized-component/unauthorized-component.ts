@@ -33,7 +33,6 @@ import { RouterLink } from '@angular/router';
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #f8f9fa;
     }
     i {
       opacity: 0.8;

@@ -7,5 +7,4 @@ export interface IRegister {
   phoneNumber: string
   password: string
   confirmPassword: string
-  roleName: string
 }

@@ -3,6 +3,7 @@ namespace Ecommerce.Infrastructure.Constants
     public static class Modules
     {
         public const string Account = "Account";
+        public const string Admin = "Admins";
         public const string Baskets = "Baskets";
         public const string DeliveryMethods = "DeliveryMethods";
         public const string Orders = "Orders";

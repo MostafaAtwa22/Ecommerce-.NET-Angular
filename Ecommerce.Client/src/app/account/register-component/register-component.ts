@@ -33,11 +33,6 @@ export class RegisterComponent {
   showPassword = false;
   isLoading = false;
 
-  get isSuperAdmin(): boolean {
-    const user = this.accountService.user();
-    return !!user && user.roles?.includes('SuperAdmin');
-  }
-
   registerForm: FormGroup = this.fb.group(
     {
       email: [
@@ -66,7 +61,6 @@ export class RegisterComponent {
         ],
       ],
       confirmPassword: ['', Validators.required],
-      roleName: ['Customer', Validators.required],
     },
     { validators: this.passwordMatchValidator }
   );
@@ -94,9 +88,6 @@ export class RegisterComponent {
   }
   get confirmPassword() {
     return this.registerForm.get('confirmPassword');
-  }
-  get roleName() {
-    return this.registerForm.get('roleName');
   }
 
   // 🔍 Password helpers (for UI)
@@ -182,7 +173,6 @@ export class RegisterComponent {
       phoneNumber: v.phoneNumber!,
       password: v.password!,
       confirmPassword: v.confirmPassword!,
-      roleName: v.roleName!,
     };
 
     this.accountService.register(registerData).subscribe({
