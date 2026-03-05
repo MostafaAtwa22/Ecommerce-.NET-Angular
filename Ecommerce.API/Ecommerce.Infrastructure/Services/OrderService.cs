@@ -23,21 +23,25 @@ namespace Ecommerce.Infrastructure.Services
             var basket = await _basketRepository.GetAsync(basketId);
 
             if (basket == null || !basket.Items.Any())
-                throw new Exception("Basket is empty");
+                throw new BadRequestException("Basket is empty");
+
+            // get products from the repo in one go
+            var productIds = basket!.Items.Select(i => i.Id).ToList();
+            var products = await _unitOfWork.Repository<Product>().FindAllAsync(p => productIds.Contains(p.Id));
 
             // get item from product repo
             var items = new List<OrderItem>();
             foreach (var item in basket!.Items)
             {
-                var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var productItem = products.FirstOrDefault(p => p.Id == item.Id);
                 if (productItem is null)
-                    throw new Exception("Product not found");
+                    throw new NotFoundException($"Product with ID {item.Id} not found");
 
                 var availableStock = productItem.Quantity - productItem.BoughtQuantity;
                 if (availableStock < item.Quantity)
-                    throw new Exception($"Only {availableStock} items available for {productItem.Name}");
+                    throw new BadRequestException($"Only {availableStock} items available for {productItem.Name}");
 
-                var itemOrdered = new ProductItemOrdered(productItem!.Id, productItem.Name, productItem.PictureUrl);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl);
 
                 var orderItem = new OrderItem(item.Price, item.Quantity, itemOrdered);
                 items.Add(orderItem);

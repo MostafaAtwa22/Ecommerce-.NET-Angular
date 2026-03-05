@@ -21,18 +21,25 @@ namespace Ecommerce.API.Middlewares
         {
             try
             {
-                // if it good => go to the next middleware
                 await _next(context);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                var statusCode = ex switch
+                {
+                    NotFoundException => HttpStatusCode.NotFound,
+                    BadRequestException => HttpStatusCode.BadRequest,
+                    _ => HttpStatusCode.InternalServerError
+                };
+
+                context.Response.StatusCode = (int)statusCode;
 
                 var response = _env.IsDevelopment()
-                    ? new ApiException((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace!.ToString())
-                    : new ApiException((int)HttpStatusCode.InternalServerError);
+                    ? new ApiException((int)statusCode, ex.Message, ex.StackTrace?.ToString() ?? string.Empty)
+                    : new ApiException((int)statusCode, ex.Message);
 
                 var options = new JsonSerializerOptions
                 {

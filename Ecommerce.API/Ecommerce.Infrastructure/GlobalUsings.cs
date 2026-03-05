@@ -41,6 +41,9 @@ global using Ecommerce.Core.Spec;
 global using Ecommerce.Core.Constants;
 global using Ecommerce.Core.Enums;
 global using Ecommerce.Core.googleDto;
+global using Ecommerce.Core.Dtos;
+global using Ecommerce.Core.Exceptions;
+global using AutoMapper;
 
 // Project - Infrastructure
 global using Ecommerce.Infrastructure.Data;

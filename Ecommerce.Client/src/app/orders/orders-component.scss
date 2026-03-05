@@ -136,6 +136,7 @@
       color: #c91a1a;
       border-color: rgba(201, 26, 26, 0.3);
     }
+
     &.canceled {
       background: rgba(201, 26, 26, 0.1);
       color: #c91a1a;
@@ -146,6 +147,18 @@
       background: rgba(159, 122, 234, 0.1);
       color: #9f7aea;
       border-color: rgba(159, 122, 234, 0.3);
+    }
+
+    &.refunded {
+      background: rgba(72, 187, 120, 0.1);
+      color: #48bb78;
+      border-color: rgba(72, 187, 120, 0.3);
+    }
+
+    &.return-requested {
+      background: rgba(237, 137, 54, 0.1);
+      color: #ed8936;
+      border-color: rgba(237, 137, 54, 0.3);
     }
   }
 }
@@ -273,9 +286,11 @@
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -308,8 +323,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */

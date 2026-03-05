@@ -22,4 +22,6 @@ global using Ecommerce.Core.Entities.Emails;
 global using Ecommerce.Core.Interfaces;
 global using Ecommerce.Core.Spec;
 global using Ecommerce.Core.Params;
+global using Ecommerce.Core.Dtos;
 global using Ecommerce.Core.Enums;
+global using Ecommerce.Core.Exceptions;

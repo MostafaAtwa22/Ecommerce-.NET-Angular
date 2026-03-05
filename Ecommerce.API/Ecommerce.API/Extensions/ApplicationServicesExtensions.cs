@@ -10,48 +10,29 @@ namespace Ecommerce.API.Extensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            // Open Generics
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped(typeof(IRedisRepository<>), typeof(RedisRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IFileService, FileService>();
-            services.AddScoped<IPaymentService, PaymentService>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IGoogleService, GoogleService>();
-            services.AddScoped<IPermissionService, PermissionService>();
+
+            // Automated Registration with Scrutor
+            services.Scan(scan => scan
+                .FromAssembliesOf(typeof(IUnitOfWork), typeof(UnitOfWork), typeof(OrderService))
+                .AddClasses(classes => classes.Where(type => 
+                    (type.Name.EndsWith("Service") || type.Name.EndsWith("Repository")) 
+                    && !type.Name.Contains("Generic") && !type.Name.Contains("Redis")))
+                .AsImplementedInterfaces()
+                .WithScopedLifetime());
+
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProviderFilter>();
             services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandlerFilter>();
+            
             services.AddHangfireServer();
             services.AddScoped<OrderBackgroundService>();
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
-            services.AddScoped<IChatbotService, GroqChatbotService>();
-            
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<Product, ProductResponseDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "PictureUrl"));
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<ApplicationUser, UserCommonDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "ProfilePictureUrl"));
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<ApplicationUser, OnlineUserDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "ProfilePictureUrl"));
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<OrderItem, OrderItemResponseDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "ProductItemOrdered.PictureUrl"));
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<ProductReview, ProductReviewDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "ApplicationUser.ProfilePictureUrl"));
-            services.AddSingleton(provider =>
-                new ImageUrlResolver<Order, AllOrdersDto>(
-                    provider.GetRequiredService<IConfiguration>(),
-                    "ApplicationUser.ProfilePictureUrl"));
+
+            // Image URL Resolvers
+            services.AddImageUrlResolvers();
 
             services.AddSingleton<IResponseCacheService, ResponseCacheService>();
             
@@ -88,6 +69,26 @@ namespace Ecommerce.API.Extensions
                 };
             });
             return services;
+        }
+
+        private static void AddImageUrlResolvers(this IServiceCollection services)
+        {
+            services.AddImageUrlResolver<Product, ProductResponseDto>("PictureUrl");
+            services.AddImageUrlResolver<ApplicationUser, UserCommonDto>("ProfilePictureUrl");
+            services.AddImageUrlResolver<ApplicationUser, OnlineUserDto>("ProfilePictureUrl");
+            services.AddImageUrlResolver<OrderItem, OrderItemResponseDto>("ProductItemOrdered.PictureUrl");
+            services.AddImageUrlResolver<ProductReview, ProductReviewDto>("ApplicationUser.ProfilePictureUrl");
+            services.AddImageUrlResolver<Order, AllOrdersDto>("ApplicationUser.ProfilePictureUrl");
+        }
+
+        private static void AddImageUrlResolver<TSource, TDestination>(this IServiceCollection services, string propertyName)
+            where TSource : class
+            where TDestination : class
+        {
+            services.AddSingleton(provider =>
+                new ImageUrlResolver<TSource, TDestination>(
+                    provider.GetRequiredService<IConfiguration>(),
+                    propertyName));
         }
     }
 }

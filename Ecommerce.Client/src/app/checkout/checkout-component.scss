@@ -1,4 +1,20 @@
-.container {
-  margin-top: 120px !important;
+.checkout-container {
+  max-width: 1300px;
+  margin: 120px auto 3rem;
+  padding: 0 15px;
 }
 
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 2fr 1fr;
+    align-items: start;
+  }
+}
+
+.checkout-main {
+  min-width: 0; // Prevent grid blowout
+}

@@ -97,6 +97,18 @@
     color: #9f7aea;
     border-color: rgba(159, 122, 234, 0.3);
   }
+
+  &.refunded {
+    background: rgba(72, 187, 120, 0.1);
+    color: #48bb78;
+    border-color: rgba(72, 187, 120, 0.3);
+  }
+
+  &.return-requested {
+    background: rgba(237, 137, 54, 0.1);
+    color: #ed8936;
+    border-color: rgba(237, 137, 54, 0.3);
+  }
 }
 
 .order-content {
@@ -566,6 +578,7 @@
     }
   }
 }
+
 /* Cancelled Order Styles */
 .cancelled-order {
   .order-content {
@@ -635,6 +648,30 @@
       opacity: 0.9;
       margin-bottom: 0;
       line-height: 1.5;
+    }
+  }
+
+  &.refunded-banner {
+    background: rgba(72, 187, 120, 0.1);
+    color: #2f855a;
+    border: 1px solid rgba(72, 187, 120, 0.2);
+    box-shadow: 0 4px 12px rgba(72, 187, 120, 0.1);
+
+    .cancelled-icon {
+      background: #48bb78;
+
+      i {
+        color: white;
+      }
+    }
+
+    .cancelled-info h3 {
+      color: #2f855a;
+    }
+
+    .cancelled-info p {
+      color: #48bb78;
+      opacity: 1;
     }
   }
 }
@@ -727,9 +764,11 @@
   0% {
     box-shadow: 0 0 0 0 rgba(201, 26, 26, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(201, 26, 26, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(201, 26, 26, 0);
   }
@@ -740,6 +779,7 @@
     transform: translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

@@ -48,7 +48,9 @@ export class OrdersComponent implements OnInit {
       'complete': 'completed',
       'completed': 'completed',
       'cancelled': 'cancelled',
-      'canceled': 'canceled'
+      'canceled': 'canceled',
+      'refunded': 'refunded',
+      'return requested': 'return-requested'
     };
     return statusMap[statusLabel] || 'cancelled';
   }

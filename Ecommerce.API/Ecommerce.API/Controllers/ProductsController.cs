@@ -1,20 +1,19 @@
-
 namespace Ecommerce.API.Controllers
 {
     [EnableRateLimiting("customer-browsing")]
     public class ProductsController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IFileService _fileService;
+        private readonly IProductService _productService;
         private readonly IMapper _mapper;
 
         public ProductsController(
             IUnitOfWork unitOfWork,
-            IFileService fileService,
+            IProductService productService,
             IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _fileService = fileService;
+            _productService = productService;
             _mapper = mapper;
         }
 
@@ -75,13 +74,7 @@ namespace Ecommerce.API.Controllers
         [InvalidateCache("/api/products")]
         public async Task<ActionResult<ProductResponseDto>> Create([FromForm] ProductCreationDto creationDto)
         {
-            var product = _mapper.Map<ProductCreationDto, Product>(creationDto);
-
-            product.PictureUrl = await _fileService.SaveFileAsync(creationDto.ImageFile, "products");
-
-            await _unitOfWork.Repository<Product>().Create(product);
-
-            await _unitOfWork.Complete();
+            var product = await _productService.CreateProductAsync(creationDto);
 
             var spec = ProductSpecifications.BuildDetailsSpec(product.Id);
             var createdProduct = await _unitOfWork.Repository<Product>()
@@ -96,38 +89,10 @@ namespace Ecommerce.API.Controllers
         [InvalidateCache("/api/products")]
         public async Task<ActionResult<ProductResponseDto>> Update([FromForm] ProductUpdateDto updateDto)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(updateDto.ProductId);
+            var product = await _productService.UpdateProductAsync(updateDto);
 
             if (product is null)
                 return this.NotFoundResponse();
-
-            var hasNewImage = updateDto.ImageFile is not null;
-            var oldImage = product.PictureUrl;
-
-            _mapper.Map(updateDto, product);
-
-            if (hasNewImage)
-                product.PictureUrl = await _fileService.SaveFileAsync(updateDto.ImageFile!, "products");
-
-            using var transaction = await _unitOfWork.BeginTransactionAsync();
-            try
-            {
-                _unitOfWork.Repository<Product>().Update(product);
-                await _unitOfWork.Complete();
-
-                await transaction.CommitAsync();
-
-                if (hasNewImage && !string.IsNullOrEmpty(oldImage))
-                    _fileService.DeleteFile(oldImage);
-            }
-            catch
-            {
-                if (hasNewImage && !string.IsNullOrEmpty(product.PictureUrl))
-                    _fileService.DeleteFile(product.PictureUrl);
-
-                await transaction.RollbackAsync();
-                throw;
-            }
 
             var spec = ProductSpecifications.BuildDetailsSpec(product.Id);
             var updatedProduct = await _unitOfWork.Repository<Product>()
@@ -142,16 +107,10 @@ namespace Ecommerce.API.Controllers
         [InvalidateCache("/api/products")]
         public async Task<ActionResult<ProductResponseDto>> Delete([FromRoute] int id)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var success = await _productService.DeleteProductAsync(id);
 
-            if (product is null)
+            if (!success)
                 return this.NotFoundResponse();
-
-            _unitOfWork.Repository<Product>().Delete(product);
-            var effectedRows = await _unitOfWork.Complete();
-
-            if (effectedRows > 0 && !string.IsNullOrEmpty(product.PictureUrl))
-                _fileService.DeleteFile(product.PictureUrl);
 
             return NoContent();
         }

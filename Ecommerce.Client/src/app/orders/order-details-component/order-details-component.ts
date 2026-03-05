@@ -57,12 +57,13 @@ export class OrderDetailsComponent implements OnInit {
   isCancelled: boolean = false;
   isComplete: boolean = false;
   isReturnRequested: boolean = false;
+  isRefunded: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private checkoutService: CheckoutService,
     private sweetAlert: SweetAlertService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.orderId = +this.route.snapshot.paramMap.get('id')!;
@@ -78,6 +79,7 @@ export class OrderDetailsComponent implements OnInit {
         this.checkIfCancelled();
         this.checkIfComplete();
         this.checkIfReturnRequested();
+        this.checkIfRefunded();
       },
       error: (err) => {
         console.error('Failed to load order details', err);
@@ -103,6 +105,16 @@ export class OrderDetailsComponent implements OnInit {
 
     const statusNum = this.getOrderStatusNumber(this.order.status);
     this.isReturnRequested = statusNum === OrderStatus.ReturnRequested;
+  }
+
+  checkIfRefunded(): void {
+    if (!this.order?.status) {
+      this.isRefunded = false;
+      return;
+    }
+
+    const statusNum = this.getOrderStatusNumber(this.order.status);
+    this.isRefunded = statusNum === OrderStatus.Refunded;
   }
 
   checkIfComplete(): void {
@@ -252,6 +264,7 @@ export class OrderDetailsComponent implements OnInit {
             this.checkIfCancelled();
             this.checkIfComplete();
             this.checkIfReturnRequested();
+            this.checkIfRefunded();
             this.updateStepProgress();
             this.calculateEstimatedDeliveryDate();
             this.sweetAlert.success('Order cancelled successfully');
@@ -281,6 +294,7 @@ export class OrderDetailsComponent implements OnInit {
             this.checkIfCancelled();
             this.checkIfComplete();
             this.checkIfReturnRequested();
+            this.checkIfRefunded();
             this.updateStepProgress();
             this.calculateEstimatedDeliveryDate();
             this.sweetAlert.success('Return request submitted');

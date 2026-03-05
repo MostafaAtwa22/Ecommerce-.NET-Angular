@@ -1,24 +1,13 @@
-<div class="container mt-5">
-  <div class="row">
-    <div class="col-lg-8 col-12">
-      <app-stepper-component
-        [linearModeSelected]="false"
-        #appStepper
-        [addressStepValid]="addressStepValid"
-        [deliveryStepValid]="deliveryStepValid"
-        [paymentStepValid]="paymentStepValid"
-        [addressStepAttempted]="addressStepAttempted"
-        [deliveryStepAttempted]="deliveryStepAttempted"
-        [paymentStepAttempted]="paymentStepAttempted"
-        [addressForm]="addressForm"
-        [deliveryForm]="deliveryForm"
-        [paymentIntentCreated]="paymentIntentCreated"
-        [paymentComponent]="paymentComponentRef"
-        [continuePermission]="'Permissions.Orders.Create'"
-        [submitPermission]="'Permissions.Orders.Create'"
-        (stepChange)="onStepChange()"
-        [createPaymentIntent]="createPaymentIntent.bind(this)"
-      >
+<div class="checkout-container">
+  <div class="checkout-grid">
+    <div class="checkout-main">
+      <app-stepper-component [linearModeSelected]="false" #appStepper [addressStepValid]="addressStepValid"
+        [deliveryStepValid]="deliveryStepValid" [paymentStepValid]="paymentStepValid"
+        [addressStepAttempted]="addressStepAttempted" [deliveryStepAttempted]="deliveryStepAttempted"
+        [paymentStepAttempted]="paymentStepAttempted" [addressForm]="addressForm" [deliveryForm]="deliveryForm"
+        [paymentIntentCreated]="paymentIntentCreated" [paymentComponent]="paymentComponentRef"
+        [continuePermission]="'Permissions.Orders.Create'" [submitPermission]="'Permissions.Orders.Create'"
+        (stepChange)="onStepChange()" [createPaymentIntent]="createPaymentIntent.bind(this)">
         <cdk-step [label]="'Address'">
           <app-checkout-address-component [addressForm]="addressForm">
           </app-checkout-address-component>
@@ -36,7 +25,7 @@
         </cdk-step>
       </app-stepper-component>
     </div>
-    <div class="col-lg-4 col-12 mt-lg-0 mt-5">
+    <div class="checkout-sidebar">
       <app-order-totals-component></app-order-totals-component>
     </div>
   </div>

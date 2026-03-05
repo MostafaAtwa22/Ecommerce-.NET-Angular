@@ -1,12 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace Ecommerce.API.Dtos.Requests
+namespace Ecommerce.Core.Dtos
 {
     public class ProductCreationDto : ProductCommonDto
     {
         [Required]
-        [AllowedExtensions(FileSettings.AllowedExtensions),
-            MaxFileSize(FileSettings.MaxFileSizeInBytes)]
         public IFormFile ImageFile { get; set; } = default!;
     }
 }
