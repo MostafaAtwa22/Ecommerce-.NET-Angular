@@ -31,7 +31,7 @@ namespace Ecommerce.UnitTests.ControllerTests
                 PaymentIntentId = "pi_123456"
             };
 
-            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId)).ReturnsAsync(basket);
+            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId, It.IsAny<string?>())).ReturnsAsync(basket);
 
             // Act
             var result = await _controller.CreateOrUpdatePaymentIntent(basketId);
@@ -41,7 +41,7 @@ namespace Ecommerce.UnitTests.ControllerTests
             var returnBasket = Assert.IsType<CustomerBasket>(okResult.Value);
             Assert.Equal(basketId, returnBasket.Id);
             Assert.Equal("pi_123456", returnBasket.PaymentIntentId);
-            _paymentService.Verify(s => s.CreateOrUpdatePaymentIntent(basketId), Times.Once);
+            _paymentService.Verify(s => s.CreateOrUpdatePaymentIntent(basketId, It.IsAny<string?>()), Times.Once);
         }
 
         [Fact]
@@ -49,7 +49,7 @@ namespace Ecommerce.UnitTests.ControllerTests
         {
             // Arrange
             var basketId = "basket123";
-            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId)).ReturnsAsync((CustomerBasket?)null);
+            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId, It.IsAny<string?>())).ReturnsAsync((CustomerBasket?)null);
 
             // Act
             var result = await _controller.CreateOrUpdatePaymentIntent(basketId);
@@ -64,7 +64,7 @@ namespace Ecommerce.UnitTests.ControllerTests
         {
             // Arrange
             var basketId = "";
-            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId)).ReturnsAsync((CustomerBasket?)null);
+            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId, It.IsAny<string?>())).ReturnsAsync((CustomerBasket?)null);
 
             // Act
             var result = await _controller.CreateOrUpdatePaymentIntent(basketId);
@@ -80,7 +80,7 @@ namespace Ecommerce.UnitTests.ControllerTests
         {
             // Arrange
             var basketId = "basket123";
-            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId))
+            _paymentService.Setup(s => s.CreateOrUpdatePaymentIntent(basketId, It.IsAny<string?>()))
                           .ThrowsAsync(new Exception("Payment service error"));
 
             // Act & Assert

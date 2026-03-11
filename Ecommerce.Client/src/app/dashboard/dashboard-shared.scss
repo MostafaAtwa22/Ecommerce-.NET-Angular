@@ -1,0 +1,221 @@
+/* ===============================
+   Shared Dashboard Layout & Components
+   =============================== */
+
+$primary: #5624d0;
+$primary-dark: #401b9c;
+$success: #48bb78;
+$warning: #ed8936;
+$danger: #c91a1a;
+$text-dark: #0c111d;
+$text-light: #6a6f73;
+$bg-light: #f7f9fa;
+$white: #ffffff;
+$border-color: #d1d7dc;
+
+/* Containers */
+.dashboard-container {
+  padding: 0;
+}
+
+.card-shadow {
+  background: $white;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Insights Cards */
+.insights {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+
+  .insight-card {
+    background: $white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    border: 1px solid $border-color;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    &:hover {
+      border-color: $primary;
+      box-shadow: 0 2px 12px rgba($primary, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .insight-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: $white;
+
+      &.primary { background: $primary; }
+      &.success { background: $success; }
+      &.warning { background: $warning; }
+      &.danger { background: $danger; }
+    }
+
+    .insight-info {
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        color: $text-dark;
+      }
+      p {
+        font-size: 0.875rem;
+        color: $text-light;
+        margin: 0;
+      }
+    }
+  }
+}
+
+/* Toolbar & Table Containers */
+.toolbar {
+  padding: 1.5rem;
+  background: $white;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.products-table-container {
+  background: $white;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $border-color;
+  background: transparent;
+  
+  h4 {
+    color: $text-dark;
+    font-size: 1.125rem;
+    font-weight: 700;
+  }
+}
+
+/* Search Box */
+.search-box {
+  position: relative;
+  flex-grow: 1;
+  min-width: 250px;
+  max-width: 500px;
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-light;
+    z-index: 2;
+  }
+
+  .search-input {
+    padding-left: 2.75rem;
+    height: 45px;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    &:focus {
+      border-color: $primary;
+      box-shadow: 0 0 0 4px rgba($primary, 0.1);
+      outline: none;
+    }
+  }
+}
+
+/* Table Styles */
+.table {
+  width: 100%;
+  margin-bottom: 0;
+  
+  thead th {
+    background: #f8f9fa;
+    color: $text-light;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  tbody tr {
+    transition: background 0.2s;
+    &:hover { background: rgba($primary, 0.02); }
+  }
+
+  tbody td {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+    color: $text-dark;
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+/* Loading & Empty States */
+.loading-wrapper {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba($primary, 0.1);
+  border-top-color: $primary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state {
+  padding: 5rem 2rem;
+  text-align: center;
+  color: $text-light;
+  
+  i { color: #d1d7dc; }
+  h5 { font-weight: 700; color: $text-dark; }
+}
+
+/* Buttons */
+.btn-primary {
+  background: $primary;
+  border-color: $primary;
+  font-weight: 600;
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  
+  &:hover {
+    background: $primary-dark;
+    border-color: $primary-dark;
+  }
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .insights { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .insights { grid-template-columns: 1fr; }
+  .search-box { max-width: none; width: 100%; }
+}

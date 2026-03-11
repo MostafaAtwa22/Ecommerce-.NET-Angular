@@ -150,6 +150,7 @@ export class ShopService {
     formData.append('Quantity', product.quantity.toString());
     formData.append('ProductTypeId', product.productTypeId.toString());
     formData.append('ProductBrandId', product.productBrandId.toString());
+    formData.append('DiscountPercentage', (product.discountPercentage || 0).toString());
 
     if (product.imageFile) {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);
@@ -178,6 +179,7 @@ export class ShopService {
     formData.append('Quantity', product.quantity.toString());
     formData.append('ProductTypeId', product.productTypeId.toString());
     formData.append('ProductBrandId', product.productBrandId.toString());
+    formData.append('DiscountPercentage', (product.discountPercentage || 0).toString());
 
     if (product.imageFile && product.imageFile instanceof File) {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);

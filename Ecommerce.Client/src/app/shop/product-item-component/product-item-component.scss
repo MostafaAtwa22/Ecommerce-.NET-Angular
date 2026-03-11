@@ -91,6 +91,18 @@
       color: white;
     }
   }
+
+  .discount-badge {
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    color: white;
+    margin-top: 0.35rem;
+    animation: pulse-badge 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-badge {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
 }
 
 /* Quick Actions */

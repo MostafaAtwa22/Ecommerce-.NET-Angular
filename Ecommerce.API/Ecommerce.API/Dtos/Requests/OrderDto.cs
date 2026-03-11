@@ -12,5 +12,7 @@ namespace Ecommerce.API.Dtos.Requests
 
         [Required]
         public OrderAddressDto ShipToAddress { get; set; } = new();
+
+        public string? CouponCode { get; set; }
     }
 }

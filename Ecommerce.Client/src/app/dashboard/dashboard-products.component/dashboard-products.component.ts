@@ -398,4 +398,9 @@ export class DashboardProductsComponent implements OnInit {
     const type = this.types.find((t) => t.id === typeId);
     return type?.name ? String(type.name) : 'Unknown Type';
   }
+
+  getDiscountPercent(product: IProduct): number {
+    if (!product.isDiscounted || product.price === 0) return 0;
+    return Math.round(((product.price - product.discountedPrice) / product.price) * 100);
+  }
 }

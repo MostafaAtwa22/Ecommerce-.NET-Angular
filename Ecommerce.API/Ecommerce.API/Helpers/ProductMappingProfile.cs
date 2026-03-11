@@ -12,7 +12,10 @@ namespace Ecommerce.API.Helpers
                 .ForMember(dest => dest.ProductBrandId, o => o.MapFrom(src => src.ProductBrand.Id))
                 .ForMember(dest => dest.ProductTypeId, o => o.MapFrom(src => src.ProductType.Id))
                 .ForMember(dest => dest.PictureUrl,
-                    o => o.MapFrom<ImageUrlResolver<Product, ProductResponseDto>>());
+                    o => o.MapFrom<ImageUrlResolver<Product, ProductResponseDto>>())
+                .ForMember(dest => dest.IsDiscounted, o => o.MapFrom(src => src.IsDiscounted))
+                .ForMember(dest => dest.DiscountedPrice, o => o.MapFrom(src => src.DiscountedPrice))
+                .ForMember(dest => dest.DiscountPercentage, o => o.MapFrom(src => src.DiscountPercentage));
 
             CreateMap<Product, ProductSuggestionDto>()
                 .ForMember(dest => dest.ProductBrandName, o => o.MapFrom(src => src.ProductBrand.Name))

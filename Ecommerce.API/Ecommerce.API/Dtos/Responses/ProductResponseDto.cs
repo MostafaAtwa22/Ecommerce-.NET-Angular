@@ -12,6 +12,12 @@ namespace Ecommerce.API.Dtos.Responses
 
         public decimal Price { get; set; }
 
+        public decimal DiscountPercentage { get; set; }
+
+        public bool IsDiscounted { get; set; }
+
+        public decimal DiscountedPrice { get; set; }
+
         public int Quantity { get; set; }
 
         public int BoughtQuantity { get; set; }

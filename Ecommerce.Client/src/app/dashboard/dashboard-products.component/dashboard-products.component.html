@@ -178,6 +178,7 @@
             <th scope="col" class="fw-bold ps-4">Product</th>
             <th scope="col" class="fw-bold">Category</th>
             <th scope="col" class="fw-bold">Price</th>
+            <th scope="col" class="fw-bold">Discount</th>
             <th scope="col" class="fw-bold">Stock</th>
             <th scope="col" class="fw-bold">Rating</th>
             <th scope="col" class="fw-bold text-end pe-4">Actions</th>
@@ -231,7 +232,20 @@
               </div>
             </td>
             <td>
-              <strong class="text-primary">${{ product.price | number:'1.2-2' }}</strong>
+              <div>
+                <span [class.text-muted]="product.isDiscounted" [class.text-decoration-line-through]="product.isDiscounted">
+                  ${{ product.price | number:'1.2-2' }}
+                </span>
+                <span *ngIf="product.isDiscounted" class="d-block text-danger fw-bold">
+                  ${{ product.discountedPrice | number:'1.2-2' }}
+                </span>
+              </div>
+            </td>
+            <td>
+              <span *ngIf="product.isDiscounted" class="badge bg-danger text-white">
+                -{{ getDiscountPercent(product) }}% OFF
+              </span>
+              <span *ngIf="!product.isDiscounted" class="text-muted small">No discount</span>
             </td>
             <td>
               <span class="{{ getStockStatusClass(product) }}">

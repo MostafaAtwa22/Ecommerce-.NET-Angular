@@ -3,7 +3,7 @@ namespace Ecommerce.Core.Interfaces
 {
     public interface IOrderService
     {
-        Task<Order> CreateOrderAsync(string buyerEmail, string userId, int deliverMethodId, string basketId, OrderAddress shippingAddress);
+        Task<Order> CreateOrderAsync(string buyerEmail, string userId, int deliverMethodId, string basketId, OrderAddress shippingAddress, string? couponCode = null);
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail);
         Task<Order?> GetOrderByIdAsync(int id, string buyerEmail);
         Task CancelOrder(Order order);

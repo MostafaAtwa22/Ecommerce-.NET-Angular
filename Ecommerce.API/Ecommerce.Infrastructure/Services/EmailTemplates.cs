@@ -653,6 +653,11 @@ namespace Ecommerce.Infrastructure.Services
                                     <span class='info-label'>Delivery</span>
                                     <span class='info-value'>{order.DeliveryMethod?.Price:C}</span>
                                 </div>
+                                {(order.Discount > 0 ? $@"
+                                <div class='info-row'>
+                                    <span class='info-label'>Discount</span>
+                                    <span class='info-value'>-{order.Discount:C}</span>
+                                </div>" : "")}
                                 <div class='info-row total'>
                                     <span class='info-label'>Total Amount</span>
                                     <span class='info-value'>{totalAmount:C}</span>

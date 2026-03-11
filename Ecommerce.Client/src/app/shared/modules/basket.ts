@@ -7,6 +7,8 @@ export interface IBasket {
   paymentIntentId?: string;
   deliveryMethodId?: number;
   shippingPrice?: number;
+  couponCode?: string;
+  discount?: number;
 }
 
 export interface IBasketItem {
@@ -28,4 +30,5 @@ export interface IBasketTotals {
   shipping: number;
   subTotal: number;
   total: number;
+  discount: number;
 }

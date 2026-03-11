@@ -110,6 +110,33 @@
     </div>
   </div>
 
+  <!-- Discount Section -->
+  <div class="mb-3 border rounded p-3 bg-light">
+    <label for="discountPercentage" class="form-label fw-semibold">Discount Percentage (%)</label>
+    <div class="input-group">
+      <input
+        type="number"
+        id="discountPercentage"
+        class="form-control"
+        formControlName="discountPercentage"
+        [class.is-invalid]="discountPercentage?.invalid && discountPercentage?.touched"
+        min="0"
+        max="100"
+        step="1"
+        placeholder="Enter discount percentage (0-100)"
+      >
+      <span class="input-group-text">%</span>
+      @if (discountPercentage?.invalid && discountPercentage?.touched) {
+        <div class="invalid-feedback d-block mt-2">
+          @if (discountPercentage?.errors?.['min'] || discountPercentage?.errors?.['max']) {
+            <span>Discount percentage must be between 0 and 100</span>
+          }
+        </div>
+      }
+    </div>
+    <small class="text-muted d-block mt-1">Set to 0 for no discount</small>
+  </div>
+
   <!-- Brand & Type Row -->
   <div class="row g-3 mb-3">
     <div class="col-md-6">

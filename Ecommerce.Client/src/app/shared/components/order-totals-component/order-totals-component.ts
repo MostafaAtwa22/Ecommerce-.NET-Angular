@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { IBasketTotals } from '../../modules/basket';
 import { BasketService } from '../../services/basket-service';
-import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-order-totals-component',
-  imports: [AsyncPipe, CurrencyPipe, RouterLink],
+  imports: [AsyncPipe, CurrencyPipe, RouterLink, NgIf],
   templateUrl: './order-totals-component.html',
   styleUrl: './order-totals-component.scss',
 })

@@ -48,6 +48,33 @@
             }
           </div>
         </div>
+
+        <!-- Coupon Section -->
+        <div class="coupon-section mt-4 p-3 border rounded bg-light">
+          <h5>Have a coupon code?</h5>
+          <div class="d-flex align-items-center mb-2">
+            <input 
+              type="text" 
+              class="form-control me-2" 
+              placeholder="Enter code (e.g. SAVE10)" 
+              [value]="couponCodeInput"
+              (input)="onCouponInput($event)"
+              style="max-width: 250px;"
+            />
+            <button 
+              class="btn btn-outline-primary" 
+              (click)="applyCoupon()" 
+              [disabled]="!couponCodeInput">
+              Apply
+            </button>
+          </div>
+          
+          <div *ngIf="basket.couponCode" class="mt-2 text-success d-flex align-items-center">
+            <i class="fas fa-check-circle me-2"></i>
+            <span>Coupon <strong>{{ basket.couponCode }}</strong> applied!</span>
+            <button class="btn btn-sm btn-link text-danger ms-2" (click)="removeCoupon()">Remove</button>
+          </div>
+        </div>
       </div>
     } @else {
       <!-- Empty Basket State -->

@@ -36,6 +36,33 @@ export class BasketService {
       );
   }
 
+  applyCoupon(basketId: string, couponCode: string) {
+    return this.http
+      .post<IBasket>(
+        `${Environment.baseUrl}/api/payment/${basketId}?couponCode=${encodeURIComponent(couponCode)}`,
+        {}
+      )
+      .pipe(
+        map((basket) => {
+          this.basketSource.next(basket);
+          this.calculateTotals();
+          return basket;
+        })
+      );
+  }
+
+  removeCoupon(basketId: string) {
+    return this.http
+      .post<IBasket>(`${Environment.baseUrl}/api/payment/${basketId}`, {})
+      .pipe(
+        map((basket) => {
+          this.basketSource.next(basket);
+          this.calculateTotals();
+          return basket;
+        })
+      );
+  }
+
   setShippingPrice(deliveryMethod: IDeliveryMethod) {
       this.shipping = deliveryMethod.price;
       var basket = this.getCurrentBasketValue();
@@ -185,14 +212,15 @@ export class BasketService {
   private calculateTotals() {
     const basket = this.getCurrentBasketValue();
     if (!basket || !basket.items.length) {
-      this.basketTotalSource.next({ shipping: 0, subTotal: 0, total: 0 });
+      this.basketTotalSource.next({ shipping: 0, subTotal: 0, total: 0, discount: 0 });
       return;
     }
     const shipping = this.shipping;
     const subTotal = basket.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const total = subTotal + this.shipping;
+    const discount = basket.discount ?? 0;
+    const total = Math.max(0, subTotal + shipping - discount);
 
-    this.basketTotalSource.next({ shipping: this.shipping, subTotal, total });
+    this.basketTotalSource.next({ shipping, subTotal, total, discount });
   }
 
   // 🔹 Helpers

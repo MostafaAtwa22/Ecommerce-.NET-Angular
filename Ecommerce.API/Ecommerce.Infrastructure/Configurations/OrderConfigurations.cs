@@ -34,6 +34,9 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.Property(oi => oi.SubTotal)
                         .HasColumnType("decimal(18,2)");
 
+            builder.Property(o => o.Discount)
+                        .HasColumnType("decimal(18,2)");
+
             builder.HasMany(o => o.OrderItems)
                 .WithOne(oi => oi.Order)
                 .HasForeignKey(oi => oi.OrderId)

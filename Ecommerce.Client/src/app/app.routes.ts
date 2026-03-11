@@ -112,6 +112,12 @@ export const routes: Routes = [
           }
         ]
       },
+      {
+        path: 'coupons', loadComponent: () =>
+          import('./dashboard/dashboard-coupons.component/dashboard-coupons.component').then(m => m.DashboardCouponsComponent),
+        canActivate: [permissionGuard],
+        data: { permission: 'Permissions.Coupons.Read' },
+      },
     ]
   },
   {

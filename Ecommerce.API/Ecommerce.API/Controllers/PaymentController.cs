@@ -20,9 +20,9 @@ namespace Ecommerce.API.Controllers
         [Authorize]
         [HttpPost("{basketId}")]
         [EnableRateLimiting("customer-payment")]
-        public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId)
+        public async Task<ActionResult<CustomerBasket>> CreateOrUpdatePaymentIntent(string basketId, [FromQuery] string? couponCode = null)
         {
-            var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId);
+            var basket = await _paymentService.CreateOrUpdatePaymentIntent(basketId, couponCode);
 
             if (basket is null)
                 return BadRequest(new ApiResponse(400, "Problem with basket"));

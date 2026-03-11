@@ -214,7 +214,8 @@ namespace Ecommerce.UnitTests.ControllerTests
                 It.IsAny<string>(),
                 orderDto.DeliveryMethodId,
                 orderDto.BasketId,
-                orderAddress))
+                orderAddress,
+                It.IsAny<string?>()))
                 .ReturnsAsync(order);
             _mapper.Setup(m => m.Map<Order, OrderResponseDto>(order)).Returns(orderResponseDto);
 
@@ -255,7 +256,8 @@ namespace Ecommerce.UnitTests.ControllerTests
                 It.IsAny<string>(),
                 orderDto.DeliveryMethodId,
                 orderDto.BasketId,
-                orderAddress))!
+                orderAddress,
+                It.IsAny<string?>()))!
                 .ReturnsAsync((Order?)null);
 
             // Act

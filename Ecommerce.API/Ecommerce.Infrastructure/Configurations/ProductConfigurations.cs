@@ -8,6 +8,9 @@ namespace Ecommerce.Infrastructure.Configurations
                         builder.Property(p => p.Price)
                                 .HasColumnType("decimal(18,2)");
 
+                        builder.Property(p => p.DiscountPercentage)
+                                .HasColumnType("decimal(5,2)");
+
                         builder.Property(p => p.AverageRating)
                                 .HasColumnType("decimal(5,2)");
 

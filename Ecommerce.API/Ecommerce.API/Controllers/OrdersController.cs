@@ -126,7 +126,7 @@ namespace Ecommerce.API.Controllers
       if (string.IsNullOrWhiteSpace(order.PaymentIntenId))
         return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Order has no payment intent id to refund"));
 
-      var amountInCents = (long)(order.SubTotal * 100);
+      var amountInCents = (long)(order.GetTotal() * 100);
       await _paymentService.RefundPaymentIntentAsync(order.PaymentIntenId, amountInCents, "requested_by_customer");
 
       order.Status = OrderStatus.Refunded;
@@ -148,7 +148,7 @@ namespace Ecommerce.API.Controllers
 
       var addressDto = _mapper.Map<OrderAddressDto, OrderAddress>(dto.ShipToAddress);
 
-      var order = await _orderService.CreateOrderAsync(userEmail, userId, dto.DeliveryMethodId, dto.BasketId, addressDto);
+      var order = await _orderService.CreateOrderAsync(userEmail, userId, dto.DeliveryMethodId, dto.BasketId, addressDto, dto.CouponCode);
 
       if (order is null)
         return BadRequest(new ApiResponse(400, "Problem creating order"));
@@ -164,7 +164,7 @@ namespace Ecommerce.API.Controllers
     [InvalidateCache("/api/orders")]
     public async Task<ActionResult<OrderResponseDto>> GetOrderDetailsById([FromRoute] int id)
     {
-      var (order, errorResponse) = await GetOrderForDetailsOrError(id);
+      var (order, errorResponse) = await GetOrderOrError(id);
       if (order is null) return errorResponse!;
 
       return Ok(_mapper.Map<Order, OrderResponseDto>(order));
@@ -233,17 +233,7 @@ namespace Ecommerce.API.Controllers
       return (order, errorResponse);
     }
 
-    private async Task<(Order? order, ActionResult<OrderResponseDto>? error)> GetOrderForDetailsOrError(int id)
-    {
-      var spec = OrderSpecifications.BuildDetailsSpec(id);
-      var order = await _unitOfWork.Repository<Order>().GetWithSpecAsync(spec);
 
-      ActionResult<OrderResponseDto>? errorResponse = null;
-      if (order is null)
-        errorResponse = NotFound(new ApiResponse(StatusCodes.Status404NotFound, "Order not found"));
-
-      return (order, errorResponse);
-    }
 
     private async Task<(Order? order, ActionResult<OrderResponseDto>? error)> GetOrderForUpdateOrError(int id)
     {

@@ -2,6 +2,10 @@ import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } fro
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { BasketService } from '../../shared/services/basket-service';
+import { CheckoutService } from '../checkout-service';
+import { IOrderToCreate } from '../../shared/modules/order';
+import { Router } from '@angular/router';
 
 declare var Stripe: any;
 
@@ -15,7 +19,12 @@ declare var Stripe: any;
 export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   @Input() paymentForm!: FormGroup;
 
-  constructor(private toastr: ToastrService) {}
+  constructor(
+    private toastr: ToastrService,
+    private basketService: BasketService,
+    private checkoutService: CheckoutService,
+    private router: Router
+  ) {}
 
   @ViewChild('cardNumber') cardNumberElement!: ElementRef;
   @ViewChild('cardExpiry') cardExpiryElement!: ElementRef;

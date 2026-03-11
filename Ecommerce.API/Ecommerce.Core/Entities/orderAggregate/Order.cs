@@ -30,8 +30,12 @@ namespace Ecommerce.Core.Entities.orderAggregate
         public string PaymentIntenId { get; set; } = string.Empty;
         public string ApplicationUserId { get; set; } = string.Empty;
         public ApplicationUser ApplicationUser { get; set; } = default!;
+
+        public int? CouponId { get; set; }
+        public Coupon? Coupon { get; set; }
+        public decimal Discount { get; set; } = 0;
         
         public decimal GetTotal()
-            => SubTotal + DeliveryMethod.Price;
+            => Math.Max(0, SubTotal + DeliveryMethod.Price - Discount);
     }
 }

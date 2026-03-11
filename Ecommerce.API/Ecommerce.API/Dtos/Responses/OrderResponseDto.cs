@@ -9,6 +9,7 @@ namespace Ecommerce.API.Dtos.Responses
         public decimal SubTotal { get; set; }
         public decimal Total { get; set; }
         public string Status { get; set; } = string.Empty;
+        public decimal Discount { get; set; }
         public IReadOnlyList<OrderItemResponseDto> OrderItems { get; set; } = new List<OrderItemResponseDto>();
         public OrderAddressDto AddressToShip { get; set; } = new();
         public string DeliveryMethod { get; set; } = string.Empty;

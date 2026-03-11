@@ -4,10 +4,13 @@
     <div class="image-container">
       <img [src]="product.pictureUrl" class="product-image" alt="{{ product.name }}" />
 
-      <!-- Stock Status Badge -->
+      <!-- Stock & Discount Badges -->
       <div class="product-badges">
         <div class="badge stock-badge" [ngClass]="{'in-stock': isInStock(), 'out-of-stock': !isInStock()}">
           {{ isInStock() ? 'In Stock' : 'Out of Stock' }}
+        </div>
+        <div *ngIf="product.isDiscounted" class="badge discount-badge">
+          SALE
         </div>
       </div>
 
@@ -49,7 +52,15 @@
 
       <!-- Price -->
       <div class="product-price">
-        <span class="current-price">{{ product.price | currency:'USD' }}</span>
+        <span *ngIf="product.isDiscounted" class="original-price text-muted text-decoration-line-through me-2 small">
+          {{ product.price | currency:'USD' }}
+        </span>
+        <span class="current-price" [class.text-danger]="product.isDiscounted">
+          {{ (product.isDiscounted ? product.discountedPrice : product.price) | currency:'USD' }}
+        </span>
+        <span *ngIf="product.isDiscounted" class="discount-pct ms-1 small text-success">
+          -{{ getSavingPercent() }}%
+        </span>
       </div>
 
       <!-- Action Buttons -->

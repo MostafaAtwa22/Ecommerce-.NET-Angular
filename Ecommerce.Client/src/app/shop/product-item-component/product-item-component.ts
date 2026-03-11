@@ -106,4 +106,9 @@ export class ProductItemComponent implements OnInit {
     return wishlist.items.some((item) => item.id === productId);
   }
 
+  getSavingPercent(): number {
+    if (!this.product.isDiscounted || this.product.price === 0) return 0;
+    return Math.round(((this.product.price - this.product.discountedPrice) / this.product.price) * 100);
+  }
+
 }

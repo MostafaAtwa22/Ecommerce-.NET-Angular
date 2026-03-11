@@ -17,6 +17,8 @@ namespace Ecommerce.Core.Entities
         public int? DeliveryMethodId { get; set; }
         public string ClientSecret { get; set; } = string.Empty;
         public string PaymentIntentId { get; set; } = string.Empty;
-        public decimal shippingPrice { get; set; }
+        public string? CouponCode { get; set; }
+        public decimal Discount { get; set; } = 0;
+        public decimal ShippingPrice { get; set; }
     }
 }

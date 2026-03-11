@@ -8,6 +8,7 @@ namespace Ecommerce.API.Dtos.Responses
         public DateTimeOffset CreatedAt { get; set; }
         public OrderStatus Status { get; set; }
         public decimal Total { get; set; }
+        public decimal Discount { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string? ProfilePictureUrl { get; set; }

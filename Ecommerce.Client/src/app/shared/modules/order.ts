@@ -4,6 +4,7 @@ export interface IOrderToCreate {
   basketId: string
   deliveryMethodId: number
   shipToAddress: IAddress
+  couponCode?: string
 }
 
 export interface IAllOrders {
@@ -24,6 +25,7 @@ export interface IOrder {
   orderDate: string
   shippingPrice: number
   subTotal: number
+  discount: number
   total: number
   status: string
   orderItems: IOrderItem[]
@@ -37,6 +39,7 @@ export interface IOrderItem {
   pictureUrl: string
   price: number
   quantity: number
+  discountPercentage?: number
 }
 
 export interface IUpdateOrderStatusDto {

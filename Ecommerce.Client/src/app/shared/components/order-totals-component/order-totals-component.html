@@ -38,6 +38,11 @@
         </li>
       </ul>
 
+      <div *ngIf="totals.discount > 0" class="discount-row text-success mt-2 mb-2 d-flex justify-content-between">
+        <span class="label">Discount</span>
+        <span class="value">-{{ totals.discount | currency:'USD' }}</span>
+      </div>
+
       <!-- 🚚 Shipping Progress -->
       @if (!hasFreeShipping(totals) && totals.subTotal > 0) {
         <div class="shipping-progress">

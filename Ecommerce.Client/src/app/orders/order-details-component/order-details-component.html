@@ -120,9 +120,16 @@
               </div>
               <div class="item-details">
                 <h4 class="product-name">{{ item.productName }}</h4>
-                <div class="item-meta">
-                  <span class="item-price">{{ item.price | currency:'USD' }}</span>
-                  <span class="item-quantity">Qty: {{ item.quantity }}</span>
+                <div class="item-meta" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <ng-container *ngIf="item.discountPercentage && item.discountPercentage > 0">
+                    <span class="item-price text-danger fw-bold">{{ item.price | currency:'USD' }}</span>
+                    <span class="item-price text-muted text-decoration-line-through" style="font-size: 0.85em;">{{ getOriginalPrice(item.price, item.discountPercentage) | currency:'USD' }}</span>
+                    <span class="badge bg-danger ms-1">-{{ item.discountPercentage }}%</span>
+                  </ng-container>
+                  <ng-container *ngIf="!item.discountPercentage || item.discountPercentage <= 0">
+                    <span class="item-price fw-bold">{{ item.price | currency:'USD' }}</span>
+                  </ng-container>
+                  <span class="item-quantity ms-3 text-muted">Qty: {{ item.quantity }}</span>
                 </div>
               </div>
               <div class="item-total">
@@ -173,6 +180,13 @@
             <div class="total-item">
               <span class="total-label">Shipping</span>
               <span class="total-value">{{ order.shippingPrice | currency:'USD' }}</span>
+            </div>
+            <div class="total-item text-success" *ngIf="order.discount > 0">
+              <span class="total-label">
+                <i class="fas fa-tag me-1"></i>
+                Coupon Discount
+              </span>
+              <span class="total-value">-{{ order.discount | currency:'USD' }}</span>
             </div>
             <div class="total-divider"></div>
             <div class="total-item grand-total">

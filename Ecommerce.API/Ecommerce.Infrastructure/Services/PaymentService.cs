@@ -9,20 +9,24 @@ namespace Ecommerce.Infrastructure.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;
         private readonly IRedisRepository<CustomerBasket> _basketRepository;
+        private readonly ICouponService _couponService;
 
         public PaymentService(
             IUnitOfWork unitOfWork,
             IConfiguration config,
-            IRedisRepository<CustomerBasket> basketRepository)
+            IRedisRepository<CustomerBasket> basketRepository,
+            ICouponService couponService)
         {
             _unitOfWork = unitOfWork;
             _config = config;
             _basketRepository = basketRepository;
+            _couponService = couponService;
+
+            StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
         }
 
-        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId)
+        public async Task<CustomerBasket> CreateOrUpdatePaymentIntent(string basketId, string? couponCode = null)
         {
-            StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
 
             var basket = await _basketRepository.GetAsync(basketId);
 
@@ -40,18 +44,34 @@ namespace Ecommerce.Infrastructure.Services
                 shippingPrice = deliveryMethod!.Price;
             }
 
+            var productIds = basket.Items.Select(i => i.Id).ToList();
+            var products = await _unitOfWork.Repository<Product>().FindAllAsync(p => productIds.Contains(p.Id));
+
             foreach (var item in basket.Items)
             {
-                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
+                var product = products.FirstOrDefault(p => p.Id == item.Id);
 
                 if (product is null)
                     continue;
 
-                if (product.Price != item.Price)
-                    item.Price = product.Price;
+                var currentPrice = product.IsDiscounted ? product.DiscountedPrice : product.Price;
+                if (item.Price != currentPrice)
+                    item.Price = currentPrice;
             }
 
-            var total = basket.Items.Sum(x => x.Price * x.Quantity) + shippingPrice;
+            // handle coupon
+            if (!string.IsNullOrEmpty(couponCode))
+            {
+                var coupon = await _couponService.GetValidCouponAsync(couponCode);
+
+                if (coupon != null)
+                {
+                    basket.CouponCode = coupon.Code;
+                    basket.Discount = coupon.DiscountAmount;
+                }
+            }
+
+            var total = Math.Max(0, basket.Items.Sum(x => x.Price * x.Quantity) + shippingPrice - basket.Discount);
 
             var service = new PaymentIntentService();
             PaymentIntent intent;
@@ -76,7 +96,7 @@ namespace Ecommerce.Infrastructure.Services
                     Amount = (long)(total * 100)
                 };
 
-                intent = await service.UpdateAsync(basket.PaymentIntentId, options);
+                await service.UpdateAsync(basket.PaymentIntentId, options);
             }
 
             await _basketRepository.UpdateOrCreateAsync(basket.Id, basket);
@@ -116,8 +136,6 @@ namespace Ecommerce.Infrastructure.Services
 
         public async Task RefundPaymentIntentAsync(string paymentIntentId, long? amountInCents, string reason)
         {
-            StripeConfiguration.ApiKey = _config["StripeSettings:Secretkey"];
-
             if (string.IsNullOrWhiteSpace(paymentIntentId))
                 throw new ArgumentException("Payment intent id is required", nameof(paymentIntentId));
 

@@ -8,6 +8,7 @@ namespace Ecommerce.Infrastructure.Constants
         public const string DeliveryMethods = "DeliveryMethods";
         public const string Orders = "Orders";
         public const string Payment = "Payment";
+        public const string Coupons = "Coupons";
 
         public const string Products = "Products";
         public const string ProductBrands = "ProductBrands";

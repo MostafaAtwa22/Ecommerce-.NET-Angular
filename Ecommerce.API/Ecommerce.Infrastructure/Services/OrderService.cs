@@ -6,32 +6,61 @@ namespace Ecommerce.Infrastructure.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRedisRepository<CustomerBasket> _basketRepository;
         private readonly IPaymentService _paymentService;
+        private readonly ICouponService _couponService;
 
         public OrderService(IUnitOfWork unitOfWork,
             IRedisRepository<CustomerBasket> basketRepository,
-            IPaymentService paymentService)
+            IPaymentService paymentService,
+            ICouponService couponService)
         {
             _unitOfWork = unitOfWork;
             _basketRepository = basketRepository;
             _paymentService = paymentService;
+            _couponService = couponService;
         }
 
         public async Task<Order> CreateOrderAsync(string buyerEmail, string userId, int deliverMethodId,
-            string basketId, OrderAddress shippingAddress)
+            string basketId, OrderAddress shippingAddress, string? couponCode = null)
         {
-            // get basket from the repo
             var basket = await _basketRepository.GetAsync(basketId);
-
             if (basket == null || !basket.Items.Any())
                 throw new BadRequestException("Basket is empty");
 
-            // get products from the repo in one go
-            var productIds = basket!.Items.Select(i => i.Id).ToList();
+            var items = await BuildOrderItemsAsync(basket);
+
+            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(deliverMethodId);
+
+            decimal subTotal = items.Sum(item => item.Price * item.Quantity);
+
+            var (coupon, discount) = await ResolveCouponAsync(couponCode, basket.CouponCode);
+
+            await HandleExistingOrderAsync(basket.PaymentIntentId, basketId);
+
+            var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!)
+            {
+                ApplicationUserId = userId,
+                PaymentIntenId = basket.PaymentIntentId,
+                Coupon = coupon,
+                Discount = discount
+            };
+
+            await _unitOfWork.Repository<Order>().Create(order);
+            int result = await _unitOfWork.Complete();
+
+            if (result <= 0) return null!;
+
+            await _basketRepository.DeleteAsync(basketId);
+
+            return order;
+        }
+
+        private async Task<List<OrderItem>> BuildOrderItemsAsync(CustomerBasket basket)
+        {
+            var productIds = basket.Items.Select(i => i.Id).ToList();
             var products = await _unitOfWork.Repository<Product>().FindAllAsync(p => productIds.Contains(p.Id));
 
-            // get item from product repo
             var items = new List<OrderItem>();
-            foreach (var item in basket!.Items)
+            foreach (var item in basket.Items)
             {
                 var productItem = products.FirstOrDefault(p => p.Id == item.Id);
                 if (productItem is null)
@@ -41,49 +70,37 @@ namespace Ecommerce.Infrastructure.Services
                 if (availableStock < item.Quantity)
                     throw new BadRequestException($"Only {availableStock} items available for {productItem.Name}");
 
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl);
-
-                var orderItem = new OrderItem(item.Price, item.Quantity, itemOrdered);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl, productItem.DiscountPercentage);
+                var currentPrice = productItem.IsDiscounted ? productItem.DiscountedPrice : productItem.Price;
+                var orderItem = new OrderItem(currentPrice, item.Quantity, itemOrdered);
                 items.Add(orderItem);
 
                 productItem.BoughtQuantity += item.Quantity;
                 _unitOfWork.Repository<Product>().Update(productItem);
             }
+            return items;
+        }
 
-            // get delivery method
-            var deliveryMethod = await _unitOfWork.Repository<DeliveryMethod>()
-                .GetByIdAsync(deliverMethodId);
+        private async Task<(Coupon? coupon, decimal discount)> ResolveCouponAsync(string? requestedCode, string? basketCode)
+        {
+            var codeToUse = !string.IsNullOrEmpty(requestedCode) ? requestedCode : basketCode;
 
-            // calc subtotal
-            decimal subTotal = items.Sum(item => item.Price * item.Quantity);
+            if (string.IsNullOrEmpty(codeToUse)) return (null, 0);
 
-            // check to see if order exists
-            var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
+            var coupon = await _couponService.GetValidCouponAsync(codeToUse);
+            return coupon != null ? (coupon, coupon.DiscountAmount) : (null, 0);
+        }
+
+        private async Task HandleExistingOrderAsync(string paymentIntentId, string basketId)
+        {
+            var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
             var existsOrder = await _unitOfWork.Repository<Order>().GetWithSpecAsync(spec);
 
             if (existsOrder is not null)
             {
                 _unitOfWork.Repository<Order>().Delete(existsOrder!);
-                await _paymentService.CreateOrUpdatePaymentIntent(basket.Id);
+                await _paymentService.CreateOrUpdatePaymentIntent(basketId);
             }
-            // create order
-            var order = new Order(items, buyerEmail, subTotal, shippingAddress, deliveryMethod!)
-            {
-                ApplicationUserId = userId,
-                PaymentIntenId = basket.PaymentIntentId
-            };
-
-            // save db
-            await _unitOfWork.Repository<Order>().Create(order);
-            int result = await _unitOfWork.Complete();
-
-            if (result <= 0) return null!;
-
-            // delete the basket from cache
-            await _basketRepository.DeleteAsync(basketId);
-
-            // return order
-            return order;
         }
 
         public async Task<Order?> GetOrderByIdAsync(int id, string buyerEmail)
