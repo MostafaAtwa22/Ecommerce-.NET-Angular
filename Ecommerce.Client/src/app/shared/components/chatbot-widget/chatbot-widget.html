@@ -58,7 +58,18 @@
       @for (m of messages(); track m.at) {
       <div class="chat-message" [ngClass]="m.from">
         <div class="bubble">
-          {{ m.text }}
+          @if (m.isHtml) {
+            <span [innerHTML]="m.text"></span>
+          } @else {
+            {{ m.text }}
+          }
+          
+          @if (m.actionRoute) {
+            <div class="chat-actions">
+              <button class="action-btn primary" (click)="navigateAction(m.actionRoute!)">Yes</button>
+              <button class="action-btn secondary" (click)="dismissAction(m)">No</button>
+            </div>
+          }
         </div>
       </div>
       }

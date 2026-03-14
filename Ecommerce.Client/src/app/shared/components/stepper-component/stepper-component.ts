@@ -13,6 +13,7 @@ import { AccountService } from '../../../account/account-service';
 import { isTokenExpired } from '../../utils/token-utils';
 import { firstValueFrom } from 'rxjs';
 import { HasPermissionDirective } from '../../directives/has-permission.directive';
+import { IOrderToCreate } from '../../modules/order';
 
 @Component({
   selector: 'app-stepper-component',
@@ -200,10 +201,11 @@ export class StepperComponent extends CdkStepper implements OnInit {
       }
 
       // Payment successful, now create the order
-      const orderToCreate = {
+      const orderToCreate: IOrderToCreate = {
         basketId: basket.id,
         deliveryMethodId: basket.deliveryMethodId,
         shipToAddress: this.addressForm.getRawValue(),
+        couponCode: basket.couponCode
       };
 
       this.orderService.createOrder(orderToCreate).subscribe({

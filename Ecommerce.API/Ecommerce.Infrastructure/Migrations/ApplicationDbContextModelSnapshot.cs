@@ -266,9 +266,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
 
-                    b.Property<decimal>("DiscountPercentage")
-                        .HasColumnType("decimal(5,2)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -714,6 +711,34 @@ namespace Ecommerce.Infrastructure.Migrations
                         .WithMany("Products")
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Ecommerce.Core.Entities.ProductDiscount", "Discount", b1 =>
+                        {
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTimeOffset?>("ExpirationDate")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("DiscountExpirationDate");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("DiscountName");
+
+                            b1.Property<decimal>("Percentage")
+                                .HasColumnType("decimal(5,2)")
+                                .HasColumnName("DiscountPercentage");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.Navigation("Discount")
                         .IsRequired();
 
                     b.Navigation("ProductBrand");

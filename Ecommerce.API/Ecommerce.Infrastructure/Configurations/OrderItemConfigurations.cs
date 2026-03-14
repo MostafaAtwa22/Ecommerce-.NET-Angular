@@ -8,6 +8,8 @@ namespace Ecommerce.Infrastructure.Configurations
             builder.OwnsOne(oi => oi.ProductItemOrdered, oi =>
             {
                 oi.WithOwner();
+                oi.Property(p => p.DiscountPercentage)
+                    .HasColumnType("decimal(18,2)");
             });
 
             builder.Property(oi => oi.Price)

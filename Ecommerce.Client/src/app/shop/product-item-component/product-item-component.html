@@ -10,7 +10,7 @@
           {{ isInStock() ? 'In Stock' : 'Out of Stock' }}
         </div>
         <div *ngIf="product.isDiscounted" class="badge discount-badge">
-          SALE
+          {{ product.discount.name || 'SALE' }}
         </div>
       </div>
 

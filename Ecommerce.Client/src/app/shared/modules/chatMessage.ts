@@ -4,6 +4,9 @@ export interface ChatMessage {
   from: ChatMessageFrom;
   text: string;
   at: Date;
+  isHtml?: boolean;
+  actionRoute?: string;
+  actionText?: string;
 }
 
 export interface ChatbotResponse {

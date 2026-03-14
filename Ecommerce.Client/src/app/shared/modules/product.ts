@@ -1,3 +1,10 @@
+export interface IDiscount {
+  percentage: number;
+  name: string | null;
+  expirationDate: string | null;
+  isActive: boolean;
+}
+
 export interface IProduct {
   id: number;
   name: string;
@@ -7,7 +14,7 @@ export interface IProduct {
   description: string;
   pictureUrl: string;
   price: number;
-  discountPercentage: number;
+  discount: IDiscount;
   isDiscounted: boolean;
   discountedPrice: number;
   numberOfReviews: number;
@@ -32,7 +39,11 @@ interface IProductForm {
   quantity: number;
   productTypeId: number;
   productBrandId: number;
-  discountPercentage: number;
+  discount: {
+    percentage: number;
+    name: string | null;
+    expirationDate: string | null;
+  };
 }
 
 export interface IProductCreate extends IProductForm {

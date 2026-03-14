@@ -104,5 +104,24 @@ namespace Ecommerce.Infrastructure.Services
 
             return affectedRows > 0;
         }
+
+        public async Task CleanExpiredDiscountsAsync()
+        {
+            var products = await _unitOfWork.Repository<Product>()
+                .FindAllAsync(p => p.Discount.ExpirationDate != null && p.Discount.ExpirationDate <= DateTimeOffset.UtcNow);
+
+            if (products.Any())
+            {
+                foreach (var product in products)
+                {
+                    product.Discount.Percentage = 0;
+                    product.Discount.Name = null;
+                    product.Discount.ExpirationDate = null;
+                    _unitOfWork.Repository<Product>().Update(product);
+                }
+                await _unitOfWork.Complete();
+                _logger.LogInformation("Cleaned up {Count} expired discounts", products.Count);
+            }
+        }
     }
 }

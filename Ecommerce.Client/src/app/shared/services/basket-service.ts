@@ -278,7 +278,7 @@ export class BasketService {
     return {
       id: product.id,
       productName: product.name,
-      price: product.price,
+      price: product.isDiscounted ? product.discountedPrice : product.price,
       quantity,
       pictureUrl: product.pictureUrl,
       brand: product.productBrandName,

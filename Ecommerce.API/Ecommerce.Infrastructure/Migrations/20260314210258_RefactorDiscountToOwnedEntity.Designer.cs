@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260311214759_AddDiscountToProductItemOrdered")]
-    partial class AddDiscountToProductItemOrdered
+    [Migration("20260314210258_RefactorDiscountToOwnedEntity")]
+    partial class RefactorDiscountToOwnedEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -268,9 +268,6 @@ namespace Ecommerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
-
-                    b.Property<decimal>("DiscountPercentage")
-                        .HasColumnType("decimal(5,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -717,6 +714,34 @@ namespace Ecommerce.Infrastructure.Migrations
                         .WithMany("Products")
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsOne("Ecommerce.Core.Entities.ProductDiscount", "Discount", b1 =>
+                        {
+                            b1.Property<int>("ProductId")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTimeOffset?>("ExpirationDate")
+                                .HasColumnType("datetimeoffset")
+                                .HasColumnName("DiscountExpirationDate");
+
+                            b1.Property<string>("Name")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("DiscountName");
+
+                            b1.Property<decimal>("Percentage")
+                                .HasColumnType("decimal(5,2)")
+                                .HasColumnName("DiscountPercentage");
+
+                            b1.HasKey("ProductId");
+
+                            b1.ToTable("Products");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId");
+                        });
+
+                    b.Navigation("Discount")
                         .IsRequired();
 
                     b.Navigation("ProductBrand");

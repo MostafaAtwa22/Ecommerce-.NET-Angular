@@ -93,7 +93,11 @@ export class ProductFormComponent implements OnInit {
       ]],
       productBrandId: [null, Validators.required],
       productTypeId: [null, Validators.required],
-      discountPercentage: [0, [Validators.min(0), Validators.max(100)]],
+      discount: this.fb.group({
+        percentage: [0, [Validators.min(0), Validators.max(100)]],
+        name: ['', [Validators.maxLength(100)]],
+        expirationDate: [null]
+      }),
       imageFile: [null, [
         (control: AbstractControl) => {
           if (!this.isEditing && !control.value) {
@@ -116,7 +120,11 @@ export class ProductFormComponent implements OnInit {
         quantity: this.product.quantity,
         productBrandId: this.product.productBrandId,
         productTypeId: this.product.productTypeId,
-        discountPercentage: this.product.discountPercentage ?? 0
+        discount: {
+          percentage: this.product.discount.percentage ?? 0,
+          name: this.product.discount.name ?? '',
+          expirationDate: this.product.discount.expirationDate ? this.product.discount.expirationDate.substring(0, 16) : null
+        }
       });
 
       if (this.product.pictureUrl) {
@@ -189,7 +197,11 @@ export class ProductFormComponent implements OnInit {
         quantity: formValue.quantity,
         productBrandId: formValue.productBrandId,
         productTypeId: formValue.productTypeId,
-        discountPercentage: formValue.discountPercentage ?? 0,
+        discount: {
+          percentage: formValue.discount.percentage ?? 0,
+          name: formValue.discount.name || null,
+          expirationDate: formValue.discount.expirationDate || null,
+        },
         imageFile: this.selectedFile || null,
         productId: this.product.id
       };
@@ -203,7 +215,11 @@ export class ProductFormComponent implements OnInit {
         quantity: formValue.quantity,
         productBrandId: formValue.productBrandId,
         productTypeId: formValue.productTypeId,
-        discountPercentage: formValue.discountPercentage ?? 0,
+        discount: {
+          percentage: formValue.discount.percentage ?? 0,
+          name: formValue.discount.name || null,
+          expirationDate: formValue.discount.expirationDate || null,
+        },
         imageFile: this.selectedFile!
       };
       this.submitForm.emit(payload);
@@ -274,5 +290,8 @@ export class ProductFormComponent implements OnInit {
   get productBrandId() { return this.form.get('productBrandId'); }
   get productTypeId() { return this.form.get('productTypeId'); }
   get imageFile() { return this.form.get('imageFile'); }
-  get discountPercentage() { return this.form.get('discountPercentage'); }
+  get discount() { return this.form.get('discount'); }
+  get discountPercentage() { return this.form.get('discount.percentage'); }
+  get discountName() { return this.form.get('discount.name'); }
+  get discountExpirationDate() { return this.form.get('discount.expirationDate'); }
 }

@@ -70,7 +70,7 @@ namespace Ecommerce.Infrastructure.Services
                 if (availableStock < item.Quantity)
                     throw new BadRequestException($"Only {availableStock} items available for {productItem.Name}");
 
-                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl, productItem.DiscountPercentage);
+                var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name, productItem.PictureUrl, productItem.Discount.Percentage);
                 var currentPrice = productItem.IsDiscounted ? productItem.DiscountedPrice : productItem.Price;
                 var orderItem = new OrderItem(currentPrice, item.Quantity, itemOrdered);
                 items.Add(orderItem);

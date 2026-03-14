@@ -15,12 +15,11 @@ namespace Ecommerce.Core.Entities
         [Required]
         public decimal Price { get; set; }
 
-        [Range(0, 100)]
-        public decimal DiscountPercentage { get; set; } = 0;
+        public ProductDiscount Discount { get; set; } = new();
 
-        public bool IsDiscounted => DiscountPercentage > 0;
+        public bool IsDiscounted => Discount.IsActive;
 
-        public decimal DiscountedPrice => Price - (Price * DiscountPercentage / 100);
+        public decimal DiscountedPrice => Discount.CalculateDiscountedPrice(Price);
 
         [Required]
         public int Quantity { get; set; }

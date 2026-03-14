@@ -396,22 +396,52 @@
       border-bottom: none;
     }
 
+    &.text-success {
+      background: rgba(72, 187, 120, 0.08); // Subtle success background
+      margin: 0.5rem -2rem; // Extend background a bit
+      padding: 0.75rem 2rem !important;
+      border-top: 1px solid rgba(72, 187, 120, 0.2);
+      border-bottom: 1px solid rgba(72, 187, 120, 0.2);
+      
+      .total-label {
+        color: #2f855a !important;
+        display: flex;
+        align-items: center;
+        
+        i {
+          color: #48bb78;
+        }
+      }
+
+      .total-value {
+        color: #2f855a !important;
+        font-weight: 700;
+        font-size: 1rem;
+      }
+    }
+
     &.grand-total {
-      border-top: 1px solid #d1d7dc;
-      margin-top: 0.5rem;
-      padding-top: 0.75rem;
+      border-top: none; // Handled by divider now
+      margin-top: 0;
+      padding-top: 1rem;
 
       .total-label {
         font-size: 1rem;
         font-weight: 700;
+        color: #0c111d;
       }
 
       .total-value {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #0c111d;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #5624d0;
       }
     }
+  }
+
+  .total-divider {
+    border-top: 2px dashed #f0f2f4;
+    margin: 1rem 0;
   }
 
   .total-label {

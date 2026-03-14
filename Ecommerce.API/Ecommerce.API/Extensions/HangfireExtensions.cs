@@ -19,6 +19,12 @@ namespace Ecommerce.API.Extensions
                 Cron.Weekly
             );
 
+            recurringJobManager.AddOrUpdate<IProductService>(
+                "clean-expired-discounts",
+                x => x.CleanExpiredDiscountsAsync(),
+                Cron.Daily
+            );
+
             return app;
         }
     }

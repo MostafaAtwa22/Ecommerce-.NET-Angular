@@ -8,8 +8,16 @@ namespace Ecommerce.Infrastructure.Configurations
                         builder.Property(p => p.Price)
                                 .HasColumnType("decimal(18,2)");
 
-                        builder.Property(p => p.DiscountPercentage)
-                                .HasColumnType("decimal(5,2)");
+                        builder.OwnsOne(p => p.Discount, d =>
+                        {
+                                d.Property(pd => pd.Percentage)
+                                        .HasColumnName("DiscountPercentage")
+                                        .HasColumnType("decimal(5,2)");
+                                d.Property(pd => pd.Name)
+                                        .HasColumnName("DiscountName");
+                                d.Property(pd => pd.ExpirationDate)
+                                        .HasColumnName("DiscountExpirationDate");
+                        });
 
                         builder.Property(p => p.AverageRating)
                                 .HasColumnType("decimal(5,2)");

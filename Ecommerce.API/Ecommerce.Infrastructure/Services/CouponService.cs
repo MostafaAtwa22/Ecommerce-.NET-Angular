@@ -20,7 +20,8 @@ namespace Ecommerce.Infrastructure.Services
             var spec = new SpecificationBuilder<Coupon>(c =>
                 c.Code == code &&
                 c.IsActive &&
-                c.ExpiryDate > DateTimeOffset.UtcNow);
+                c.ExpiryDate > DateTimeOffset.UtcNow)
+                .WithTracking();
 
             return await _unitOfWork.Repository<Coupon>().GetWithSpecAsync(spec);
         }

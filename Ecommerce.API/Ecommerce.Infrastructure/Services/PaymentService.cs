@@ -64,11 +64,11 @@ namespace Ecommerce.Infrastructure.Services
             {
                 var coupon = await _couponService.GetValidCouponAsync(couponCode);
 
-                if (coupon != null)
-                {
-                    basket.CouponCode = coupon.Code;
-                    basket.Discount = coupon.DiscountAmount;
-                }
+                if (coupon is null)
+                    throw new BadRequestException("Invalid or expired coupon code");
+
+                basket.CouponCode = coupon.Code;
+                basket.Discount = coupon.DiscountAmount;
             }
 
             var total = Math.Max(0, basket.Items.Sum(x => x.Price * x.Quantity) + shippingPrice - basket.Discount);

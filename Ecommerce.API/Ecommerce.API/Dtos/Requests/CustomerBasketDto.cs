@@ -8,6 +8,8 @@ namespace Ecommerce.API.Dtos.Requests
         public int? DeliveryMethodId { get; set; }
         public string ClientSecret { get; set; } = string.Empty;
         public string PaymentIntentId { get; set; } = string.Empty;
-        public decimal shippingPrice { get; set; }
+        public decimal ShippingPrice { get; set; }
+        public string? CouponCode { get; set; }
+        public decimal Discount { get; set; }
     }
 }

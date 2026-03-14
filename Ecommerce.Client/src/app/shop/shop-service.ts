@@ -150,7 +150,13 @@ export class ShopService {
     formData.append('Quantity', product.quantity.toString());
     formData.append('ProductTypeId', product.productTypeId.toString());
     formData.append('ProductBrandId', product.productBrandId.toString());
-    formData.append('DiscountPercentage', (product.discountPercentage || 0).toString());
+    formData.append('Discount.Percentage', (product.discount?.percentage || 0).toString());
+    if (product.discount?.name) {
+      formData.append('Discount.Name', product.discount.name);
+    }
+    if (product.discount?.expirationDate) {
+      formData.append('Discount.ExpirationDate', product.discount.expirationDate);
+    }
 
     if (product.imageFile) {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);
@@ -179,7 +185,13 @@ export class ShopService {
     formData.append('Quantity', product.quantity.toString());
     formData.append('ProductTypeId', product.productTypeId.toString());
     formData.append('ProductBrandId', product.productBrandId.toString());
-    formData.append('DiscountPercentage', (product.discountPercentage || 0).toString());
+    formData.append('Discount.Percentage', (product.discount?.percentage || 0).toString());
+    if (product.discount?.name) {
+      formData.append('Discount.Name', product.discount.name);
+    }
+    if (product.discount?.expirationDate) {
+      formData.append('Discount.ExpirationDate', product.discount.expirationDate);
+    }
 
     if (product.imageFile && product.imageFile instanceof File) {
       formData.append('ImageFile', product.imageFile, product.imageFile.name);
