@@ -82,8 +82,13 @@ namespace Ecommerce.API
             {
                 OnPrepareResponse = ctx =>
                 {
-                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "http://localhost:4200");
-                    ctx.Context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+                    var requestOrigin = ctx.Context.Request.Headers.Origin.ToString();
+                    var allowedOrigins = new[] { "http://localhost:4200", "https://localhost:4200", "http://tasaqolliui.runasp.net", "https://tasaqolliui.runasp.net" };
+                    if (allowedOrigins.Contains(requestOrigin))
+                    {
+                        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", requestOrigin);
+                        ctx.Context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+                    }
                 }
             });
 

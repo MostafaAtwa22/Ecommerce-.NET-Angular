@@ -42,7 +42,7 @@ namespace Ecommerce.API.Extensions
                 options.AddPolicy("AllowAngularApp", policy =>
                 {
                     policy
-                        .WithOrigins("http://localhost:4200", "https://localhost:4200")
+                        .WithOrigins("http://localhost:4200", "https://localhost:4200", "http://tasaqolliui.runasp.net", "https://tasaqolliui.runasp.net")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
