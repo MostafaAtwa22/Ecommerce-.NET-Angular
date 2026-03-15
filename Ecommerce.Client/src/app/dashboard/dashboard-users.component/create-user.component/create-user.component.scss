@@ -1,6 +1,6 @@
 .create-user-form {
     .form-label {
-        color: #0c111d;
+        color: var(--text-primary);
         font-weight: 600;
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
@@ -8,12 +8,12 @@
 
     .form-control,
     .form-select {
-        border: 1px solid #d1d7dc;
+        border: 1px solid var(--border-color);
         border-radius: 4px;
         padding: 0.625rem 0.75rem;
         font-size: 0.875rem;
-        color: #0c111d;
-        background: white;
+        color: var(--text-primary);
+        background: var(--bg-primary);
         transition: all 0.2s ease;
 
         &:focus {
@@ -43,9 +43,9 @@
         gap: 0.75rem;
         margin-top: 0.75rem;
         padding: 0.75rem;
-        background: #f8f9fa;
+        background: var(--bg-secondary);
         border-radius: 6px;
-        border: 1px solid #e9ecef;
+        border: 1px solid var(--border-color);
 
         small {
             font-size: 0.75rem;
@@ -86,12 +86,12 @@
         }
 
         &.btn-outline-secondary {
-            border: 1px solid #d1d7dc;
-            color: #6a6f73;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
 
             &:hover {
-                background: #f7f9fa;
-                color: #0c111d;
+                background: var(--bg-secondary);
+                color: var(--text-primary);
             }
         }
     }

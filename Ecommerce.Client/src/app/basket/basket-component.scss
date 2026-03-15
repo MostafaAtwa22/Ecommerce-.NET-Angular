@@ -1,7 +1,7 @@
 .basket-container {
   min-height: 80vh;
   padding: 2rem 0;
-  background: white;
+  background: var(--bg-secondary);
   position: relative;
 }
 
@@ -36,7 +36,7 @@
   .empty-title {
     font-size: 2.25rem;
     font-weight: 800;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 1rem;
     background: linear-gradient(135deg, #5624d0, #401b9c);
     -webkit-background-clip: text;
@@ -46,7 +46,7 @@
   }
 
   .empty-text {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 1.15rem;
     margin-bottom: 2.5rem;
     line-height: 1.6;
@@ -108,7 +108,7 @@
   .basket-title {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -126,7 +126,7 @@
 
     .basket-summary {
       .item-count {
-        background: #5624d0;
+        background: var(--brand-primary);
         color: white;
         padding: 0.5rem 1rem;
         border-radius: 4px;
@@ -168,8 +168,8 @@
 }
 
 .basket-item {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
   display: grid;
@@ -190,7 +190,7 @@
     height: 80px;
     object-fit: cover;
     border-radius: 4px;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
   }
 }
 
@@ -198,7 +198,7 @@
   .product-name {
     font-size: 1rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
@@ -209,17 +209,17 @@
     margin-bottom: 1rem;
 
     .brand {
-      background: rgba(86, 36, 208, 0.1);
-      color: #5624d0;
+      background: var(--brand-primary-alpha-10);
+      color: var(--brand-primary);
       padding: 0.25rem 0.75rem;
       border-radius: 4px;
       font-size: 0.75rem;
       font-weight: 600;
-      border: 1px solid rgba(86, 36, 208, 0.2);
+      border: 1px solid var(--border-color);
     }
 
     .category-divider {
-      color: #d1d7dc;
+      color: var(--border-color);
     }
 
     .type {
@@ -234,9 +234,9 @@
 
     button {
       padding: 0.5rem;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      background: white;
+      background: var(--bg-primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -262,7 +262,7 @@
       border-color: rgba(86, 36, 208, 0.3);
 
       &:hover {
-        background: #5624d0;
+        background: var(--brand-primary);
         color: white;
       }
     }
@@ -278,10 +278,10 @@
     .btn-quantity {
       width: 32px;
       height: 32px;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      background: white;
-      color: #0c111d;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -305,7 +305,7 @@
 
     .quantity-value {
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       min-width: 40px;
       text-align: center;
       font-size: 0.875rem;
@@ -319,7 +319,7 @@
   .price-amount {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
 
@@ -331,8 +331,8 @@
 
 /* Order Summary Section */
 .order-summary {
-  background: #f7f9fa;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
 
@@ -356,7 +356,7 @@
     }
 
     .btn-checkout {
-      background: #5624d0;
+      background: var(--brand-primary);
       color: white;
 
       &:hover {
@@ -365,13 +365,13 @@
     }
 
     .btn-continue {
-      background: white;
-      color: #0c111d;
-      border: 1px solid #d1d7dc;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
 
       &:hover {
-        background: #f7f9fa;
-        border-color: #0c111d;
+        background: var(--bg-secondary);
+        border-color: var(--text-primary);
       }
     }
   }
@@ -398,7 +398,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 1.5rem;
-  background: white;
+  background: var(--bg-secondary);
 }
 
 .empty-basket-content {
@@ -446,7 +446,7 @@
 .empty-title {
   font-size: 2.25rem;
   font-weight: 800;
-  color: #0c111d;
+  color: var(--text-primary);
   margin-bottom: 1rem;
   background: linear-gradient(135deg, #5624d0, #401b9c);
   -webkit-text-fill-color: transparent;

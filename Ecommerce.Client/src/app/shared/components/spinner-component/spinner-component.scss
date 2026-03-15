@@ -2,7 +2,7 @@
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: white;
+  background: var(--bg-primary);
   backdrop-filter: blur(6px);
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
   width: 70px;
   height: 70px;
   border: 5px solid transparent;
-  border-top: 5px solid #0d6efd; /* Bootstrap Blue */
+  border-top: 5px solid var(--brand-primary);
   border-right: 5px solid #00c4ff; /* Cyan accent */
   border-radius: 50%;
   animation: rotate 1s linear infinite, glow 1.5s ease-in-out infinite alternate;
@@ -35,7 +35,7 @@
 .loading-text {
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-primary);
   letter-spacing: 0.5px;
   animation: fadeText 1.8s ease-in-out infinite;
 }

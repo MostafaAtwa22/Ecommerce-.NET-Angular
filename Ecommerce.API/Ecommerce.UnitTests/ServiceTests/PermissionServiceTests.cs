@@ -286,6 +286,57 @@ namespace Ecommerce.UnitTests.ServiceTests
             _userManager.Verify(x => x.GetRolesAsync(It.IsAny<ApplicationUser>()), Times.Never);
         }
 
+        [Fact]
+        public async Task InvalidateRolePermissionsCacheAsync_DeletesCacheForAllUsersInRole()
+        {
+            // Arrange
+            var roleName = "Editor";
+            var role = new IdentityRole(roleName);
+            var usersInRole = new List<ApplicationUser>
+            {
+                new ApplicationUser { Id = "user-1" },
+                new ApplicationUser { Id = "user-2" }
+            };
+
+            _userManager.Setup(x => x.GetUsersInRoleAsync(roleName))
+                .ReturnsAsync(usersInRole);
+
+            // Act
+            await _permissionService.InvalidateRolePermissionsCacheAsync(role);
+
+            // Assert
+            _userManager.Verify(x => x.GetUsersInRoleAsync(roleName), Times.Once);
+            _redisRepository.Verify(x => x.DeleteAsync("permissions:user:user-1"), Times.Once);
+            _redisRepository.Verify(x => x.DeleteAsync("permissions:user:user-2"), Times.Once);
+        }
+
+        [Fact]
+        public async Task InvalidateRolePermissionsCacheAsync_EmptyRoleName_DoesNothing()
+        {
+            // Arrange
+            var role = new IdentityRole(); // No name set
+
+            // Act
+            await _permissionService.InvalidateRolePermissionsCacheAsync(role);
+
+            // Assert
+            _userManager.Verify(x => x.GetUsersInRoleAsync(It.IsAny<string>()), Times.Never);
+            _redisRepository.Verify(x => x.DeleteAsync(It.IsAny<string>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task InvalidateUserPermissionsCacheAsync_DeletesCacheForUser()
+        {
+            // Arrange
+            var userId = "test-user-id";
+
+            // Act
+            await _permissionService.InvalidateUserPermissionsCacheAsync(userId);
+
+            // Assert
+            _redisRepository.Verify(x => x.DeleteAsync($"permissions:user:{userId}"), Times.Once);
+        }
+
         private static Mock<UserManager<ApplicationUser>> MockUserManager()
         {
             var store = new Mock<IUserStore<ApplicationUser>>();

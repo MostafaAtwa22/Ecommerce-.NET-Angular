@@ -39,6 +39,13 @@
 
       <!-- Right Section -->
       <ul class="navbar-nav align-items-center flex-row">
+        <!-- Theme Toggle -->
+        <li class="nav-item me-2">
+          <button class="btn theme-toggle" (click)="toggleTheme()" [title]="themeService.isDark() ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <i class="fas" [class.fa-sun]="themeService.isDark()" [class.fa-moon]="!themeService.isDark()"></i>
+          </button>
+        </li>
+
         <!-- Wishlist Icon - Only for customers and users without admin roles -->
         <li class="nav-item position-relative me-3" *hasPermission="'Permissions.Orders.Create'">
           <a class="nav-link wishlist-icon" routerLink="/wishlist">

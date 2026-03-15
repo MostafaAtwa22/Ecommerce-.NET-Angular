@@ -9,5 +9,7 @@ namespace Ecommerce.Core.Interfaces
         Task<List<string>> GetUserPermissionsAsync(string userId);
         Task<List<string>> GetUserPermissionsAsync(ApplicationUser user);
         Task<bool> HasPermissionAsync(string userId, string permission);
+        Task InvalidateRolePermissionsCacheAsync(IdentityRole role);
+        Task InvalidateUserPermissionsCacheAsync(string userId);
     }
 }

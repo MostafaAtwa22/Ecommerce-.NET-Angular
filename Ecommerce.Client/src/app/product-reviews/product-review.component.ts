@@ -19,6 +19,7 @@ export class ProductReviewComponent {
   private votingStates = new Map<number, boolean>();
   @Input() productId!: number;
   @Input() productName: string = '';
+  @Input() averageRating: number = 0;
 
   reviews: IProductReview[] = [];
   loading = false;
@@ -380,12 +381,6 @@ export class ProductReviewComponent {
     } else if (!this.showReviewForm) {
       this.resetForm();
     }
-  }
-
-  getAverageRating(): number {
-    if (this.reviews.length === 0) return 0;
-    const sum = this.reviews.reduce((acc, review) => acc + review.rating, 0);
-    return Math.round((sum / this.reviews.length) * 10) / 10;
   }
 
   getRatingDistribution(): any[] {

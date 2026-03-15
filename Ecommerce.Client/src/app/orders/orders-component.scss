@@ -8,8 +8,8 @@
 }
 
 .orders-list {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,7 @@
 
   .header-cell {
     font-weight: 600;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -73,7 +73,7 @@
   .label-mobile {
     display: none;
     font-weight: 600;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -83,7 +83,7 @@
 .cell-order-id {
   .order-id {
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
   }
 }
@@ -91,13 +91,13 @@
 .cell-date {
   .date {
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
   }
 
   .time {
     font-size: 0.75rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
   }
 }
 
@@ -191,7 +191,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -261,7 +261,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     text-decoration: none;
     border-radius: 4px;

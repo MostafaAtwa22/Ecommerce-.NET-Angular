@@ -10,6 +10,7 @@ import { WishlistService } from '../../wishlist/wishlist-service';
 import { IWishList } from '../../shared/modules/wishlist';
 import { getDefaultAvatarByGender, resolveUserAvatar } from '../../shared/utils/avatar-utils';
 import { HasPermissionDirective } from '../../shared/directives/has-permission.directive';
+import { ThemeService } from '../../shared/services/theme.service';
 
 interface RoleInfo {
   displayName: string;
@@ -29,6 +30,7 @@ export class NavBar implements OnInit {
   private basketService = inject(BasketService);
   private accountService = inject(AccountService);
   private wishListService = inject(WishlistService);
+  protected themeService = inject(ThemeService);
 
   wishList$!: Observable<IWishList | null>;
   basket$!: Observable<IBasket | null>;
@@ -240,5 +242,9 @@ export class NavBar implements OnInit {
   logout() {
     console.log('Logout called');
     this.accountService.logout();
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 }

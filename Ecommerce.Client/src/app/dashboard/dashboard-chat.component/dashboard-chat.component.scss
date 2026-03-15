@@ -12,7 +12,7 @@
 
   position: relative;
   overflow: hidden;
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary);
   border-radius: 0;
 
   gap: 0 !important;
@@ -50,8 +50,8 @@
   transition: transform 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  background-color: white;
-  border-right: 1px solid #d1d7dc;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   flex-shrink: 0; // Prevent shrinking
 
@@ -103,7 +103,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--bg-primary);
   overflow: hidden;
   transition: all 0.3s ease-in-out;
 
@@ -133,7 +133,7 @@
   transition: all 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: var(--bg-primary);
   border-left: 0 solid transparent;
   box-shadow: none;
   padding: 0 !important;
@@ -144,7 +144,7 @@
   &.active {
     width: 280px;
     min-width: 280px;
-    border-left: 1px solid #d1d7dc;
+    border-left: 1px solid var(--border-color);
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
     padding: 1rem !important;
     opacity: 1;
@@ -186,7 +186,7 @@
       transform: translateX(0);
       width: 85%;
       padding: 1rem !important;
-      border-left: 1px solid #d1d7dc;
+      border-left: 1px solid var(--border-color);
     }
   }
 
@@ -243,9 +243,9 @@
   &.right {
     right: 1.5rem;
     bottom: 6rem;
-    background: white;
-    color: #5624d0;
-    border: 1px solid #5624d0;
+    background: var(--bg-primary);
+    color: var(--brand-primary);
+    border: 1px solid var(--brand-primary);
 
     &:hover {
       background: rgba(86, 36, 208, 0.05);
@@ -357,15 +357,15 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: #f7f9fa;
+    background: var(--bg-secondary);
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #d1d7dc;
+    background: var(--border-color);
     border-radius: 4px;
 
     &:hover {
-      background: #6a6f73;
+      background: var(--text-secondary);
     }
   }
 }

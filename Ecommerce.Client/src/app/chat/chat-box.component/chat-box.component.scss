@@ -96,7 +96,7 @@
   box-shadow: 0 2px 4px rgba(86, 36, 208, 0.1);
 
   &:hover {
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     border-color: #401b9c;
     transform: translateY(-1px);
@@ -166,12 +166,12 @@
 /* Received Messages - Light Gray with Purple Accent */
 .chat-bubble.received {
   background: white;
-  color: #0c111d;
+  color: var(--text-primary);
   border: 1px solid #d1d7dc;
   border-bottom-left-radius: 0px;
 
   .chat-time {
-    color: #6a6f73;
+    color: var(--text-secondary);
   }
 }
 
@@ -248,7 +248,7 @@
   .dropdown-item {
     font-size: 0.875rem;
     padding: 0.5rem 1rem;
-    color: #0c111d;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 
     i {
@@ -311,7 +311,7 @@
   .custom-icon {
     font-size: 3rem;
     margin-bottom: 1rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     background: rgba(86, 36, 208, 0.05);
     width: 80px;
     height: 80px;
@@ -324,13 +324,13 @@
   h6 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
   p {
     font-size: 0.875rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     max-width: 300px;
   }
 }
@@ -537,7 +537,7 @@
     }
 
     .text-muted-custom {
-      color: #6a6f73;
+      color: var(--text-secondary);
     }
   }
 

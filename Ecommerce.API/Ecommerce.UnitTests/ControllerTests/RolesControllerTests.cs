@@ -278,6 +278,7 @@ namespace Ecommerce.UnitTests.ControllerTests
             Assert.Equal(userRolesDto.UserId, returnUserRoles.UserId);
             _userManager.Verify(u => u.RemoveFromRolesAsync(user, currentRoles), Times.Once);
             _userManager.Verify(u => u.AddToRolesAsync(user, It.IsAny<IEnumerable<string>>()), Times.Once);
+            _permissionService.Verify(p => p.InvalidateUserPermissionsCacheAsync(user.Id), Times.Once);
         }
 
         [Fact]
@@ -332,6 +333,7 @@ namespace Ecommerce.UnitTests.ControllerTests
             Assert.Equal(roleId, returnPermissions.RoleId);
             _permissionService.Verify(p => p.RemoveAllPermissionsAsync(role), Times.Once);
             _permissionService.Verify(p => p.AddPermissionsAsync(role, It.IsAny<IEnumerable<string>>()), Times.Once);
+            _permissionService.Verify(p => p.InvalidateRolePermissionsCacheAsync(role), Times.Once);
         }
     }
 

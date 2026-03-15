@@ -1,9 +1,9 @@
 /* ===============================
    Variables (Purple Theme)
    =============================== */
-$primary: #5624d0;
+$primary: var(--brand-primary);
 /* Primary purple */
-$primary-dark: #401b9c;
+$primary-dark: var(--brand-primary-dark);
 /* Dark purple for hover */
 $success: #48bb78;
 /* Success green */
@@ -13,7 +13,7 @@ $warning: #ed8936;
 /* Warning orange (pending) */
 $warning-light: rgba(237, 137, 54, 0.1);
 /* Warning bg */
-$danger: #c91a1a;
+$danger: var(--danger);
 /* Danger red */
 $danger-light: rgba(201, 26, 26, 0.1);
 /* Danger bg */
@@ -21,21 +21,22 @@ $info: #9f7aea;
 /* Processing purple */
 $info-light: rgba(159, 122, 234, 0.1);
 /* Info bg */
-$text-dark: #0c111d;
+$text-dark: var(--text-primary);
 /* Dark text */
-$text-light: #6a6f73;
+$text-light: var(--text-secondary);
 /* Light text/gray */
-$bg-light: #f7f9fa;
+$bg-light: var(--bg-secondary);
 /* Page background */
-$white: #ffffff;
+$white: var(--bg-primary);
 /* White */
-$border-color: #d1d7dc;
+$border-color: var(--border-color);
 /* Border color */
-$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-$shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-$radius-sm: 4px;
-$radius-md: 8px;
-$radius-lg: 12px;
+$shadow-sm: var(--shadow-sm);
+$shadow-md: var(--shadow-md);
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$font-family: var(--font-sans);
 
 /* ===============================
    Global Reset & Layout
@@ -47,7 +48,7 @@ $radius-lg: 12px;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  font-family: $font-family;
   background: $bg-light;
   color: $text-dark;
   line-height: 1.6;
@@ -112,17 +113,17 @@ body {
         }
 
         &:hover {
-          background: rgba($primary, 0.05);
+          background: var(--brand-primary-alpha-5);
           color: $primary;
         }
 
         &.active {
           background: $primary;
-          color: $white;
-          font-weight: 500;
+          color: #ffffff;
+          font-weight: 600;
 
           i {
-            color: $white;
+            color: #ffffff;
           }
 
           &:hover {
@@ -138,8 +139,8 @@ body {
           color: $danger;
 
           &:hover {
-            background: rgba($danger, 0.1);
-            color: $danger;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
           }
         }
       }
@@ -181,7 +182,7 @@ body {
 
     &:hover {
       border-color: $primary;
-      box-shadow: 0 2px 12px rgba($primary, 0.1);
+      box-shadow: $shadow-md;
     }
 
     .insight-icon {
@@ -206,7 +207,7 @@ body {
         background: $success;
 
         &:hover {
-          background: darken($success, 10%);
+          filter: brightness(0.9);
         }
       }
 
@@ -214,7 +215,7 @@ body {
         background: $warning;
 
         &:hover {
-          background: darken($warning, 10%);
+          filter: brightness(0.9);
         }
       }
 
@@ -222,7 +223,7 @@ body {
         background: $danger;
 
         &:hover {
-          background: darken($danger, 10%);
+          filter: brightness(0.9);
         }
       }
     }
@@ -304,7 +305,7 @@ body {
           &:hover {
             border-color: $primary;
             color: $primary;
-            background: rgba($primary, 0.05);
+            background: var(--brand-primary-alpha-5);
           }
         }
       }
@@ -341,7 +342,7 @@ body {
               transition: all 0.2s ease;
 
               &:hover {
-                background: rgba($primary, 0.02);
+                background: var(--brand-primary-alpha-10);
               }
 
               td {

@@ -2,8 +2,8 @@
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -23,12 +23,12 @@
   .form-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
 
   .form-subtitle {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 }
@@ -42,7 +42,7 @@
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
 
@@ -55,7 +55,7 @@
 
   .field-hint {
     margin-top: 0.5rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.75rem;
     display: flex;
     align-items: center;
@@ -79,7 +79,7 @@
     border: 1px solid #d1d7dc;
     border-radius: 4px;
     font-size: 0.875rem;
-    color: #0c111d;
+    color: var(--text-primary);
     background: white;
     transition: all 0.2s ease;
 
@@ -206,7 +206,7 @@
 
 .btn-verify {
   width: 100%;
-  background: #5624d0;
+  background: var(--brand-primary);
   color: white;
   border: none;
   border-radius: 4px;

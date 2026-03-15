@@ -102,5 +102,24 @@ public class PermissionService : IPermissionService
             var userPermissions = await GetUserPermissionsAsync(userId);
             return userPermissions.Contains(permission);
         }
+
+        public async Task InvalidateRolePermissionsCacheAsync(IdentityRole role)
+        {
+            var roleName = role.Name;
+            if (string.IsNullOrEmpty(roleName)) return;
+
+            var usersInRole = await _userManager.GetUsersInRoleAsync(roleName);
+            
+            foreach (var user in usersInRole)
+            {
+                await InvalidateUserPermissionsCacheAsync(user.Id);
+            }
+        }
+
+        public async Task InvalidateUserPermissionsCacheAsync(string userId)
+        {
+            var cacheKey = $"permissions:user:{userId}";
+            await _redisRepository.DeleteAsync(cacheKey);
+        }
     }
 }

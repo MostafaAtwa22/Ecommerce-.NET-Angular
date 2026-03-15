@@ -10,7 +10,7 @@
   height: 52px;
   border-radius: 50%;
   border: none;
-  background: #5624d0;
+  background: var(--brand-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
 
 .chatbot-header {
   padding: 0.75rem 1rem;
-  background: #5624d0;
+  background: var(--brand-primary);
   color: #ffffff;
 
   .chatbot-title {
@@ -131,13 +131,13 @@
   flex: 1;
   padding: 0.75rem 0.75rem 0.5rem;
   overflow-y: auto;
-  background: #f3f4f6;
+  background: var(--bg-tertiary);
 }
 
 .chatbot-empty-state {
   text-align: center;
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   padding: 1rem 0.5rem;
 
   p {
@@ -163,7 +163,7 @@
 
     .bubble {
       background: #ffffff;
-      color: #111827;
+      color: var(--text-primary);
       border: 1px solid #e5e7eb;
     }
   }
@@ -211,7 +211,7 @@
         }
 
         &.secondary {
-          background: #f3f4f6;
+          background: var(--bg-tertiary);
           color: #4b5563;
 
           &:hover {

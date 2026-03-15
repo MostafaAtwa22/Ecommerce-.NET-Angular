@@ -51,6 +51,7 @@ namespace Ecommerce.API.Controllers
 
         [HttpPost]
         [InvalidateCache("/api/productReviews")]
+        [InvalidateCache("/api/products")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Create)]
         public async Task<ActionResult<ProductReviewDto>> Create(ProductReviewFromDto dto)
         {
@@ -92,6 +93,7 @@ namespace Ecommerce.API.Controllers
         [HttpPut("{id}")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Update)]
         [InvalidateCache("/api/productReviews")]
+        [InvalidateCache("/api/products")]
         public async Task<ActionResult<ProductReviewDto>> Update(int id, ProductReviewFromDto dto)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -128,6 +130,7 @@ namespace Ecommerce.API.Controllers
         [HttpDelete("{id}")]
         [AuthorizePermission(Modules.ProductReviews, CRUD.Delete)]
         [InvalidateCache("/api/productReviews")]
+        [InvalidateCache("/api/products")]
         public async Task<ActionResult<ProductReviewDto>> Delete(int id)
         {
             var review = await _unitOfWork.Repository<ProductReview>().GetByIdAsync(id);
@@ -175,6 +178,7 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(400, "You can't make feedback to your self"));
 
             review.HelpfulCount++;
+            _unitOfWork.Repository<ProductReview>().Update(review);
             await _unitOfWork.Complete();
 
             var spec = ProductReviewSpecifications.BuildDetailsSpec(review.Id);
@@ -198,6 +202,7 @@ namespace Ecommerce.API.Controllers
                 return BadRequest(new ApiResponse(400, "You can't make feedback to your self")); 
     
             review.NotHelpfulCount++; 
+            _unitOfWork.Repository<ProductReview>().Update(review);
             await _unitOfWork.Complete(); 
 
             var spec = ProductReviewSpecifications.BuildDetailsSpec(review.Id); 

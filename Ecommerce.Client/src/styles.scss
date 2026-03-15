@@ -8,24 +8,86 @@
 @use "ngx-toastr/toastr.css";
 @use "primeicons/primeicons.css";
 
+:root {
+  // Backgrounds
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  // Text
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  // Borders
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+  // Brand
+  --brand-primary: #5624d0;
+  --brand-primary-dark: #401b9c;
+  --brand-primary-alpha-5: rgba(86, 36, 208, 0.05);
+  --brand-primary-alpha-10: rgba(86, 36, 208, 0.1);
+  // Shadows
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  // Danger
+  --danger: #ef4444;
+  --danger-alpha: rgba(239, 68, 68, 0.05);
+  // Misc
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --input-bg: #ffffff;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+[data-theme='dark'] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #334155;
+  --border-light: #1e293b;
+  --brand-primary: #818cf8;
+  --brand-primary-dark: #6366f1;
+  --brand-primary-alpha-5: rgba(129, 140, 248, 0.1);
+  --brand-primary-alpha-10: rgba(129, 140, 248, 0.2);
+  --shadow-sm: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+  --danger: #f87171;
+  --danger-alpha: rgba(248, 113, 113, 0.15);
+  --overlay-bg: rgba(0, 0, 0, 0.8);
+  --input-bg: #1e293b;
+}
+
+body {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
 /* Custom SweetAlert2 Styles */
 .swal2-custom-popup {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
   border-radius: 12px !important;
   padding: 2rem !important;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: var(--shadow-md) !important;
+  border: 1px solid var(--border-color) !important;
 }
 
 .swal2-custom-title {
   font-size: 1.5rem !important;
-  font-weight: 600 !important;
-  color: #0c111d !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
   margin-bottom: 1rem !important;
+  font-family: var(--font-sans) !important;
 }
 
 .swal2-custom-html {
   font-size: 0.9375rem !important;
-  color: #6a6f73 !important;
+  color: var(--text-secondary) !important;
   line-height: 1.6 !important;
+  font-family: var(--font-sans) !important;
 
   p {
     margin: 0.5rem 0 !important;
@@ -90,14 +152,13 @@
   font-weight: 600 !important;
   font-size: 0.9375rem !important;
   transition: all 0.2s ease !important;
-  background: #f3f4f6 !important;
-  color: #4b5563 !important;
-  border: 1px solid #e5e7eb !important;
+  background: var(--bg-tertiary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-color) !important;
 
   &:hover {
-    background: #e5e7eb !important;
-    color: #1f2937 !important;
-    border-color: #d1d5db !important;
+    background: var(--border-color) !important;
+    color: var(--text-primary) !important;
     transform: translateY(-1px) !important;
   }
 

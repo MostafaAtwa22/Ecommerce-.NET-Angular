@@ -27,11 +27,11 @@
     border: 1px solid transparent !important;
     border-radius: 30px !important;
     font-size: 0.9375rem;
-    color: #0c111d;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 
     &::placeholder {
-      color: #6a6f73;
+      color: var(--text-secondary);
       font-size: 0.9375rem;
     }
 
@@ -52,7 +52,7 @@
     left: 16px !important;
     top: 13px !important;
     font-size: 1rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     transition: color 0.2s ease;
     pointer-events: none;
   }
@@ -115,7 +115,7 @@
 
   /* Active State - Purple Theme */
   &.active {
-    background: #5624d0;
+    background: var(--brand-primary);
     box-shadow: 0 4px 12px rgba(86, 36, 208, 0.25);
     
     .border-bottom {
@@ -258,7 +258,7 @@
       ::ng-deep .typing .dots span {
         width: 6px;
         height: 6px;
-        background: #5624d0;
+        background: var(--brand-primary);
       }
     }
   }

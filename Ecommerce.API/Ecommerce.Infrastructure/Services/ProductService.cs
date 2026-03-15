@@ -29,7 +29,7 @@ namespace Ecommerce.Infrastructure.Services
             product.NumberOfReviews = reviews.Count;
             product.AverageRating = reviews.Count == 0
                 ? 0
-                : Math.Round(reviews.Average(r => r.Rating), 1);
+                : Math.Round(reviews.Average(r => r.Rating), 1, MidpointRounding.AwayFromZero);
 
             _unitOfWork.Repository<Product>().Update(product);
             var affected = await _unitOfWork.Complete();

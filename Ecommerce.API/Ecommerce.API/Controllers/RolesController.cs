@@ -140,6 +140,10 @@ namespace Ecommerce.API.Controllers
                 if (!addResult.Succeeded)
                     return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest));
             }
+            
+            // Invalidate user's permission cache
+            await _permissionService.InvalidateUserPermissionsCacheAsync(user.Id);
+            
             return Ok(userRolesDto);
         }
 
@@ -181,6 +185,9 @@ namespace Ecommerce.API.Controllers
                 .Select(p => p.PermissionName);
 
             await _permissionService.AddPermissionsAsync(role, selectedPermissions);
+            
+            await _permissionService.InvalidateRolePermissionsCacheAsync(role);
+            
             var rolePermissionsDto = _mapper.Map<RolePermissionsDto>(role);
             rolePermissionsDto.Permissions = permissions;
 

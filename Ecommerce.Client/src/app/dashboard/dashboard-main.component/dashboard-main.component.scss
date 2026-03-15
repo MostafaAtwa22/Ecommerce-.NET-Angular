@@ -1,13 +1,14 @@
 /* Statistics Cards */
 .stat-card {
-  background: white;
+  background: var(--bg-primary);
   padding: 1.5rem;
   border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 
   &:hover {
     transform: translateY(-5px);
@@ -51,12 +52,12 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
-    color: #1e293b;
+    color: var(--text-primary);
   }
 
   p {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-bottom: 0;
     font-weight: 500;
   }
@@ -78,8 +79,8 @@
 
 /* Chart Containers */
 .chart-container {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   height: 500px;
   display: flex;
@@ -101,8 +102,8 @@
 
 /* Table Containers */
 .table-container {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   height: 100%;
   min-height: 400px;
@@ -152,7 +153,7 @@
   }
 
   h6 {
-    color: #6a6f73;
+    color: var(--text-secondary);
     margin-bottom: 0.5rem;
   }
 }
@@ -163,8 +164,9 @@
   border-radius: 4px;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   font-size: 0.875rem;
-  color: #0c111d;
-  background-color: white;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  font-family: var(--font-sans);
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236a6f73' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
@@ -200,7 +202,7 @@
   }
 
   .loading-text {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 }
@@ -345,15 +347,17 @@
 
   th {
     font-weight: 600;
-    color: #0c111d;
-    background-color: #f7f9fa;
-    border-bottom: 2px solid #d1d7dc;
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    border-bottom: 2px solid var(--border-color);
     padding: 1rem;
+    font-family: var(--font-sans);
   }
 
   td {
     padding: 1rem;
-    border-bottom: 1px solid #f1f1f1;
+    border-bottom: 1px solid var(--border-color);
+    font-family: var(--font-sans);
   }
 
   tbody tr:last-child td {
@@ -363,13 +367,13 @@
 
 /* Card headers */
 .card-header {
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
   padding: 1.25rem 1.5rem;
   background: transparent;
 
   h4,
   h5 {
-    color: #0c111d;
+    color: var(--text-primary);
     display: flex;
     align-items: center;
   }

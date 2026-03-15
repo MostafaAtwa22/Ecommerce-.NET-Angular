@@ -1,6 +1,6 @@
 .review-container {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -14,7 +14,7 @@
 .review-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
@@ -25,13 +25,13 @@
     display: inline-block;
     width: 4px;
     height: 20px;
-    background: #5624d0;
+    background: var(--brand-primary);
     border-radius: 2px;
   }
 }
 
 .review-subtitle {
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0;
@@ -45,8 +45,8 @@
 
 // Items Table
 .items-table {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -59,7 +59,7 @@
   background: #f7f9fa;
   border-bottom: 1px solid #d1d7dc;
   font-weight: 600;
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;

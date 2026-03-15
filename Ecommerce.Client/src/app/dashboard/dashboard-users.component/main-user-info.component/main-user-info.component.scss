@@ -20,8 +20,8 @@
 }
 
 .stat-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.25rem;
   display: flex;
@@ -32,13 +32,13 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(86, 36, 208, 0.12);
-    border-color: #5624d0;
+    border-color: var(--brand-primary);
   }
 }
 
 .card-shadow {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -88,14 +88,14 @@
   h3 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
     line-height: 1;
   }
 
   p {
     font-size: 0.75rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -104,21 +104,21 @@
 
 /* Toolbar */
 .toolbar {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .btn-outline-success {
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   font-weight: 600;
   font-size: 0.875rem;
   padding: 0.625rem 1.25rem;
-  background: white;
-  color: #6a6f73;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -127,7 +127,7 @@
 
   &:hover {
     background: #5624d0;
-    color: white;
+    color: #ffffff;
     border-color: #5624d0;
   }
 
@@ -139,8 +139,8 @@
 .search-bar {
   display: flex;
   align-items: center;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
   transition: all 0.2s ease;
@@ -158,10 +158,10 @@
     outline: none;
     background: transparent;
     font-size: 0.875rem;
-    color: #0c111d;
+    color: var(--text-primary);
 
     &::placeholder {
-      color: #6a6f73;
+      color: var(--text-muted);
     }
   }
 
@@ -178,8 +178,8 @@
   }
 
   .btn-dark {
-    background: #5624d0;
-    color: white;
+    background: var(--brand-primary);
+    color: #ffffff;
     margin-left: 0.5rem;
 
     &:hover {
@@ -188,14 +188,14 @@
   }
 
   .btn-outline-secondary {
-    background: white;
-    color: #6a6f73;
-    border: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
     margin-left: 0.5rem;
 
     &:hover {
       background: #f7f9fa;
-      color: #0c111d;
+      color: var(--text-primary);
     }
   }
 }
@@ -206,12 +206,12 @@
 }
 
 .modern-select {
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 0.625rem 0.75rem;
   font-size: 0.875rem;
-  color: #0c111d;
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-primary);
   transition: all 0.2s ease;
   width: 100%;
   cursor: pointer;
@@ -230,13 +230,13 @@
 /* Users Table Container */
 .users-table-container {
   .card-header {
-    background: white;
-    border-bottom: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
     padding: 1.25rem 1.5rem;
 
     h4 {
       font-size: 1.125rem;
-      color: #0c111d;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
 
@@ -266,13 +266,13 @@
     position: sticky;
     top: 0;
     z-index: 10;
-    background: #f8f9fa;
+    background: var(--bg-secondary);
 
     th {
-      border-bottom: 2px solid #d1d7dc;
+      border-bottom: 2px solid var(--border-color);
       padding: 1rem 1.5rem;
       font-size: 0.875rem;
-      color: #0c111d;
+      color: var(--text-primary);
       white-space: nowrap;
       vertical-align: middle;
     }
@@ -283,13 +283,13 @@
       transition: all 0.2s ease;
 
       &:hover {
-        background-color: #f7f9fa;
+        background-color: var(--bg-secondary);
       }
 
       td {
         padding: 1rem 1.5rem;
         vertical-align: middle;
-        border-bottom: 1px solid #d1d7dc;
+        border-bottom: 1px solid var(--border-color);
       }
     }
   }
@@ -302,7 +302,7 @@
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid #d1d7dc;
+    border: 2px solid var(--border-color);
   }
 
   .avatar-placeholder {
@@ -310,20 +310,20 @@
     height: 40px;
     border-radius: 50%;
     background: #5624d0;
-    color: white;
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: 0.875rem;
-    border: 2px solid #d1d7dc;
+    border: 2px solid var(--border-color);
   }
 }
 
 .contact-info {
   small {
     font-size: 0.75rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
   }
 }
 
@@ -337,7 +337,7 @@
 }
 
 .text-muted {
-  color: #6a6f73 !important;
+  color: var(--text-secondary) !important;
 }
 
 /* Role Badges */
@@ -369,7 +369,7 @@
 
   &.badge-default {
     background: rgba(106, 111, 115, 0.1);
-    color: #6a6f73;
+    color: var(--text-secondary);
     border: 1px solid rgba(106, 111, 115, 0.2);
   }
 }
@@ -430,7 +430,7 @@
 
 /* Pagination */
 .card-footer {
-  background: white;
+  background: var(--bg-primary);
   padding: 1rem 1.5rem;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -438,16 +438,16 @@
 
 .pagination-controls {
   .btn {
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 0.375rem 0.75rem;
     font-size: 0.875rem;
-    color: #0c111d;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
       background: #5624d0;
-      color: white;
+      color: #ffffff;
       border-color: #5624d0;
     }
 
@@ -469,7 +469,7 @@
   h5 {
     font-size: 1rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
@@ -479,17 +479,17 @@
 
   .btn-outline-dark {
     background: white;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 0.625rem 1.5rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     transition: all 0.2s ease;
 
     &:hover {
-      background: #f7f9fa;
-      border-color: #0c111d;
+      background: var(--bg-secondary);
+      border-color: var(--text-primary);
     }
   }
 }
@@ -506,8 +506,8 @@
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #d1d7dc;
-    border-top-color: #5624d0;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--brand-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -515,7 +515,7 @@
 
   .loading-text {
     font-size: 0.875rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     margin: 0;
   }
 }

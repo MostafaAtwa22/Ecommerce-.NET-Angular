@@ -2,16 +2,17 @@
    Shared Dashboard Layout & Components
    =============================== */
 
-$primary: #5624d0;
-$primary-dark: #401b9c;
+$primary: var(--brand-primary);
+$primary-dark: var(--brand-primary-dark);
 $success: #48bb78;
-$warning: #ed8936;
-$danger: #c91a1a;
-$text-dark: #0c111d;
-$text-light: #6a6f73;
-$bg-light: #f7f9fa;
-$white: #ffffff;
-$border-color: #d1d7dc;
+$warning: #f59e0b;
+$danger: var(--danger);
+$text-dark: var(--text-primary);
+$text-light: var(--text-secondary);
+$bg-light: var(--bg-secondary);
+$white: var(--bg-primary);
+$border-color: var(--border-color);
+$font-family: var(--font-sans);
 
 /* Containers */
 .dashboard-container {
@@ -22,7 +23,7 @@ $border-color: #d1d7dc;
   background: $white;
   border: 1px solid $border-color;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 /* Insights Cards */
@@ -41,11 +42,11 @@ $border-color: #d1d7dc;
     gap: 1.25rem;
     border: 1px solid $border-color;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-sm);
 
     &:hover {
       border-color: $primary;
-      box-shadow: 0 2px 12px rgba($primary, 0.1);
+      box-shadow: var(--shadow-md);
       transform: translateY(-2px);
     }
 
@@ -57,7 +58,7 @@ $border-color: #d1d7dc;
       align-items: center;
       justify-content: center;
       font-size: 1.25rem;
-      color: $white;
+      color: #ffffff;
 
       &.primary { background: $primary; }
       &.success { background: $success; }
@@ -126,15 +127,12 @@ $border-color: #d1d7dc;
   }
 
   .search-input {
-    padding-left: 2.75rem;
-    height: 45px;
-    border: 1px solid $border-color;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     
     &:focus {
       border-color: $primary;
-      box-shadow: 0 0 0 4px rgba($primary, 0.1);
+      box-shadow: 0 0 0 4px var(--brand-primary-alpha-10);
       outline: none;
     }
   }
@@ -146,7 +144,7 @@ $border-color: #d1d7dc;
   margin-bottom: 0;
   
   thead th {
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     color: $text-light;
     font-weight: 700;
     text-transform: uppercase;
@@ -158,7 +156,7 @@ $border-color: #d1d7dc;
   
   tbody tr {
     transition: background 0.2s;
-    &:hover { background: rgba($primary, 0.02); }
+    &:hover { background: var(--brand-primary-alpha-5); }
   }
 
   tbody td {
@@ -178,7 +176,7 @@ $border-color: #d1d7dc;
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba($primary, 0.1);
+  border: 3px solid var(--border-color);
   border-top-color: $primary;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -192,7 +190,7 @@ $border-color: #d1d7dc;
   text-align: center;
   color: $text-light;
   
-  i { color: #d1d7dc; }
+  i { color: var(--text-muted); }
   h5 { font-weight: 700; color: $text-dark; }
 }
 

@@ -1,6 +1,6 @@
 .product-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   overflow: hidden;
   height: 100%;
@@ -34,7 +34,7 @@
   overflow: hidden;
   height: 240px;
   display: flex;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -117,10 +117,10 @@
   .btn-action {
     width: 36px;
     height: 36px;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    background: white;
-    color: #6a6f73;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -128,7 +128,7 @@
     cursor: pointer;
 
     &:hover {
-      background: #5624d0;
+      background: var(--brand-primary);
       color: white;
       border-color: #5624d0;
     }
@@ -155,13 +155,13 @@
   margin-bottom: 0.75rem;
 
   .category-badge {
-    background: #f7f9fa;
-    color: #5624d0;
+    background: var(--bg-tertiary);
+    color: var(--brand-primary);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
-    border: 1px solid rgba(86, 36, 208, 0.2);
+    border: 1px solid var(--border-color);
   }
 
   .category-divider {
@@ -170,7 +170,7 @@
   }
 
   .category-text {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.75rem;
     font-weight: 500;
   }
@@ -180,7 +180,7 @@
 .product-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   line-height: 1.4;
   margin-bottom: 0.75rem;
   display: -webkit-box;
@@ -212,13 +212,13 @@
       }
 
       &.far.fa-star {
-        color: #d1d7dc;
+        color: var(--border-color);
       }
     }
   }
 
   .rating-text {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 500;
   }
@@ -231,12 +231,12 @@
   .current-price {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #0c111d;
+    color: var(--text-primary);
   }
 
   .original-price {
     font-size: 0.875rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     text-decoration: line-through;
     margin-left: 0.5rem;
   }
@@ -267,7 +267,7 @@
   }
 
   .btn-add-cart {
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     flex: 1;
 
@@ -277,16 +277,16 @@
 
     &:disabled {
       background: #d1d7dc;
-      color: #6a6f73;
+      color: var(--text-secondary);
       cursor: not-allowed;
       opacity: 0.6;
     }
   }
 
   .btn-view-details {
-    background: white;
-    color: #0c111d;
-    border: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     flex: 1;
 
     &:hover {
@@ -298,7 +298,7 @@
 
 /* Wishlist Heart */
 .wishlist-btn i {
-  color: #6a6f73;
+  color: var(--text-secondary);
   transition: color 0.2s ease;
 }
 

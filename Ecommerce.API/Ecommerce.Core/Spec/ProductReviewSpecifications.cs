@@ -54,9 +54,9 @@ namespace Ecommerce.Core.Spec
             return builder;
         }
 
-        public static ISpecifications<ProductReview> BuildDetailsSpec(int productId)
+        public static ISpecifications<ProductReview> BuildDetailsSpec(int id)
         {
-            return new SpecificationBuilder<ProductReview>(r => r.ProductId == productId)
+            return new SpecificationBuilder<ProductReview>(r => r.Id == id)
                 .Include(r => r.ApplicationUser);
         }
     }

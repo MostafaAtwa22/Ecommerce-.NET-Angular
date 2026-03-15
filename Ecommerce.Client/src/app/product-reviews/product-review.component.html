@@ -48,12 +48,12 @@
   <!-- Average Rating Display -->
   <div class="average-rating-card" *ngIf="!loading && reviews.length > 0">
     <div class="average-score">
-      <span class="score">{{ getAverageRating() }}</span>
+      <span class="score">{{ averageRating | number:'1.1-1' }}</span>
       <span class="out-of">out of 5</span>
     </div>
     <div class="rating-stars">
       <div class="stars">
-        <i *ngFor="let star of getStarsArray(getAverageRating())" [class]="star"></i>
+        <i *ngFor="let star of getStarsArray(averageRating)" [class]="star"></i>
       </div>
       <span class="rating-text">{{ totalReviews }} global rating{{ totalReviews !== 1 ? 's' : '' }}</span>
     </div>

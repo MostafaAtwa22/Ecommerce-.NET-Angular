@@ -1,13 +1,13 @@
 /* Statistics Cards - Match main dashboard premium style */
 .stat-card {
-  background: white;
+  background: var(--bg-primary);
   padding: 1.5rem;
   border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 1.25rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
   height: 100%;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
   &:hover {
@@ -67,13 +67,13 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.25rem;
-    color: #1e293b;
+    color: var(--text-primary);
     line-height: 1.2;
   }
 
   p {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--text-secondary);
     margin-bottom: 0;
     font-weight: 500;
     text-transform: none;
@@ -106,8 +106,8 @@
 
 /* Toolbar - Match website toolbar */
 .toolbar {
-  background: #ffffff;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 1.5rem;
@@ -119,9 +119,9 @@
     min-width: 250px;
 
     input.form-control {
-      border: 1px solid #d1d7dc;
-      border-radius: 4px;
-      padding: 0.625rem 0.875rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
       font-size: 0.875rem;
       transition: all 0.2s ease;
 
@@ -136,14 +136,12 @@
       padding: 0.625rem 1.25rem;
       font-size: 0.875rem;
       font-weight: 600;
-      border: 1px solid #d1d7dc;
-      border-radius: 4px;
-      transition: all 0.2s ease;
+      border: 1px solid var(--border-color);
 
       &.btn-dark {
-        background: #0c111d;
-        color: #ffffff;
-        border-color: #0c111d;
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        border-color: var(--text-primary);
 
         &:hover {
           background: lighten(#0c111d, 5%);
@@ -164,8 +162,8 @@
 
 /* Orders Table Container - Match website tables */
 .orders-table-container {
-  background: #ffffff;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -173,8 +171,8 @@
 
   .card-header {
     padding: 1.25rem 1.5rem;
-    background: #ffffff;
-    border-bottom: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
 
     .table-info {
       display: flex;
@@ -185,8 +183,8 @@
 
   .card-footer {
     padding: 1rem 1.5rem;
-    background: #ffffff;
-    border-top: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
   }
 }
 
@@ -201,16 +199,16 @@
       font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #6a6f73;
-      background: #ffffff;
-      border-bottom: 1px solid #d1d7dc;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
     }
   }
 
   tbody {
     tr {
       transition: all 0.2s ease;
-      border-bottom: 1px solid #d1d7dc;
+      border-bottom: 1px solid var(--border-color);
 
       &:hover {
         background: rgba(86, 36, 208, 0.02);
@@ -223,7 +221,7 @@
       td {
         padding: 1rem 1.5rem;
         vertical-align: middle;
-        color: #0c111d;
+        color: var(--text-primary);
         font-size: 0.875rem;
         font-weight: 500;
 
@@ -233,7 +231,7 @@
 
         strong {
           font-weight: 600;
-          color: #0c111d;
+          color: var(--text-primary);
         }
       }
     }
@@ -323,14 +321,14 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: 0.875rem;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
   }
 }
 
@@ -341,14 +339,14 @@
 
   i {
     font-size: 3rem;
-    color: #d1d7dc;
+    color: var(--text-muted);
     margin-bottom: 1rem;
   }
 
   h5 {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
@@ -379,8 +377,8 @@
 
 /* View Details Button - Match product-card buttons */
 .btn-view-details {
-  background: #ffffff;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   color: #0c111d;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -421,7 +419,7 @@
 }
 
 .modal-container {
-  background: #ffffff;
+  background: var(--bg-primary);
   border-radius: 8px;
   width: 90%;
   max-width: 800px;
@@ -429,22 +427,22 @@
   overflow-y: auto;
   animation: slideUp 0.3s ease;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
 }
 
 .modal-header {
   padding: 1.5rem;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
+  background: var(--bg-primary);
   border-radius: 8px 8px 0 0;
 
   .modal-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin: 0;
     display: flex;
     align-items: center;
@@ -461,14 +459,14 @@
     background: none;
     border: none;
     font-size: 1.25rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
     border-radius: 4px;
 
     &:hover {
-      color: #0c111d;
-      background: rgba(106, 111, 115, 0.1);
+      color: var(--text-primary);
+      background: var(--brand-primary-alpha-10);
     }
   }
 }
@@ -476,8 +474,8 @@
 .modal-body {
   padding: 1.5rem;
 
-  h6 {
-    color: #0c111d;
+    h6 {
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -486,17 +484,17 @@
     gap: 0.5rem;
 
     i {
-      color: #5624d0;
+      color: var(--brand-primary);
     }
   }
 
   p {
     margin-bottom: 0.75rem;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
 
     strong {
-      color: #0c111d;
+      color: var(--text-primary);
       min-width: 120px;
       display: inline-block;
       font-weight: 600;
@@ -507,12 +505,12 @@
 /* Order Items Table in Modal */
 .table.table-hover {
   thead.table-light th {
-    background: #f7f9fa;
-    color: #6a6f73;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 600;
     padding: 1rem;
-    border-bottom: 1px solid #d1d7dc;
+    border-bottom: 1px solid var(--border-color);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -520,9 +518,9 @@
   tbody td {
     padding: 1rem;
     vertical-align: middle;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
-    border-bottom: 1px solid #d1d7dc;
+    border-bottom: 1px solid var(--border-color);
 
     &:last-child {
       font-weight: 600;
@@ -533,8 +531,8 @@
 /* Modal Footer - FIXED: No buttons for Complete/Canceled orders */
 .modal-footer {
   padding: 1.5rem;
-  border-top: 1px solid #d1d7dc;
-  background: #ffffff;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
   border-radius: 0 0 8px 8px;
 }
 
@@ -559,7 +557,7 @@
 
   .status-label {
     font-weight: 600;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -601,8 +599,8 @@
 
     &.badge-secondary {
       background: rgba(106, 111, 115, 0.1);
-      color: #6a6f73;
-      border-color: rgba(106, 111, 115, 0.2);
+      color: var(--text-secondary);
+      border-color: var(--border-color);
     }
   }
 }
@@ -688,7 +686,7 @@
 }
 
 .btn-close-modal {
-  background: #6a6f73;
+  background: var(--text-secondary);
   min-width: 100px;
 
   i {
@@ -696,7 +694,7 @@
   }
 
   &:hover:not(:disabled) {
-    background: darken(#6a6f73, 10%);
+    filter: brightness(0.9);
   }
 }
 
@@ -719,22 +717,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: var(--bg-primary);
   border-radius: 8px;
   min-height: 300px;
+  border: 1px solid var(--border-color);
 
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(86, 36, 208, 0.1);
-    border-top: 3px solid #5624d0;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--brand-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
 
   .loading-text {
     margin-top: 1rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 500;
   }

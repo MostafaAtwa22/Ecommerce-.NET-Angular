@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Ecommerce.API.Helpers.Attributes
 {
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class InvalidateCacheAttribute : Attribute, IAsyncActionFilter
     {
         private readonly string _pattern;
