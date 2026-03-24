@@ -3,6 +3,7 @@ using Ecommerce.API.Dtos.Requests;
 using Ecommerce.API.Dtos.Responses;
 using Ecommerce.API.Errors;
 using Ecommerce.Core.Entities;
+using Ecommerce.Core.Entities.orderAggregate;
 using Ecommerce.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +32,10 @@ namespace Ecommerce.API.Controllers
             var coupon = _mapper.Map<Coupon>(dto);
             coupon.Code = coupon.Code.ToUpperInvariant(); 
 
+            var existingCoupon = await _unitOfWork.Repository<Coupon>().FindAsync(c => c.Code == coupon.Code);
+            if (existingCoupon is not null)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "A coupon with this code already exists."));
+
             await _unitOfWork.Repository<Coupon>().Create(coupon);
             await _unitOfWork.Complete();
 
@@ -51,6 +56,10 @@ namespace Ecommerce.API.Controllers
         {
             var coupon = await _unitOfWork.Repository<Coupon>().GetByIdAsync(id);
             if (coupon is null) return NotFound(new ApiResponse(StatusCodes.Status404NotFound));
+
+            var isCouponInUse = await _unitOfWork.Repository<Order>().FindAsync(o => o.CouponId == id);
+            if (isCouponInUse is not null)
+                return BadRequest(new ApiResponse(StatusCodes.Status400BadRequest, "Cannot delete coupon as it is currently in use by one or more orders."));
 
             _unitOfWork.Repository<Coupon>().Delete(coupon);
             await _unitOfWork.Complete();

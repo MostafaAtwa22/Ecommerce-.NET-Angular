@@ -132,11 +132,11 @@ export class ChatbotWidgetComponent {
     // User Questions
     'How do I register and create an account?': {
       html: 'You can create a new account by clicking the <strong>Register</strong> button in the top navigation menu, or by filling out the form on our Registration page.<br><br>Would you like to go to the Register page now?',
-      route: '/account/register'
+      route: '/register'
     },
     'How do I log in or use Google sign-in?': {
       html: 'Click the <strong>Login</strong> button at the top header. You can log in using your email and password, or click the <em>Sign in with Google</em> button.<br><br>Would you like to go to the Login page now?',
-      route: '/account/login'
+      route: '/login'
     },
     'How do I add products to my basket and checkout?': {
       html: 'Browse the shop, click <strong>Add to Cart</strong> on your desired products, then click the shopping bag icon in the header to proceed to Checkout.<br><br>Would you like to view your basket now?',
