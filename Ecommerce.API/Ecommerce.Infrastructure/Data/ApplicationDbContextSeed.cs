@@ -10,8 +10,8 @@ namespace Ecommerce.Infrastructure.Data
             {
                 if (!context.ProductBrands.Any())
                 {
-                    var brandsData =
-                        await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/brands.json");
+                    var path = GetSeedPath("brands.json");
+                    var brandsData = await File.ReadAllTextAsync(path);
                     var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
 
                     foreach (var brand in brands!)
@@ -20,8 +20,8 @@ namespace Ecommerce.Infrastructure.Data
                 }
                 if (!context.ProductTypes.Any())
                 {
-                    var typesData =
-                        await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/types.json");
+                    var path = GetSeedPath("types.json");
+                    var typesData = await File.ReadAllTextAsync(path);
                     var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
 
                     foreach (var type in types!)
@@ -30,8 +30,8 @@ namespace Ecommerce.Infrastructure.Data
                 }
                 if (!context.Products.Any())
                 {
-                    var productsData =
-                        await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/products.json");
+                    var path = GetSeedPath("products.json");
+                    var productsData = await File.ReadAllTextAsync(path);
                     var products = JsonSerializer.Deserialize<List<Product>>(productsData);
 
                     foreach (var product in products!)
@@ -40,8 +40,8 @@ namespace Ecommerce.Infrastructure.Data
                 }
                 if (!context.DeliveryMethods.Any())
                 {
-                    var DeliveryMethodsData =
-                        await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/delivery.json");
+                    var path = GetSeedPath("delivery.json");
+                    var DeliveryMethodsData = await File.ReadAllTextAsync(path);
                     var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodsData);
 
                     foreach (var DeliveryMethod in DeliveryMethods!)
@@ -207,6 +207,16 @@ namespace Ecommerce.Infrastructure.Data
 
             var random = new Random();
             return headlines[random.Next(headlines.Count)];
+        }
+        private static string GetSeedPath(string filename)
+        {
+            var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Seed", filename);
+            if (!File.Exists(path))
+            {
+                // Fallback for local development
+                path = Path.Combine("..", "Ecommerce.Infrastructure", "Seed", filename);
+            }
+            return path;
         }
     }
 }

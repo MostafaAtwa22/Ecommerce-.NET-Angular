@@ -74,7 +74,14 @@ namespace Ecommerce.Infrastructure.Data
                 if (userManager.Users.Any())
                     return;
 
-                var usersData = await File.ReadAllTextAsync("../Ecommerce.Infrastructure/Seed/users.json");
+                var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Seed", "users.json");
+                if (!File.Exists(path))
+                {
+                    // Fallback for local development if running from project root
+                    path = Path.Combine("..", "Ecommerce.Infrastructure", "Seed", "users.json");
+                }
+                
+                var usersData = await File.ReadAllTextAsync(path);
                 using var doc = JsonDocument.Parse(usersData);
                 var usersArray = doc.RootElement.EnumerateArray();
 

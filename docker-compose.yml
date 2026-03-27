@@ -1,0 +1,44 @@
+services:
+  ecommerce.api:
+    build:
+      context: ./Ecommerce.API
+      dockerfile: Dockerfile
+      network: host
+    container_name: ecommerce.api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - ecommerce.database
+      - cache
+
+  ecommerce.database:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    container_name: mssql.db
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Mostafa@123"
+    volumes:
+      - ./containers/ecommerce-db:/var/opt/mssql/data
+
+  cache:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  ecommerce.client:
+    build:
+      context: ./Ecommerce.Client
+      dockerfile: Dockerfile
+      network: host
+    container_name: ecommerce.client
+    ports:
+      - "4200:4200"
+    depends_on:
+      - ecommerce.api
