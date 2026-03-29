@@ -1,4 +1,4 @@
-<div class="position-relative d-flex flex-column h-100 w-100 bg-white">
+<div class="position-relative d-flex flex-column h-100 w-100">
   @if (isLoading) {
   <!-- Loading Screen - Purple Theme -->
   <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100">
@@ -28,14 +28,14 @@
           class="rounded-circle" loading="eager">
 
         @if (_chatService.currentOpenChat()?.isOnline) {
-        <span class="position-absolute bg-success border border-white rounded-circle"
+        <span class="position-absolute bg-success border rounded-circle"
           style="width: 12px; height: 12px; bottom: 2px; right: 2px;" title="Online"></span>
         }
       </div>
 
       <!-- User Info -->
       <div>
-        <h6 class="fw-bold text-dark mb-0">
+        <h6 class="fw-bold mb-0">
           {{ (_chatService.currentOpenChat()?.firstName + ' ' + _chatService.currentOpenChat()?.lastName) | titlecase }}
         </h6>
 
@@ -80,7 +80,7 @@
   </div>
 
   <!-- Chat Input -->
-  <div class="px-4 py-3 bg-white border-top position-relative">
+  <div class="px-4 py-3 border-top position-relative">
     <!-- Emoji Picker -->
     @if (showEmojiPicker) {
     <div class="emoji-picker-container shadow-lg" (click)="$event.stopPropagation()">
@@ -93,7 +93,7 @@
     <!-- Edit Mode Indicator -->
     @if (editingMessageId) {
     <div
-      class="d-flex align-items-center justify-content-between mb-2 px-3 py-2 bg-light rounded text-primary border-start border-4 border-primary">
+      class="d-flex align-items-center justify-content-between mb-2 px-3 py-2 rounded text-primary border-start border-4 border-primary">
       <div class="d-flex flex-column">
         <span class="fw-bold small">
           <i class="fas fa-pen me-1"></i>Editing Message
@@ -113,14 +113,14 @@
       @if (isRecording) {
       <!-- WhatsApp Recording UI -->
       <div
-        class="flex-grow-1 d-flex align-items-center bg-light rounded-pill px-3 py-2 animate__animated animate__fadeIn whatsapp-recording-bar shadow-sm">
+        class="flex-grow-1 d-flex align-items-center rounded-pill px-3 py-2 animate__animated animate__fadeIn whatsapp-recording-bar shadow-sm">
         <button class="btn btn-link text-muted p-2 me-2" (click)="cancelRecording()" title="Cancel">
           <i class="fas fa-trash-alt"></i>
         </button>
 
         <div class="recording-status d-flex align-items-center flex-grow-1">
           <div class="recording-dot me-2"></div>
-          <span class="text-dark fw-bold small">{{ formatDuration(recordingDuration) }}</span>
+          <span class="fw-bold small">{{ formatDuration(recordingDuration) }}</span>
           <div class="recording-visualizer ms-3 flex-grow-1 d-none d-sm-block">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -156,7 +156,7 @@
       <!-- Message Input -->
       <div class="flex-grow-1 position-relative">
         <textarea [(ngModel)]="message" (input)="onTyping(); autoResize($event)"
-          class="form-control border-0 bg-light chat-textarea" placeholder="Write a message..." rows="1"
+          class="form-control border-0 chat-textarea" placeholder="Write a message..." rows="1"
           (keydown)="onKeyDown($event)" aria-label="Message input">
           </textarea>
       </div>
@@ -184,7 +184,7 @@
   }
   @else {
   <!-- Empty Chat State -->
-  <div class="d-flex flex-column align-items-center justify-content-center h-100 bg-light">
+  <div class="d-flex flex-column align-items-center justify-content-center h-100">
     <div class="text-center p-4">
       <div class="mb-4">
         <span class="badge bg-secondary rounded-pill px-4 py-2">

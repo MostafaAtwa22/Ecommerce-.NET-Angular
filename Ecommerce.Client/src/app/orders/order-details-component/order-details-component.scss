@@ -6,11 +6,11 @@
 }
 
 .order-header {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   margin-bottom: 2rem;
 }
 
@@ -18,7 +18,7 @@
   .order-title {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
@@ -48,13 +48,13 @@
 
   .meta-label {
     font-weight: 600;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 
   .meta-value {
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
   }
 }
@@ -121,7 +121,7 @@
   .section-title {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
@@ -173,14 +173,14 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #f7f9fa;
-  color: #6a6f73;
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  border: 2px solid #d1d7dc;
+  border: 2px solid var(--border-color);
   transition: all 0.2s ease;
   position: relative;
   font-size: 0.875rem;
@@ -188,7 +188,7 @@
 
 .step-label {
   font-size: 0.75rem;
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-weight: 500;
   text-transform: uppercase;
   transition: all 0.2s ease;
@@ -202,7 +202,7 @@
   left: calc(50% + 16px);
   right: -50%;
   height: 2px;
-  background-color: #d1d7dc;
+  background-color: var(--border-color);
   z-index: 0;
   transition: background-color 0.2s ease;
 }
@@ -252,13 +252,13 @@
 
 /* Pending step styling */
 .step.pending .step-circle {
-  background-color: #f7f9fa;
-  border-color: #d1d7dc;
-  color: #6a6f73;
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-muted);
 }
-
+ 
 .step.pending .step-label {
-  color: #6a6f73;
+  color: var(--text-muted);
 }
 
 .stepper-content {
@@ -268,8 +268,8 @@
 }
 
 .step-description-content {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 1.5rem;
   text-align: center;
@@ -277,12 +277,12 @@
   h4 {
     font-size: 1rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
   p {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     margin-bottom: 0.75rem;
   }
@@ -296,11 +296,11 @@
 
 /* Order Items Section */
 .order-items-section {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   margin-bottom: 2rem;
 }
 
@@ -315,8 +315,8 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   transition: all 0.2s ease;
 
@@ -330,8 +330,8 @@
   height: 60px;
   border-radius: 4px;
   overflow: hidden;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   flex-shrink: 0;
 
   .product-img {
@@ -347,7 +347,7 @@
   .product-name {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
 
@@ -359,28 +359,28 @@
 
   .item-price {
     font-weight: 600;
-    color: #5624d0;
+    color: var(--brand-primary);
   }
 
   .item-quantity {
-    color: #6a6f73;
+    color: var(--text-secondary);
   }
 }
 
 .item-total {
   font-size: 1rem;
   font-weight: 700;
-  color: #0c111d;
+  color: var(--text-primary);
 }
 
 /* Order Summary Section */
 .order-summary-section,
 .shipping-section {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   margin-bottom: 2rem;
 }
 
@@ -390,8 +390,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #d1d7dc;
-
+    border-bottom: 1px solid var(--border-color);
+ 
     &:last-child {
       border-bottom: none;
     }
@@ -428,31 +428,31 @@
       .total-label {
         font-size: 1rem;
         font-weight: 700;
-        color: #0c111d;
+        color: var(--text-primary);
       }
 
       .total-value {
         font-size: 1.25rem;
         font-weight: 800;
-        color: #5624d0;
+        color: var(--brand-primary);
       }
     }
   }
 
   .total-divider {
-    border-top: 2px dashed #f0f2f4;
+    border-top: 2px dashed var(--border-color);
     margin: 1rem 0;
   }
 
   .total-label {
     font-weight: 600;
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
   }
 
   .total-value {
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
   }
 }
@@ -468,7 +468,7 @@
     .info-label {
       font-size: 0.75rem;
       font-weight: 600;
-      color: #6a6f73;
+      color: var(--text-secondary);
       margin-bottom: 0.25rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -476,7 +476,7 @@
 
     .info-value {
       font-size: 0.875rem;
-      color: #0c111d;
+      color: var(--text-primary);
       font-weight: 500;
       line-height: 1.5;
     }
@@ -621,7 +621,7 @@
 
   .step-description-content {
     border-color: #c91a1a;
-    background-color: rgba(201, 26, 26, 0.05);
+    background-color: rgba(201, 26, 26, 0.15);
   }
 }
 
@@ -728,7 +728,7 @@
 
   .step-description-content.cancelled-content {
     border-color: #c91a1a;
-    background: rgba(201, 26, 26, 0.05);
+    background: rgba(201, 26, 26, 0.15);
 
     h4 {
       color: #c91a1a;
@@ -746,33 +746,33 @@
 
 /* Alert for cancelled orders */
 .alert-cancelled {
-  background: rgba(201, 26, 26, 0.1);
-  border: 1px solid rgba(201, 26, 26, 0.2);
-  color: #742a2a;
+  background: rgba(201, 26, 26, 0.15);
+  border: 1px solid rgba(201, 26, 26, 0.3);
+  color: var(--text-primary);
   border-radius: 4px;
   padding: 1rem;
   margin-top: 1rem;
   text-align: left;
-
+ 
   i {
-    color: #c91a1a;
+    color: #f87171;
   }
-
+ 
   .alert-content {
     strong {
-      color: #c91a1a;
+      color: #f87171;
       display: block;
       margin-bottom: 0.5rem;
     }
-
+ 
     ul {
       margin-bottom: 0;
       padding-left: 1rem;
-
+ 
       li {
         font-size: 0.875rem;
         margin-bottom: 0.25rem;
-        color: #742a2a;
+        color: var(--text-secondary);
         line-height: 1.4;
 
         &:last-child {

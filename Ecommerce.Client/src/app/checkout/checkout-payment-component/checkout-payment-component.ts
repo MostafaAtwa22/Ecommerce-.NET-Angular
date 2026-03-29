@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, ViewChild, effect } from '@angular/core';
+import { ThemeService } from '../../shared/services/theme.service';
 import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
@@ -23,8 +24,15 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     private toastr: ToastrService,
     private basketService: BasketService,
     private checkoutService: CheckoutService,
-    private router: Router
-  ) {}
+    private router: Router,
+    public themeService: ThemeService
+  ) {
+    // React to theme changes
+    effect(() => {
+      const isDark = this.themeService.isDark();
+      this.updateStripeStyles(isDark);
+    });
+  }
 
   @ViewChild('cardNumber') cardNumberElement!: ElementRef;
   @ViewChild('cardExpiry') cardExpiryElement!: ElementRef;
@@ -51,28 +59,39 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     }, 100);
   }
 
+  private getStripeStyle(isDark: boolean) {
+    return {
+      base: {
+        color: isDark ? '#f8fafc' : '#0f172a',
+        fontFamily: 'var(--font-sans)',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: isDark ? '#64748b' : '#94a3b8',
+        },
+      },
+      invalid: {
+        color: '#ef4444',
+        iconColor: '#ef4444',
+      },
+    };
+  }
+
+  private updateStripeStyles(isDark: boolean): void {
+    const style = this.getStripeStyle(isDark);
+    this.cardNumber?.update({ style });
+    this.cardExpiry?.update({ style });
+    this.cardCvc?.update({ style });
+  }
+
   private initializeStripe(): void {
     try {
+      const isDark = this.themeService.isDark();
+      const style = this.getStripeStyle(isDark);
+
       // Initialize Stripe
       this.stripe = Stripe('pk_test_51SVCaI3f1LzxHemr5eYgjrkPsmted61kv4dPMBeHGlFDEwHlKKBIPoqKFVXqmL96gESKd8SkOq5UPMBCF0bBkjSo00njbjuXY4');
       const elements = this.stripe.elements();
-
-      // Style for Stripe elements
-      const style = {
-        base: {
-          color: '#32325d',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-          fontSmoothing: 'antialiased',
-          fontSize: '16px',
-          '::placeholder': {
-            color: '#aab7c4',
-          },
-        },
-        invalid: {
-          color: '#fa755a',
-          iconColor: '#fa755a',
-        },
-      };
 
       // Create and mount Card Number
       this.cardNumber = elements.create('cardNumber', {

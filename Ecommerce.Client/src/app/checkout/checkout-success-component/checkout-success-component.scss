@@ -1,6 +1,6 @@
 .checkout-success-container {
   min-height: 88vh;
-  background: white;
+  background: var(--bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,9 +111,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: rgba(86, 36, 208, 0.1);
-  border-radius: 4px;
-  color: #5624d0;
+  background: var(--brand-primary-alpha-10);
+  border: 1px solid var(--brand-primary-alpha-20);
+  border-radius: 8px;
+  color: var(--brand-primary);
   font-weight: 600;
   font-size: 0.875rem;
 }
@@ -156,9 +157,9 @@
 }
 
 .btn-secondary {
-  background: white;
-  color: #5624d0;
-  border: 1px solid #5624d0;
+  background: var(--bg-primary);
+  color: var(--brand-primary);
+  border: 1px solid var(--brand-primary);
 }
 
 .btn-secondary:hover {
@@ -172,17 +173,23 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid #d1d7dc;
+  border-top: 1px solid var(--border-color);
 }
 
 .stat-card {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
-  background: white;
-  border: 1px solid #d1d7dc;
-  border-radius: 4px;
+  padding: 1.25rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: var(--brand-primary);
+  }
 }
 
 .stat-icon {

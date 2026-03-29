@@ -56,8 +56,8 @@
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  background: #f7f9fa;
-  border-bottom: 1px solid #d1d7dc;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
   font-weight: 600;
   color: var(--text-secondary);
   font-size: 0.875rem;
@@ -75,7 +75,7 @@
   grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
   transition: all 0.2s ease;
 
   &:last-child {
@@ -83,7 +83,7 @@
   }
 
   &:hover {
-    background: #f7f9fa;
+    background: var(--bg-tertiary);
   }
 }
 
@@ -99,8 +99,8 @@
   height: 50px;
   border-radius: 4px;
   overflow: hidden;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
@@ -117,7 +117,7 @@
 .product-name {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   margin: 0 0 0.25rem 0;
   line-height: 1.3;
 }
@@ -151,7 +151,7 @@
 .price-amount {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
 }
 
 // Quantity Cell
@@ -162,8 +162,8 @@
 }
 
 .quantity-display {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 0.25rem 0.75rem;
   min-width: 60px;
@@ -173,7 +173,7 @@
 .quantity-number {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
 }
 
 // Total Cell
@@ -186,14 +186,14 @@
 .total-amount {
   font-size: 1rem;
   font-weight: 700;
-  color: #0c111d;
+  color: var(--text-primary);
 }
 
 // Order Summary
 .order-summary {
-  background: white;
-  border: 1px solid #d1d7dc;
-  border-radius: 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
   padding: 1.5rem;
 }
 
@@ -206,7 +206,7 @@
   &.total {
     padding-top: 0.75rem;
     margin-top: 0.5rem;
-    border-top: 1px solid #d1d7dc;
+    border-top: 1px solid var(--border-color);
 
     .summary-label {
       font-size: 1rem;
@@ -216,26 +216,26 @@
     .summary-value {
       font-size: 1.125rem;
       font-weight: 700;
-      color: #0c111d;
+      color: var(--text-primary);
     }
   }
 }
 
 .summary-label {
   font-weight: 600;
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
 .summary-value {
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   font-size: 0.875rem;
 }
 
 .summary-divider {
   height: 1px;
-  background: #d1d7dc;
+  background: var(--border-color);
   margin: 0.5rem 0;
 }
 
@@ -243,20 +243,20 @@
 .empty-review {
   text-align: center;
   padding: 3rem 2rem;
-  color: #6a6f73;
+  color: var(--text-secondary);
 }
 
 .empty-icon {
   font-size: 2.5rem;
   margin-bottom: 1rem;
   opacity: 0.5;
-  color: #d1d7dc;
+  color: var(--border-color);
 }
 
 .empty-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #6a6f73;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
@@ -271,7 +271,7 @@
 .loading-review {
   text-align: center;
   padding: 3rem 2rem;
-  color: #6a6f73;
+  color: var(--text-secondary);
 }
 
 .loading-spinner {
@@ -296,12 +296,12 @@
   .form-label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: #344054;
+    color: var(--text-primary);
     margin-bottom: 0.75rem;
   }
 
   .applied-coupon {
-    background: #f0fdf4;
+    background: rgba(34, 197, 94, 0.1);
     border: 1px dashed #22c55e !important;
     transition: all 0.2s ease;
 
@@ -314,7 +314,7 @@
     .btn-outline-danger {
       color: #ef4444;
       &:hover {
-        background: #fef2f2;
+        background: rgba(239, 68, 68, 0.1);
         color: #dc2626;
       }
     }
@@ -326,13 +326,15 @@
     overflow: hidden;
 
     .form-control {
-      border: 1px solid #d0d5dd;
+      background: var(--input-bg);
+      border: 1px solid var(--border-color);
       padding: 0.5rem 0.75rem;
       font-size: 0.875rem;
+      color: var(--text-primary);
       
       &:focus {
-        border-color: #5624d0;
-        box-shadow: 0 0 0 4px rgba(86, 36, 208, 0.1);
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 4px var(--brand-primary-alpha-10);
       }
     }
 

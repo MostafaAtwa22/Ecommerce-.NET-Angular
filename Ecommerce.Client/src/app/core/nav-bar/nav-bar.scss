@@ -474,7 +474,7 @@
 }
 
 /* Auth Buttons */
-.btn-outline-dark {
+.btn-outline-theme {
   border: 1px solid var(--text-primary);
   color: var(--text-primary);
   font-weight: 600;
@@ -487,7 +487,7 @@
   }
 }
 
-.btn-dark {
+.btn-theme {
   background: var(--text-primary);
   border: 1px solid var(--text-primary);
   color: var(--bg-primary);
@@ -600,8 +600,8 @@
     font-size: 0.6875rem;
   }
 
-  .btn-outline-dark,
-  .btn-dark {
+  .btn-outline-theme,
+  .btn-theme {
     width: 100%;
     text-align: center;
   }
@@ -656,8 +656,8 @@ body {
 /* Improve mobile touch targets */
 @media (max-width: 992px) {
   .nav-item .nav-link,
-  .btn-outline-dark,
-  .btn-dark {
+  .btn-outline-theme,
+  .btn-theme {
     min-height: 44px;
     display: flex;
     align-items: center;

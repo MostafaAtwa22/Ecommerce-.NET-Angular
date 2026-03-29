@@ -103,7 +103,7 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
 
   .basket-title {
     font-size: 1.75rem;
@@ -223,7 +223,7 @@
     }
 
     .type {
-      color: #6a6f73;
+      color: var(--text-secondary);
       font-size: 0.875rem;
     }
   }
@@ -288,9 +288,9 @@
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
-        background: #f7f9fa;
-        border-color: #5624d0;
-        color: #5624d0;
+        background: var(--bg-tertiary);
+        border-color: var(--brand-primary);
+        color: var(--brand-primary);
       }
 
       &:disabled {
@@ -325,7 +325,7 @@
 
   .price-unit {
     font-size: 0.875rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
   }
 }
 
@@ -382,7 +382,7 @@
     font-size: 0.75rem;
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #d1d7dc;
+    border-top: 1px solid var(--border-color);
 
     i {
       color: #1e6055;
@@ -456,7 +456,7 @@
 
 .empty-text {
   font-size: 1.15rem;
-  color: #6a6f73;
+  color: var(--text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.6;
   font-weight: 500;

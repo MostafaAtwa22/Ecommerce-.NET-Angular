@@ -11,11 +11,11 @@
     background: var(--bg-primary); padding: 1.5rem; border-radius: 12px; display: flex; align-items: center;
     gap: 1.25rem; border: 1px solid var(--border-color); transition: all 0.2s ease;
     box-shadow: var(--shadow-sm);
-    &:hover { border-color: #5624d0; box-shadow: 0 2px 12px rgba(86, 36, 208, 0.1); transform: translateY(-2px); }
+    &:hover { border-color: var(--brand-primary); box-shadow: var(--shadow-md); transform: translateY(-2px); }
     .insight-icon {
       width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center;
       justify-content: center; font-size: 1.25rem; color: white;
-      &.primary { background: #5624d0; }
+      &.primary { background: var(--brand-primary); }
       &.success { background: #48bb78; }
       &.warning { background: #ed8936; }
       &.danger { background: #c91a1a; }
@@ -35,7 +35,7 @@
   position: relative; flex-grow: 1; min-width: 250px; max-width: 500px;
   .search-icon {
     position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-    color: #6a6f73; z-index: 2;
+    color: var(--text-secondary); z-index: 2;
   }
   .search-input {
     padding-left: 2.75rem; height: 45px; border: 1px solid var(--border-color); border-radius: 8px;
@@ -47,7 +47,7 @@
 
 /* Coupon Specific Styles */
 .coupon-code-badge {
-  background: linear-gradient(135deg, #5624d0, #7a40c8);
+  background: var(--brand-gradient);
   color: white;
   font-size: 0.875rem;
   font-weight: 700;
@@ -58,8 +58,8 @@
 }
 
 .coupon-form {
-  border: 1px solid #e0e7ff !important;
-  background: linear-gradient(135deg, #f8f9ff, #fff) !important;
+  border: 1px solid var(--border-color) !important;
+  background: var(--bg-secondary) !important;
   animation: slideDown 0.25s ease;
 }
 

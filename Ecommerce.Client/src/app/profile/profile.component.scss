@@ -1,7 +1,7 @@
 :host {
   display: block;
   min-height: 100vh;
-  background: white;
+  background: var(--bg-primary);
 }
 
 .profile-page {
@@ -11,8 +11,8 @@
 }
 
 .state {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 3rem;
   text-align: center;
@@ -41,8 +41,8 @@
 }
 
 .profile-header {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   display: flex;
@@ -71,7 +71,7 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid white;
+    border: 3px solid var(--bg-primary);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
@@ -90,12 +90,12 @@
     transition: opacity 0.2s ease;
 
     .edit-button {
-      background: white;
+      background: var(--bg-primary);
       border: none;
       border-radius: 50%;
       width: 40px;
       height: 40px;
-      color: #5624d0;
+      color: var(--brand-primary);
       font-size: 1rem;
       cursor: pointer;
       display: flex;
@@ -174,10 +174,10 @@
   gap: 0.5rem;
   width: 100%;
   max-width: 140px;
-  background: white;
+  background: var(--bg-primary);
   padding: 1rem;
   border-radius: 4px;
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
 
   .progress-bar {
     width: 100%;
@@ -213,7 +213,7 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
 }
 
 .user-meta .handle {
@@ -249,8 +249,8 @@
 .quick-stats li {
   padding: 1rem;
   border-radius: 4px;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
 }
 
 .stat-label {
@@ -264,7 +264,7 @@
 .stat-value {
   font-size: 1rem;
   margin: 0;
-  color: #0c111d;
+  color: var(--text-primary);
   font-weight: 700;
 }
 
@@ -277,8 +277,8 @@
 }
 
 .profile-sidebar {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -290,7 +290,7 @@
   margin-top: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -319,11 +319,11 @@
   width: 100%;
   padding: 1rem;
   border-radius: 4px;
-  border: 1px solid #d1d7dc;
-  background: white;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #0c111d;
+  color: var(--text-primary);
   text-align: left;
   font-size: 0.875rem;
   display: flex;
@@ -364,8 +364,8 @@
 
 /* Section styles to match image */
 .section-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -374,14 +374,14 @@
 .section-header {
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
 
   .header-content {
     h3 {
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -410,9 +410,9 @@
 }
 
 .ghost-btn {
-  border: 1px solid #d1d7dc;
-  background: white;
-  color: #0c111d;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   border-radius: 4px;
   padding: 0.5rem 1rem;
   cursor: pointer;

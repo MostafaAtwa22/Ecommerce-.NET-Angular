@@ -41,13 +41,13 @@
   right: 0;
   width: 360px;
   max-height: 520px;
-  background: #ffffff;
+  background: var(--bg-primary);
   border-radius: 16px;
   box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   &.expanded {
@@ -106,13 +106,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  border-bottom: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-secondary);
 
   .quick-question {
     border-radius: 999px;
-    border: 1px solid #d1d5db;
-    background: #ffffff;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
     padding: 0.2rem 0.8rem;
     font-size: 0.75rem;
     color: #374151;
@@ -162,9 +162,9 @@
     justify-content: flex-start;
 
     .bubble {
-      background: #ffffff;
+      background: var(--bg-secondary);
       color: var(--text-primary);
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border-color);
     }
   }
 
@@ -258,13 +258,15 @@
   display: flex;
   align-items: flex-end;
   gap: 0.4rem;
-  background: #ffffff;
+  background: var(--bg-secondary);
 
   textarea.form-control {
     resize: none;
     font-size: 0.8rem;
     border-radius: 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    color: var(--text-primary);
     padding: 0.4rem 0.6rem;
     max-height: 60px;
 

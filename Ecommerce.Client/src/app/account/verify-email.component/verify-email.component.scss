@@ -76,11 +76,11 @@
   .form-control {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.875rem;
     color: var(--text-primary);
-    background: white;
+    background: var(--input-bg);
     transition: all 0.2s ease;
 
     &::placeholder {
@@ -102,7 +102,7 @@
     }
 
     &:read-only {
-      background-color: #f7f9fa;
+      background-color: var(--bg-secondary);
       cursor: not-allowed;
 
       &.valid {
@@ -154,8 +154,8 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  background-color: rgba(86, 36, 208, 0.05);
-  border: 1px solid rgba(86, 36, 208, 0.1);
+  background-color: var(--brand-primary-alpha-10);
+  border: 1px solid var(--brand-primary-alpha-10);
   border-radius: 4px;
   margin-bottom: 1.5rem;
 
@@ -170,7 +170,7 @@
 
     .hint-title {
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin: 0 0 0.25rem 0;
       font-size: 0.875rem;
     }
@@ -237,7 +237,7 @@
   text-align: center;
   margin-bottom: 1.5rem;
   padding: 1rem;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid var(--border-color);
 
   .resend-text {
     color: #6a6f73;
@@ -273,7 +273,7 @@
 .back-link {
   text-align: center;
   padding-top: 1rem;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid var(--border-color);
 
   .back-text {
     color: #5624d0;

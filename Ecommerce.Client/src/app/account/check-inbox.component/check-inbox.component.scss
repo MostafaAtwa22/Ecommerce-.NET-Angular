@@ -2,8 +2,8 @@
   max-width: 500px;
   margin: 2rem auto;
   padding: 2rem;
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -32,7 +32,7 @@
     .success-title {
       font-size: 1.75rem;
       font-weight: 700;
-      color: #0c111d;
+      color: var(--text-primary);
       margin-bottom: 0.5rem;
     }
 
@@ -44,10 +44,10 @@
   }
 
   .content-card {
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-radius: 10px;
     padding: 2rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid var(--border-color);
 
     .email-icon {
       text-align: center;
@@ -102,7 +102,7 @@
       align-items: center;
       gap: 0.75rem;
       font-size: 1.125rem;
-      color: #0c111d;
+      color: var(--text-primary);
       margin-bottom: 1rem;
 
       i {
@@ -126,8 +126,8 @@
       align-items: center;
       gap: 1rem;
       padding: 1rem 1.25rem;
-      background: white;
-      border: 2px solid #e2e8f0;
+      background: var(--input-bg);
+      border: 2px solid var(--border-color);
       border-radius: 8px;
       text-decoration: none;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -198,7 +198,7 @@
 
         .provider-name {
           font-weight: 600;
-          color: #0c111d;
+          color: var(--text-primary);
           font-size: 0.9375rem;
         }
 
@@ -313,9 +313,9 @@
     }
 
     .btn-change-email {
-      background: white;
-      color: #5624d0;
-      border: 2px solid #5624d0;
+      background: var(--input-bg);
+      color: var(--brand-primary);
+      border: 2px solid var(--brand-primary);
       border-radius: 8px;
       padding: 0.875rem;
       font-size: 0.9375rem;
@@ -338,7 +338,7 @@
   .back-to-login {
     text-align: center;
     padding-top: 1.5rem;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
 
     i {
       color: #718096;

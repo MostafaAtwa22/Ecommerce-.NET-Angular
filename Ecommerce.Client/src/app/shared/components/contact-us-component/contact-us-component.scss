@@ -1,12 +1,14 @@
 .contact-section {
-  background: white;
-  padding: 3rem 0;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  position: relative;
+  padding: 4rem 0;
+  transition: all 0.3s ease;
 
   .text-center {
     h1 {
       font-size: 1.75rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin-bottom: 0.75rem;
       display: flex;
       align-items: center;
@@ -14,9 +16,17 @@
       gap: 0.5rem;
     }
 
+    .text-gradient {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
     p {
       font-size: 0.875rem;
-      color: #6a6f73;
+      color: var(--text-secondary);
       max-width: 600px;
       margin: 0 auto;
     }
@@ -24,11 +34,11 @@
 }
 
 .contact-info-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   height: fit-content;
 
   .info-item {
@@ -37,7 +47,7 @@
     gap: 1rem;
     margin-bottom: 1.25rem;
     padding-bottom: 1.25rem;
-    border-bottom: 1px solid #f7f9fa;
+    border-bottom: 1px solid var(--border-color);
 
     &:last-child {
       margin-bottom: 0;
@@ -48,28 +58,28 @@
     .info-icon {
       width: 40px;
       height: 40px;
-      background: #f7f9fa;
+      background: var(--bg-tertiary);
       border-radius: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #5624d0;
+      color: var(--brand-primary);
       font-size: 1rem;
       flex-shrink: 0;
-      border: 1px solid rgba(86, 36, 208, 0.1);
+      border: 1px solid var(--border-color);
     }
 
     .info-content {
       h5 {
         font-size: 0.875rem;
         font-weight: 600;
-        color: #0c111d;
+        color: var(--text-primary);
         margin-bottom: 0.25rem;
       }
 
       p {
         font-size: 0.875rem;
-        color: #6a6f73;
+        color: var(--text-secondary);
         line-height: 1.4;
         margin: 0;
       }
@@ -78,11 +88,11 @@
 }
 
 .contact-form-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .form-group {
@@ -91,29 +101,29 @@
   .form-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.375rem;
     display: block;
   }
 
   .form-control {
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 0.625rem 0.75rem;
     font-size: 0.875rem;
-    color: #0c111d;
-    background: white;
+    color: var(--text-primary);
+    background: var(--bg-primary);
     transition: all 0.2s ease;
     width: 100%;
-
+ 
     &:focus {
       outline: none;
-      border-color: #5624d0;
-      box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 2px var(--brand-primary-alpha-10);
     }
-
+ 
     &::placeholder {
-      color: #6a6f73;
+      color: var(--text-muted);
     }
   }
 
@@ -124,7 +134,7 @@
 }
 
 .btn-primary {
-  background: #5624d0;
+  background: var(--brand-primary);
   border: none;
   border-radius: 4px;
   padding: 0.75rem 1.5rem;
@@ -140,7 +150,7 @@
   gap: 0.5rem;
 
   &:hover:not(:disabled) {
-    background: #401b9c;
+    background: var(--brand-primary-dark);
   }
 
   &:disabled {
@@ -154,8 +164,8 @@
 }
 
 .alert-success {
-  background: #f7f9fa;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 1rem;
   margin-top: 1rem;
@@ -166,12 +176,12 @@
   }
 
   strong {
-    color: #0c111d;
+    color: var(--text-primary);
     font-weight: 600;
   }
 
   p {
-    color: #6a6f73;
+    color: var(--text-secondary);
     font-size: 0.875rem;
     margin: 0.25rem 0 0;
   }

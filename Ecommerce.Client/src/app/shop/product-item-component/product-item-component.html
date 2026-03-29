@@ -69,7 +69,7 @@
           [title]="!canAddToBasket() ? 'Maximum quantity in basket' : 'Add to cart'" *hasPermission="'Permissions.Orders.Create'">
           <i class="fas fa-shopping-cart" style="font-size: 20px;"></i>
         </button>
-        <button class="btn-view-details text-dark" [routerLink]="[`/shop/${product.id}`]">
+        <button class="btn-view-details" [routerLink]="[`/shop/${product.id}`]">
           <i class="fas fa-external-link-alt"></i>
           Details
         </button>

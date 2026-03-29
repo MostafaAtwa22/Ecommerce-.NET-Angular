@@ -7,7 +7,7 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  background: white;
+  background: var(--bg-primary);
 }
 
 /* ===============================
@@ -15,15 +15,15 @@
    =============================== */
 .p-3 {
   padding: 1.25rem 1rem !important;
-  border-bottom: 1px solid #d1d7dc;
-  background: white;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--bg-primary);
 }
 
 .position-relative {
   .form-control {
     height: 44px;
     padding-left: 2.75rem !important;
-    background: #f7f9fa !important;
+    background: var(--bg-secondary) !important;
     border: 1px solid transparent !important;
     border-radius: 30px !important;
     font-size: 0.9375rem;
@@ -36,14 +36,14 @@
     }
 
     &:hover {
-      background: white !important;
-      border-color: #d1d7dc !important;
+      background: var(--bg-primary) !important;
+      border-color: var(--border-color) !important;
     }
 
     &:focus {
-      background: white !important;
-      border-color: #5624d0 !important;
-      box-shadow: 0 2px 8px rgba(86, 36, 208, 0.15) !important;
+      background: var(--bg-primary) !important;
+      border-color: var(--brand-primary) !important;
+      box-shadow: 0 2px 8px var(--brand-primary-alpha-10) !important;
       outline: none;
     }
   }
@@ -69,7 +69,7 @@
    =============================== */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #d1d7dc #f7f9fa;
+  scrollbar-color: var(--border-color) var(--bg-secondary);
   padding: 0.5rem 0;
 
   &::-webkit-scrollbar {
@@ -77,13 +77,13 @@
   }
 
   &::-webkit-scrollbar-track {
-    background: #f7f9fa;
+    background: var(--bg-secondary);
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #d1d7dc;
+    background-color: var(--border-color);
     border-radius: 4px;
-    border: 1px solid #f7f9fa;
+    border: 1px solid var(--bg-secondary);
 
     &:hover {
       background-color: #6a6f73;
@@ -184,7 +184,7 @@
     /* Online Status Indicator */
     .bg-success {
       background: #48bb78 !important;
-      border: 2px solid white;
+      border: 2px solid var(--bg-primary);
       width: 12px;
       height: 12px;
       border-radius: 50%;
@@ -200,7 +200,7 @@
     padding-bottom: 0.75rem;
     
     .border-bottom {
-      border-bottom: 1px solid #f0f0f0 !important;
+      border-bottom: 1px solid var(--border-color) !important;
       transition: border-color 0.2s ease;
     }
   }
@@ -209,7 +209,7 @@
   h6 {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
     line-height: 1.4;
   }
@@ -296,7 +296,7 @@
 
   p {
     font-size: 0.875rem;
-    color: #6a6f73;
+    color: var(--text-secondary);
     max-width: 200px;
   }
 }

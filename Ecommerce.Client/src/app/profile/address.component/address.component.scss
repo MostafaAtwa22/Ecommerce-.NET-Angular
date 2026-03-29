@@ -3,8 +3,8 @@
 }
 
 .section-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -22,7 +22,7 @@
   gap: 1.5rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #d1d7dc;
+  border-bottom: 1px solid var(--border-color);
 
   .header-content {
     flex: 1;
@@ -31,7 +31,7 @@
       margin: 0 0 0.5rem 0;
       font-size: 1.75rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -59,11 +59,11 @@
   }
 
   .refresh-btn {
-    background: white;
-    border: 1px solid #d1d7dc;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 0.75rem 1.5rem;
-    color: #0c111d;
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
@@ -123,7 +123,7 @@
     gap: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
 
     i {
       color: #5624d0;
@@ -137,11 +137,11 @@
     input {
       width: 100%;
       padding: 0.75rem 0.75rem 0.75rem 2.75rem;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      background: white;
+      background: var(--input-bg);
       font-size: 0.875rem;
-      color: #0c111d;
+      color: var(--text-primary);
       transition: all 0.2s ease;
 
       &:focus {
@@ -195,7 +195,7 @@
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-top: 1.5rem;
-  border-top: 1px solid #d1d7dc;
+  border-top: 1px solid var(--border-color);
 
   .messages {
     flex: 1;
@@ -295,7 +295,7 @@
 
   h4 {
     margin: 0;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 1rem;
     font-weight: 600;
   }

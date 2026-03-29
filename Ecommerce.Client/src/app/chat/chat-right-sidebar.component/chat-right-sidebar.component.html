@@ -1,5 +1,5 @@
 @if (_chatService.currentOpenChat()) {
-<div class="d-flex flex-column h-100 bg-white">
+<div class="d-flex flex-column h-100">
   <!-- Header / Actions -->
   <div class="p-3 d-flex justify-content-between align-items-center border-bottom">
     <h6 class="mb-0 fw-semibold">
@@ -28,17 +28,17 @@
           loading="lazy">
 
         @if (_chatService.currentOpenChat()?.isOnline) {
-          <div class="position-absolute bg-success border border-white rounded-circle"
+          <div class="position-absolute bg-success border rounded-circle"
                style="width: 18px; height: 18px; bottom: 5px; right: 5px;"
                title="Online"></div>
         } @else {
-          <div class="position-absolute bg-secondary border border-white rounded-circle"
+          <div class="position-absolute bg-secondary border rounded-circle"
                style="width: 18px; height: 18px; bottom: 5px; right: 5px;"
                title="Offline"></div>
         }
       </div>
 
-      <h5 class="fw-bold text-dark mb-1">
+      <h5 class="fw-bold mb-1">
         {{ (_chatService.currentOpenChat()?.firstName || '') + ' ' + (_chatService.currentOpenChat()?.lastName || '') | titlecase }}
       </h5>
 
@@ -57,7 +57,7 @@
         </div>
         <div class="overflow-hidden">
           <small class="text-muted d-block">Username</small>
-          <span class="fw-medium text-dark text-truncate d-block" title="{{ _chatService.currentOpenChat()?.userName }}">
+          <span class="fw-medium text-truncate d-block" title="{{ _chatService.currentOpenChat()?.userName }}">
             {{ _chatService.currentOpenChat()?.userName }}
           </span>
         </div>
@@ -71,7 +71,7 @@
         </div>
         <div class="overflow-hidden">
           <small class="text-muted d-block">Email</small>
-          <span class="fw-medium text-dark text-truncate d-block" title="{{ _chatService.currentOpenChat()?.email }}">
+          <span class="fw-medium text-truncate d-block" title="{{ _chatService.currentOpenChat()?.email }}">
             {{ _chatService.currentOpenChat()?.email }}
           </span>
           <button class="btn btn-link btn-sm p-0 mt-1"
@@ -129,10 +129,10 @@
 </div>
 } @else {
 <div class="d-flex flex-column align-items-center justify-content-center h-100 text-center p-4">
-  <div class="mb-3 p-4 bg-light rounded-circle shadow-sm">
+  <div class="mb-3 p-4 rounded-circle shadow-sm">
     <i class="fas fa-user-circle text-primary"></i>
   </div>
-  <h6 class="fw-semibold text-dark">No User Selected</h6>
+  <h6 class="fw-semibold">No User Selected</h6>
   <p class="text-muted small mb-0">
     Select a conversation to view user details and profile information.
   </p>

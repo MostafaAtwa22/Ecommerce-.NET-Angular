@@ -1,9 +1,9 @@
-<div class="d-flex flex-column h-100 bg-white border-end">
+<div class="d-flex flex-column h-100">
   <!-- Search Header -->
   <div class="p-3">
     <div class="position-relative">
       <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
-        class="form-control rounded-pill ps-5 bg-light border-0" placeholder="Search conversations..."
+        class="form-control rounded-pill ps-5 border-0" placeholder="Search conversations..."
         style="height: 44px; font-size: 0.95rem;" aria-label="Search users">
       <i class="fas fa-search position-absolute text-muted"></i>
       @if (searchTerm) {
@@ -34,7 +34,7 @@
         <img [src]="getAvatar(item.profilePictureUrl, item.gender)" (error)="setDefaultAvatar($event, item.gender)"
           [alt]="item.firstName + ' ' + item.lastName" class="rounded-circle" loading="lazy">
         @if (item.isOnline) {
-        <span class="position-absolute bg-success border border-white rounded-circle" style="width: 12px; height: 12px;"
+        <span class="position-absolute bg-success border rounded-circle" style="width: 12px; height: 12px;"
           title="Online"></span>
         }
       </div>
@@ -43,7 +43,7 @@
       <div class="flex-grow-1 overflow-hidden">
         <div class="border-bottom pb-2">
           <div class="d-flex justify-content-between align-items-center mb-1">
-            <h6 class="mb-0 text-truncate fw-semibold text-dark">
+            <h6 class="mb-0 text-truncate fw-semibold">
               {{ (item.firstName + ' ' + item.lastName) | titlecase }}
             </h6>
           </div>

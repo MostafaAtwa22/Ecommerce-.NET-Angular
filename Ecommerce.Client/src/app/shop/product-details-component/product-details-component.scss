@@ -96,8 +96,8 @@
       min-height: 72px;
 
       &:hover {
-        background: #f0f2f4;
-        border-color: #d1d7dc;
+        background: var(--bg-tertiary);
+        border-color: var(--border-color);
       }
 
       .feature-icon {
@@ -232,9 +232,9 @@
       background: var(--bg-tertiary);
       color: var(--text-primary);
       border: 1px solid var(--border-color);
-
+ 
       &:hover {
-        background: #f0f2f4;
+        background: var(--bg-secondary);
       }
     }
   }
@@ -315,20 +315,20 @@
         transition: all 0.2s ease;
 
         &:hover:not(:disabled) {
-          background: #f7f9fa;
-          border-color: #5624d0;
-          color: #5624d0;
+          background: var(--bg-secondary);
+          border-color: var(--brand-primary);
+          color: var(--brand-primary);
         }
-
+ 
         &:active:not(:disabled) {
           transform: scale(0.9);
-          background: #e8e9eb;
+          background: var(--bg-tertiary);
         }
-
+ 
         &:disabled {
           opacity: 0.4;
           cursor: not-allowed;
-          background: #f7f9fa;
+          background: var(--bg-secondary);
         }
 
         i {
@@ -352,7 +352,7 @@
         }
 
         &:disabled {
-          background-color: #f7f9fa;
+          background-color: var(--bg-secondary);
           color: var(--text-secondary);
         }
 
@@ -375,15 +375,15 @@
       border-radius: 4px;
 
       &.text-danger {
-        background: #fef2f2;
-        color: #c91a1a;
-        border: 1px solid #fecaca;
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(239, 68, 68, 0.3);
       }
-
+ 
       &.text-warning {
-        background: #fffbeb;
-        color: #92400e;
-        border: 1px solid #fde68a;
+        background: rgba(245, 158, 11, 0.1);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
       }
 
       i {
@@ -443,19 +443,20 @@
       background: var(--brand-primary);
       color: white;
       box-shadow: 0 2px 4px rgba(86, 36, 208, 0.2);
-
+ 
       &:hover:not(:disabled) {
-        background: #401b9c;
+        background: var(--brand-primary-dark);
         box-shadow: 0 4px 8px rgba(86, 36, 208, 0.3);
       }
-
+ 
       &:active:not(:disabled) {
         background: #34187e;
         box-shadow: 0 1px 2px rgba(86, 36, 208, 0.3);
       }
-
+ 
       &:disabled {
-        background: #a8a8a8;
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
         cursor: not-allowed;
         opacity: 0.6;
         box-shadow: none;
@@ -470,9 +471,9 @@
       overflow: hidden;
 
       &:hover:not(:disabled) {
-        background: #fff5f5;
-        border-color: #fecaca;
-        color: rgb(0, 128, 109);
+        background: rgba(239, 68, 68, 0.1);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #dc2626;
       }
 
       &:active:not(:disabled) {
@@ -510,15 +511,15 @@
       border: 1px solid var(--border-color);
 
       &:hover {
-        background: #f0f9ff;
-        border-color: #7dd3fc;
-        color: #0369a1;
+        background: var(--bg-secondary);
+        border-color: var(--brand-primary);
+        color: var(--brand-primary);
       }
 
       &:active {
-        background: #e0f2fe;
-        border-color: #38bdf8;
-        color: #075985;
+        background: var(--bg-tertiary);
+        border-color: var(--brand-primary);
+        color: var(--brand-primary);
       }
 
       i {
@@ -576,17 +577,17 @@
       }
 
       &::-webkit-scrollbar-track {
-        background: #e8e9eb;
+        background: var(--bg-tertiary);
         border-radius: 2px;
       }
-
+ 
       &::-webkit-scrollbar-thumb {
-        background: #b5b7ba;
+        background: var(--text-muted);
         border-radius: 2px;
       }
-
+ 
       &::-webkit-scrollbar-thumb:hover {
-        background: #a8a8a8;
+        background: var(--text-secondary);
       }
     }
   }
@@ -639,7 +640,7 @@
 
       h5 {
         margin-bottom: 1.25rem;
-        color: #0c111d;
+        color: var(--text-primary);
         font-size: 1rem;
       }
 

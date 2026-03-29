@@ -62,11 +62,11 @@
   .form-control {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.875rem;
     color: var(--text-primary);
-    background: white;
+    background: var(--input-bg);
     transition: all 0.2s ease;
 
     &::placeholder {
@@ -157,7 +157,7 @@
     gap: 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    color: #0c111d;
+    color: var(--text-primary);
     font-size: 0.875rem;
 
     input {
@@ -167,7 +167,7 @@
     .checkmark {
       width: 16px;
       height: 16px;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 2px;
       position: relative;
       transition: all 0.2s ease;
@@ -248,7 +248,7 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: #d1d7dc;
+    background: var(--border-color);
   }
 
   span {
@@ -264,10 +264,10 @@
   .btn-social {
     flex: 1;
     padding: 0.75rem;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
-    background: white;
-    color: #0c111d;
+    background: var(--input-bg);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.875rem;
     transition: all 0.2s ease;

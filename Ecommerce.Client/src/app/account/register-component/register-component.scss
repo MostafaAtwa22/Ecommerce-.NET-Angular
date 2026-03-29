@@ -62,11 +62,11 @@
   .form-control {
     width: 100%;
     padding: 0.75rem;
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.875rem;
     color: var(--text-primary);
-    background: white;
+    background: var(--input-bg);
     transition: all 0.2s ease;
 
     &::placeholder {
@@ -243,7 +243,7 @@
     gap: 0.75rem;
     cursor: pointer;
     font-size: 0.875rem;
-    color: #0c111d;
+    color: var(--text-primary);
 
     input {
       display: none;
@@ -254,7 +254,7 @@
       width: 16px;
       height: 16px;
       margin-top: 0.125rem;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 2px;
       position: relative;
       transition: all 0.2s ease;
@@ -312,9 +312,9 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem;
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      background: white;
+      background: var(--input-bg);
       cursor: pointer;
       transition: all 0.2s ease;
 
@@ -385,7 +385,7 @@
 
   .strength-bar {
     height: 4px;
-    background: #d1d7dc;
+    background: var(--border-color);
     border-radius: 2px;
     overflow: hidden;
     margin-bottom: 0.25rem;

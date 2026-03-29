@@ -1,16 +1,16 @@
-<div class="chat-container d-flex rounded justify-content-between bg-light">
+<div class="chat-container d-flex rounded justify-content-between">
   <!-- Left Sidebar -->
-  <app-chat-sidebar class="chat-left-sidebar bg-white border-end shadow-sm"
+  <app-chat-sidebar class="chat-left-sidebar border-end shadow-sm"
     [class.active]="_chatService.isLeftSidebarActive()">
   </app-chat-sidebar>
 
   <!-- Chat Window -->
-  <div class="chat-main-window bg-white" [class.sidebar-open]="_chatService.isRightSidebarActive()">
+  <div class="chat-main-window" [class.sidebar-open]="_chatService.isRightSidebarActive()">
     <app-chat-window></app-chat-window>
   </div>
 
   <!-- Right Sidebar -->
-  <div class="chat-right-sidebar bg-white border-start shadow-sm p-3"
+  <div class="chat-right-sidebar border-start shadow-sm p-3"
     [class.active]="_chatService.isRightSidebarActive()">
     <app-chat-right-sidebar></app-chat-right-sidebar>
   </div>

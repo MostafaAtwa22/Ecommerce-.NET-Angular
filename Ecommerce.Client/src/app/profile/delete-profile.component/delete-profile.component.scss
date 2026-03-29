@@ -3,8 +3,8 @@
 }
 
 .section-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -41,7 +41,7 @@
         margin: 0 0 0.5rem 0;
         font-size: 1.25rem;
         font-weight: 600;
-        color: #0c111d;
+        color: var(--text-primary);
       }
 
       .hint {
@@ -73,7 +73,7 @@
     }
 
     strong {
-      color: #0c111d;
+      color: var(--text-primary);
       font-size: 0.875rem;
       font-weight: 600;
     }
@@ -126,7 +126,7 @@
       gap: 0.5rem;
       font-size: 0.875rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
 
       i {
         color: #5624d0;
@@ -140,11 +140,11 @@
       input {
         width: 100%;
         padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-        border: 1px solid #d1d7dc;
+        border: 1px solid var(--border-color);
         border-radius: 4px;
-        background: white;
+        background: var(--input-bg);
         font-size: 0.875rem;
-        color: #0c111d;
+        color: var(--text-primary);
         transition: all 0.2s ease;
 
         &:focus {
@@ -189,7 +189,7 @@
   gap: 1rem;
   flex-wrap: wrap;
   padding-top: 1rem;
-  border-top: 1px solid #d1d7dc;
+  border-top: 1px solid var(--border-color);
 
   .messages {
     flex: 1;
@@ -268,13 +268,13 @@
   padding: 1rem;
 
   .confirmation-modal {
-    background: white;
+    background: var(--bg-primary);
     border-radius: 8px;
     padding: 1.5rem;
     max-width: 400px;
     width: 100%;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    border: 1px solid #d1d7dc;
+    border: 1px solid var(--border-color);
 
     .modal-header {
       display: flex;
@@ -289,7 +289,7 @@
 
       h4 {
         margin: 0;
-        color: #0c111d;
+        color: var(--text-primary);
         font-size: 1.125rem;
         font-weight: 600;
       }
@@ -319,9 +319,9 @@
         }
 
         .btn-cancel {
-          background: white;
-          border: 1px solid #d1d7dc;
-          color: #0c111d;
+          background: var(--bg-primary);
+          border: 1px solid var(--border-color);
+          color: var(--text-primary);
 
           &:hover {
             background: #f7f9fa;

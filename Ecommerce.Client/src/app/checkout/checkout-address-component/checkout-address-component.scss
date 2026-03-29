@@ -4,11 +4,11 @@
   padding: 0 1.5rem;
 
   .form-section {
-    background: white;
-    border: 1px solid #d1d7dc;
-    border-radius: 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     padding: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
     margin-bottom: 2rem;
   }
 
@@ -38,7 +38,7 @@
 
   .section-divider {
     height: 1px;
-    background: #d1d7dc;
+    background: var(--border-color);
     margin: 1.5rem 0;
   }
 
@@ -56,13 +56,13 @@
   }
 
   .modern-input {
-    border: 1px solid #d1d7dc;
-    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     padding: 0.75rem;
     font-size: 0.875rem;
     color: var(--text-primary);
     width: 100%;
-    background: white;
+    background: var(--input-bg);
     transition: all 0.2s ease;
 
     &::placeholder {
@@ -71,8 +71,8 @@
 
     &:focus {
       outline: none;
-      border-color: #5624d0;
-      box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
+      border-color: var(--brand-primary);
+      box-shadow: 0 0 0 3px var(--brand-primary-alpha-10);
     }
 
     &:hover {

@@ -1,9 +1,10 @@
 .reviews-section {
   margin-top: 4rem;
   padding: 2rem;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
 }
 
 /* Header with dropdown filters */
@@ -19,19 +20,19 @@
     .section-title {
       font-size: 1.75rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin: 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
 
       i {
-        color: #5624d0;
+        color: var(--brand-primary);
       }
     }
 
     .reviews-count {
-      color: #6a6f73;
+      color: var(--text-secondary);
       font-size: 0.875rem;
       margin-top: 0.25rem;
     }
@@ -50,7 +51,7 @@
       label {
         font-size: 0.75rem;
         font-weight: 600;
-        color: #6a6f73;
+        color: var(--text-secondary);
         display: flex;
         align-items: center;
         gap: 0.25rem;
@@ -58,22 +59,22 @@
 
       .filter-select {
         min-width: 180px;
-        border: 1px solid #d1d7dc;
+        border: 1px solid var(--border-color);
         border-radius: 4px;
         padding: 0.5rem 0.75rem;
         font-size: 0.875rem;
-        color: #0c111d;
-        background-color: white;
+        color: var(--text-primary);
+        background-color: var(--bg-primary);
         cursor: pointer;
         transition: all 0.2s ease;
 
         &:hover {
-          border-color: #5624d0;
+          border-color: var(--brand-primary);
         }
 
         &:focus {
           outline: none;
-          border-color: #5624d0;
+          border-color: var(--brand-primary);
           box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
         }
       }
@@ -83,8 +84,8 @@
 
 /* Average Rating Card */
 .average-rating-card {
-  background: #f7f9fa;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -99,14 +100,14 @@
     .score {
       font-size: 3rem;
       font-weight: 700;
-      color: #0c111d;
+      color: var(--text-primary);
       display: block;
       line-height: 1;
     }
 
     .out-of {
       font-size: 0.875rem;
-      color: #6a6f73;
+      color: var(--text-secondary);
     }
   }
 
@@ -118,17 +119,17 @@
 
       i {
         font-size: 1.2rem;
-        color: #b4690e;
+        color: #f59e0b;
 
         &.far.fa-star {
-          color: #d1d7dc;
+          color: var(--border-color);
         }
       }
     }
 
     .rating-text {
       font-size: 0.875rem;
-      color: #6a6f73;
+      color: var(--text-secondary);
     }
   }
 
@@ -144,7 +145,7 @@
 
       .star-label {
         font-size: 0.875rem;
-        color: #6a6f73;
+        color: var(--text-secondary);
         min-width: 60px;
       }
 
@@ -153,7 +154,7 @@
 
         .progress-bar {
           height: 8px;
-          background: #d1d7dc;
+          background: var(--border-color);
           border-radius: 4px;
           overflow: hidden;
 
@@ -162,18 +163,19 @@
             border-radius: 4px;
             transition: width 0.3s ease;
 
-            &.rating-5 { background: #b4690e; }
-            &.rating-4 { background: #d9a13b; }
-            &.rating-3 { background: #e4b74e; }
-            &.rating-2 { background: #f0c75e; }
-            &.rating-1 { background: #fad978; }
+            &.rating-5 { background: #f59e0b; }
+            &.rating-4 { background: #fbbf24; }
+            &.rating-3 { background: #fcd34d; }
+            &.rating-2 { background: #fde68a; }
+            &.rating-1 { background: #fef3c7; }
           }
+
         }
       }
 
       .percentage {
         font-size: 0.875rem;
-        color: #6a6f73;
+        color: var(--text-secondary);
         min-width: 50px;
         text-align: right;
       }
@@ -190,7 +192,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -200,19 +202,19 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: #401b9c;
+      background: var(--brand-primary-dark);
     }
   }
 }
 
 /* Review Form Container (like Amazon) */
 .review-form-container {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 
   .review-form-header {
     display: flex;
@@ -223,7 +225,7 @@
     h3 {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin: 0;
       display: flex;
       align-items: center;
@@ -233,14 +235,14 @@
     .btn-close-form {
       background: none;
       border: none;
-      color: #6a6f73;
+      color: var(--text-secondary);
       cursor: pointer;
       padding: 0.5rem;
       border-radius: 4px;
 
       &:hover {
-        background: #f7f9fa;
-        color: #0c111d;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
       }
     }
   }
@@ -251,7 +253,7 @@
     h5 {
       font-size: 0.875rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin-bottom: 0.5rem;
     }
 
@@ -262,13 +264,13 @@
 
         i {
           font-size: 2rem;
-          color: #d1d7dc;
+          color: var(--border-color);
           cursor: pointer;
           transition: all 0.2s ease;
 
           &:hover,
           &.selected {
-            color: #b4690e;
+            color: #f59e0b;
             transform: scale(1.1);
           }
         }
@@ -277,7 +279,7 @@
       .rating-text {
         margin-top: 0.5rem;
         font-size: 0.875rem;
-        color: #6a6f73;
+        color: var(--text-secondary);
       }
     }
   }
@@ -286,21 +288,22 @@
     h5 {
       font-size: 0.875rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin: 1rem 0 0.5rem;
     }
 
     .form-control {
-      border: 1px solid #d1d7dc;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 0.75rem;
       font-size: 0.875rem;
-      color: #0c111d;
+      color: var(--text-primary);
+      background: var(--bg-primary);
       width: 100%;
 
       &:focus {
         outline: none;
-        border-color: #5624d0;
+        border-color: var(--brand-primary);
         box-shadow: 0 0 0 2px rgba(86, 36, 208, 0.1);
       }
 
@@ -317,7 +320,7 @@
     .char-count {
       text-align: right;
       font-size: 0.75rem;
-      color: #6a6f73;
+      color: var(--text-secondary);
       margin-top: 0.25rem;
     }
   }
@@ -329,7 +332,7 @@
 
     .btn-submit-review {
       padding: 0.75rem 1.5rem;
-      background: #5624d0;
+      background: var(--brand-primary);
       color: white;
       border: none;
       border-radius: 4px;
@@ -342,7 +345,7 @@
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
-        background: #401b9c;
+        background: var(--brand-primary-dark);
       }
 
       &:disabled {
@@ -353,9 +356,9 @@
 
     .btn-cancel-review {
       padding: 0.75rem 1.5rem;
-      background: white;
-      color: #0c111d;
-      border: 1px solid #d1d7dc;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
       font-size: 0.875rem;
       font-weight: 600;
@@ -363,8 +366,8 @@
       transition: all 0.2s ease;
 
       &:hover:not(:disabled) {
-        background: #f7f9fa;
-        border-color: #0c111d;
+        background: var(--bg-secondary);
+        border-color: var(--text-primary);
       }
 
       &:disabled {
@@ -383,8 +386,8 @@
 }
 
 .review-card {
-  background: white;
-  border: 1px solid #d1d7dc;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
 
@@ -404,7 +407,7 @@
       .reviewer-avatar {
         width: 40px;
         height: 40px;
-        background: #5624d0;
+        background: var(--brand-primary);
         color: white;
         border-radius: 50%;
         display: flex;
@@ -418,7 +421,7 @@
         .reviewer-name {
           font-size: 0.875rem;
           font-weight: 600;
-          color: #0c111d;
+          color: var(--text-primary);
           margin: 0 0 0.25rem;
         }
 
@@ -430,17 +433,18 @@
           .verified-badge {
             font-size: 0.75rem;
             color: #1e6055;
-            background: #e5f7f3;
+            background: rgba(30, 96, 85, 0.1);
             padding: 0.125rem 0.5rem;
             border-radius: 4px;
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
+            border: 1px solid rgba(30, 96, 85, 0.2);
           }
 
           .review-date {
             font-size: 0.75rem;
-            color: #6a6f73;
+            color: var(--text-secondary);
           }
         }
       }
@@ -453,10 +457,10 @@
 
         i {
           font-size: 1rem;
-          color: #b4690e;
+          color: #f59e0b;
 
           &.far.fa-star {
-            color: #d1d7dc;
+            color: var(--border-color);
           }
         }
       }
@@ -467,13 +471,13 @@
     .review-headline {
       font-size: 1rem;
       font-weight: 600;
-      color: #0c111d;
+      color: var(--text-primary);
       margin: 0 0 0.5rem;
     }
 
     .review-content {
       font-size: 0.875rem;
-      color: #0c111d;
+      color: var(--text-primary);
       line-height: 1.5;
       margin: 0 0 1rem;
     }
@@ -484,8 +488,8 @@
 
       .btn-action {
         padding: 0.375rem 0.75rem;
-        background: white;
-        border: 1px solid #d1d7dc;
+        background: var(--bg-primary);
+        border: 1px solid var(--border-color);
         border-radius: 4px;
         font-size: 0.75rem;
         font-weight: 600;
@@ -496,12 +500,12 @@
         transition: all 0.2s ease;
 
         &:hover {
-          background: #f7f9fa;
+          background: var(--bg-secondary);
         }
 
         &.btn-edit {
-          color: #5624d0;
-          border-color: #5624d0;
+          color: var(--brand-primary);
+          border-color: var(--brand-primary);
 
           &:hover {
             background: rgba(86, 36, 208, 0.1);
@@ -521,14 +525,14 @@
   }
 
   .review-card-footer {
-    border-top: 1px solid #d1d7dc;
+    border-top: 1px solid var(--border-color);
     padding-top: 1rem;
     margin-top: 1rem;
 
     .helpful-section {
       .helpful-text {
         font-size: 0.75rem;
-        color: #6a6f73;
+        color: var(--text-secondary);
         margin-right: 1rem;
       }
 
@@ -540,8 +544,8 @@
         .btn-helpful,
         .btn-not-helpful {
           padding: 0.375rem 0.75rem;
-          background: white;
-          border: 1px solid #d1d7dc;
+          background: var(--bg-primary);
+          border: 1px solid var(--border-color);
           border-radius: 4px;
           font-size: 0.75rem;
           cursor: pointer;
@@ -551,7 +555,7 @@
           transition: all 0.2s ease;
 
           &:hover {
-            background: #f7f9fa;
+            background: var(--bg-secondary);
           }
 
           .count {
@@ -584,18 +588,18 @@
 .write-review-bottom {
   text-align: center;
   padding: 3rem 0;
-  border-top: 1px solid #d1d7dc;
+  border-top: 1px solid var(--border-color);
   margin-top: 2rem;
 
   h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
   p {
-    color: #6a6f73;
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
     max-width: 500px;
     margin-left: auto;
@@ -607,7 +611,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.875rem 1.75rem;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -617,13 +621,13 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: #401b9c;
+      background: var(--brand-primary-dark);
     }
   }
 
   .login-prompt {
     a {
-      color: #5624d0;
+      color: var(--brand-primary);
       font-weight: 600;
       text-decoration: none;
 
@@ -646,8 +650,8 @@
     .spinner {
       width: 40px;
       height: 40px;
-      border: 3px solid #d1d7dc;
-      border-top-color: #5624d0;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--brand-primary);
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: 0 auto;
@@ -656,19 +660,19 @@
 
   .no-reviews-icon {
     font-size: 3rem;
-    color: #d1d7dc;
+    color: var(--border-color);
     margin-bottom: 1rem;
   }
 
   h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #0c111d;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
   }
 
   p {
-    color: #6a6f73;
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
   }
 
@@ -677,7 +681,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: #5624d0;
+    background: var(--brand-primary);
     color: white;
     border: none;
     border-radius: 4px;
@@ -687,7 +691,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-      background: #401b9c;
+      background: var(--brand-primary-dark);
     }
   }
 }
@@ -699,9 +703,9 @@
 
   .btn-load-more {
     padding: 0.75rem 1.5rem;
-    background: white;
-    border: 1px solid #5624d0;
-    color: #5624d0;
+    background: var(--bg-primary);
+    border: 1px solid var(--brand-primary);
+    color: var(--brand-primary);
     border-radius: 4px;
     font-size: 0.875rem;
     font-weight: 600;
@@ -712,7 +716,7 @@
     transition: all 0.2s ease;
 
     &:hover:not(:disabled) {
-      background: #5624d0;
+      background: var(--brand-primary);
       color: white;
     }
 
@@ -767,23 +771,24 @@
 .sweet-alert-popup {
   font-family: inherit !important;
   border-radius: 8px !important;
-  border: 1px solid #d1d7dc !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: var(--shadow-md) !important;
+  background: var(--bg-primary) !important;
 
   .swal2-title {
     font-size: 1.25rem !important;
     font-weight: 600 !important;
-    color: #0c111d !important;
+    color: var(--text-primary) !important;
   }
 
   .swal2-content {
     font-size: 0.875rem !important;
-    color: #6a6f73 !important;
+    color: var(--text-secondary) !important;
   }
 }
 
 .sweet-alert-confirm {
-  background-color: #c91a1a !important;
+  background-color: var(--danger) !important;
   border: none !important;
   border-radius: 4px !important;
   padding: 0.5rem 1.5rem !important;
@@ -792,7 +797,7 @@
   transition: all 0.2s ease !important;
 
   &:hover {
-    background-color: #a31515 !important;
+    background-color: var(--danger) !important;
     transform: translateY(-1px) !important;
   }
 
@@ -802,9 +807,9 @@
 }
 
 .sweet-alert-cancel {
-  background-color: white !important;
-  border: 1px solid #d1d7dc !important;
-  color: #0c111d !important;
+  background-color: var(--bg-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
   border-radius: 4px !important;
   padding: 0.5rem 1.5rem !important;
   font-size: 0.875rem !important;
@@ -812,7 +817,7 @@
   transition: all 0.2s ease !important;
 
   &:hover {
-    background-color: #f7f9fa !important;
-    border-color: #0c111d !important;
+    background-color: var(--bg-secondary) !important;
+    border-color: var(--text-primary) !important;
   }
 }

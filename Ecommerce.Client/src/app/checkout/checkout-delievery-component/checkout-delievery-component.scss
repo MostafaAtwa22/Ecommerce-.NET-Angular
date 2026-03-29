@@ -51,8 +51,8 @@
   display: none;
 
   &:checked + .delivery-label {
-    border-color: #5624d0;
-    background: rgba(86, 36, 208, 0.05);
+    border-color: var(--brand-primary);
+    background: var(--brand-primary-alpha-10);
 
     .delivery-checkmark .checkmark-icon {
       opacity: 1;
@@ -60,13 +60,13 @@
     }
 
     .delivery-name {
-      color: #5624d0;
+      color: var(--brand-primary);
     }
 
     .delivery-price {
       background: var(--brand-primary);
       color: white;
-      border-color: #5624d0;
+      border-color: var(--brand-primary);
     }
   }
 }
@@ -84,8 +84,8 @@
   position: relative;
 
   &:hover {
-    border-color: #5624d0;
-    background: #f7f9fa;
+    border-color: var(--brand-primary);
+    background: var(--bg-tertiary);
   }
 }
 
@@ -103,19 +103,19 @@
 .delivery-name {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0c111d;
+  color: var(--text-primary);
   transition: color 0.2s ease;
 }
 
 .delivery-price {
-  background: rgba(86, 36, 208, 0.1);
-  color: #5624d0;
+  background: var(--brand-primary-alpha-10);
+  color: var(--brand-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   font-weight: 600;
   font-size: 0.875rem;
   transition: all 0.2s ease;
-  border: 1px solid rgba(86, 36, 208, 0.2);
+  border: 1px solid var(--brand-primary-alpha-5);
 }
 
 .delivery-details {
@@ -126,38 +126,38 @@
 }
 
 .delivery-description {
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   font-weight: 400;
 }
 
 .delivery-time {
-  color: #6a6f73;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgba(113, 128, 150, 0.1);
+  background: var(--bg-secondary);
   padding: 0.125rem 0.5rem;
   border-radius: 4px;
-  border: 1px solid rgba(113, 128, 150, 0.2);
+  border: 1px solid var(--border-color);
 }
 
 .delivery-checkmark {
   width: 20px;
   height: 20px;
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: 1rem;
   transition: all 0.2s ease;
-  background: white;
+  background: var(--input-bg);
 }
 
 .checkmark-icon {
   width: 10px;
   height: 10px;
-  background: #5624d0;
+  background: var(--brand-primary);
   border-radius: 50%;
   opacity: 0;
   transform: scale(0);
@@ -167,13 +167,13 @@
 .no-delivery-methods {
   text-align: center;
   padding: 2rem;
-  color: #6a6f73;
+  color: var(--text-secondary);
 
   i {
     font-size: 2rem;
     margin-bottom: 0.75rem;
     opacity: 0.5;
-    color: #d1d7dc;
+    color: var(--text-muted);
   }
 
   p {
@@ -242,5 +242,28 @@
   .delivery-description,
   .delivery-time {
     font-size: 0.6875rem;
+  }
+}
+
+/* Global Dark Mode Fixes */
+[data-theme='dark'] {
+  .delivery-label:hover {
+    background-color: var(--bg-secondary) !important;
+  }
+  
+  .delivery-radio:checked + .delivery-label {
+    background: var(--brand-primary-alpha-10) !important;
+    border-color: var(--brand-primary) !important;
+  }
+
+  .delivery-price {
+    background: var(--brand-primary-alpha-10);
+    color: var(--brand-primary);
+    border-color: var(--brand-primary-alpha-10);
+  }
+
+  .delivery-time {
+    background-color: var(--bg-tertiary);
+    border-color: var(--border-color);
   }
 }

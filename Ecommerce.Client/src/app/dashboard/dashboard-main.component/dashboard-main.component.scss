@@ -12,7 +12,8 @@
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: var(--shadow-md) !important;
+    border-color: var(--brand-primary);
   }
 }
 
@@ -38,7 +39,7 @@
 
   &.stat-orders {
     background: rgba(86, 36, 208, 0.1);
-    color: #5624d0;
+    color: var(--brand-primary);
   }
 
   &.stat-products {
@@ -122,7 +123,7 @@
   height: 40px;
   border-radius: 4px;
   object-fit: cover;
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
 }
 
 /* Stock Indicators */
@@ -160,7 +161,7 @@
 
 /* Modern Select */
 .modern-select {
-  border: 1px solid #d1d7dc;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 0.5rem 2rem 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -176,8 +177,8 @@
   min-width: 150px;
 
   &:focus {
-    border-color: #5624d0;
-    box-shadow: 0 0 0 0.25rem rgba(86, 36, 208, 0.25);
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 0.25rem var(--brand-primary-alpha-10);
     outline: 0;
   }
 }
@@ -194,8 +195,8 @@
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #5624d0;
+    border: 3px solid var(--bg-tertiary);
+    border-top: 3px solid var(--brand-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
@@ -379,6 +380,20 @@
   }
 
   i {
-    color: #5624d0;
+    color: var(--brand-primary);
+  }
+}
+/* Global Shadow and Background Fixes for Dark Mode */
+[data-theme='dark'] {
+  .card-shadow {
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  .stat-card:hover {
+    box-shadow: var(--shadow-md) !important;
+  }
+
+  .progress {
+    background-color: var(--bg-tertiary);
   }
 }
