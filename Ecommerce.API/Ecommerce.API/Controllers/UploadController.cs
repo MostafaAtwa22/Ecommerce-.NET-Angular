@@ -17,7 +17,8 @@ namespace Ecommerce.API.Controllers
                 return BadRequest("No file uploaded");
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var uploadPath = Path.Combine(_environment.WebRootPath, "uploads");
+            var webRootPath = _environment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadPath = Path.Combine(webRootPath, "uploads");
 
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
